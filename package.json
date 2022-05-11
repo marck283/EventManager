@@ -1,0 +1,19 @@
+{
+  "name": "progetto",
+  "version": "1.0.0",
+  "description": "Progetto Ingegneria del Software 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marck283/EventManager.git"
+  },
+  "author": "Marco Lasagna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marck283/EventManager/issues"
+  },
+  "homepage": "https://github.com/marck283/EventManager#readme"
+}
