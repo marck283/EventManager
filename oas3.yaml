@@ -9,31 +9,43 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /createEvent:
+  /creazioneEvento/pubblico:
     post:
-      description: >-
+      description: Inviare le info per creare un nuovo evento pubblico.
+      summary: Crea un nuovo evento pubblico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicEvent'
+      responses:
+        '201':
+          description: 'Evento pubblico creato. link alla locazione della risorsa'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'evento pubblico nuovo creato.
+
+  /creazioneEvento/personale:
+    post:
+      description: 
         Crea un nuovo evento.
       summary: Crea un nuovo evento
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  description: 'Email address of the student'
+              $ref: '#/components/schemas/PersonalEvent'
       responses:
         '201':
-          description: 'User created. Link in the Location header'
+          description: 'Evento personale creato. link alla locazione del evento'
           headers:
             'Location':
               schema:
                 type: string
-              description: Link to the newly created student.
-
+              description: Link all'evento personale nuovo creato.
+  
   /books:
     get:
       description: >-
@@ -69,6 +81,8 @@ paths:
           
 components:
   schemas:
+    PublicEvent:
+    PersonalEvent:
     Student:
       type: object
       required:
