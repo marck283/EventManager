@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/marck283/EventManager/issues"
   },
-  "homepage": "https://github.com/marck283/EventManager#readme"
+  "homepage": "https://github.com/marck283/EventManager#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.3.3"
+  }
 }
