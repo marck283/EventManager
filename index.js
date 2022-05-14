@@ -16,6 +16,7 @@ app.locals.db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, use
 .then ( () => {
     
     console.log("Connected to Database");
+    console.log("On visualizzazioneEventi branch.");
     
     app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
