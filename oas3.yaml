@@ -46,20 +46,20 @@ paths:
                 type: string
               description: Link all'evento personale nuovo creato.
   
-  /books:
+  /listaEventi:
     get:
       description: >-
-        Gets the list of books.
-      summary: View all books
+        Ottieni la lista di eventi.
+      summary: Visualizza gli eventi
       responses:
         '200':
-          description: 'Collection of books'
+          description: 'Lista di eventi'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: '#/components/schemas/EventsList'
   /booklendings:
     post:
       description: >-
@@ -95,27 +95,14 @@ components:
         email:
           type: string
           description: 'Email address of the user'
-    Book:
+    EventsList:
       type: object
       required:
-        - title
-        - author
-        - ISBN
-        - status
+        - list
       properties:
-        title:
-          type: string
-          description: 'Title of the book'
-        author:
-          type: string
-          description: 'Author of the book'
-        ISBN:
-          type: string
-          description: 'ISBN of the book'
-        status:
-          type: string
-          enum: [available, lended]
-          description: 'Tells whether the book is currently available or not'
+        list:
+          type: array
+          description: 'La lista di eventi in formato JSON'
     Booklending:
       type: object
       required:
