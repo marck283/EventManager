@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: "EventManager API"
+  title: "EventManager"
   description: API per gestire eventi.
   license:
     name: MIT
@@ -12,8 +12,8 @@ paths:
   /createEvent:
     post:
       description: >-
-        Creates a new student in the system.
-      summary: Register a new student
+        Crea un nuovo evento.
+      summary: Crea un nuovo evento
       requestBody:
         content:
           application/json:
