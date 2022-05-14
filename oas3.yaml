@@ -9,31 +9,43 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /createEvent:
+  /creazioneEvento/pubblico:
     post:
-      description: >-
+      description: Inviare le info per creare un nuovo evento pubblico.
+      summary: Crea un nuovo evento pubblico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicEvent'
+      responses:
+        '201':
+          description: 'Evento pubblico creato. link alla locazione della risorsa'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'evento pubblico nuovo creato.
+
+  /creazioneEvento/personale:
+    post:
+      description: 
         Crea un nuovo evento.
       summary: Crea un nuovo evento
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  description: 'Email address of the student'
+              $ref: '#/components/schemas/PersonalEvent'
       responses:
         '201':
-          description: 'User created. Link in the Location header'
+          description: 'Evento personale creato. link alla locazione del evento'
           headers:
             'Location':
               schema:
                 type: string
-              description: Link to the newly created student.
-
+              description: Link all'evento personale nuovo creato.
+  
   /books:
     get:
       description: >-
@@ -69,6 +81,81 @@ paths:
           
 components:
   schemas:
+    PublicEvent:
+      type: object
+      required:
+      - data
+      - ora
+      - durata
+      - maxPers
+      - categoria
+      - nomeAtt
+      - luogoEv
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento'
+        ora:
+          type: string
+          description: 'Ora dell''evento'
+        durata:
+          type: number
+          description: 'Durata dell''evento'
+        maxPers:
+          type: integer
+          description: 'Numero massimo delle persone'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
+            
+    PersonalEvent:
+      type: object
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento'
+        ora:
+          type: string
+          description: 'Ora dell''evento'
+        durata:
+          type: number
+          description: 'Durata dell''evento'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
+    
     Student:
       type: object
       required:
