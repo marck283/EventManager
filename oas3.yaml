@@ -9,45 +9,57 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /createEvent:
+  /creazioneEvento/pubblico:
     post:
-      description: >-
+      description: Inviare le info per creare un nuovo evento pubblico.
+      summary: Crea un nuovo evento pubblico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicEvent'
+      responses:
+        '201':
+          description: 'Evento pubblico creato. link alla locazione della risorsa'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'evento pubblico nuovo creato.
+
+  /creazioneEvento/personale:
+    post:
+      description: 
         Crea un nuovo evento.
       summary: Crea un nuovo evento
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  description: 'Email address of the student'
+              $ref: '#/components/schemas/PersonalEvent'
       responses:
         '201':
-          description: 'User created. Link in the Location header'
+          description: 'Evento personale creato. link alla locazione del evento'
           headers:
             'Location':
               schema:
                 type: string
-              description: Link to the newly created student.
-
-  /books:
+              description: Link all'evento personale nuovo creato.
+  
+  /listaEventi:
     get:
       description: >-
-        Gets the list of books.
-      summary: View all books
+        Ottieni la lista di eventi.
+      summary: Visualizza gli eventi
       responses:
         '200':
-          description: 'Collection of books'
+          description: 'Lista di eventi'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: '#/components/schemas/EventsList'
   /booklendings:
     post:
       description: >-
@@ -69,6 +81,8 @@ paths:
           
 components:
   schemas:
+    PublicEvent:
+    PersonalEvent:
     Student:
       type: object
       required:
@@ -81,27 +95,14 @@ components:
         email:
           type: string
           description: 'Email address of the user'
-    Book:
+    EventsList:
       type: object
       required:
-        - title
-        - author
-        - ISBN
-        - status
+        - list
       properties:
-        title:
-          type: string
-          description: 'Title of the book'
-        author:
-          type: string
-          description: 'Author of the book'
-        ISBN:
-          type: string
-          description: 'ISBN of the book'
-        status:
-          type: string
-          enum: [available, lended]
-          description: 'Tells whether the book is currently available or not'
+        list:
+          type: array
+          description: 'La lista di eventi in formato JSON'
     Booklending:
       type: object
       required:
