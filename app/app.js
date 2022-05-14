@@ -15,6 +15,9 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
+app.get("/static", (req, res) => {
+    res.sendFile("./publicCalendar.html");
+});
 
 
 /* Default 404 handler */
