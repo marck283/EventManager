@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-
+const books = require('./eventipubblici.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -15,6 +15,10 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
+
+
+
+app.use('/api/v1/creazioneEvento/pubblico', books);
 
 
 /* Default 404 handler */

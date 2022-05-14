@@ -30,8 +30,8 @@ paths:
   /creazioneEvento/personale:
     post:
       description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
+        Inviare le info per creare un nuovo evento personale.
+      summary: Crea un nuovo evento personale
       requestBody:
         content:
           application/json:
