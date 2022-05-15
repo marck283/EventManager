@@ -66,6 +66,11 @@ paths:
       description: >-
         Ottieni informazioni evento pubblico.
       summary: Visualizza informazioni evento pubblico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventID'
       responses:
         '200':
           description: 'Elenco informazioni evento pubblico'
@@ -81,6 +86,11 @@ paths:
       description: >-
         Ottieni informazioni evento personale.
       summary: Visualizza informazioni evento personale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventID'
       responses:
         '200':
           description: 'Elenco informazioni evento personale'
@@ -93,6 +103,8 @@ paths:
 
 components:
   schemas:
+    EventID:
+      type: string
     PublicEvent:
     PersonalEvent:
     EventsList:
