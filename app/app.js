@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
 
@@ -19,7 +20,8 @@ var events = require("./events.js");
 app.use("/api/v1/events", events);
 
 app.get("/static", (req, res) => {
-    res.sendFile("./publicCalendar.html");
+    //Forse bisogna differenziare per la richiesta di risorse statiche differenti?
+    res.sendFile(path.resolve("./static/publicCalendar.html")); //path.resolve() richiede che il path specificato sia assoluto, non relativo
 });
 
 app.get("/styles", (req, res) => {

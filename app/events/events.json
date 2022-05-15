@@ -1,32 +1,28 @@
 {
     "listForCategory": [
         {
-            "category": "fauna",
+            "category": "Fauna",
             "events": [
                 {
                     "name": "Evento 1",
-                    "imgPath": "",
-                    "description": ""
+                    "description": "Descrizione evento 1"
                 },
                 {
                     "name": "Evento 2",
-                    "imgPath": "",
-                    "description": ""
+                    "description": "Descrizione evento 2"
                 }
             ]
         },
         {
-            "category": "spettacolo",
+            "category": "Spettacolo",
             "events": [
                 {
                     "name": "Vasco Rossi on tour",
-                    "imgPath": "",
-                    "description": ""
+                    "description": "Decrizione evento Vasco Rossi on tour"
                 },
                 {
                     "name": "Vasco Rossi on tour",
-                    "imgPath": "",
-                    "description": ""
+                    "description": "Decrizione evento Vasco Rossi on tour"
                 }
             ]
         }

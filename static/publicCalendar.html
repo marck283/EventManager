@@ -12,6 +12,12 @@
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css' />
   <!-- Calendar stylesheet -->
   <link rel="stylesheet" type="text/css" href="styles/calendar.css" />
+  
+  <!-- Event list stylesheet -->
+  <link rel="stylesheet" type="text/css" href="styles/eventList.css" />
+
+  <!-- Common styles -->
+  <link rel="stylesheet" type="text/css" href="styles/eventViewCommonStyles.css" />
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,7 +26,6 @@
   <!-- Scripts -->
   <script src="scripts/calendar.js"></script>
   <script src="scripts/toggleSwitch.js"></script>
-  <script src="scripts/eventLists.js"></script>
 </head>
 
 <body>
@@ -46,7 +51,7 @@
         <button id="btnNext" type="button">Next</button>
         <div id="divCal"></div>
       </div>
-      <div onload="request()" id="eventLists"></div>
+      <div id="eventLists"></div>
       <script>
         showIfChecked();
       </script>
