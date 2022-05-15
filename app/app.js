@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 
-const books = require('./eventipubblici.js');
+const eventspublics = require('./eventipubblici.js');
+const eventspersonals = require('./eventiPersonali.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -18,7 +19,8 @@ app.use('/', express.static('static'));
 
 
 
-app.use('/api/v1/creazioneEvento/pubblico', books);
+app.use('/api/v1/creazioneEvento/pubblico', eventspublics);
+app.use('/api/v1/creazioneEvento/personale', eventspersonals);
 
 
 /* Default 404 handler */
