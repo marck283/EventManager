@@ -60,7 +60,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventsList'
-          
+
+  /informazioniEvento/pubblico:
+    get:
+      description: >-
+        Ottieni informazioni evento pubblico.
+      summary: Visualizza informazioni evento pubblico
+      responses:
+        '200':
+          description: 'Elenco informazioni evento pubblico'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicEvent'
+
+  /informazioniEvento/personale:
+    get:
+      description: >-
+        Ottieni informazioni evento personale.
+      summary: Visualizza informazioni evento personale
+      responses:
+        '200':
+          description: 'Elenco informazioni evento personale'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalEvent'
+
 components:
   schemas:
     PublicEvent:
