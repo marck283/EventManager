@@ -11,7 +11,7 @@ servers:
 paths:
   /creazioneEvento/pubblico:
     post:
-      description: Inviare le info per creare un nuovo evento pubblico.
+      description: 'Inviare le info per creare un nuovo evento pubblico.'
       summary: Crea un nuovo evento pubblico
       requestBody:
         content:
@@ -60,41 +60,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventsList'
-  /booklendings:
-    post:
-      description: >-
-        Creates a new booklending.
-      summary: Borrow a book
-      responses:
-        '201':
-          description: 'Booklending created. Link in the Location header'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link to the newly created booklending.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booklending'
           
 components:
   schemas:
     PublicEvent:
     PersonalEvent:
-    Student:
-      type: object
-      required:
-        - id
-        - email
-      properties:
-        id:
-          type: integer
-          description: 'ID of the user'
-        email:
-          type: string
-          description: 'Email address of the user'
     EventsList:
       type: object
       required:
@@ -103,15 +73,3 @@ components:
         list:
           type: array
           description: 'La lista di eventi in formato JSON'
-    Booklending:
-      type: object
-      required:
-      - student
-      - book
-      properties:
-        user:
-          type: string
-          description: 'Link to the user'
-        book:
-          type: integer
-          description: 'Link to the book'
