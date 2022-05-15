@@ -1,0 +1,34 @@
+{
+    "listForCategory": [
+        {
+            "category": "fauna",
+            "events": [
+                {
+                    "name": "Evento 1",
+                    "imgPath": "",
+                    "description": ""
+                },
+                {
+                    "name": "Evento 2",
+                    "imgPath": "",
+                    "description": ""
+                }
+            ]
+        },
+        {
+            "category": "spettacolo",
+            "events": [
+                {
+                    "name": "Vasco Rossi on tour",
+                    "imgPath": "",
+                    "description": ""
+                },
+                {
+                    "name": "Vasco Rossi on tour",
+                    "imgPath": "",
+                    "description": ""
+                }
+            ]
+        }
+    ]
+}

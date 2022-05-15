@@ -15,8 +15,15 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
+var events = require("./events.js");
+app.use("/api/v1/events", events); //Non funziona. Come mai?
+
 app.get("/static", (req, res) => {
     res.sendFile("./publicCalendar.html");
+});
+
+app.get("/styles", (req, res) => {
+    res.sendFile(path.resolve("/styles/calendar.css"));
 });
 
 

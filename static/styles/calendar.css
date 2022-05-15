@@ -1,3 +1,13 @@
+.container {
+    min-width: 80% !important;
+    max-width: 80% !important;
+}
+
+h1 {
+    padding: 1.2rem;
+    text-align: center;
+}
+
 .calendar-wrapper {
     width: 360px;
     margin: 3em auto;
