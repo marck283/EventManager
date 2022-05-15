@@ -6,9 +6,9 @@ const EventP = require('./collezioni/eventpublic'); // get our mongoose model
 
 
 router.post('', async (req, res) => {
-
+    console.log(req.body);
 	let eventP = new EventP({data: req.body.data, durata: req.body.durata, maxPers: req.body.maxPers, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatore: null, partecipanti: []});
-    eventP.partecipanti.push(null)
+    eventP.partecipanti.push(null);
 	eventP = await eventP.save();
 
 

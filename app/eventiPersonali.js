@@ -7,8 +7,8 @@ const EventPe = require('./collezioni/eventpersonal'); // get our mongoose model
 
 router.post('', async (req, res) => {
 
-	let eventP = new EventPe({data: req.body.data, durata: req.body.durata, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatore: null, partecipanti: []});
-    eventP.partecipanti.push(null)
+	let eventP = new EventPe({data: req.body.data, durata: req.body.durata, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatore: null});
+    
 	eventP = await eventP.save();
 
 
