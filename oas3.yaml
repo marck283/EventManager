@@ -11,7 +11,7 @@ servers:
 paths:
   /creazioneEvento/pubblico:
     post:
-      description: Inviare le info per creare un nuovo evento pubblico.
+      description: 'Inviare le info per creare un nuovo evento pubblico.'
       summary: Crea un nuovo evento pubblico
       requestBody:
         content:
@@ -50,51 +50,42 @@ paths:
     get:
       description: >-
         Ottieni la lista di eventi.
-      summary: Visualizza gli eventi
+      summary: Visualizza gli eventi sotto forma di lista.
       responses:
         '200':
-          description: 'Lista di eventi'
+          description: 'Lista di eventi ricevuta.'
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventsList'
-  /booklendings:
-    post:
+  
+  /eventiCalendario:
+    get:
       description: >-
-        Creates a new booklending.
-      summary: Borrow a book
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
+      summary: Visualizza gli eventi nel calendario pubblico.
+      parameters:
+        - name: day
+          in: query
+          description: Il giorno selezionato dall'utente
+          schema:
+            type: integer
       responses:
-        '201':
-          description: 'Booklending created. Link in the Location header'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link to the newly created booklending.
-      requestBody:
-        content:
-          application/json:
+        '200':
+          description: Lista di eventi per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
             schema:
-              $ref: '#/components/schemas/Booklending'
+              type: array
+              items:
+                $ref: '#components/schemas/CalendarEvents'
           
 components:
   schemas:
     PublicEvent:
     PersonalEvent:
-    Student:
-      type: object
-      required:
-        - id
-        - email
-      properties:
-        id:
-          type: integer
-          description: 'ID of the user'
-        email:
-          type: string
-          description: 'Email address of the user'
     EventsList:
       type: object
       required:
@@ -103,15 +94,11 @@ components:
         list:
           type: array
           description: 'La lista di eventi in formato JSON'
-    Booklending:
+    CalendarEvents:
       type: object
       required:
-      - student
-      - book
+        - list
       properties:
-        user:
-          type: string
-          description: 'Link to the user'
-        book:
-          type: integer
-          description: 'Link to the book'
+        list:
+          type: array
+          description: 'La lista di eventi per il giorno selezionato in formato JSON'
