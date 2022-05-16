@@ -3,5 +3,4 @@ var Schema = mongoose.Schema;
 
 // set up a mongoose model
 module.exports = mongoose.model('EventoP', new Schema({ 
-	data: String,  ora: String, durata: Number, maxPers: Number, categoria: String, nomeAtt: String, luogoEv: {indirizzo: String, citta: String}, organizzatore: {type: Schema.Types.ObjectId, ref: 'Utenti'}, partecipanti: [{type: Schema.Types.ObjectId, ref: 'Utenti'}]}
-));
+	data: String,  ora: String, durata: Number, maxPers: Number, categoria: String, nomeAtt: String, luogoEv: {indirizzo: String, citta: String}, organizzatore: {type: Schema.Types.ObjectId, ref: 'Utenti'}, partecipanti: [{type: Schema.Types.ObjectId, ref: 'Utenti'}]}));
