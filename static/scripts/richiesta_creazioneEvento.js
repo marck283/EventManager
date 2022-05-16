@@ -1,21 +1,63 @@
 var request = () => {
     //reqObj.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    var reqObj = new XMLHttpRequest(), eventJSONList;
-    reqObj.open("Post", "http://localhost:8080/api/v1/creazioneEvento/pubblico", true); //Invio una richiesta asincrona al server Node.js
-    reqObj.setRequestHeader('Content-Type', 'application/json');
-    //reqObj.responseType = "json";
-    reqObj.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 201) {
-            console.log("ricevuto")
-            //Popola la pagina con i dati ricevuti
-            eventJSONList = this.response; //Cattura la risposta in formato JSON
-            locazione=this.getResponseHeader("Location")
-            document.getElementById("loc").innerHTML = locazione
-            
+    var inviare = true
+    if(document.getElementById("date").value==""){
+        document.getElementById("vuotoDa").innerHTML="inserire una data";
+        inviare=false;
+    }else{
+        document.getElementById("vuotoDa").innerHTML="";
+    }
+    if(document.getElementById("ora").value==""){
+
+        document.getElementById("vuotoO").innerHTML="inserire Ora";
+        inviare=false;
+    }else{
+        var reg= /[0-9]+:[0-9]+/i
+        if(reg.test(document.getElementById("ora").value)){
+            document.getElementById("vuotoO").innerHTML="";
+        }else{
+            document.getElementById("vuotoO").innerHTML="formato ora: hh:mm";
+            inviare=false;
         }
+        
+    }
+    if(document.getElementById("nomeAtt").value==""){
+        document.getElementById("vuotoN").innerHTML="inserire nome attività";
+        inviare=false;
+    }else{
+        document.getElementById("vuotoN").innerHTML="";
+    }
+    if(document.getElementById("indirizzo").value==""){
+        document.getElementById("vuotoI").innerHTML="inserire indirizzo";
+        inviare=false;
+    }else{
+        document.getElementById("vuotoI").innerHTML="";
+    }
+    if(document.getElementById("Citta").value==""){
+        document.getElementById("vuotoCi").innerHTML="inserire città";
+        inviare=false;
+    }else{
+        document.getElementById("vuotoCi").innerHTML="";
+    }
+    if(inviare==true){
+        var reqObj = new XMLHttpRequest(), eventJSONList;
+        reqObj.open("Post", "http://localhost:8080/api/v1/creazioneEvento/pubblico", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.setRequestHeader('Content-Type', 'application/json');
+        //reqObj.responseType = "json";
+        reqObj.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 201) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+                locazione=this.getResponseHeader("Location")
+                document.getElementById("loc").innerHTML = locazione
+                
+            }
     };
+    
 
     
-    reqObj.send(JSON.stringify({ "data": document.getElementById("date").value, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "maxPers": document.getElementById("maxPers").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+        reqObj.send(JSON.stringify({ "data": document.getElementById("date").value, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "maxPers": document.getElementById("maxPers").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+    }   
 
 };

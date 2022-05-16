@@ -33,19 +33,19 @@
 
 <form  method="post" name="CreazionePe" id="creazioneP">
   <label for="nomeAtt">Nome attivit&agrave:</label>
-  <input type="text" name="nomeAtt" id="nomeAtt"/><br>
+  <input type="text" name="nomeAtt" id="nomeAtt"/><span id="vuotoN"></span><br>
   <label>Luogo evento:</label><br>
   <label for="indirizzo">Indirizzo:</label>
-  <input type="text" name="indirizzo" id="indirizzo"/><br>
+  <input type="text" name="indirizzo" id="indirizzo"/><span id="vuotoI"></span><br>
   <label for="Citta">Citt&agrave:</label>
-  <input type="text" name="Citta" id="Citta"/><br>
+  <input type="text" name="Citta" id="Citta"/><span id="vuotoCi"></span><br>
   <label for="categoria">Categoria:</label>
   <select id="categoria" name="categoria">
     <option value="lavoro">lavoro</option>
     <option value="scuola">scuola</option>
     <option value="operazione" >operazione</option>
     <option value="svago" selected>svago</option>
-  </select><br>
+  </select><span id="vuotoCa"></span><br>
   <div class="form-group ">
       <label class="control-label col-sm-2 requiredField" for="date">
        Date
@@ -55,16 +55,17 @@
         <div class="input-group-addon">
         </div>
         <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
+        <span id="vuotoDa"></span>
       </div>
     </div>
   </div>
   <br>
-  <label for="nomeAtt">Ora d'inizio:</label>
-  <input type="ora" name="ora" id="ora"/><br>
+  <label for="ora">Ora d'inizio:</label>
+  <input type="ora" name="ora" id="ora"/><span id="vuotoO"></span><br>
   <label for="nomeAtt">Durata in ore:</label>
-  <input type="number" min=1 name="durata" value=1 id="durata"/><br>
-  <label for="nomeAtt">Massimo di partecipanti:</label>
-  <input type="number" min=1 name="maxPers" value=1 id="maxPers"/><br>
+  <input type="number" min=1 name="durata" value=1 id="durata"/><span id="vuotoDu"></span><br>
+  <label for="maxPers">Massimo di partecipanti:</label>
+  <input type="number" min=1 name="maxPers" value=1 id="maxPers"/><span id="vuotoM"></span><br>
 
 
   
