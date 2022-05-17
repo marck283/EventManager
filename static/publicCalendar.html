@@ -47,9 +47,20 @@
     </div>
     <div id="eventGrouping">
       <div class="calendar-wrapper" id="calendarWrapper">
-        <button id="btnPrev" type="button">Prev</button>
-        <button id="btnNext" type="button">Next</button>
+        <button id="btnPrev" type="button">Precedente</button>
+        <button id="btnNext" type="button">Successivo</button>
         <div id="divCal"></div>
+        <div class="popup">
+          <span class="popuptext" id="myPopup">
+            <br />
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Elenco eventi</h5>
+                <div class="card-text" id="elencoEventi"></div>
+              </div>
+            </div>
+          </span>
+        </div>
       </div>
       <div id="eventLists"></div>
       <script>

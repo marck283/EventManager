@@ -1,19 +1,19 @@
 class Cal {
     constructor(divId) {
-        //Store div id
+        //Memorizza l'id dell'elemento HTML
         this.divId = divId;
-        // Days of week, starting on Sunday
+        // Giorni della settimana, a partire da Domenica
         this.DaysOfWeek = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
-        // Months, stating on January
+        // Mesi
         this.Months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio',
             'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-        // Set the current month, year
+        // Imposta il mese e l'anno corrente
         var d = new Date();
         this.currMonth = d.getMonth();
         this.currYear = d.getFullYear();
         this.currDay = d.getDate();
     }
-    // Goes to next month
+    // Porta al mese successivo
     nextMonth() {
         if (this.currMonth == 11) {
             this.currMonth = 0;
@@ -24,7 +24,7 @@ class Cal {
         }
         this.showcurr();
     }
-    // Goes to previous month
+    // Porta al mese precedente
     previousMonth() {
         if (this.currMonth == 0) {
             this.currMonth = 11;
@@ -35,87 +35,87 @@ class Cal {
         }
         this.showcurr();
     }
-    // Show current month
+    // Mostra il mese corrente
     showcurr() {
         this.showMonth(this.currYear, this.currMonth);
     }
-    // Show month (year, month)
+    // Funzione "mostra mese" (anno, mese)
     showMonth(y, m) {
         var d = new Date()
-            // First day of the week in the selected month
+            // Primo giorno della settimana nel mese selezionato
             , firstDayOfMonth = new Date(y, m, 1).getDay()
-            // Last day of the selected month
+            // Ultimo giorno del mese selezionato
             , lastDateOfMonth = new Date(y, m + 1, 0).getDate()
-            // Last day of the previous month
+            // Ultimo giorno del mese precedente
             , lastDayOfLastMonth = m == 0 ? new Date(y - 1, 11, 0).getDate() : new Date(y, m, 0).getDate();
         var html = '<table>';
-        // Write selected month and year
+        // Scrivi il mese ed il giorno selezionati
         html += '<thead><tr>';
         html += '<td colspan="7">' + this.Months[m] + ' ' + y + '</td>';
         html += '</tr></thead>';
-        // Write the header of the days of the week
+        // Scrivi l'intestazione dei giorni della settimana
         html += '<tr class="days">';
         for (var i of this.DaysOfWeek) {
             html += '<td>' + i + '</td>';
         }
         html += '</tr>';
-        // Write the days
+        // Scrivi i giorni
         var i = 1;
         do {
             var dow = new Date(y, m, i).getDay();
-            // If Sunday, start new row
+            // Inizia una nuova riga se Domenica
             if (dow == 0) {
                 html += '<tr>';
             }
 
-            // If not Sunday but first day of the month
-            // it will write the last days from the previous month
+            // Se non è domenica, ma è il primo giorno del mese
+            // scriverà gli ultimi giorni del mese precedente
             else if (i == 1) {
                 html += '<tr>';
                 var k = lastDayOfLastMonth - firstDayOfMonth + 1;
                 for (var j = 0; j < firstDayOfMonth; j++) {
-                    html += '<td class="not-current"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + k + '</a></td>';
+                    html += '<td class="not-current"><a href="#" onclick="myPopup(\"' + (m - 1) + '/' + k + '/' + y + '\");">' + k + '</a></td>';
                     k++;
                 }
             }
-            // Write the current day in the loop
+            // Scrivi il giorno corrente nel loop
             var chk = new Date();
             var chkY = chk.getFullYear();
             var chkM = chk.getMonth();
             if (chkY == this.currYear && chkM == this.currMonth && i == this.currDay) {
-                html += '<td class="today"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + i + '</a></td>';
+                html += '<td class="today"><a href="#" onclick="myPopup(\"' + m + '/' + i + '/' + y + '\");">' + i + '</a></td>';
             } else {
-                html += '<td class="normal"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + i + '</a></td>';
+                html += '<td class="normal"><a href="#" onclick="myPopup(\"' + m + '/' + i + '/' + y + '\");">' + i + '</a></td>';
             }
-            // If Saturday, closes the row
+            // Chiudi la riga se è sabato
             if (dow == 6) {
                 html += '</tr>';
             }
 
 
-            // If not Saturday, but last day of the selected month
-            // it will write the next few days from the next month
+            // Se non è sabato, ma è l'ultimo giorno del mese
+            // scriverà i giorni iniziali del prossimo mese
             else if (i == lastDateOfMonth) {
                 var k = 1;
                 for (dow; dow < 6; dow++) {
-                    html += '<td class="not-current"><a href="#" onclick="myPopup(' + m + "/" + i + "/" + y + ');">' + k + '</a></td>';
+                    html += '<td class="not-current"><a href="#" onclick="myPopup(\"' + (m + 1) + '/' + k + '/' + y + '\");">' + k + '</a></td>';
                     k++;
                 }
             }
             i++;
         } while (i <= lastDateOfMonth);
-        // Closes table
+        // Chiude la tabella
         html += '</table>';
-        // Write HTML to the div
+        // Scrivi il codice HTML nel div
         document.getElementById(this.divId).innerHTML = html;
     }
 }
-// On Load of the window
+// Al caricamento della finestra
 window.onload = function () {
-    // Start calendar
+    // Inizia il calendario
     var c = new Cal("divCal");
     c.showcurr();
-    // Bind next and previous button clicks
+    // Imposta i click sui bottoni "precedente" e "successivo"
     getId('btnNext').onclick = function () {
         c.nextMonth();
     };
@@ -123,23 +123,15 @@ window.onload = function () {
         c.previousMonth();
     };
 }
-// Get element by id
+// Ottieni l'elemento grazie al suo id
 function getId(id) {
     return document.getElementById(id);
 }
 
 var requestWithParams = async (id, day) => {
-    try {
-        //SOLO PER LO SVILUPPO IN LOCALE (da commentare quando si eseguirà il deploy su Heroku, sostituendola con l'hostname
-        //dell'applicazione su Heroku)
-        var HOST_NAME = 'http://localhost:3000';
-
-        var data = { giorno: day }, url = new URL(HOST_NAME + "/api/v1/eventiCalendarioPubblico");
-        for (let k in data) {
-            url.searchParams.append(k, data[k]);
-        }
-        fetch(url)
-        .then(response => response.json())
+    fetch("/api/v1/eventiCalendario?giorno=" + day)
+        .then(response => {
+            response.json(); console.log(response)})
         .then(response => {
             console.log(response);
             var category = response[0].category, firstIteration = true;
@@ -160,10 +152,7 @@ var requestWithParams = async (id, day) => {
                 }
                 document.getElementById(id).innerHTML += "</div></li></ul>";
             }
-        });
-    } catch (error) {
-        console.log(error);
-    }
+        }).catch(error => console.log(error));
 };
 
 function myPopup(day) {
