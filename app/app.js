@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+//Si recuperano i router per la gestione della creazione degli eventi
 const eventspublics = require('./eventipubblici.js');
 const eventspersonals = require('./eventiPersonali.js');
 
@@ -18,7 +19,7 @@ app.use('/', express.static('static'));
 
 
 
-
+//Si posizionano i middleware pre la gestione della creazione degli eventi
 app.use('/api/v1/creazioneEvento/pubblico', eventspublics);
 app.use('/api/v1/creazioneEvento/personale', eventspersonals);
 

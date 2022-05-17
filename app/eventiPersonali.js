@@ -1,19 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
-const Utente = require('./collezioni/utenti'); // get our mongoose model
-const EventPe = require('./collezioni/eventpersonal'); // get our mongoose model
+//si recuperano i modelli degli utenti e degli eventi personali
+const Utente = require('./collezioni/utenti');
+const EventPe = require('./collezioni/eventpersonal'); 
 
 
 router.post('', async (req, res) => {
 
     utent="628343ba57afadf76947e95a";
+    //Si cerca l'utente organizzatore dell'evento
     let utente = await Utente.findById(utent);
-
+    //Si crea un documento evento personale
 	let eventP = new EventPe({data: req.body.data, durata: req.body.durata, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatoreID: utent});
-    
+
+    //Si salva il documento personale
     eventP = await eventP.save();
+
+    //Si indica fra gli eventi creati dell'utente, l'evento appena creato
     utente.EventiCreati.push(eventP.id)
+
+    //Si salva il modulo dell'utente
     await utente.save();
 
 
@@ -23,10 +30,9 @@ router.post('', async (req, res) => {
     console.log('Evento salvato con successo');
 
     /**
-     * Link to the newly created resource is returned in the Location header
-     * https://www.restapitutorial.com/lessons/httpmethods.html
+     * Si posiziona il link alla risorsa appena creata nel header location della risposata
      */
-    res.location("/api/v1/PersonalEvent/" + eventId).status(201).send();
+    res.location("/api/v1/informazioniEvento/personale/" + eventId).status(201).send();
 });
 
 module.exports = router;

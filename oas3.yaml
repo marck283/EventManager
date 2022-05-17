@@ -20,7 +20,7 @@ paths:
               $ref: '#/components/schemas/PublicEvent'
       responses:
         '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
+          description: 'Evento pubblico creato. link alla locazione del evento'
           headers:
             'Location':
               schema:
