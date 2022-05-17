@@ -1,7 +1,7 @@
 var requestPu = () => {
     //reqObj.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     var inviare = true
-    if(document.getElementById("date").value==""){
+    if(ElencoDate==""){
         document.getElementById("vuotoDa").innerHTML="inserire una data";
         inviare=false;
     }else{
@@ -85,7 +85,7 @@ var requestPu = () => {
     
 
     
-        reqObj.send(JSON.stringify({ "data": document.getElementById("date").value, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "maxPers": document.getElementById("maxPers").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "maxPers": document.getElementById("maxPers").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
     }   
 
 };
@@ -93,7 +93,7 @@ var requestPu = () => {
 var requestPe = () => {
     //reqObj.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     var inviare = true
-    if(document.getElementById("date").value==""){
+    if(ElencoDate==""){
         document.getElementById("vuotoDa").innerHTML="inserire una data";
         inviare=false;
     }else{
@@ -174,10 +174,9 @@ var requestPe = () => {
                 
             }
     };
+        
     
-
-    
-        reqObj.send(JSON.stringify({ "data": document.getElementById("date").value, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value,"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
     }   
 
 };

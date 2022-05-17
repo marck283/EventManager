@@ -18,7 +18,7 @@
   <!-- Inline CSS based on choices in "Settings" tab -->
   <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
     
-
+  <script src="scripts/aggiungi_elimina_date.js"></script>
   <script src="scripts/richiesta_creazioneEvento.js"></script>
   
 
@@ -46,7 +46,7 @@
 
 <h1>Creazione evento personale</h1>
 
-<form  method="post" name="CreazionePe" id="creazioneP">
+
   <label for="nomeAtt">Nome attivit&agrave:</label>
   <input type="text" name="nomeAtt" id="nomeAtt"/><span id="vuotoN"></span><br>
   <label>Luogo evento:</label><br>
@@ -71,6 +71,10 @@
         </div>
         <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
         <span id="vuotoDa"></span>
+        <button onclick="aggiungi()">aggiungi_data</button>
+        <button onclick="reset()">reset_date</button>
+        <br>
+        <span id="dates"></span>
       </div>
     </div>
   </div>
@@ -83,7 +87,7 @@
 
 
   
-</form>
+
 
  <button onclick="requestPe()">Crea Evento</button>
 

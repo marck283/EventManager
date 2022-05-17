@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const Utente = require('./collezioni/Utenti'); // get our mongoose model
+const Utente = require('./collezioni/utenti'); // get our mongoose model
 const EventPe = require('./collezioni/eventpersonal'); // get our mongoose model
 
 
 router.post('', async (req, res) => {
 
-	let eventP = new EventPe({data: req.body.data, durata: req.body.durata, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatore: null});
+    utent="628343ba57afadf76947e95a";
+    let utente = await Utente.findById(utent);
+
+	let eventP = new EventPe({data: req.body.data, durata: req.body.durata, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatoreID: utent});
     
-	eventP = await eventP.save();
+    eventP = await eventP.save();
+    utente.EventiCreati.push(eventP.id)
+    await utente.save();
 
 
     
