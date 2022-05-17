@@ -46,10 +46,10 @@ paths:
                 type: string
               description: Link all'evento personale nuovo creato.
   
-  /listaEventi:
+  /listaEventiPublic:
     get:
       description: >-
-        Ottieni la lista di eventi.
+        Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
       summary: Visualizza gli eventi sotto forma di lista.
       responses:
         '200':
@@ -59,9 +59,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventsList'
+                  $ref: '#/components/schemas/PublicEventsList'
   
-  /eventiCalendario:
+  /eventiCalendarioPubblico:
     get:
       description: >-
         Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
@@ -80,13 +80,13 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#components/schemas/CalendarEvents'
+                $ref: '#components/schemas/PublicCalendarEvents'
           
 components:
   schemas:
     PublicEvent:
     PersonalEvent:
-    EventsList:
+    PublicEventsList:
       type: object
       required:
         - list
@@ -94,7 +94,7 @@ components:
         list:
           type: array
           description: 'La lista di eventi in formato JSON'
-    CalendarEvents:
+    PublicCalendarEvents:
       type: object
       required:
         - list

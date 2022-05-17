@@ -1,27 +1,30 @@
-var request = () => {
-    var reqObj = new XMLHttpRequest(), eventJSONList;
-    reqObj.responseType = "json";
-    reqObj.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            //Popola la pagina con i dati ricevuti
-            eventJSONList = this.response; //Cattura la risposta in formato JSON
-            for (var f of eventJSONList.listForCategory) {
-                document.getElementById("eventLists").innerHTML += "<h3>" + f.category + "</h3>\
-                <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row row-cols-4\"\
-                id=\"" + f.category + "\">";
-                for (var item of f.events) {
-                    document.getElementById(f.category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                    <h5 class=\"card-title\">" + item.name + "</h5>\
-                    <p class=\"card-body\">" + item.description + "</p>\
-                    <a href=\"#\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+var request = async () => {
+    try {
+        const response = await fetch("/api/v1/listaEventiPublic");
+        if (response.ok) {
+            var jsonResponse = await response.json();
+            var category = jsonResponse[0].category, firstIteration = true;
+            for (var f of jsonResponse) {
+                if (category !== f.category || firstIteration) {
+                    category = f.category;
+                    document.getElementById("eventLists").innerHTML += "<h3>" + category + "</h3>\
+                    <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row row-cols-4\"\
+                    id=\"" + category + "\">";
+                }
+                var jr1 = jsonResponse.filter(item => item.category === category);
+
+                //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
+                for (var object of jr1) {
+                    document.getElementById(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
+                    <h5 class=\"card-title\">" + object.name + "</h5>\
+                    <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
                 }
                 document.getElementById("eventLists").innerHTML += "</div></li></ul>";
             }
         }
-    };
-
-    reqObj.open("GET", "/api/v1/events", true); //Invio una richiesta asincrona al server Node.js
-    reqObj.send();
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 var showIfChecked = () => {
@@ -34,6 +37,7 @@ var showIfChecked = () => {
         request();
         document.getElementById("calendarWrapper").style.display = "none";
         document.getElementById("divCal").style.display = "none";
+        document.getElementById("myPopup").style.display = "none";
         document.getElementById("eventLists").style.display = "block";
     }
 };

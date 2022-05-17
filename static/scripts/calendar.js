@@ -3,7 +3,7 @@ class Cal {
         //Store div id
         this.divId = divId;
         // Days of week, starting on Sunday
-        this.DaysOfWeek = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+        this.DaysOfWeek = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
         // Months, stating on January
         this.Months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio',
             'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -55,8 +55,8 @@ class Cal {
         html += '</tr></thead>';
         // Write the header of the days of the week
         html += '<tr class="days">';
-        for (var i = 0; i < this.DaysOfWeek.length; i++) {
-            html += '<td>' + this.DaysOfWeek[i] + '</td>';
+        for (var i of this.DaysOfWeek) {
+            html += '<td>' + i + '</td>';
         }
         html += '</tr>';
         // Write the days
@@ -68,14 +68,13 @@ class Cal {
                 html += '<tr>';
             }
 
-
             // If not Sunday but first day of the month
             // it will write the last days from the previous month
             else if (i == 1) {
                 html += '<tr>';
                 var k = lastDayOfLastMonth - firstDayOfMonth + 1;
                 for (var j = 0; j < firstDayOfMonth; j++) {
-                    html += '<td class="not-current">' + k + '</td>';
+                    html += '<td class="not-current"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + k + '</a></td>';
                     k++;
                 }
             }
@@ -84,9 +83,9 @@ class Cal {
             var chkY = chk.getFullYear();
             var chkM = chk.getMonth();
             if (chkY == this.currYear && chkM == this.currMonth && i == this.currDay) {
-                html += '<td class="today">' + i + '</td>';
+                html += '<td class="today"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + i + '</a></td>';
             } else {
-                html += '<td class="normal">' + i + '</td>';
+                html += '<td class="normal"><a href="#" onclick="myPopup(' +  + m + "/" + i + "/" + y + ');">' + i + '</a></td>';
             }
             // If Saturday, closes the row
             if (dow == 6) {
@@ -99,7 +98,7 @@ class Cal {
             else if (i == lastDateOfMonth) {
                 var k = 1;
                 for (dow; dow < 6; dow++) {
-                    html += '<td class="not-current">' + k + '</td>';
+                    html += '<td class="not-current"><a href="#" onclick="myPopup(' + m + "/" + i + "/" + y + ');">' + k + '</a></td>';
                     k++;
                 }
             }
@@ -111,20 +110,67 @@ class Cal {
         document.getElementById(this.divId).innerHTML = html;
     }
 }
-  // On Load of the window
-  window.onload = function () {
+// On Load of the window
+window.onload = function () {
     // Start calendar
     var c = new Cal("divCal");
     c.showcurr();
     // Bind next and previous button clicks
     getId('btnNext').onclick = function () {
-      c.nextMonth();
+        c.nextMonth();
     };
     getId('btnPrev').onclick = function () {
-      c.previousMonth();
+        c.previousMonth();
     };
-  }
-  // Get element by id
-  function getId(id) {
+}
+// Get element by id
+function getId(id) {
     return document.getElementById(id);
-  }
+}
+
+var requestWithParams = async (id, day) => {
+    try {
+        //SOLO PER LO SVILUPPO IN LOCALE (da commentare quando si eseguirà il deploy su Heroku, sostituendola con l'hostname
+        //dell'applicazione su Heroku)
+        var HOST_NAME = 'http://localhost:3000';
+
+        var data = { giorno: day }, url = new URL(HOST_NAME + "/api/v1/eventiCalendarioPubblico");
+        for (let k in data) {
+            url.searchParams.append(k, data[k]);
+        }
+        fetch(url)
+        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            var category = response[0].category, firstIteration = true;
+            for (var f of response) {
+                if (category !== f.category || firstIteration) {
+                    category = f.category;
+                    document.getElementById(id).innerHTML += "<h3>" + category + "</h3>\
+                    <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row\"\
+                    id=\"" + category + "\">";
+                }
+                var jr1 = response.filter(item => item.category === category);
+
+                //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
+                for (var object of jr1) {
+                    document.getElementById(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
+                    <h5 class=\"card-title\">" + object.name + "</h5>\
+                    <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+                }
+                document.getElementById(id).innerHTML += "</div></li></ul>";
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+function myPopup(day) {
+    var popup = document.getElementById("myPopup");
+    document.getElementById("myPopup").style.display = "block";
+    //Nothing to see here... (inserire gli eventi del giorno selezionato
+    //trovati per richiesta GET e query secondo il parametro 'day', espresso come 'giorno/mese/anno').
+    requestWithParams("elencoEventi", day); //"day" is undefined. Why?
+    popup.classList.toggle("show");
+}
