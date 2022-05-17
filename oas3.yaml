@@ -8,68 +8,78 @@ info:
 servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
-paths:
-  /creazioneEvento/pubblico:
-    post:
-      description: 'Inviare le info per creare un nuovo evento pubblico.'
-      summary: Crea un nuovo evento pubblico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PublicEvent'
-      responses:
-        '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento pubblico nuovo creato.
 
-  /creazioneEvento/personale:
-    post:
-      description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonalEvent'
+
+paths:
+  /EventiPubblici/{idEvento}/Iscrizioni:
+     post:
+      description: Si richiede secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente (indicato con il token)
+      summary: Iscrizione ad un evento
+      parameters:
+      - name: Idevento
+        in: path
+        description: id dell'evento a cui si vuole iscrivere
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: token to be passed as a header
+        required: true
       responses:
         '201':
-          description: 'Evento personale creato. link alla locazione del evento'
+          description: 'Iscrizione all"evento. link all"evento'
           headers:
             'Location':
               schema:
                 type: string
-              description: Link all'evento personale nuovo creato.
-  
-  /listaEventi:
-    get:
-      description: >-
-        Ottieni la lista di eventi.
-      summary: Visualizza gli eventi
+              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
+              
+              
+                
+        '403':
+          description: 'il server ha deciso di non creare la risorsa'
+
+        '400':
+          description: 'Richiesta non capita dal server causa sintassi errata'
+
+  /EventiPersonali/{idEvento}/Iscrizioni:
+     post:
+      description: Si richiede secondo un certo id dell'evento personale, la creazione dell'iscrizione per quell'evento da parte del utente corrente (indicato con il token)
+      summary: Iscrizione ad un evento
+      parameters:
+      - name: Idevento
+        in: path
+        description: id dell'evento personale a cui si vuole iscrivere
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+        required: true
       responses:
-        '200':
-          description: 'Lista di eventi'
-          content:
-            application/json:
+        '201':
+          description: 'Iscrizione all"evento personale. link all"evento'
+          headers:
+            'Location':
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventsList'
-          
-components:
-  schemas:
-    PublicEvent:
-    PersonalEvent:
-    EventsList:
-      type: object
-      required:
-        - list
-      properties:
-        list:
-          type: array
-          description: 'La lista di eventi in formato JSON'
+                type: string
+              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
+              
+              
+                
+        '403':
+          description: 'il server ha deciso di non creare la risorsa, per motivi che possono essrer'
+
+        '400':
+          description: 'Richiesta non capita dal server causa sintassi errata'
+
+
+
+
+
+
+
+
+
