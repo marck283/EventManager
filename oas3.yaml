@@ -9,109 +9,59 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /creazioneEvento/pubblico:
-    post:
-      description: 'Inviare le info per creare un nuovo evento pubblico.'
-      summary: Crea un nuovo evento pubblico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PublicEvent'
-      responses:
-        '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento pubblico nuovo creato.
-
-  /creazioneEvento/personale:
-    post:
-      description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonalEvent'
-      responses:
-        '201':
-          description: 'Evento personale creato. link alla locazione del evento'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento personale nuovo creato.
-  
-  /listaEventi:
+  /EventiPubblici/{IDevento}:
+    description: >-
     get:
       description: >-
-        Ottieni la lista di eventi.
-      summary: Visualizza gli eventi
+        Ottieni informazioni riguardanti un evento pubblico specificandone l'ID.
+      summary: >-
+        Visualizza informazioni evento pubblico.
+      parameters:
+      - name: IDevento
+        in: path
+        description: >-
+          ID dell'evento pubblico che si intende visualizzare.
+        required: true
       responses:
         '200':
-          description: 'Lista di eventi'
+          description: >-
+            Elenco informazioni evento pubblico.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventsList'
-
-  /informazioniEvento/pubblico:
+                $ref: '#/components/schemas/EventoPubblico'
+            example:
+        '404':
+          description: >-
+            Non esiste alcun evento pubblico associato all'ID specificato.
+  /EventiPersonale/{IDevento}:
+    description: >-
     get:
       description: >-
-        Ottieni informazioni evento pubblico.
-      summary: Visualizza informazioni evento pubblico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventID'
+        Ottieni informazioni riguardanti un evento personale specificandone l'ID.
+      summary: >-
+        Visualizza informazioni evento personale.
+      parameters:
+      - name: IDevento
+        in: path
+        description: >-
+          ID dell'evento personale che si intende visualizzare.
+        required: true
       responses:
         '200':
-          description: 'Elenco informazioni evento pubblico'
+          description: >-
+            Elenco informazioni evento personale.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PublicEvent'
-
-  /informazioniEvento/personale:
-    get:
-      description: >-
-        Ottieni informazioni evento personale.
-      summary: Visualizza informazioni evento personale
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventID'
-      responses:
-        '200':
-          description: 'Elenco informazioni evento personale'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PersonalEvent'
-
+                $ref: '#/components/schemas/EventoPersonale'
+            example:
+        '404':
+          description: >-
+            Non esiste alcun evento personale associato all'ID specificato.
 components:
   schemas:
     EventID:
       type: string
-    PublicEvent:
-    PersonalEvent:
-    EventsList:
-      type: object
-      required:
-        - list
-      properties:
-        list:
-          type: array
-          description: 'La lista di eventi in formato JSON'
+    EventoPubblico:
+    EventoPersonale:
