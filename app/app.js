@@ -1,4 +1,5 @@
 const express = require('express');
+const EventoPubblico = require('./iscrizione_evento_pubblico')
 const app = express();
 
 
@@ -15,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
+
+app.use('/api/v1/EventiPubblici', EventoPubblico);
 
 
 /* Default 404 handler */

@@ -38,42 +38,21 @@ paths:
               
                 
         '403':
-          description: 'il server ha deciso di non creare la risorsa'
-
-        '400':
-          description: 'Richiesta non capita dal server causa sintassi errata'
-
-  /EventiPersonali/{idEvento}/Iscrizioni:
-     post:
-      description: Si richiede secondo un certo id dell'evento personale, la creazione dell'iscrizione per quell'evento da parte del utente corrente (indicato con il token)
-      summary: Iscrizione ad un evento
-      parameters:
-      - name: Idevento
-        in: path
-        description: id dell'evento personale a cui si vuole iscrivere
-        required: true
-        schema:
-          type: string
-      - name: x-access-token
-        in: header
-        description: token di autenticazione dell'utente
-        required: true
-      responses:
-        '201':
-          description: 'Iscrizione all"evento personale. link all"evento'
-          headers:
-            'Location':
+          description: "il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
+          content:
+            application/json:
               schema:
                 type: string
-              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
-              
-              
-                
-        '403':
-          description: 'il server ha deciso di non creare la risorsa, per motivi che possono essrer'
+                description: "messaggio d'errore"
 
-        '400':
-          description: 'Richiesta non capita dal server causa sintassi errata'
+        '500':
+          description: "Problema con l'accedere alla risorse richieste con l'iscrizione"
+            content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+
 
 
 
