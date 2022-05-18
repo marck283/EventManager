@@ -20,8 +20,8 @@ app.use('/', express.static('static'));
 
 
 //Si posizionano i middleware pre la gestione della creazione degli eventi
-app.use('/api/v1/creazioneEvento/pubblico', eventspublics);
-app.use('/api/v1/creazioneEvento/personale', eventspersonals);
+app.use('/api/v1/EventiPubblici', eventspublics);
+app.use('/api/v1/EventiPersonali', eventspersonals);
 
 
 /* Default 404 handler */

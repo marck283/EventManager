@@ -68,9 +68,12 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
         document.getElementById("vuotoCi").innerHTML="";
     }
     if(inviare==true){
+
+        token = "djfbjhekjhf"
         var reqObj = new XMLHttpRequest(), eventJSONList;
-        reqObj.open("Post", "/api/v1/creazioneEvento/pubblico", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.open("Post", "/api/v1/EventiPubblici", true); //Invio una richiesta asincrona al server Node.js
         reqObj.setRequestHeader('Content-Type', 'application/json');
+        reqObj.setRequestHeader('x-access-token', token);
         //reqObj.responseType = "json";
         reqObj.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 201) {
@@ -79,6 +82,14 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
                 locazione=this.getResponseHeader("Location")
                 document.getElementById("loc").innerHTML = locazione
+                
+            }
+            if (this.readyState === 4 && this.status === 500) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+                locazione=this.getResponseHeader("Location")
+                document.getElementById("loc").innerHTML = eventJSONList.error
                 
             }
     };
@@ -163,9 +174,11 @@ var requestPe = () => {
         document.getElementById("vuotoCi").innerHTML="";
     }
     if(inviare==true){
+        token = "djfbjhekjhf"
         var reqObj = new XMLHttpRequest(), eventJSONList;
-        reqObj.open("Post", "/api/v1/creazioneEvento/personale", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.open("Post", "/api/v1/EventiPersonali", true); //Invio una richiesta asincrona al server Node.js
         reqObj.setRequestHeader('Content-Type', 'application/json');
+        reqObj.setRequestHeader('x-access-token', token);
         //reqObj.responseType = "json";
         reqObj.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 201) {
@@ -174,6 +187,14 @@ var requestPe = () => {
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
                 locazione=this.getResponseHeader("Location")
                 document.getElementById("loc").innerHTML = locazione
+                
+            }
+            if (this.readyState === 4 && this.status === 500) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+                locazione=this.getResponseHeader("Location")
+                document.getElementById("loc").innerHTML = eventJSONList.error
                 
             }
     };
