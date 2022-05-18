@@ -15,8 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', express.static('static'));
 
 var eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
-app.use("/api/v1/listaEventiPublic", eventList);
-app.use("/api/v1/eventiCalendarioPubblico", calendarEvents);
+app.use("/api/v1/EventiPubblici", eventList);
+app.use("/api/v1/GiorniCalendarioPubblico", calendarEvents);
 
 app.get("/static", (req, res) => {
     //Forse bisogna differenziare per la richiesta di risorse statiche differenti?

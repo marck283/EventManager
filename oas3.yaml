@@ -9,48 +9,23 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /creazioneEvento/pubblico:
-    post:
-      description: 'Inviare le info per creare un nuovo evento pubblico.'
-      summary: Crea un nuovo evento pubblico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PublicEvent'
-      responses:
-        '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento pubblico nuovo creato.
-
-  /creazioneEvento/personale:
-    post:
-      description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonalEvent'
-      responses:
-        '201':
-          description: 'Evento personale creato. link alla locazione del evento'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento personale nuovo creato.
   
-  /listaEventiPublic:
+  /EventiPubblici:
     get:
       description: >-
         Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
       summary: Visualizza gli eventi sotto forma di lista.
+      parameters:
+      - name: eventiNonIscritto
+        in: query
+        description: >-
+          Valore per capire se richiedere o meno la lista di eventi a cui l'utente non è ancora iscritto. In altro caso, sarà richiesta la lista di tutti gli eventi pubblici.
+        schema:
+          type: boolean
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+        required: true
       responses:
         '200':
           description: 'Lista di eventi ricevuta.'
@@ -59,42 +34,46 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PublicEventsList'
+                  $ref: '#/components/schemas/EventoPubblico'
+        
+        '401':
+          description: "Non è possibile accedere alla risorsa richiesta perché l'utente non è autenticato."
   
-  /eventiCalendarioPubblico:
+  /GiorniCalendarioPubblico/{data}:
     get:
       description: >-
         Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
       summary: Visualizza gli eventi nel calendario pubblico.
       parameters:
-        - name: day
-          in: query
-          description: Il giorno selezionato dall'utente
-          schema:
-            type: integer
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: Lista di eventi per il giorno selezionato ritornata con successo.
           content:
             application/json:
             schema:
-              type: array
-              items:
-                $ref: '#components/schemas/PublicCalendarEvents'
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: La data selezionata
+                list:
+                  type: array
+                  description: La lista di eventi per la data selezionata
+                  items:
+                    $ref: '#components/schemas/EventoPubblico'
+        
+        '404':
+          description: "Non esiste alcun evento legato alla risorsa richiesta."
           
 components:
   schemas:
-    PublicEvent:
-    PersonalEvent:
-    PublicEventsList:
-      type: object
-      required:
-        - list
-      properties:
-        list:
-          type: array
-          description: 'La lista di eventi in formato JSON'
-    PublicCalendarEvents:
+    EventoPubblico:
       type: object
       required:
         - list

@@ -1,27 +1,8 @@
-var request = async () => {
+var request = () => {
     try {
-        const response = await fetch("/api/v1/listaEventiPublic");
-        if (response.ok) {
-            var jsonResponse = await response.json();
-            var category = jsonResponse[0].category, firstIteration = true;
-            for (var f of jsonResponse) {
-                if (category !== f.category || firstIteration) {
-                    category = f.category;
-                    document.getElementById("eventLists").innerHTML += "<h3>" + category + "</h3>\
-                    <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row row-cols-4\"\
-                    id=\"" + category + "\">";
-                }
-                var jr1 = jsonResponse.filter(item => item.category === category);
-
-                //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
-                for (var object of jr1) {
-                    document.getElementById(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                    <h5 class=\"card-title\">" + object.name + "</h5>\
-                    <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
-                }
-                document.getElementById("eventLists").innerHTML += "</div></li></ul>";
-            }
-        }
+        fetch("/api/v1/EventiPubblici")
+        .then(resp => resp.json())
+        .then(resp => manipulateDom(resp));
     } catch (error) {
         console.log(error);
     }
@@ -37,7 +18,61 @@ var showIfChecked = () => {
         request();
         document.getElementById("calendarWrapper").style.display = "none";
         document.getElementById("divCal").style.display = "none";
-        document.getElementById("myPopup").style.display = "none";
+        document.getElementById("myPopup1").style.display = "none";
         document.getElementById("eventLists").style.display = "block";
+    }
+};
+
+var manipulateDom = (response, id = "eventLists") => {
+    var category = response[0].category, firstIteration = true;
+    for (var f of response) {
+        if (category !== f.category || firstIteration) {
+            firstIteration = false;
+            category = f.category;
+            var h3 = document.createElement("h3");
+            h3.textContent = category;
+            document.getElementById(id).appendChild(h3);
+
+            var ul = document.createElement("ul");
+            ul.classList = "list-group list-group-flush";
+            document.getElementById(id).appendChild(ul);
+
+            var li = document.createElement("li");
+            li.className = "list-group-item";
+            ul.appendChild(li);
+
+            var row = document.createElement("div");
+            if(id === "eventLists") {
+                row.classList ="row row-cols-4";
+            } else {
+                row.className = "row";
+            }
+            row.setAttribute("id", category);
+            li.appendChild(row);
+            var jr1 = response.filter(item => item.category === category);
+
+            //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
+            for (var object of jr1) {
+                var col = document.createElement("div");
+                col.className = "col";
+                row.appendChild(col);
+
+                var card = document.createElement("div");
+                card.className = "card";
+                col.appendChild(card);
+
+                var cardTitle = document.createElement("h5");
+                cardTitle.className = "card-title";
+                cardTitle.textContent = object.name;
+                card.appendChild(cardTitle);
+
+                var objectId = document.createElement("a");
+                objectId.href = object.id;
+                objectId.classList = "btn btn-primary";
+                objectId.setAttribute("name", "cardButton");
+                objectId.textContent = "Maggiori informazioni...";
+                card.appendChild(objectId);
+            }
+        }
     }
 };
