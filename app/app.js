@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const registrato = require('./registrazione.js');
+
+
 
 
 
@@ -14,6 +17,10 @@ app.use(express.urlencoded({ extended: true }));
  * Serve front-end static files
  */
 app.use('/', express.static('static'));
+
+
+
+app.use('/api/v1/Utenti',registrato);
 
 
 

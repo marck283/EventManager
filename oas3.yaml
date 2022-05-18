@@ -9,67 +9,66 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /creazioneEvento/pubblico:
+  /Utenti:
     post:
-      description: 'Inviare le info per creare un nuovo evento pubblico.'
-      summary: Crea un nuovo evento pubblico
+      description: Passiamo i dati necessari per la registrazione dell'utente corrente 
+      summary: Registrazione dell'utente nel sistema
       requestBody:
+        description: Vengono indicati quali siano i dati per la registrazione dell'utente corrente nel sistema
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PublicEvent'
+              $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
+          description: Utente registrato nel sistema. link alla locazione dell'utente
           headers:
             'Location':
               schema:
                 type: string
-              description: Link all'evento pubblico nuovo creato.
-
-  /creazioneEvento/personale:
-    post:
-      description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonalEvent'
-      responses:
-        '201':
-          description: 'Evento personale creato. link alla locazione del evento'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento personale nuovo creato.
-  
-  /listaEventi:
-    get:
-      description: >-
-        Ottieni la lista di eventi.
-      summary: Visualizza gli eventi
-      responses:
-        '200':
-          description: 'Lista di eventi'
+              description: Link all'utente nuovo registrato.
+        '409':
+          description: Si ha avuto un conflitto con i dati per la registrazione. Per esempio non si pososno avere nel sistema due utenti con la stessa email
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventsList'
-          
+                type: string
+                description: "messaggio d'errore"
+        '400': 
+          description: Problema con i dati inseriti 
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+
+        '500':
+          description: Errore nel server
+            content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
 components:
   schemas:
-    PublicEvent:
-    PersonalEvent:
-    EventsList:
+    User:
       type: object
-      required:
-        - list
+      description: Oggetto che descrive un certo utente 
+       required:
+      - password
+      - email
+      - nome
       properties:
-        list:
-          type: array
-          description: 'La lista di eventi in formato JSON'
+        password:
+          type: string
+          description: password dell'utente
+        email:
+          type: string
+          description: email utente
+        nome:
+          type: number
+          description: nome dell'utente
+        telefono:
+          type: string
+          description: numero di telefono dell'utente
+
