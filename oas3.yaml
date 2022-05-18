@@ -70,6 +70,35 @@ paths:
         
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
+  
+  /GiorniCalendarioPersonale/{data}:
+    get:
+      description: >-
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario personale.
+      summary: Visualizza gli eventi nel calendario personale
+      parameters:
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Lista di eventi personali per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: Il giorno selezionato
+                list:
+                  type: array
+                  description: La lista di eventi personali per la data selezionata.
+                  items:
+                    $ref: '#components/schemas/EventoPersonale'
           
 components:
   schemas:
@@ -81,3 +110,12 @@ components:
         list:
           type: array
           description: 'La lista di eventi per il giorno selezionato in formato JSON'
+    
+    EventoPersonale:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          description: 'La lista di eventi personali per il giorno selezionato in formato JSON'
