@@ -50,7 +50,7 @@ paths:
         description: Il giorno selezionato dall'utente
         required: true
         schema:
-          type: integer
+          type: string
       responses:
         '200':
           description: Lista di eventi per il giorno selezionato ritornata con successo.
