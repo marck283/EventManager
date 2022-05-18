@@ -2,11 +2,57 @@
 <html>
 
 <head>
+
+<script> 
+
+	var TokenUser="";
+
+</script>
+
+
+<script src="/scripts/impostazionePrimaPagina.js"></script>
+
+<script src="/scripts/autenticazione.js"></script>
+
+
+
+
+
 </head>
+
+
+
+
+
+
 
 <body>
 
-<h1>EventManager</h1>
+
+
+
+<form name="loginform" id="loginform">
+  <span>Logged User:</span>
+  <span id="loggedUser"></span><br>
+  <label for="loginEmail">Email:</label>
+  <input name="email" required type="email" id="loginEmail"/><br>
+  <label for="loginPassword">Password:</label>
+  <input name="pass" required type="password" id="loginPassword"/><br>
+  <button type="button" onclick="login()">LogIn</button>
+</form>
+
+
+<h1 id="usr"></h1>
+
+
+
+
+
+
+
+
+
+
 
 </body>
 
