@@ -22,6 +22,8 @@ paths:
         description: >-
           ID dell'evento pubblico che si intende visualizzare.
         required: true
+        schema:
+          type: string
       responses:
         '200':
           description: >-
@@ -34,7 +36,7 @@ paths:
         '404':
           description: >-
             Non esiste alcun evento pubblico associato all'ID specificato.
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     description: >-
     get:
       description: >-
@@ -47,6 +49,8 @@ paths:
         description: >-
           ID dell'evento personale che si intende visualizzare.
         required: true
+        schema:
+          type: string
       responses:
         '200':
           description: >-
