@@ -30,11 +30,47 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                         str2=strin[1][1];
                     }
                     if(Number(str1)<=23 && Number(str1)>=0 && Number(str2)<=59 && Number(str2)>=0){
-                        document.getElementById("vuotoO").innerHTML="";
+                        var d = new Date()
+                    
+                        if(Number(str1) >= d.getHours()){
+                            
+                         
+                            if(Number(str1) == d.getHours()){
+
+                                
+
+                                if(Number(str2) >= d.getMinutes()){
+
+                                        document.getElementById("vuotoO").innerHTML="";
+
+
+                                }else{
+                                    document.getElementById("vuotoO").innerHTML="Inserisci orario corretto";
+                                    inviare=false;
+
+                                }
+
+
+                            }else{
+
+                                document.getElementById("vuotoO").innerHTML="";
+
+                            }
+
+
+                        }else{
+                            document.getElementById("vuotoO").innerHTML="Inserisci orario corretto";
+                            inviare=false;
+
+                        }
+     
+
                     }else{
                         document.getElementById("vuotoO").innerHTML="formato ora: hh:mm";
                         inviare=false;
                     }
+
+
                     
                 }else{
                     document.getElementById("vuotoO").innerHTML="formato ora: hh:mm";
@@ -144,7 +180,40 @@ var requestPe = () => {
                         str2=strin[1][1];
                     }
                     if(Number(str1)<=23 && Number(str1)>=0 && Number(str2)<=59 && Number(str2)>=0){
-                        document.getElementById("vuotoO").innerHTML="";
+                        var d = new Date()
+                    
+                        if(Number(str1) >= d.getHours()){
+                            
+                         
+                            if(Number(str1) == d.getHours()){
+
+                                
+
+                                if(Number(str2) >= d.getMinutes()){
+
+                                        document.getElementById("vuotoO").innerHTML="";
+
+
+                                }else{
+                                    document.getElementById("vuotoO").innerHTML="Inserisci orario corretto";
+                                    inviare=false;
+
+                                }
+
+
+                            }else{
+
+                                document.getElementById("vuotoO").innerHTML="";
+
+                            }
+
+
+                        }else{
+                            document.getElementById("vuotoO").innerHTML="Inserisci orario corretto";
+                            inviare=false;
+
+                        }
+
                     }else{
                         document.getElementById("vuotoO").innerHTML="formato ora: hh:mm";
                         inviare=false;

@@ -13,14 +13,7 @@ var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l
     yy = date.getFullYear()
     dats = data.split('/');
 
-    console.log(mm);
-    
-    
-    console.log(dd);
-    console.log(yy);
-
-
-
+   
     if(dats[0][0] == '0'){
 
       mese = dats[0][1];
@@ -44,10 +37,7 @@ var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l
 
     anno = dats[2]
 
-    console.log(mese);
-    
-    console.log(giorno);
-    console.log(anno);
+   
 
     if(yy > Number(anno)){
 
@@ -82,25 +72,25 @@ var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l
     }
 
     
-
-
+    if(ElencoDate.includes(document.getElementById("date").value) == false){
     
-    dateEv.push(document.getElementById("date").value);
-    ElencoDate = "";
-    for(elem of dateEv){
-      if(ElencoDate==""){
-        ElencoDate = elem;
-      }else{
-        ElencoDate = ElencoDate + "," + elem;
+      dateEv.push(document.getElementById("date").value);
+      ElencoDate = "";
+      for(elem of dateEv){
+        if(ElencoDate==""){
+          ElencoDate = elem;
+        }else{
+          ElencoDate = ElencoDate + "," + elem;
+        }
+      
+          
       }
-    
-        
-    }
 
 
 
-    
-    document.getElementById("dates").innerHTML="[Date: " + ElencoDate + "]"; //Mostro l'elenco sulla pagina
+      
+      document.getElementById("dates").innerHTML="[Date: " + ElencoDate + "]"; //Mostro l'elenco sulla pagina
+  }
 
   }
 
