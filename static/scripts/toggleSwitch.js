@@ -1,11 +1,27 @@
-var request = () => {
-    try {
-        fetch("/api/v1/EventiPubblici")
-        .then(resp => resp.json())
-        .then(resp => manipulateDom(resp));
-    } catch (error) {
-        console.log(error);
-    }
+var request = () => {    
+    fetch("/api/v1/EventiPubblici/", {
+        method: 'GET',
+        headers: {
+            'x-access-token': token
+        }
+    })
+    .then(resp => {
+        switch(resp.status) {
+            case 200: {
+                resp.json().then(resp => manipulateDom(resp))
+                break;
+            }
+
+            case 404: {
+                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                break;
+            }
+
+            default: {
+                console.log(resp.status);
+            }
+        }
+    }).catch(error => console.log(error));
 };
 
 var showIfChecked = () => {
@@ -24,10 +40,10 @@ var showIfChecked = () => {
 };
 
 var manipulateDom = (response, id = "eventLists") => {
-    var category = response[0].category, firstIteration = true;
+    var categories = [];
     for (var f of response) {
-        if (category !== f.category || firstIteration) {
-            firstIteration = false;
+        if (categories.find(e => e === f.category) == undefined) {
+            categories.push(f.category);
             category = f.category;
             var h3 = document.createElement("h3");
             h3.textContent = category;

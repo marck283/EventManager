@@ -88,7 +88,12 @@ class Cal {
             } else {
                 html += '<td class="normal">';
             }
-            html += '<a href="#" id="' + i + '">' + i + '</a></td>';
+            if (i < 10) {
+                html += '<a href="#" id="0' + i + '">' + i + '</a></td>';
+            } else {
+                html += '<a href="#" id="' + i + '">' + i + '</a></td>';
+            }
+
 
             // Se sabato, chiude la riga
             if (dow == 6) {
@@ -113,7 +118,11 @@ class Cal {
         document.getElementById(this.divId).innerHTML = html;
 
         for (var elem of document.getElementsByTagName("a")) {
-            elem.onclick = myPopup.bind(this, [(m + 1).toString(), elem.getAttribute("id"), y.toString()]);
+            if (m < 9) {
+                elem.onclick = myPopup.bind(this, ["0" + (m + 1).toString(), elem.getAttribute("id"), y.toString()]);
+            } else {
+                elem.onclick = myPopup.bind(this, [(m + 1).toString(), elem.getAttribute("id"), y.toString()]);
+            }
         }
     }
 }
@@ -127,6 +136,7 @@ window.onload = function () {
     getId('btnPrev').onclick = function () {
         c.previousMonth();
     };
+    getId("myPopup1").style.display = "none";
 }
 
 function getId(id) {
@@ -134,38 +144,62 @@ function getId(id) {
 }
 
 var requestWithParams = async (id, day) => {
-    try {
-        fetch("/api/v1/GiorniCalendarioPubblico/" + day.join("-"))
-        .then(resp => resp.json())
-        .then(resp => {
-            console.log(resp);
-            var category = resp[0].category, firstIteration = true;
-            for (var f of resp) {
-                if (category !== f.category || firstIteration) {
-                    category = f.category;
-                    document.getElementById(id).innerHTML += "<h3>" + category + "</h3>\
-                    <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row\"\
-                    id=\"" + category + "\">";
-                }
-                var jr1 = resp.filter(item => item.category === category);
+    getId(id).innerHTML = "";
+    getId(id).style.display = "block";
 
-                //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
-                for (var object of jr1) {
-                    document.getElementById(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                    <h5 class=\"card-title\">" + object.name + "</h5>\
-                    <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
-                }
-                document.getElementById(id).innerHTML += "</div></li></ul>";
+    fetch("/api/v1/GiorniCalendarioPubblico/" + day.join("-"), {
+        method: 'GET',
+        headers: {
+            'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
+        }
+    }).then(resp => {
+        switch(resp.status) {
+            case 200: {
+                resp.json().then(resp => {
+                    var categories = []; //Lista di categorie già stampate a video
+                    for (var f of resp.eventi) { //f è il singolo evento
+                        if (categories.find(e => e == f.category) === undefined) {
+                            //Se non trovo la categoria dell'evento considerato all'interno dell'array delle categorie
+                            //già stampate a video, la inserisco e stampo tutti gli eventi ad essa appartenenti tale categoria.
+                            categories.push(f.category);
+                            category = f.category;
+                            getId(id).innerHTML += "<h3>" + category + "</h3>\
+                        <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row\"\
+                        id=\"" + category + "\">";
+    
+                            var jr1 = resp.eventi.filter(item => item.category === category);
+    
+                            //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
+                            for (var object of jr1) {
+                                getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
+                        <h5 class=\"card-title\">" + object.name + "</h5>\
+                        <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+                            }
+                            getId(id).innerHTML += "</div></li></ul>";
+                        }
+                    }
+                })
+                break;
             }
-        });
-    } catch (error) {
-        console.log(error);
-    }
+
+            case 404: {
+                //Se non esiste alcun evento per la data selezionata
+                resp.json().then(resp => getId(id).textContent = resp.error);
+                break;
+            }
+
+            default: {
+                //Per mostrare altri errori nella Developer Console del browser
+                console.log(resp.status);
+            }
+        }
+    }).catch(error => console.log(error));
 };
 
 function myPopup(day) {
     var popup = document.getElementById("myPopup1");
     document.getElementById("myPopup1").style.display = "block";
+
     //Niente da vedere qui... (inserire gli eventi del giorno selezionato
     //trovati per richiesta GET e query secondo il parametro 'day', espresso come 'giorno/mese/anno').
     requestWithParams("elencoEventi", day);

@@ -35,8 +35,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/EventoPubblico'
         
-        '401':
-          description: "Non è possibile accedere alla risorsa richiesta perché l'utente non è autenticato."
+        '404':
+          description: "Non vi sono eventi organizzati."
   
   /GiorniCalendarioPubblico/{data}:
     get:
@@ -69,8 +69,6 @@ paths:
                   description: La lista di eventi per la data selezionata
                   items:
                     $ref: '#components/schemas/EventoPubblico'
-        '401':
-          description: "Non è possibile accedere alla risorsa richiesta perché l'utente non è autenticato."
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
