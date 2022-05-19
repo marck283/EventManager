@@ -1,71 +1,215 @@
 openapi: 3.0.0
+
 info:
+
   version: '1.0'
   title: "EventManager"
   description: API per gestire eventi.
   license:
     name: MIT
+
 servers:
+
   - url: http://localhost:8000/api/v1
     description: Localhost
+
 paths:
+
   /EventiPubblici/{IDevento}:
-    description: >-
     get:
-      description: >-
-        Ottieni informazioni riguardanti un evento pubblico specificandone l'ID.
-      summary: >-
-        Visualizza informazioni evento pubblico.
+      description: 'Ottieni informazioni riguardanti un evento pubblico specificandone l''ID.'
+      summary: 'Visualizza informazioni evento pubblico.'
       parameters:
       - name: IDevento
         in: path
-        description: >-
-          ID dell'evento pubblico che si intende visualizzare.
+        description: 'ID dell''evento pubblico che si intende visualizzare.'
         required: true
         schema:
           type: string
       responses:
         '200':
-          description: >-
-            Elenco informazioni evento pubblico.
+          description: 'Elenco informazioni evento pubblico.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventoPubblico'
-            example:
         '404':
-          description: >-
-            Non esiste alcun evento pubblico associato all'ID specificato.
-  /EventiPersonali/{IDevento}:
-    description: >-
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+
+  /EventiPersonale/{IDevento}:
     get:
-      description: >-
-        Ottieni informazioni riguardanti un evento personale specificandone l'ID.
-      summary: >-
-        Visualizza informazioni evento personale.
+      description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
+      summary: 'Visualizza informazioni evento personale.'
       parameters:
       - name: IDevento
         in: path
-        description: >-
-          ID dell'evento personale che si intende visualizzare.
+        description: 'ID dell''evento personale che si intende visualizzare.'
         required: true
         schema:
           type: string
       responses:
         '200':
-          description: >-
-            Elenco informazioni evento personale.
+          description: 'Elenco informazioni evento personale.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventoPersonale'
-            example:
         '404':
-          description: >-
-            Non esiste alcun evento personale associato all'ID specificato.
+          description: 'Non esiste alcun evento personale associato all''ID specificato.'
+
 components:
+
   schemas:
-    EventID:
-      type: string
+
     EventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta un evento pubblico.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+        maxPers:
+          type: number
+          description: 'Numero massimo di iscritti ammessi all''evento.'
+        partecipanti:
+          type: array
+          items:
+            type: string
+          description: 'Nomi dei partecipanti iscritti all''evento.'
+
     EventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta un evento personale.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+
+    FormEventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento pubblico.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      - luogoEv
+      - maxPers
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        maxPers:
+          type: integer
+          description: 'Numero massimo delle persone.'
+
+    FormEventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento personale.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento.'
+        ora:
+          type: string
+          description: 'Ora dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento.'
+            citta:
+              type: string
+              description: 'Città dell''Evento.'
