@@ -1,60 +1,54 @@
 openapi: 3.0.0
+
 info:
+
   version: '1.0'
   title: "EventManager"
   description: API per gestire eventi.
   license:
     name: MIT
+
 servers:
+
   - url: http://localhost:8000/api/v1
     description: Localhost
-paths:
-  /Utenti:
-    post:
-      description: Passiamo i dati necessari per la registrazione dell'utente corrente 
-      summary: Registrazione dell'utente nel sistema
-      requestBody:
-        description: Vengono indicati quali siano i dati per la registrazione dell'utente corrente nel sistema
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        '201':
-          description: Utente registrato nel sistema. link alla locazione dell'utente
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'utente nuovo registrato.
-        '409':
-          description: Si ha avuto un conflitto con i dati per la registrazione. Per esempio non si pososno avere nel sistema due utenti con la stessa email
-          content:
-            application/json:
-              schema:
-                type: string
-                description: "messaggio d'errore"
-        '400': 
-          description: Problema con i dati inseriti 
-          content:
-            application/json:
-              schema:
-                type: string
-                description: "messaggio d'errore"
 
+paths:
+
+  /Utenti/Me:
+    get:
+      summary: 'Visualizzazione profilo utente'
+      description: 'Si passano i dati necessari alla visualizzazione del profilo dell''utente corrente.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco informazioni profilo utente.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Non esiste alcun utente associato all''ID specificato.'
         '500':
-          description: Errore nel server
-            content:
+          description: 'Errore nel server.'
+          content:
             application/json:
               schema:
                 type: string
-                description: "messaggio d'errore"
+                description: 'Messaggio di errore.'
+
 components:
+
   schemas:
+
     User:
       type: object
       description: Oggetto che descrive un certo utente 
-       required:
+      required:
       - password
       - email
       - nome
@@ -71,4 +65,3 @@ components:
         telefono:
           type: string
           description: numero di telefono dell'utente
-
