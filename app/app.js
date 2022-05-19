@@ -1,7 +1,7 @@
-const express = require('express');
-const app = express();
-
-
+var personalEvents = require("./events/elencoEventiPersonali.js");
+var express = require('express');
+var path = require('path');
+var app = express();
 
 /**
  * Configure Express.js parsing middleware
@@ -15,7 +15,11 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
+app.use("/api/v1/GiorniCalendarioPersonale", personalEvents);
 
+app.get("/static", (req, res) => {
+    res.status(200).sendFile(path.resolve("./calendarioPersonale.html"));
+});
 
 /* Default 404 handler */
 app.use((req, res) => {
