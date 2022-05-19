@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 
-const authentication = require('./authentication.js');
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 
@@ -26,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use('/api/v1/authentications', autenticato);
+app.use('/api/v1/Utenti',registrato);
 
 
 app.use('/', express.static('static'));
@@ -36,7 +36,7 @@ app.use(tokenChecker);
 
 
 
-app.use('/api/v1/Utenti',registrato);
+
 
 
 
