@@ -52,7 +52,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
     }catch (error){
         console.log(error);
-        res.status(500).json({ error: "Errore accesso al DB"}).send();
+        res.status(500).json({ error: "Errore nel server"}).send();
 
 
 
