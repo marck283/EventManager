@@ -25,7 +25,6 @@ paths:
       - name: x-access-token
         in: header
         description: Token di autenticazione dell'utente
-        required: true
       responses:
         '200':
           description: 'Lista di eventi ricevuta.'
@@ -54,7 +53,6 @@ paths:
       - name: x-access-token
         in: header
         description: Token di autenticazione dell'utente
-        required: true
       responses:
         '200':
           description: Lista di eventi per il giorno selezionato ritornata con successo.
