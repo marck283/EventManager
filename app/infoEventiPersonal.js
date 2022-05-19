@@ -8,9 +8,10 @@ router.get('/:id', async(req, res) => {
     let organizzatore = await Users.findById(eventoPersonale.organizzatoreID);
 
     res.status(200).json({
-        nomeEv: eventoPersonale.nomeAtt,
+        nomeAtt: eventoPersonale.nomeAtt,
         categoria: eventoPersonale.categoria,
         data: eventoPersonale.data,
+        ora: eventoPersonale.ora,
         durata: eventoPersonale.durata,
         luogoEv: eventoPersonale.luogoEv,
         organizzatore: organizzatore.nome,

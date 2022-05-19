@@ -13,9 +13,10 @@ router.get('/:id', async(req, res) => {
     }
 
     res.status(200).json({
-        nomeEv: eventoPubblico.nomeAtt,
+        nomeAtt: eventoPubblico.nomeAtt,
         categoria: eventoPubblico.categoria,
         data: eventoPubblico.data,
+        ora: eventoPubblico.ora,
         durata: eventoPubblico.durata,
         luogoEv: eventoPubblico.luogoEv,
         organizzatore: organizzatore.nome,
