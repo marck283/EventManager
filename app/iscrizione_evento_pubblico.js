@@ -10,10 +10,10 @@ const EventP = require('./collezioni/eventpubblic');
 router.post('/:id/Iscrizioni', async (req, res) => {
 
     utent="6284b7742a0699866a636979";
-    console.log(req.header('x-access-token'))
+    console.log(req.header('x-access-token'));
 
 
-    id_evento=req.params.id
+    id_evento=req.params.id;
 
     
     try{
