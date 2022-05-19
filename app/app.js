@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const authentication = require('./authentication.js');
-const Utenti = require('./users.js');
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 
@@ -23,13 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1/authentications', autenticato);
 
 
-
+app.use('/', express.static('static'));
 
 app.use(tokenChecker);
 
-app.use('/', express.static('static'));
 
-app.use('/api/v1/Utenti',Utenti)
+
+
 
 /* Default 404 handler */
 app.use((req, res) => {

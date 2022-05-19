@@ -17,19 +17,37 @@ var login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),
     })
-    .then((resp) => resp.json())
-    .then(function(data) { 
+    .then((resp) => {
 
-        TokenUser = data.token;
-        console.log(data);
+        console.log(resp);
+        /**if(resp.status==403 || resp.status==400){
+            document.getElementById("iscrizione").innerHTML = "non iscritto";
+        }
+        if(resp.status==201){
+            document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
+        }
+        */
         
-        document.getElementById("usr").innerHTML = data.self;
-        impostPagina();
+        if(resp.status==404){
+            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message});
 
+        }
+        if(resp.status==403){
+            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message});
+            
+            
+
+        }
+        if(resp.status==200){
+            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message; 
+            TokenUser = data.token;
+            
+            impostPagina();});
+
+        }
         
-        return;
-    })
-    .catch( error => console.error(error) ); // If there is any error you will catch them here
+
+        return;}).catch( error => console.error(error) ); // If there is any error you will catch them here
 
 
 
