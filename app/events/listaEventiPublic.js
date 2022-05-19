@@ -15,7 +15,7 @@ router.get("", async (req, res) => {
     if(events.length > 0) {
         res.status(200).json(eventsMap.map(events, "layoutPubblico.html", token));
     } else {
-        res.status(404).json({"error": "Errore. Non sono presenti eventi organizzati."});
+        res.status(404).json({"error": "Non sono presenti eventi organizzati."});
     }
 });
 

@@ -22,7 +22,7 @@ router.get("/:data", async (req, res) => {
         obj.data = str;
         res.status(200).json(obj);
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento legato alla risorsa richiesta."});
+        res.status(404).json({"error": "Non esiste alcun evento programmato per la giornata selezionata."});
     }
 });
 
