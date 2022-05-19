@@ -1,6 +1,12 @@
 const express = require('express');
 const app = express();
+
+const authentication = require('./authentication.js');
+const autenticato = require('./authentication.js');
+const tokenChecker = require('./tokenChecker.js');
+
 const registrato = require('./registrazione.js');
+
 
 
 
@@ -16,7 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 /**
  * Serve front-end static files
  */
+
+
+
+app.use('/api/v1/authentications', autenticato);
+
+
 app.use('/', express.static('static'));
+
+app.use(tokenChecker);
+
+
 
 
 
@@ -27,7 +43,7 @@ app.use('/api/v1/Utenti',registrato);
 /* Default 404 handler */
 app.use((req, res) => {
     res.status(404);
-    res.json({ error: 'Not found' });
+    res.json({ error: 'Non Trovato' });
 });
 
 
