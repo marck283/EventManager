@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
+
 const authentication = require('./authentication.js');
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
+
+const registrato = require('./registrazione.js');
+
+
+
 
 
 
@@ -27,6 +33,10 @@ app.use('/', express.static('static'));
 app.use(tokenChecker);
 
 
+
+
+
+app.use('/api/v1/Utenti',registrato);
 
 
 
