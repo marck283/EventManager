@@ -2,7 +2,89 @@ dateEv = []; //array delle  date possiibli dell'evento
 ElencoDate = ""; //L'elenco delle date a cui un evento si è programmato
 var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l'evento all'elenco "ElencoDate" e all'array "dataEv"
   
+
+
+    
   if(document.getElementById("date").value !=""){
+    data = document.getElementById("date").value;
+    date = new Date();
+    mm = date.getMonth() + 1
+    dd = date.getDate()
+    yy = date.getFullYear()
+    dats = data.split('/');
+
+    console.log(mm);
+    
+    
+    console.log(dd);
+    console.log(yy);
+
+
+
+    if(dats[0][0] == '0'){
+
+      mese = dats[0][1];
+
+    }else{
+
+      mese = dats[0];
+
+    }
+
+
+    if(dats[1][0] == '0'){
+
+      giorno = dats[1][1];
+
+    }else{
+
+      giorno = dats[1];
+
+    }
+
+    anno = dats[2]
+
+    console.log(mese);
+    
+    console.log(giorno);
+    console.log(anno);
+
+    if(yy > Number(anno)){
+
+      return;
+
+    }else{
+
+   
+      if(yy == Number(anno)){
+       
+
+        if(mm > Number(mese)){
+          return;
+         
+        }else{
+
+          if(mm == Number(mese)){
+         
+
+            if(dd > Number(giorno)){
+              return;
+
+            }
+
+          }
+       
+
+        }
+
+      }
+
+    }
+
+    
+
+
+    
     dateEv.push(document.getElementById("date").value);
     ElencoDate = "";
     for(elem of dateEv){

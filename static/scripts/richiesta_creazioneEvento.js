@@ -92,6 +92,14 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 document.getElementById("loc").innerHTML = eventJSONList.error
                 
             }
+            if (this.readyState === 4 && this.status === 404) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+                locazione=this.getResponseHeader("Location")
+                document.getElementById("loc").innerHTML = eventJSONList.error
+                
+            }
     };
     
 
@@ -190,6 +198,14 @@ var requestPe = () => {
                 
             }
             if (this.readyState === 4 && this.status === 500) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+                locazione=this.getResponseHeader("Location")
+                document.getElementById("loc").innerHTML = eventJSONList.error
+                
+            }
+            if (this.readyState === 4 && this.status === 404) {
                 console.log("ricevuto")
                 //Popola la pagina con i dati ricevuti
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
