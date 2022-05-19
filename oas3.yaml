@@ -15,7 +15,7 @@ servers:
 
 paths:
 
-  /Utenti/Me:
+  /Utenti/me:
     get:
       summary: 'Visualizzazione profilo utente'
       description: 'Si passano i dati necessari alla visualizzazione del profilo dell''utente corrente.'
