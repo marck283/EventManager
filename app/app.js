@@ -4,6 +4,11 @@ var app = express();
 const infoEventoPubblico = require('./infoEventiPublic');
 const infoEventoPersonale = require('./infoEventiPersonal');
 
+
+//Si recuperano i router per la gestione della creazione degli eventi
+const eventspublics = require('./eventipubblici.js');
+const eventspersonals = require('./eventiPersonali.js');
+
 var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
 
 const eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
@@ -13,6 +18,7 @@ const tokenChecker = require('./tokenChecker.js');
 const infoUtente = require('./infoUtente.js');
 
 const registrato = require('./registrazione.js');
+
 
 /**
  * Configure Express.js parsing middleware
@@ -40,6 +46,11 @@ app.use("/api/v1/EventiPubblici", eventList);
 app.use("/api/v1/GiorniCalendarioPubblico", calendarEvents);
 
 app.use(tokenChecker);
+
+//Si posizionano i middleware pre la gestione della creazione degli eventi
+app.use('/api/v1/EventiPubblici', eventspublics);
+app.use('/api/v1/EventiPersonali', eventspersonals);
+
 
 /* Default 404 handler */
 app.use((req, res) => {
