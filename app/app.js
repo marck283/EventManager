@@ -1,3 +1,4 @@
+var eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -14,7 +15,6 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use('/', express.static('static'));
 
-var eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
 app.use("/api/v1/EventiPubblici", eventList);
 app.use("/api/v1/GiorniCalendarioPubblico", calendarEvents);
 
