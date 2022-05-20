@@ -15,6 +15,52 @@ servers:
 
 paths:
 
+  /EventiPubblici/{IDevento}:
+    get:
+      description: 'Ottieni informazioni riguardanti un evento pubblico specificandone l''ID.'
+      summary: 'Visualizza informazioni evento pubblico.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento pubblico che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Elenco informazioni evento pubblico.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+        '500':
+          description: 'Si è verificato un errore lato server'
+
+  /EventiPersonale/{IDevento}:
+    get:
+      description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
+      summary: 'Visualizza informazioni evento personale.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento personale che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Elenco informazioni evento personale.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPersonale'
+        '404':
+          description: 'Non esiste alcun evento personale associato all''ID specificato.'
+        '500':
+          description: 'Si è verificato un errore lato server'
+
   /Utenti/me:
     get:
       summary: 'Visualizzazione profilo utente'
@@ -58,7 +104,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventoPubblico'
+                  $ref: '#/components/schemas/JSONEventoPubblico'
         
         '404':
           description: "Non vi sono eventi organizzati."
@@ -80,7 +126,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventoPersonale'
+                  $ref: '#/components/schemas/JSONEventoPersonale'
         
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
@@ -118,7 +164,7 @@ paths:
                   type: array
                   description: La lista di eventi per la data selezionata
                   items:
-                    $ref: '#/components/schemas/EventoPubblico'
+                    $ref: '#/components/schemas/JSONEventoPubblico'
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
@@ -155,7 +201,7 @@ paths:
                   type: array
                   description: La lista di eventi personali per la data selezionata.
                   items:
-                    $ref: '#/components/schemas/EventoPersonale'
+                    $ref: '#/components/schemas/JSONEventoPersonale'
         '401':
           description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
 
@@ -206,6 +252,7 @@ paths:
                 description: "messaggio d'errore"
 components:
   schemas:
+  
     User:
       type: object
       description: Oggetto che descrive un certo utente 
@@ -226,7 +273,8 @@ components:
         telefono:
           type: string
           description: numero di telefono dell'utente
-    EventoPubblico:
+
+    JSONEventoPubblico:
       type: object
       required:
         - list
@@ -235,7 +283,7 @@ components:
           type: array
           description: 'La lista di eventi per il giorno selezionato in formato JSON'
     
-    EventoPersonale:
+    JSONEventoPersonale:
       type: object
       required:
         - list
@@ -243,3 +291,156 @@ components:
         list:
           type: array
           description: 'La lista di eventi personali per il giorno selezionato in formato JSON'
+
+    EventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta un evento pubblico.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+        maxPers:
+          type: number
+          description: 'Numero massimo di iscritti ammessi all''evento.'
+        partecipanti:
+          type: array
+          items:
+            type: string
+          description: 'Nomi dei partecipanti iscritti all''evento.'
+
+    EventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta un evento personale.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+
+    FormEventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento pubblico.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      - luogoEv
+      - maxPers
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        maxPers:
+          type: integer
+          description: 'Numero massimo delle persone.'
+
+    FormEventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento personale.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento.'
+        ora:
+          type: string
+          description: 'Ora dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento.'
+            citta:
+              type: string
+              description: 'Città dell''Evento.'

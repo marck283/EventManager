@@ -1,8 +1,11 @@
-
-var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
 var express = require('express');
 var path = require('path');
 var app = express();
+const infoEventoPubblico = require('./infoEventiPublic');
+const infoEventoPersonale = require('./infoEventiPersonal');
+
+var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
+
 const eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
 
 const autenticato = require('./authentication.js');
@@ -17,13 +20,15 @@ const registrato = require('./registrazione.js');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 /**
  * Serve front-end static files
  */
 
 app.use('/api/v1/authentications', autenticato);
 app.use('/', express.static('static'));
+
+app.use('/api/v1/EventiPubblici', infoEventoPubblico);
+app.use('/api/v1/EventiPersonali', infoEventoPersonale);
 
 app.use('/api/v1/Utenti', infoUtente); //Da cambiare sotto tokenChecker
 
