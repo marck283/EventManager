@@ -3,7 +3,7 @@ const router = express.Router();
 
 //si recuperano i modelli degli utenti e degli eventi pubblici
 const Utente = require('./collezioni/utenti'); // get our mongoose model
-const EventP = require('./collezioni/eventpublic'); // get our mongoose model
+const EventP = require('./collezioni/eventPublic'); // get our mongoose model
 
 
 router.post('', async (req, res) => {

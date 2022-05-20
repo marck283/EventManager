@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const EventPub = require('./collezioni/eventpublic');
+const EventPub = require('./collezioni/eventPublic');
 const Users = require('./collezioni/utenti');
 
 router.get('/:id', async(req, res) => {
