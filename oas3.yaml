@@ -1,11 +1,15 @@
 openapi: 3.0.0
+
 info:
+
   version: '1.0'
   title: "EventManager"
   description: API per gestire eventi.
   license:
     name: MIT
+
 servers:
+
   - url: http://localhost:8000/api/v1
     description: Localhost
 
@@ -34,9 +38,6 @@ paths:
               schema:
                 type: string
               description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
-              
-              
-                
         '403':
           description: "il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
           content:
@@ -52,13 +53,579 @@ paths:
               schema:
                 type: string
                 description: "messaggio d'errore"
+         
+
+  /EventiPubblici:
+    post:
+      description: Inviare le info per creare un nuovo evento pubblico.
+      summary: Crea un nuovo evento pubblico
+      parameters:
+      - name: x-access-token
+        in: header
+        description: Token d'autenticazione
+        required: true
+      requestBody:
+        description: Vengono indicati quali siano i dati per la programmazione di un certo evento pubblico
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicEvent'
+      responses:
+        '201':
+          description: 'Evento pubblico creato. link alla locazione del evento pubblico'
+          headers:
+            'Location':
+              schema:
+                type: string
+                description: Link all'evento pubblico nuovo creato.
+        '500':
+          description: Errore al'interno del server (probabilmente riguardante il DB)
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+        '403':
+          description: Non permessa l'operazione dal server (probabilmente perchè l'organizzatore ha già creato quell'evento)
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+              
+              
+              
+                
+        
 
 
+  /EventiPersonali:
+    post:
+      description: Inviare le info per creare un nuovo evento personale.
+      summary: Crea un nuovo evento pubblico
+      parameters:
+      - name: x-access-token
+        in: header
+        description: Token d'autenticazione
+        required: true
+      requestBody:
+        description: Vengono indicati quali siano i dati per la programmazione di un certo evento personale
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalEvent'
+      responses:
+        '201':
+          description: 'Evento personale creato. link alla locazione del evento personale'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'evento personale nuovo creato.
+        '500':
+          description: Errore al'interno del server (probabilmente riguardante il DB)
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+
+  /EventiPubblici/{IDevento}:
+    get:
+      description: 'Ottieni informazioni riguardanti un evento pubblico specificandone l''ID.'
+      summary: 'Visualizza informazioni evento pubblico.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento pubblico che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Elenco informazioni evento pubblico.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+        '500':
+          description: 'Si è verificato un errore lato server'
+
+  /EventiPersonale/{IDevento}:
+    get:
+      description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
+      summary: 'Visualizza informazioni evento personale.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento personale che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Elenco informazioni evento personale.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPersonale'
+        '404':
+          description: 'Non esiste alcun evento personale associato all''ID specificato.'
+        '500':
+          description: 'Si è verificato un errore lato server'
+
+  /Utenti/me:
+    get:
+      summary: 'Visualizzazione profilo utente'
+      description: 'Si passano i dati necessari alla visualizzazione del profilo dell''utente corrente.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco informazioni profilo utente.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Non esiste alcun utente associato all''ID specificato.'
+        '500':
+          description: 'Errore nel server.'
+          content:
+            application/json:
+              schema:
+                type: string
+                description: 'Messaggio di errore.'
+
+  /EventiPubblici:
+    get:
+      description: >-
+        Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
+      summary: Ottiene gli eventi sotto forma di lista.
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: 'Lista di eventi ricevuta.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+        
+        '404':
+          description: "Non vi sono eventi organizzati."
+  
+  /EventiPersonali:
+    get:
+      description: >-
+        Permette di ottenere la lista di eventi personali.
+      summary: Ottiene gli eventi personali sotto forma di lista.
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: 'Lista di eventi ricevuta.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+        
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+        
+        '404':
+          description: "Non vi sono eventi organizzati."
+  
+  /GiorniCalendarioPubblico/{data}:
+    get:
+      description: >-
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
+      summary: Visualizza gli eventi nel calendario pubblico.
+      parameters:
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+      responses:
+        '200':
+          description: Lista di eventi per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: La data selezionata
+                list:
+                  type: array
+                  description: La lista di eventi per la data selezionata
+                  items:
+                    $ref: '#/components/schemas/Evento'
+
+        '404':
+          description: "Non esiste alcun evento legato alla risorsa richiesta."
+  
+  /GiorniCalendarioPersonale/{data}:
+    get:
+      description: >-
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario personale.
+      summary: Visualizza gli eventi nel calendario personale
+      parameters:
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: string
+
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+        required: true
+      responses:
+        '200':
+          description: Lista di eventi personali per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: Il giorno selezionato
+                list:
+                  type: array
+                  description: La lista di eventi personali per la data selezionata.
+                  items:
+                    $ref: '#/components/schemas/Evento'
+        '401':
+          description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
+
+        '404':
+          description: "Non esiste alcun evento legato alla risorsa richiesta."
+         
 
 
+  /Utenti:
+    post:
+      description: Passiamo i dati necessari per la registrazione dell'utente corrente 
+      summary: Registrazione dell'utente nel sistema
+      requestBody:
+        description: Vengono indicati quali siano i dati per la registrazione dell'utente corrente nel sistema
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Utente registrato nel sistema. link alla locazione dell'utente
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'utente nuovo registrato.
+        '409':
+          description: Si ha avuto un conflitto con i dati per la registrazione. Per esempio non si pososno avere nel sistema due utenti con la stessa email
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+        '400': 
+          description: Problema con i dati inseriti 
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+        '500':
+          description: Errore nel server
+            content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
 
+components:
+  schemas:
+    PublicEvent:
+      description: Oggetto dell'evento personale
+      type: object
+      required:
+      - data
+      - ora
+      - durata
+      - maxPers
+      - categoria
+      - nomeAtt
+      - luogoEv
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento o lista date dell''evento'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento'
+        durata:
+          type: number
+          description: 'Durata dell''evento'
+        maxPers:
+          type: integer
+          description: 'Numero massimo delle persone'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
+            
+    PersonalEvent:
+      description: Oggetto dell'evento personale
+      type: object
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento'
+        ora:
+          type: string
+          description: 'Ora dell''evento'
+        durata:
+          type: number
+          description: 'Durata dell''evento'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento'
+  
+    User:
+      type: object
+      description: Oggetto che descrive un certo utente 
+       required:
+      - password
+      - email
+      - nome
+      properties:
+        password:
+          type: string
+          description: password dell'utente
+        email:
+          type: string
+          description: email utente
+        nome:
+          type: number
+          description: nome dell'utente
+        telefono:
+          type: string
+          description: numero di telefono dell'utente
 
+    Evento:
+      type: object
+      required:
+        - id
+        - name
+        - category
+      properties:
+        id:
+          type: string
+          description: 'La parte di URL che indica il nome del file destinazione e la query'
+        name:
+          type: string
+          description: 'Il nome dell'attività'
+        category:
+          type: string
+          description: "La categoria in cui l'attività è classificata"N'
+    
+   
 
+    EventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta un evento pubblico.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+        maxPers:
+          type: number
+          description: 'Numero massimo di iscritti ammessi all''evento.'
+        partecipanti:
+          type: array
+          items:
+            type: string
+          description: 'Nomi dei partecipanti iscritti all''evento.'
 
+    EventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta un evento personale.'
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+
+    FormEventoPubblico:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento pubblico.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      - luogoEv
+      - maxPers
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
+        maxPers:
+          type: integer
+          description: 'Numero massimo delle persone.'
+
+    FormEventoPersonale:
+      type: object
+      description: 'Oggetto che rappresenta il form di creazione di un evento personale.'
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      properties:
+        data:
+          type: string
+          format: date
+          description: 'Data dell''evento.'
+        ora:
+          type: string
+          description: 'Ora dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''Evento.'
+            citta:
+              type: string
+              description: 'Città dell''Evento.'
 
 
