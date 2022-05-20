@@ -1,25 +1,16 @@
-
 var express = require('express');
 var path = require('path');
 var app = express();
-const infoEventoPubblico = require('./infoEventiPublic');
-const infoEventoPersonale = require('./infoEventiPersonal');
-
-
-
-//Si recuperano i router per la gestione della creazione degli eventi
-const eventspublics = require('./eventipubblici.js');
-const eventspersonals = require('./eventiPersonali.js');
-
-var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
-
-const eventList = require("./events/listaEventiPublic.js"), calendarEvents = require("./events/elencoEventiPublic.js");
-
+const EventoPubblico = require('./events/EventiPub.js');
+const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
+const EventoPersonale = require('./events/EventiPers.js');
+const calendarEventsPers = require("./events/elencoEventiPersonali.js")
+const calendarEventsPub = require("./events/elencoEventiPublic.js");
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
-const infoUtente = require('./infoUtente.js');
+const Utente = require('./Utenti.js');
+const registrato = require('./registrazione.js')
 
-const registrato = require('./registrazione.js');
 
 
 /**
@@ -31,29 +22,20 @@ app.use(express.urlencoded({ extended: true }));
 /**
  * Serve front-end static files
  */
-
-app.use('/api/v1/authentications', autenticato);
 app.use('/', express.static('static'));
-
-app.use('/api/v1/EventiPubblici', infoEventoPubblico);
-app.use('/api/v1/EventiPersonali', infoEventoPersonale);
-
-app.use('/api/v1/Utenti', infoUtente); //Da cambiare sotto tokenChecker
-
+app.use('/api/v1/authentications', autenticato);
+app.use('/api/v1/EventiPubblici', EventoPubblico);
+app.use("/api/v1/GiorniCalendarioPubblico", calendarEventsPub);
 app.use('/api/v1/Utenti', registrato);
-app.use("/api/v1/GiorniCalendarioPersonale", personalEvents);
-app.use("/api/v1/EventiPersonali", personalList);
-
-app.use("/api/v1/EventiPubblici", eventList);
-app.use("/api/v1/GiorniCalendarioPubblico", calendarEvents);
 
 app.use(tokenChecker);
 
-//Si posizionano i middleware pre la gestione della creazione degli eventi
-app.use('/api/v1/EventiPubblici', eventspublics);
-app.use('/api/v1/EventiPersonali', eventspersonals);
+//********************************************************** attenzione *********************
+app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
+app.use('/api/v1/EventiPersonali', EventoPersonale);
+app.use('/api/v1/Utenti', Utente);
+app.use("/api/v1/GiorniCalendarioPersonale", calendarEventsPers);
 
-app.use('/api/v1/EventiPubblici', EventoPubblico);
 
 
 /* Default 404 handler */

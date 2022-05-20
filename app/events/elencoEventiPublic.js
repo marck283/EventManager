@@ -1,5 +1,5 @@
 const express = require('express');
-const eventPublic = require('../collezioni/eventPublic');
+const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
@@ -9,10 +9,29 @@ router.get("/:data", async (req, res) => {
     var events;
     var obj = {}, token = req.header("x-access-token");
 
-    var user = "6284b7742a0699866a636979"; //Utente di prova
+    
+
+    var autenticato = false;
+    var user = "";
+
+    if (token) {
+        
+    
+        jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded){
+
+            if (!err) {
+                var user = decoded.id;
+                autenticato = true;
+            }
+
+        });
+
+
+    }
+    
 
     events = await eventPublic.find({});
-    if(token != "") {
+    if(autenticato) {
         //Eseguire la funzione verify, poi cercare gli eventi nel database
         events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined && e.data.includes(str)); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
     }

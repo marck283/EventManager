@@ -12,7 +12,10 @@ var request = () => {
                 break;
             }
 
-            case 401:
+            case 401: {
+                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                break;
+            }
             case 404: {
                 resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
                 break;

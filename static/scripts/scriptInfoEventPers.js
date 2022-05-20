@@ -13,7 +13,7 @@ try{
     console.log(error);
 }
 
-fetch('../api/v1/EventiPersonali/'+id)
+fetch('../api/v1/EventiPersonali/'+id, {method: 'GET', headers: {'x-access-token': token}})
     .then(resp => {
         switch(resp.status){
             case 200: {
@@ -42,6 +42,7 @@ fetch('../api/v1/EventiPersonali/'+id)
                 break;
             }
             case 404:
+            case 401:
             case 500: {
                 resp.json().then(data => {document.getElementById("error").textContent = data.error});
                 break;

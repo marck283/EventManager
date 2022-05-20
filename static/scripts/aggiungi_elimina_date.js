@@ -6,11 +6,11 @@ var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l
 
     
   if(document.getElementById("date").value !=""){
-    data = document.getElementById("date").value;
-    date = new Date();
-    mm = date.getMonth() + 1
-    dd = date.getDate()
-    yy = date.getFullYear()
+    var data = document.getElementById("date").value;
+    var date = new Date();
+    var mm = date.getMonth() + 1
+    var dd = date.getDate()
+    var yy = date.getFullYear()
     dats = data.split('/');
 
    

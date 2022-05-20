@@ -45,7 +45,6 @@ paths:
               schema:
                 type: string
                 description: "messaggio d'errore"
-
         '500':
           description: "Problema con l'accedere alla risorse richieste con l'iscrizione"
             content:
@@ -85,19 +84,14 @@ paths:
               schema:
                 type: string
                 description: "messaggio d'errore"
-        '403':
-          description: Non permessa l'operazione dal server (probabilmente perchè l'organizzatore ha già creato quell'evento)
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
           content:
             application/json:
               schema:
                 type: string
                 description: "messaggio d'errore"
               
-              
-              
-                
-        
-
 
   /EventiPersonali:
     post:
@@ -124,6 +118,13 @@ paths:
               description: Link all'evento personale nuovo creato.
         '500':
           description: Errore al'interno del server (probabilmente riguardante il DB)
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
           content:
             application/json:
               schema:
@@ -175,6 +176,8 @@ paths:
           description: 'Non esiste alcun evento personale associato all''ID specificato.'
         '500':
           description: 'Si è verificato un errore lato server'
+        '401':
+          description: 'Non si è autenticati'
 
   /Utenti/me:
     get:
@@ -205,7 +208,7 @@ paths:
   /EventiPubblici:
     get:
       description: >-
-        Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
+       Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto. In caso di assenza del token dell'utente, la lista degli eventi mostrata comprenderà tutti gli eventi pubblici organizzati.
       summary: Ottiene gli eventi sotto forma di lista.
       parameters:
       - name: x-access-token
