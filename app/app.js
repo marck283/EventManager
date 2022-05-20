@@ -1,4 +1,4 @@
-var personalEvents = require("./events/elencoEventiPersonali.js");
+var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
 var express = require('express');
 var path = require('path');
 var app = express();
@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', express.static('static'));
 
 app.use("/api/v1/GiorniCalendarioPersonale", personalEvents);
+app.use("/api/v1/EventiPersonali", personalList);
 
 app.get("/static", (req, res) => {
     res.status(200).sendFile(path.resolve("./calendarioPersonale.html"));
