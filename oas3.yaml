@@ -1,3 +1,4 @@
+
 openapi: 3.0.0
 info:
   version: '1.0'
@@ -9,67 +10,208 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 paths:
-  /creazioneEvento/pubblico:
-    post:
-      description: 'Inviare le info per creare un nuovo evento pubblico.'
-      summary: Crea un nuovo evento pubblico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PublicEvent'
-      responses:
-        '201':
-          description: 'Evento pubblico creato. link alla locazione della risorsa'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento pubblico nuovo creato.
-
-  /creazioneEvento/personale:
-    post:
-      description: 
-        Crea un nuovo evento.
-      summary: Crea un nuovo evento
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonalEvent'
-      responses:
-        '201':
-          description: 'Evento personale creato. link alla locazione del evento'
-          headers:
-            'Location':
-              schema:
-                type: string
-              description: Link all'evento personale nuovo creato.
   
-  /listaEventi:
+  /EventiPubblici:
     get:
       description: >-
-        Ottieni la lista di eventi.
-      summary: Visualizza gli eventi
+        Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
+      summary: Ottiene gli eventi sotto forma di lista.
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
       responses:
         '200':
-          description: 'Lista di eventi'
+          description: 'Lista di eventi ricevuta.'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventsList'
-          
+                  $ref: '#/components/schemas/EventoPubblico'
+        
+        '404':
+          description: "Non vi sono eventi organizzati."
+  
+  /EventiPersonali:
+    get:
+      description: >-
+        Permette di ottenere la lista di eventi personali.
+      summary: Ottiene gli eventi personali sotto forma di lista.
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: 'Lista di eventi ricevuta.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventoPersonale'
+        
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+        
+        '404':
+          description: "Non vi sono eventi organizzati."
+  
+  /GiorniCalendarioPubblico/{data}:
+    get:
+      description: >-
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
+      summary: Visualizza gli eventi nel calendario pubblico.
+      parameters:
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+      responses:
+        '200':
+          description: Lista di eventi per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: La data selezionata
+                list:
+                  type: array
+                  description: La lista di eventi per la data selezionata
+                  items:
+                    $ref: '#/components/schemas/EventoPubblico'
+
+        '404':
+          description: "Non esiste alcun evento legato alla risorsa richiesta."
+  
+  /GiorniCalendarioPersonale/{data}:
+    get:
+      description: >-
+        Ottieni la lista di eventi del giorno selezionato tramite il calendario personale.
+      summary: Visualizza gli eventi nel calendario personale
+      parameters:
+      - name: data
+        in: path
+        description: Il giorno selezionato dall'utente
+        required: true
+        schema:
+          type: string
+
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+        required: true
+      responses:
+        '200':
+          description: Lista di eventi personali per il giorno selezionato ritornata con successo.
+          content:
+            application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  description: Il giorno selezionato
+                list:
+                  type: array
+                  description: La lista di eventi personali per la data selezionata.
+                  items:
+                    $ref: '#/components/schemas/EventoPersonale'
+        '401':
+          description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
+
+        '404':
+          description: "Non esiste alcun evento legato alla risorsa richiesta."
+         
+
+
+  /Utenti:
+    post:
+      description: Passiamo i dati necessari per la registrazione dell'utente corrente 
+      summary: Registrazione dell'utente nel sistema
+      requestBody:
+        description: Vengono indicati quali siano i dati per la registrazione dell'utente corrente nel sistema
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Utente registrato nel sistema. link alla locazione dell'utente
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'utente nuovo registrato.
+        '409':
+          description: Si ha avuto un conflitto con i dati per la registrazione. Per esempio non si pososno avere nel sistema due utenti con la stessa email
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+        '400': 
+          description: Problema con i dati inseriti 
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+
+        '500':
+          description: Errore nel server
+            content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
 components:
   schemas:
-    PublicEvent:
-    PersonalEvent:
-    EventsList:
+    User:
+      type: object
+      description: Oggetto che descrive un certo utente 
+       required:
+      - password
+      - email
+      - nome
+      properties:
+        password:
+          type: string
+          description: password dell'utente
+        email:
+          type: string
+          description: email utente
+        nome:
+          type: number
+          description: nome dell'utente
+        telefono:
+          type: string
+          description: numero di telefono dell'utente
+    EventoPubblico:
       type: object
       required:
         - list
       properties:
         list:
           type: array
-          description: 'La lista di eventi in formato JSON'
+          description: 'La lista di eventi per il giorno selezionato in formato JSON'
+    
+    EventoPersonale:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          description: 'La lista di eventi personali per il giorno selezionato in formato JSON'
+
+
