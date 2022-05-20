@@ -1,16 +1,46 @@
-
 openapi: 3.0.0
+
 info:
+
   version: '1.0'
   title: "EventManager"
   description: API per gestire eventi.
   license:
     name: MIT
+
 servers:
+
   - url: http://localhost:8000/api/v1
     description: Localhost
+
 paths:
-  
+
+  /Utenti/me:
+    get:
+      summary: 'Visualizzazione profilo utente'
+      description: 'Si passano i dati necessari alla visualizzazione del profilo dell''utente corrente.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco informazioni profilo utente.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Non esiste alcun utente associato all''ID specificato.'
+        '500':
+          description: 'Errore nel server.'
+          content:
+            application/json:
+              schema:
+                type: string
+                description: 'Messaggio di errore.'
+
   /EventiPubblici:
     get:
       description: >-
@@ -213,5 +243,3 @@ components:
         list:
           type: array
           description: 'La lista di eventi personali per il giorno selezionato in formato JSON'
-
-
