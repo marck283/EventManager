@@ -576,3 +576,7 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
+<<<<<<< HEAD
+=======
+
+>>>>>>> eabc0bd12394fef9c561ab0ed33f41885c827db9
