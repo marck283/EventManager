@@ -1,5 +1,6 @@
 let url = window.location.href;
-var token = "asasasas";
+
+var token = "";
 try {
     url = url.split('?');
     url = url[1].split('=');
