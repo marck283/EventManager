@@ -14,17 +14,11 @@ paths:
     get:
       description: >-
         Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto.
-      summary: Visualizza gli eventi sotto forma di lista.
+      summary: Ottiene gli eventi sotto forma di lista.
       parameters:
-      - name: eventiNonIscritto
-        in: query
-        description: >-
-          Valore per capire se richiedere o meno la lista di eventi a cui l'utente non è ancora iscritto. In altro caso, sarà richiesta la lista di tutti gli eventi pubblici.
-        schema:
-          type: boolean
       - name: x-access-token
         in: header
-        description: Token di autenticazione dell'utente
+        description: token di autenticazione dell'utente
       responses:
         '200':
           description: 'Lista di eventi ricevuta.'
@@ -34,6 +28,31 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventoPubblico'
+        
+        '404':
+          description: "Non vi sono eventi organizzati."
+  
+  /EventiPersonali:
+    get:
+      description: >-
+        Permette di ottenere la lista di eventi personali.
+      summary: Ottiene gli eventi personali sotto forma di lista.
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: 'Lista di eventi ricevuta.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventoPersonale'
+        
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
         
         '404':
           description: "Non vi sono eventi organizzati."
@@ -68,7 +87,7 @@ paths:
                   type: array
                   description: La lista di eventi per la data selezionata
                   items:
-                    $ref: '#components/schemas/EventoPubblico'
+                    $ref: '#/components/schemas/EventoPubblico'
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
@@ -105,7 +124,7 @@ paths:
                   type: array
                   description: La lista di eventi personali per la data selezionata.
                   items:
-                    $ref: '#components/schemas/EventoPersonale'
+                    $ref: '#/components/schemas/EventoPersonale'
         '401':
           description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
 
