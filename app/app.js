@@ -1,9 +1,9 @@
-var personalEvents = require("./events/elencoEventiPersonali.js"), personalList = require('./events/listaEventiPersonali.js');
 var express = require('express');
 var path = require('path');
 var app = express();
 const infoEventoPubblico = require('./infoEventiPublic');
 const infoEventoPersonale = require('./infoEventiPersonal');
+
 
 
 //Si recuperano i router per la gestione della creazione degli eventi
@@ -57,6 +57,8 @@ app.use(tokenChecker);
 //Si posizionano i middleware pre la gestione della creazione degli eventi
 app.use('/api/v1/EventiPubblici', eventspublics);
 app.use('/api/v1/EventiPersonali', eventspersonals);
+
+app.use('/api/v1/EventiPubblici', EventoPubblico);
 
 
 /* Default 404 handler */

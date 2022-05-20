@@ -13,7 +13,47 @@ servers:
   - url: http://localhost:8000/api/v1
     description: Localhost
 
+
 paths:
+  /EventiPubblici/{idEvento}/Iscrizioni:
+     post:
+      description: Si richiede secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente (indicato con il token)
+      summary: Iscrizione ad un evento
+      parameters:
+      - name: Idevento
+        in: path
+        description: id dell'evento a cui si vuole iscrivere
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: token to be passed as a header
+        required: true
+      responses:
+        '201':
+          description: 'Iscrizione all"evento. link all"evento'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
+        '403':
+          description: "il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+
+        '500':
+          description: "Problema con l'accedere alla risorse richieste con l'iscrizione"
+            content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
+         
 
   /EventiPubblici:
     post:
@@ -37,7 +77,7 @@ paths:
             'Location':
               schema:
                 type: string
-              description: Link all'evento pubblico nuovo creato.
+                description: Link all'evento pubblico nuovo creato.
         '500':
           description: Errore al'interno del server (probabilmente riguardante il DB)
           content:
@@ -52,6 +92,12 @@ paths:
               schema:
                 type: string
                 description: "messaggio d'errore"
+              
+              
+              
+                
+        
+
 
   /EventiPersonali:
     post:
@@ -70,7 +116,7 @@ paths:
               $ref: '#/components/schemas/PersonalEvent'
       responses:
         '201':
-          description: 'Evento pubblico creato. link alla locazione del evento pubblico'
+          description: 'Evento personale creato. link alla locazione del evento personale'
           headers:
             'Location':
               schema:
@@ -78,6 +124,11 @@ paths:
               description: Link all'evento personale nuovo creato.
         '500':
           description: Errore al'interno del server (probabilmente riguardante il DB)
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "messaggio d'errore"
 
   /EventiPubblici/{IDevento}:
     get:
@@ -576,7 +627,3 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
-<<<<<<< HEAD
-=======
-
->>>>>>> eabc0bd12394fef9c561ab0ed33f41885c827db9
