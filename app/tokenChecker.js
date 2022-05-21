@@ -9,7 +9,7 @@ const tokenChecker = function(req, res, next) {
 	if (!token) {
 		return res.status(401).send({ 
 			success: false,
-			message: 'token non presente'
+			message: 'fallita autenticazione'
 		});
 
 
@@ -19,7 +19,7 @@ const tokenChecker = function(req, res, next) {
 		if (err) {
 			return res.status(401).send({
 				success: false,
-				message: 'fallita autenticazione del token'
+				message: 'fallita autenticazione'
 			});		
 			console.log("ho il token errato");
 		} else {

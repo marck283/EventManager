@@ -17,41 +17,61 @@ servers:
 paths:
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente (indicato con il token)
+      description: Si richiede secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente loggato
       summary: Iscrizione ad un evento
       parameters:
       - name: Idevento
         in: path
-        description: id dell'evento a cui si vuole iscrivere
+        description: Id dell'evento a cui si vuole iscrivere
         required: true
         schema:
           type: string
       - name: x-access-token
         in: header
-        description: token to be passed as a header
+        description: Token di autenticazione che identifica l'utente loggato
         required: true
       responses:
         '201':
-          description: 'Iscrizione all"evento. link all"evento'
+          description: 'Iscrizione all"evento. link all''iscrizione dell''evento'
           headers:
             'Location':
               schema:
                 type: string
               description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
         '403':
-          description: "il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
+          description: "Il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '500':
-          description: "Problema con l'accedere alla risorse richieste con l'iscrizione"
+          description: "Errore del server"
             content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
          
 
   /EventiPubblici:
@@ -61,7 +81,7 @@ paths:
       parameters:
       - name: x-access-token
         in: header
-        description: Token d'autenticazione
+        description: token di autenticazione che identifica l'utente loggato
         required: true
       requestBody:
         description: Vengono indicati quali siano i dati per la programmazione di un certo evento pubblico
@@ -82,15 +102,26 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+              
         '401':
           description: l'utente non è autenticato (cioè il token è errato)
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+              
               
 
   /EventiPersonali:
@@ -121,15 +152,24 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '401':
           description: l'utente non è autenticato (cioè il token è errato)
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
 
   /EventiPubblici/{IDevento}:
     get:
@@ -151,8 +191,24 @@ paths:
                 $ref: '#/components/schemas/EventoPubblico'
         '404':
           description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '500':
           description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPersonale/{IDevento}:
     get:
@@ -174,10 +230,38 @@ paths:
                 $ref: '#/components/schemas/EventoPersonale'
         '404':
           description: 'Non esiste alcun evento personale associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '500':
           description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '401':
           description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
 
   /Utenti/me:
     get:
@@ -197,13 +281,37 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: 'Non esiste alcun utente associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '500':
           description: 'Errore nel server.'
           content:
             application/json:
               schema:
-                type: string
-                description: 'Messaggio di errore.'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
 
   /EventiPubblici:
     get:
@@ -226,6 +334,14 @@ paths:
         
         '404':
           description: "Non vi sono eventi organizzati."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
   
   /EventiPersonali:
     get:
@@ -248,9 +364,28 @@ paths:
         
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
         
         '404':
           description: "Non vi sono eventi organizzati."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
   
   /GiorniCalendarioPubblico/{data}:
     get:
@@ -286,6 +421,14 @@ paths:
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
   
   /GiorniCalendarioPersonale/{data}:
     get:
@@ -322,18 +465,37 @@ paths:
                     $ref: '#/components/schemas/Evento'
         '401':
           description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
          
 
 
   /Utenti:
     post:
-      description: Passiamo i dati necessari per la registrazione dell'utente corrente 
+      description: Passiamo i dati necessari per la registrazione dell'utente corrente loggato
       summary: Registrazione dell'utente nel sistema
       requestBody:
-        description: Vengono indicati quali siano i dati per la registrazione dell'utente corrente nel sistema
+        description: Vengono indicati quali siano i dati per la registrazione nel sistema dell'utente corrente loggato
         content:
           application/json:
             schema:
@@ -351,27 +513,36 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '400': 
           description: Problema con i dati inseriti 
           content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '500':
           description: Errore nel server
             content:
             application/json:
               schema:
-                type: string
-                description: "messaggio d'errore"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
 components:
   schemas:
     PublicEvent:
-      description: Oggetto dell'evento personale
+      description: Oggetto dell'evento pubblico per la sua creazione
       type: object
       required:
       - data
@@ -412,7 +583,7 @@ components:
               description: 'Città dell''Evento'
             
     PersonalEvent:
-      description: Oggetto dell'evento personale
+      description: Oggetto dell'evento personale per la sua creazione
       type: object
       required:
       - data
@@ -440,7 +611,7 @@ components:
   
     User:
       type: object
-      description: Oggetto che descrive un certo utente 
+      description: Oggetto che descrive un certo utente sia per la registrazione che visualizzazione
        required:
       - password
       - email
