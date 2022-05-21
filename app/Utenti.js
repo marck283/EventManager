@@ -8,6 +8,7 @@ const Utente = require('./collezioni/utenti.js');
 router.get('/me', async (req, res) => {
 
     IDexample = req.loggedUser.id;
+    
     try{
         let utente = await Utente.findById(IDexample);
 

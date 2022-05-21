@@ -56,8 +56,8 @@ paths:
 
   /EventiPubblici:
     post:
-      description: Inviare le info per creare un nuovo evento pubblico.
-      summary: Crea un nuovo evento pubblico
+      description: Inviare le info per creare un nuovo evento pubblico, il quale utente corrente ne diventa subito partecipante.
+      summary: Crea un nuovo evento pubblico 
       parameters:
       - name: x-access-token
         in: header

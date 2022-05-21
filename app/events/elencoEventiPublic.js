@@ -20,7 +20,7 @@ router.get("/:data", async (req, res) => {
         jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded){
 
             if (!err) {
-                var user = decoded.id;
+                user = decoded.id;
                 autenticato = true;
             }
 

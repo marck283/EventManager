@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+const cors = require('cors');
 var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
 const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
@@ -18,6 +19,9 @@ const registrato = require('./registrazione.js')
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+app.use(cors());
 
 /**
  * Serve front-end static files

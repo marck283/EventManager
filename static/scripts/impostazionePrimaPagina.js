@@ -9,6 +9,9 @@ var impostPagina = () => {
 	document.getElementById('navItem3').href = "";
 	document.getElementById('navItem3').href = "calendarioPersonale" + ".html?token=" + TokenUser;
 
+	document.getElementById('navItem4').href = "";
+	document.getElementById('navItem4').href = "layoutUtente" + ".html?token=" + TokenUser;
+
 
 
 

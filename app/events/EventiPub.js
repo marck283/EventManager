@@ -19,7 +19,7 @@ router.get("", async (req, res) => {
         jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded){
 
             if (!err) {
-                var user = decoded.id;
+                user = decoded.id;
                 autenticato = true;
             }
 
@@ -30,6 +30,8 @@ router.get("", async (req, res) => {
 
     if(autenticato == true){
         events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
+        
+        
     }
 
     if(events.length > 0) {
