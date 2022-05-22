@@ -50,14 +50,14 @@ paths:
                     description: "Messaggio d'errore"
         '500':
           description: "Errore del server"
-            content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: "Messaggio d'errore"
+          content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: "Messaggio d'errore"
         '401':
           description: l'utente non è autenticato (cioè il token è errato)
           content:
@@ -313,18 +313,22 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
 
-  /EventiPubblici:
+  /eventiCalendarioPubblico:
     get:
       description: >-
-       Permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto. In caso di assenza del token dell'utente, la lista degli eventi mostrata comprenderà tutti gli eventi pubblici organizzati.
-      summary: Ottiene gli eventi sotto forma di lista.
+        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
+        Inoltre, può permettere di associare specifici query parameters al file indicato negli headers, che potranno servire per quei casi in cui si vuole trasportare quelle specifiche informazioni in quel file dove saranno utilizzate.
+      summary: Ottiene gli eventi pubblici sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+      - name: file-name
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id dell'evento pubblico e il token (specificato negli headers) dell'utente
       responses:
         '200':
-          description: 'Lista di eventi ricevuta.'
+          description: Lista degli eventi del calendario pubblico ricevuta, con la lista dei file associati, indicati negli headers, ai query parameters
           content:
             application/json:
               schema:
@@ -343,18 +347,25 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
   
-  /EventiPersonali:
+  /eventiCalendarioPersonale:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali.
-      summary: Ottiene gli eventi personali sotto forma di lista.
+        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente è iscritto o che ha organizzato. 
+        Inoltre, può permettere di associare specifici query parameters ai file indicati negli headers,che potranno servire per quei casi in cui si vuole trasportare quelle specifiche informazioni in quei specifici file dove saranno utilizzate.
+      summary: Ottiene gli eventi personali e pubblici a cui l'utente è iscritto o che ha organizzato sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+      - name: file-name-per
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id degli eventi personali e il token (specificato negli headers) dell'utente
+      - name: file-name-pub
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id degli eventi pubblici e il token (specificato negli headers) dell'utente
       responses:
         '200':
-          description: 'Lista di eventi ricevuta.'
+          description: Lista degli eventi del calendario personale ricevuta, con la lista dei file, indicati negli headers, associati ai query parameters
           content:
             application/json:
               schema:
@@ -387,11 +398,13 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
   
-  /GiorniCalendarioPubblico/{data}:
+  /eventiCalendarioPubblico/{data}:
     get:
       description: >-
-        Ottieni la lista di eventi del giorno selezionato tramite il calendario pubblico.
-      summary: Visualizza gli eventi nel calendario pubblico.
+        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
+        In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
+        Inoltre, può permettere di associare specifici query parameters al file indicati negli headers, che potranno servire per quei casi in cui si vuole trasportare quelle specifiche informazioni in quei specifici file dove saranno utilizzate.
+      summary: Visualizza gli eventi per una certa data nel calendario pubblico.
       parameters:
       - name: data
         in: path
@@ -402,9 +415,12 @@ paths:
       - name: x-access-token
         in: header
         description: Token di autenticazione dell'utente
+      - name: file-name
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id dell'evento e il token (specificato negli headers) dell'utente
       responses:
         '200':
-          description: Lista di eventi per il giorno selezionato ritornata con successo.
+          description: Lista di eventi del calendario pubblico per il giorno selezionato ritornata con successo.
           content:
             application/json:
             schema:
@@ -415,7 +431,7 @@ paths:
                   description: La data selezionata
                 list:
                   type: array
-                  description: La lista di eventi per la data selezionata
+                  description: La lista degli eventi del calendario pubblico per la data selezionata, con la lista dei file, indicati negli headers, associati ai query parameters
                   items:
                     $ref: '#/components/schemas/Evento'
 
@@ -430,11 +446,12 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
   
-  /GiorniCalendarioPersonale/{data}:
+  /eventiCalendarioPersonale/{data}:
     get:
       description: >-
-        Ottieni la lista di eventi del giorno selezionato tramite il calendario personale.
-      summary: Visualizza gli eventi nel calendario personale
+        Permette di ottenere la lista di eventi personali e pubblici del giorno selezionato a cui l'utente è iscritto o che ha organizzato. 
+        Inoltre, può permettere di associare specifici query parameters ai file indicati negli headers, che potranno servire per quei casi in cui si vuole trasportare quelle specifiche informazioni in quei specifici file dove saranno utilizzate.
+      summary: Visualizza gli eventi per una certa data nel calendario personale
       parameters:
       - name: data
         in: path
@@ -442,11 +459,16 @@ paths:
         required: true
         schema:
           type: string
-
       - name: x-access-token
         in: header
         description: Token di autenticazione dell'utente
         required: true
+      - name: file-name-pub
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id degli eventi pubblici e il token (specificato negli headers) dell'utente
+      - name: file-name-per
+        in: header
+        description: il nome del file (es. .html) a cui saranno associati, come query parameters, l'id degli eventi personali e il token (specificato negli headers) dell'utente
       responses:
         '200':
           description: Lista di eventi personali per il giorno selezionato ritornata con successo.
@@ -460,7 +482,7 @@ paths:
                   description: Il giorno selezionato
                 list:
                   type: array
-                  description: La lista di eventi personali per la data selezionata.
+                  description: La lista degli eventi del calendario personale per la data selezionata, con la lista dei file, indicati negli headers, associati ai query parameters
                   items:
                     $ref: '#/components/schemas/Evento'
         '401':
@@ -530,14 +552,14 @@ paths:
                     description: "Messaggio d'errore"
         '500':
           description: Errore nel server
-            content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: "Messaggio d'errore"
+          content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: "Messaggio d'errore"
 
 components:
   schemas:
@@ -612,7 +634,7 @@ components:
     User:
       type: object
       description: Oggetto che descrive un certo utente sia per la registrazione che visualizzazione
-       required:
+      required:
       - password
       - email
       - nome
@@ -639,13 +661,13 @@ components:
       properties:
         id:
           type: string
-          description: 'La parte di URL che indica il nome del file destinazione e la query'
+          description: 'il file inidicato negli headers associato agli specifici query parameters: id dell''evento e il token (specificato negli headers) dell''utente corrente'
         name:
           type: string
-          description: 'Il nome dell'attività'
+          description: 'Il nome dell''attività'
         category:
           type: string
-          description: "La categoria in cui l'attività è classificata"N'
+          description: "La categoria in cui l'attività è classificata"
     
    
 

@@ -29,7 +29,7 @@ app.use(cors());
 app.use('/', express.static('static'));
 app.use('/api/v1/authentications', autenticato);
 app.use('/api/v1/EventiPubblici', EventoPubblico);
-app.use("/api/v1/GiorniCalendarioPubblico", calendarEventsPub);
+app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v1/Utenti', registrato);
 
 app.use(tokenChecker);
@@ -38,7 +38,7 @@ app.use(tokenChecker);
 app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
 app.use('/api/v1/EventiPersonali', EventoPersonale);
 app.use('/api/v1/Utenti', Utente);
-app.use("/api/v1/GiorniCalendarioPersonale", calendarEventsPers);
+app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
 
 
 

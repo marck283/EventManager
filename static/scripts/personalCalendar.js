@@ -147,10 +147,12 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v1/GiorniCalendarioPersonale/" + day.join("-"), {
+    fetch("/api/v1/eventiCalendarioPersonale/" + day.join("-"), {
         method: 'GET',
         headers: {
-            'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
+            'x-access-token': token, //Invio il token di accesso attraverso un header della richiesta.
+            'file-name-pub': "layoutPubblico.html",
+            'file-name-per': "layoutPersonale.html"
         }
     }).then(resp => {
         switch(resp.status) {

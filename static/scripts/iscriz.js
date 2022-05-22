@@ -37,7 +37,7 @@ var iscr = () => {
 
         			}
         			if(resp.status==401){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.message});
 
         			}
 

@@ -1,8 +1,9 @@
 var request = () => {    
-    fetch("/api/v1/EventiPubblici/", {
+    fetch("/api/v1/eventiCalendarioPubblico/", {
         method: 'GET',
         headers: {
-            'x-access-token': token
+            'x-access-token': token,
+            'file-name': "layoutPubblico.html"
         }
     })
     .then(resp => {

@@ -1,8 +1,10 @@
 var request = () => {    
-    fetch("/api/v1/EventiPersonali/", {
+    fetch("/api/v1/eventiCalendarioPersonale/", {
         method: 'GET',
         headers: {
-            'x-access-token': token
+            'x-access-token': token,
+            'file-name-pub': "layoutPubblico.html",
+            'file-name-per': "layoutPersonale.html"
         }
     })
     .then(resp => {
@@ -13,7 +15,7 @@ var request = () => {
             }
 
             case 401: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
                 break;
             }
             case 404: {
