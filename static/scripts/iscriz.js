@@ -1,6 +1,6 @@
 var iscr = () => {
-			id = '62834b33c1f3bac3f8c5b55f'
-			token = "frgrgtgrt"
+			
+			
 			
 
 			fetch('../api/v1/EventiPubblici/' + id + '/Iscrizioni', {
@@ -37,7 +37,7 @@ var iscr = () => {
 
         			}
         			if(resp.status==401){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.message});
 
         			}
 

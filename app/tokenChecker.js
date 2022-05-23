@@ -9,17 +9,17 @@ const tokenChecker = function(req, res, next) {
 	if (!token) {
 		return res.status(401).send({ 
 			success: false,
-			message: 'token non presente'
+			message: 'fallita autenticazione'
 		});
-		console.log("non ho il token");
+
 
 	}
 
 	jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded) {			
 		if (err) {
-			return res.status(403).send({
+			return res.status(401).send({
 				success: false,
-				message: 'falita autenticazione del token'
+				message: 'fallita autenticazione'
 			});		
 			console.log("ho il token errato");
 		} else {

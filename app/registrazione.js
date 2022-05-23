@@ -25,7 +25,7 @@ router.post('', async (req, res) => {
         });
 
         if (!Utent.email || typeof Utent.email != 'string' || !checkIfEmailInString(Utent.email)) {
-            res.status(400).json({ error: 'Email sbagliata' }).send();
+            res.status(400).json({ error: 'Formato email errato' }).send();
             return;
         }
         
@@ -54,5 +54,4 @@ function checkIfEmailInString(text) {
     return re.test(text);
 }
 
-
-module.exports=router;
+module.exports = router;
