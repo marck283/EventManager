@@ -9,9 +9,6 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 // ---------------------------------------------------------
 router.post('', async function(req, res) {
 
-
-
-    console.log("wao")
 	
 	// find the user
 	let user = await Utente.findOne({
@@ -38,7 +35,7 @@ router.post('', async function(req, res) {
 		// other data encrypted in the token	
 	}
 	var options = {
-		expiresIn: 3600 // expires in 24 hours
+		expiresIn: 3600 // expires in 1 hour
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 

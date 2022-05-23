@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const Utente = require('./collezioni/utenti.js');
 
-const Utente = require('./collezioni/utenti');
+
+
 
 router.get('/me', async (req, res) => {
 
-    IDexample = '6285628586b410b578cf004d'; // Da cambiare con un token vero e proprio
+    IDexample = req.loggedUser.id;
+    
     try{
         let utente = await Utente.findById(IDexample);
 
@@ -21,4 +24,7 @@ router.get('/me', async (req, res) => {
     }
 });
 
-module.exports = router;
+
+
+
+module.exports=router;

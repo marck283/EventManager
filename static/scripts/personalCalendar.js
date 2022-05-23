@@ -147,7 +147,7 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v1/GiorniCalendarioPersonale/" + day.join("-"), {
+    fetch("/api/v1/eventiCalendarioPersonale/" + day.join("-"), {
         method: 'GET',
         headers: {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
@@ -171,9 +171,19 @@ var requestWithParams = async (id, day) => {
     
                             //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
                             for (var object of jr1) {
-                                getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
+                                if(object.id == "pers"){
+                                     getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
                         <h5 class=\"card-title\">" + object.name + "</h5>\
-                        <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+                        <a href=\"" + "layoutPersonale.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+
+                                }
+                                if(object.id == "pub"){
+                                     getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
+                        <h5 class=\"card-title\">" + object.name + "</h5>\
+                        <a href=\"" + "layoutPubblico.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+
+                                }
+                                
                             }
                             getId(id).innerHTML += "</div></li></ul>";
                         }
