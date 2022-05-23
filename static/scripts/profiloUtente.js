@@ -1,4 +1,13 @@
-token = 'place_holder' //tocca recuperarlo
+let url = window.location.href;
+var token = "";
+try {
+    url = url.split('?');
+    url = url[1].split('=');
+    token = url[1];
+} catch (error) {
+    console.log(error);
+}
+
 
 fetch('../api/v1/Utenti/me', {method: 'GET', headers: {'x-access-token': token}})
     .then(resp => {
@@ -20,6 +29,7 @@ fetch('../api/v1/Utenti/me', {method: 'GET', headers: {'x-access-token': token}}
             }
             case 403:
             case 404:
+            case 401:
             case 500: {
                 resp.json().then(data => {document.getElementById("error").textContent = data.error});
                 break;
