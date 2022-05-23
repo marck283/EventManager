@@ -17,7 +17,7 @@ servers:
 paths:
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente loggato
+      description: Si richiede,secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente loggato
       summary: Iscrizione ad un evento
       parameters:
       - name: Idevento
@@ -51,13 +51,13 @@ paths:
         '500':
           description: "Errore del server"
           content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  description: "Messaggio d'errore"
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '401':
           description: l'utente non è autenticato (cioè il token è errato)
           content:
@@ -325,6 +325,7 @@ paths:
       responses:
         '200':
           description: Lista degli eventi del calendario pubblico ricevuta
+          content:
             application/json:
               schema:
                 type: array
@@ -407,17 +408,17 @@ paths:
           description: Lista di eventi del calendario pubblico per il giorno selezionato ritornata con successo.
           content:
             application/json:
-            schema:
-              type: object
-              properties:
-                data:
-                  type: string
-                  description: La data selezionata
-                list:
-                  type: array
-                  description: La lista degli eventi del calendario pubblico per la data selezionata
-                  items:
-                    $ref: '#/components/schemas/Evento'
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    description: La data selezionata
+                  list:
+                    type: array
+                    description: La lista degli eventi del calendario pubblico per la data selezionata
+                    items:
+                      $ref: '#/components/schemas/Evento'
 
         '404':
           description: "Non esiste alcun evento legato alla risorsa richiesta."
@@ -451,17 +452,17 @@ paths:
           description: Lista di eventi personali per il giorno selezionato ritornata con successo.
           content:
             application/json:
-            schema:
-              type: object
-              properties:
-                data:
-                  type: string
-                  description: Il giorno selezionato
-                list:
-                  type: array
-                  description: La lista degli eventi del calendario personale per la data selezionata
-                  items:
-                    $ref: '#/components/schemas/Evento'
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    description: Il giorno selezionato
+                  list:
+                    type: array
+                    description: La lista degli eventi del calendario personale per la data selezionata
+                    items:
+                      $ref: '#/components/schemas/Evento'
         '401':
           description: "Non è possibile accedere alla risorsa perché l'utente non è autenticato."
           content:
@@ -530,13 +531,13 @@ paths:
         '500':
           description: Errore nel server
           content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  description: "Messaggio d'errore"
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
 components:
   schemas:
@@ -554,7 +555,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data dell''evento o lista date dell''evento'
         ora:
           type: string
@@ -593,7 +593,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data dell''evento'
         ora:
           type: string
@@ -660,7 +659,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data o lista date dell''evento.'
         ora:
           type: string
@@ -702,7 +700,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data o lista date dell''evento.'
         ora:
           type: string
@@ -744,7 +741,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data o lista date dell''evento.'
         ora:
           type: string
@@ -783,7 +779,6 @@ components:
       properties:
         data:
           type: string
-          format: date
           description: 'Data dell''evento.'
         ora:
           type: string
