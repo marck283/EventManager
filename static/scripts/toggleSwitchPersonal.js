@@ -2,9 +2,7 @@ var request = () => {
     fetch("/api/v1/eventiCalendarioPersonale/", {
         method: 'GET',
         headers: {
-            'x-access-token': token,
-            'file-name-pub': "layoutPubblico.html",
-            'file-name-per': "layoutPersonale.html"
+            'x-access-token': token
         }
     })
     .then(resp => {
@@ -89,7 +87,14 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                objectId.href = object.id;
+                if(object.id == "pers"){
+                                     objectId.href = "layoutPersonale.html?id="+object.idevent+"&token="+token;
+
+                                }
+                if(object.id == "pub"){
+                                     objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
+
+                }
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";

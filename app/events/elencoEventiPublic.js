@@ -8,7 +8,7 @@ router.get("", async (req, res) => {
     var events = await eventPublic.find({});
 
     var token = req.header('x-access-token');
-    var file = req.header('file-name');
+    
 
     var autenticato = false;
     var user = "";
@@ -35,7 +35,7 @@ router.get("", async (req, res) => {
     }
 
     if(events.length > 0) {
-        res.status(200).json(eventsMap.map(events, file, token));
+        res.status(200).json(eventsMap.map(events, "pub"));
     } else {
         res.status(404).json({"error": "Non sono presenti eventi organizzati."});
     }
@@ -45,7 +45,7 @@ router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
     var events;
     var obj = {}, token = req.header("x-access-token");
-    var file = req.header("file-name");
+    
     
 
     var autenticato = false;
@@ -75,7 +75,7 @@ router.get("/:data", async (req, res) => {
     }
 
     if(events.length > 0) {
-        obj.eventi = eventsMap.map(events, file, token);
+        obj.eventi = eventsMap.map(events, "pub");
         obj.data = str;
         res.status(200).json(obj);
     } else {

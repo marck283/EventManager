@@ -2,8 +2,7 @@ var request = () => {
     fetch("/api/v1/eventiCalendarioPubblico/", {
         method: 'GET',
         headers: {
-            'x-access-token': token,
-            'file-name': "layoutPubblico.html"
+            'x-access-token': token
         }
     })
     .then(resp => {
@@ -84,7 +83,7 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                objectId.href = object.id;
+                objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";

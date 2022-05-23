@@ -73,11 +73,14 @@ router.post('', async (req, res) => {
         let eventP = new eventPublic({data: req.body.data, durata: req.body.durata, ora: req.body.ora, maxPers: req.body.maxPers, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatoreID: utent});
         eventP.partecipantiID.push(utent); 
 
+
         //Si salva il documento pubblico
         eventP = await eventP.save();
 
         //Si indica fra gli eventi creati dell'utente, l'evento appena creato
         utente.EventiCreati.push(eventP.id)
+
+        utente.EventiIscrtto.push(eventP.id);
 
         //Si salva il modulo dell'utente
         await utente.save();

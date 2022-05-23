@@ -1,11 +1,35 @@
 module.exports = {
-    map: function(events, routeId, userToken) {
+    map: function(events, eventType) {
         return events.map(event => {
-            return {
-                id: routeId + '?id=' + event._id + "&token=" + userToken,
-                name: event.nomeAtt,
-                category: event.categoria
+            if(eventType == "pers"){
+
+                return {
+                    id: eventType,
+                    idevent: event._id,
+                    self: "/api/v1/EventiPersonali/" + event._id,
+                    name: event.nomeAtt,
+                    category: event.categoria
+                }
+
+
+
             }
+
+            if(eventType == "pub"){
+
+                return {
+                    id: eventType,
+                    idevent: event._id,
+                    self: "/api/v1/EventiPubblici/" + event._id,
+                    name: event.nomeAtt,
+                    category: event.categoria
+                }
+
+
+
+            }
+
+            
         });
     }
 }

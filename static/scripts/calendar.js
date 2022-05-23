@@ -150,8 +150,7 @@ var requestWithParams = async (id, day) => {
     fetch("/api/v1/eventiCalendarioPubblico/" + day.join("-"), {
         method: 'GET',
         headers: {
-            'x-access-token': token, //Invio il token di accesso attraverso un header della richiesta.
-            'file-name': "layoutPubblico.html"
+            'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
         }
     }).then(resp => {
         switch(resp.status) {
@@ -174,7 +173,7 @@ var requestWithParams = async (id, day) => {
                             for (var object of jr1) {
                                 getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
                         <h5 class=\"card-title\">" + object.name + "</h5>\
-                        <a href=\"" + object.id + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+                        <a href=\"" + "layoutPubblico.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
                             }
                             getId(id).innerHTML += "</div></li></ul>";
                         }
