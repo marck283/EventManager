@@ -17,7 +17,7 @@ servers:
 paths:
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede,secondo un certo id dell'evento pubblico, la creazione dell'iscrizione per quell'evento da parte del utente corrente loggato
+      description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione per quell'evento da parte del utente corrente loggato
       summary: Iscrizione ad un evento
       parameters:
       - name: Idevento
@@ -266,7 +266,7 @@ paths:
   /Utenti/me:
     get:
       summary: 'Visualizzazione profilo utente'
-      description: 'Si passano i dati necessari alla visualizzazione del profilo dell''utente corrente.'
+      description: 'Visualizzazione delle info del profilo dell''utente corrente autenticato.'
       parameters:
       - name: x-access-token
         in: header
@@ -317,7 +317,7 @@ paths:
     get:
       description: >-
         In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
-      summary: Ottiene gli eventi pubblici sotto forma di lista.
+      summary: Ottieni gli eventi pubblici del calendario pubblico sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
@@ -346,8 +346,8 @@ paths:
   /eventiCalendarioPersonale:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente è iscritto o che ha organizzato. 
-      summary: Ottiene gli eventi personali e pubblici a cui l'utente è iscritto o che ha organizzato sotto forma di lista.
+        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente autenticato è iscritto o che ha organizzato. 
+      summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
@@ -391,7 +391,7 @@ paths:
     get:
       description: >-
         In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
-        In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
+        In caso di utente non autenticato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
       summary: Visualizza gli eventi per una certa data nel calendario pubblico.
       parameters:
       - name: data
@@ -434,7 +434,7 @@ paths:
   /eventiCalendarioPersonale/{data}:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali e pubblici del giorno selezionato a cui l'utente è iscritto o che ha organizzato. 
+        Permette di ottenere la lista di eventi personali e pubblici del giorno selezionato a cui l'utente autenticato è iscritto o che ha organizzato. 
       summary: Visualizza gli eventi per una certa data nel calendario personale
       parameters:
       - name: data
