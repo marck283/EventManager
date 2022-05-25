@@ -47,7 +47,7 @@ router.post('', async (req, res) => {
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == ""){
+        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
             return;
 
