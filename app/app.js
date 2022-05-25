@@ -4,7 +4,7 @@ var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
 const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
 const EventoPersonale = require('./events/EventiPers.js');
-const calendarEventsPers = require("./events/elencoEventiPersonali.js")
+const calendarEventsPers = require("./events/elencoEventiPersonali.js");
 const calendarEventsPub = require("./events/elencoEventiPublic.js");
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
@@ -31,7 +31,6 @@ app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v1/Utenti', registrato);
 
-app.use('/api/v1/Utenti',registrato);
 app.use(tokenChecker);
 
 //********************************************************** attenzione *********************
@@ -47,7 +46,5 @@ app.use((req, res) => {
     res.status(404);
     res.json({ error: 'Non Trovato' });
 });
-
-
 
 module.exports = app;

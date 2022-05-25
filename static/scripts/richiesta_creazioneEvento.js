@@ -159,7 +159,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 //Popola la pagina con i dati ricevuti
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
                 locazione=this.getResponseHeader("Location")
-                document.getElementById("loc").innerHTML = locazione
+                document.getElementById("loc").innerHTML = "Creato evento pubblico"
                 
             }
             if (this.readyState === 4 && this.status === 500) {
@@ -193,6 +193,14 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
               
                 document.getElementById("loc").innerHTML = eventJSONList.message
+                
+            }
+            if (this.readyState === 4 && this.status === 400) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+              
+                document.getElementById("loc").innerHTML = eventJSONList.error
                 
             }
     };
@@ -363,7 +371,7 @@ var requestPe = () => {
                 //Popola la pagina con i dati ricevuti
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
                 locazione=this.getResponseHeader("Location")
-                document.getElementById("loc").innerHTML = locazione
+                document.getElementById("loc").innerHTML = "Creato evento personale"
                 
             }
             if (this.readyState === 4 && this.status === 500) {
@@ -396,6 +404,14 @@ var requestPe = () => {
                 eventJSONList = this.response; //Cattura la risposta in formato JSON
               
                 document.getElementById("loc").innerHTML = eventJSONList.message
+                
+            }
+            if (this.readyState === 4 && this.status === 400) {
+                console.log("ricevuto")
+                //Popola la pagina con i dati ricevuti
+                eventJSONList = this.response; //Cattura la risposta in formato JSON
+              
+                document.getElementById("loc").innerHTML = eventJSONList.error
                 
             }
     };

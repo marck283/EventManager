@@ -11,6 +11,11 @@ router.get('/:id', async(req, res) => {
 
     try{
         let eventoPubblico = await eventPublic.findById(req.params.id);
+        if(eventoPubblico == undefined ){
+            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+            return;
+
+        }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
         let partecipanti = [];
         for (var i of eventoPubblico.partecipantiID){

@@ -41,7 +41,7 @@ router.post('', async function(req, res) {
 
 	res.status(200).json({
 		success: true,
-		message: 'Felicitazioni che ti sei autenticato',
+		message: 'Autenticazione completata',
 		token: token,
 		email: user.email,
 		id: user._id,
