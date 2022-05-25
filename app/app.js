@@ -1,5 +1,4 @@
 var express = require('express');
-var path = require('path');
 const cors = require('cors');
 var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
