@@ -15,6 +15,74 @@ servers:
 
 
 paths:
+
+  /authentications:
+    post:
+      description: L'utente richiede di autenticarsi inviando le varie informazioni per l'autenticazione
+      summary: Autenticazione
+      requestBody:
+        description: Vengono indicati quali siano i dati per l'autenticazine
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email dell'utente
+                password:
+                  type: string
+                  description: password dell'utente
+      responses:
+        '200':
+          description: Avvenuta autetnticazione
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                    description: variabile che indica il successo o meno dell'operazione
+                  message: 
+                    type: string
+                    description: messaggio di risultato dell'operazione eseguita 
+                  token: 
+                    type: string
+                    description: token di autenticazione dell'utente autenticato
+                  email: 
+                    type: string
+                    description: email dell'utente autenticato
+                  id: 
+                    type: string
+                    description: id dell'utente autenticato
+                  self:
+                    type: string 
+                    description: link dell'utente autenticato
+              
+              
+        '403':
+          description: "Il server ha deciso di non autenticarti per via della password non trovata"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '404':
+          description: Il server ha deciso di non autenticarti per via che non ha trovato un'utente con quella email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+      
+  
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
       description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione per quell'evento da parte del utente corrente loggato
@@ -71,6 +139,16 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
          
 
@@ -121,6 +199,17 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: errore nell'inserimento dei dati per la creazione dell'evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+                  
               
               
 
@@ -170,6 +259,16 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: errore nell'inserimento dei dati per la creazione dell'evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPubblici/{IDevento}:
     get:
@@ -333,7 +432,7 @@ paths:
                   $ref: '#/components/schemas/Evento'
         
         '404':
-          description: "Non vi sono eventi organizzati."
+          description: "Non esiste alcun evento legato al calendario pubblico."
           content:
             application/json:
               schema:
@@ -377,7 +476,7 @@ paths:
                     description: "Indicatore del successo o meno dell'operazione"
         
         '404':
-          description: "Non vi sono eventi organizzati."
+          description: "Non esiste alcun evento legato al calendario personale dell'utente autenticato."
           content:
             application/json:
               schema:
@@ -421,7 +520,7 @@ paths:
                       $ref: '#/components/schemas/Evento'
 
         '404':
-          description: "Non esiste alcun evento legato alla risorsa richiesta."
+          description: "Non esiste alcun evento pubblico legato alla data selezionata."
           content:
             application/json:
               schema:
@@ -478,7 +577,7 @@ paths:
                     description: "Indicatore del successo o meno dell'operazione"
 
         '404':
-          description: "Non esiste alcun evento legato alla risorsa richiesta."
+          description: "Non esiste alcun evento legato alla data selezionata."
           content:
             application/json:
               schema:
@@ -538,7 +637,6 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
-
 components:
   schemas:
     PublicEvent:
@@ -801,3 +899,5 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
+
+

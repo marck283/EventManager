@@ -6,10 +6,17 @@ const Utente = require('./collezioni/utenti.js');
 
 router.post('', async (req, res) => {
 
-    console.log("reg");
+    
 
     
     try{
+
+        if(req.body.nome == "" || req.body.email == "" || req.body.pass == "" ){
+            res.status(400).json({error: "Campo vuoto"}).send();
+            return;
+
+        }
+
         let ut = await Utente.findOne({email: req.body.email })
 
         if(ut){

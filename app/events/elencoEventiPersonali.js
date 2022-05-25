@@ -55,7 +55,7 @@ router.get("", async (req, res) => {
         obj.eventi = eventsPers;
         res.status(200).json(obj);
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento programmato per la giornata selezionata."});
+        res.status(404).json({"error": "Non esiste alcun evento programmato."});
     }
 });
 
