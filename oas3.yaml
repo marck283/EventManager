@@ -801,5 +801,3 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
-
-

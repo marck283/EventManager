@@ -31,6 +31,7 @@ app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v1/Utenti', registrato);
 
+app.use('/api/v1/Utenti',registrato);
 app.use(tokenChecker);
 
 //********************************************************** attenzione *********************
@@ -46,5 +47,7 @@ app.use((req, res) => {
     res.status(404);
     res.json({ error: 'Non Trovato' });
 });
+
+
 
 module.exports = app;
