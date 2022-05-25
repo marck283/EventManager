@@ -76,7 +76,7 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == ""){
+        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
 
         }
