@@ -378,16 +378,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '404':
-          description: 'Non esiste alcun utente associato all''ID specificato.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: "Messaggio d'errore"
         '500':
           description: 'Errore nel server.'
           content:
