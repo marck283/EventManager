@@ -1,7 +1,9 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
+var qrcode = require('qrcode');
 const Users = require('../collezioni/utenti.js');
+const biglietti = require('../collezioni/biglietti.js')
 
 
 
@@ -40,6 +42,35 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        let data = {
+            idUtente: utent,
+            idEvento: id_evento
+        };
+
+
+
+        let stringdata = JSON.stringify(data);
+
+        //Print QR code to file using base64 encoding
+        
+        qrcode.toDataURL(stringdata, async function(err, qrcode) {
+            if(err) {
+                throw Error("errore creazione biglietto")
+            }
+
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode});
+            console.log(bigl.qr);
+            return await bigl.save();
+
+            
+            
+        });
+
+        
+
+        
+
+
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
@@ -48,6 +79,10 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         await eventP.save()
         await utente.save()
+
+        
+
+
 
 
         res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();

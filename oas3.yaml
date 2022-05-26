@@ -377,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Utente'
         '500':
           description: 'Errore nel server.'
           content:
@@ -627,6 +627,60 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
+  /Utenti/me/Biglietti:
+    get:
+      description: >-
+        Permette di ottenere la lista di biglietti associati dell'utente autenticato associato ad un certo token
+      summary: Ottienere i propri biglietti
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: Lista di biglietti associati all'utente autenticato
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Biglietto'
+        '404':
+          description: "Non è stato trovato nessun biglietto associato all'utente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '403':
+        description: "Non è stato possibile ritornare i bilglietti per via che tutti i bilgietti associati all'utente non sono validi"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: "Messaggio d'errore"
+        
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
 components:
   schemas:
     PublicEvent:
@@ -697,7 +751,7 @@ components:
   
     User:
       type: object
-      description: Oggetto che descrive un certo utente sia per la registrazione che visualizzazione
+      description: Oggetto che descrive un certo utente sia per la registrazione 
       required:
       - password
       - email
@@ -712,6 +766,35 @@ components:
         nome:
           type: number
           description: nome dell'utente
+        telefono:
+          type: string
+          description: numero di telefono dell'utente
+
+
+
+
+    Utente:
+      type: object
+      description: Oggetto che descrive un certo utente per la visualizzazione dei suoi dati 
+      required:
+      - password
+      - email
+      - nome
+      - url
+      - idUtente
+      properties:
+        password:
+          type: string
+          description: password dell'utente
+        email:
+          type: string
+          description: email utente
+        nome:
+          type: number
+          description: nome dell'utente
+        url:
+          type: string
+          description: Link all'indirizzo dell'utente
         telefono:
           type: string
           description: numero di telefono dell'utente
@@ -738,6 +821,8 @@ components:
         category:
           type: string
           description: "La categoria in cui l'attività è classificata"
+
+
     
    
 
@@ -890,4 +975,37 @@ components:
               type: string
               description: 'Città dell''Evento.'
 
+  Biglietti:
+    type: object
+    description: Oggetto che descrive l'info legate ad un certo biglietto
+    required:
+    - eventoUrl
+    - utenteUrl
+    - nomeUtente
+    - nomeOrg
+    - nomeAtt
+    - bigliettoUrl
+    - img
+    properties:
+      eventoUrl:
+        type: string
+        description: Link all'indirizzo dell'utente associato al biglietto
+      utenteUrl:
+        type: string
+        description: Link all'indirizzo dell'evento associato al biglietto
+      nomeUtente:
+        type: string
+        description: nome dell'utente associato al biglietto
+      nomeOrg:
+        type: string
+        description: nome dell'organizzatore dell'evento associato al biglietto
+      nomeAtt:
+        type: string
+        description: nome dell'evento associato al biglietto
+      img:
+        type: string
+        description: immagine in base64 del qr code del biglietto
+      bigliettoUrl:
+        type: string
+        description: Link all'indirizzo del biglietto
 
