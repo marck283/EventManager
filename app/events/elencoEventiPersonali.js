@@ -40,12 +40,10 @@ router.get("", async (req, res) => {
     
     var user = req.loggedUser.id;
 
-    
     //Eseguire la funzione verify, poi cercare gli eventi nel database
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
     eventsPub = await eventPublic.find({});
     eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
-    
 
     if(eventsPers.length > 0 || eventsPub.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");

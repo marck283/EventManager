@@ -1,4 +1,4 @@
-var request = () => {    
+var request = (idElem) => {    
     fetch("/api/v1/eventiCalendarioPersonale/", {
         method: 'GET',
         headers: {
@@ -8,7 +8,7 @@ var request = () => {
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(resp))
+                resp.json().then(resp => manipulateDom(resp, idElem));
                 break;
             }
 
@@ -16,6 +16,7 @@ var request = () => {
                 resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
                 break;
             }
+
             case 404: {
                 resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
                 break;
@@ -28,18 +29,20 @@ var request = () => {
     }).catch(error => console.log(error));
 };
 
+var getId = id => document.getElementById(id);
+
 var showIfChecked = () => {
-    if (document.getElementById("buttonSwitch").checked) {
-        document.getElementById("calendarWrapper").style.display = "block";
-        document.getElementById("divCal").style.display = "block";
-        document.getElementById("eventLists").style.display = "none";
-        document.getElementById("eventLists").innerHTML = "";
+    if (getId("buttonSwitch").checked) {
+        getId("calendarWrapper").style.display = "block";
+        getId("divCal").style.display = "block";
+        getId("eventLists").style.display = "none";
+        getId("eventLists").innerHTML = "";
     } else {
-        request();
-        document.getElementById("calendarWrapper").style.display = "none";
-        document.getElementById("divCal").style.display = "none";
-        document.getElementById("myPopup1").style.display = "none";
-        document.getElementById("eventLists").style.display = "block";
+        request("eventLists");
+        getId("calendarWrapper").style.display = "none";
+        getId("divCal").style.display = "none";
+        getId("myPopup1").style.display = "none";
+        getId("eventLists").style.display = "block";
     }
 };
 
@@ -63,7 +66,7 @@ var manipulateDom = (response, id = "eventLists") => {
 
             var row = document.createElement("div");
             if(id === "eventLists") {
-                row.classList ="row row-cols-4";
+                row.classList ="row row-cols-3";
             } else {
                 row.className = "row";
             }
@@ -87,13 +90,11 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                if(object.id == "pers"){
-                                     objectId.href = "layoutPersonale.html?id="+object.idevent+"&token="+token;
-
-                                }
-                if(object.id == "pub"){
-                                     objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
-
+                if(object.id == "pers") {
+                    objectId.href = "layoutPersonale.html?id="+object.idevent+"&token="+token;
+                }
+                if(object.id == "pub") {
+                    objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
                 }
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");

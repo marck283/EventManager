@@ -1,5 +1,5 @@
-var request = () => {    
-    fetch("/api/v1/eventiCalendarioPubblico/", {
+var request = (passato, idElem) => {    
+    fetch("/api/v1/eventiCalendarioPubblico/?passato=" + passato, {
         method: 'GET',
         headers: {
             'x-access-token': token
@@ -8,12 +8,12 @@ var request = () => {
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(resp))
+                resp.json().then(resp => manipulateDom(resp, idElem));
                 break;
             }
 
             case 404: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                resp.json().then(resp => getId(idElem).textContent = resp.error);
                 break;
             }
 
@@ -24,18 +24,26 @@ var request = () => {
     }).catch(error => console.log(error));
 };
 
+var getId = id => document.getElementById(id);
+
 var showIfChecked = () => {
-    if (document.getElementById("buttonSwitch").checked) {
-        document.getElementById("calendarWrapper").style.display = "block";
-        document.getElementById("divCal").style.display = "block";
-        document.getElementById("eventLists").style.display = "none";
-        document.getElementById("eventLists").innerHTML = "";
+    if (getId("buttonSwitch").checked) {
+        getId("calendarWrapper").style.display = "block";
+        getId("divCal").style.display = "block";
+        getId("eventLists").style.display = "none";
+        getId("eventLists").innerHTML = "";
+        getId("storicoEventiContainer").style.display = "block";
+        getId("storicoEventi").style.display = "block";
+        request("True", "storicoEventi");
     } else {
-        request();
-        document.getElementById("calendarWrapper").style.display = "none";
-        document.getElementById("divCal").style.display = "none";
-        document.getElementById("myPopup1").style.display = "none";
-        document.getElementById("eventLists").style.display = "block";
+        request("False", "eventLists");
+        getId("calendarWrapper").style.display = "none";
+        getId("divCal").style.display = "none";
+        getId("myPopup1").style.display = "none";
+        getId("eventLists").style.display = "block";
+        getId("storicoEventiContainer").style.display = "none";
+        getId("storicoEventi").style.display = "none";
+        getId("storicoEventi").innerHTML = "";
     }
 };
 
@@ -59,7 +67,7 @@ var manipulateDom = (response, id = "eventLists") => {
 
             var row = document.createElement("div");
             if(id === "eventLists") {
-                row.classList ="row row-cols-4";
+                row.classList ="row row-cols-3";
             } else {
                 row.className = "row";
             }
