@@ -209,9 +209,6 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
-                  
-              
-              
 
   /EventiPersonali:
     post:
@@ -361,6 +358,39 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
 
+  /EventiPubblici/{IDevento}:
+    patch:
+      summary: 'Modifica evento pubblico.'
+      description: 'Modifica di un evento pubblico programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento pubblico.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPubblico'
+      responses:
+  
+  /EventiPersonale/{IDevento}:
+    patch:
+      summary: 'Modifica evento personale.'
+      description: 'Modifica di un evento personale programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento personale.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPersonale'
+      responses:
 
   /Utenti/me:
     get:
@@ -748,8 +778,6 @@ components:
         category:
           type: string
           description: "La categoria in cui l'attività è classificata"
-    
-   
 
     EventoPubblico:
       type: object
@@ -900,4 +928,45 @@ components:
               type: string
               description: 'Città dell''Evento.'
 
+    FormModificaPubblico:
+      type: object
+      description: 'Oggetto che rappresenta il form di modifica di un evento pubblico.'
+      properties:
+        nomeAtt:
+          type: string
+          description: 'Nuovo nome evento.'
+        categoria:
+          type: string
+          description: 'Nuova categoria evento.'
+        luogoEv:
+        type: object
+        properties:
+          indirizzo:
+            type: string
+            description: 'Nuovo indirizzo evento.'
+          citta:
+            type: string
+            description: 'Nuova città evento.'
+        maxPers:
+        type: integer
+        description: 'Nuovo numero massimo partecipanti.'
 
+    FormModificaPersonale:
+      type: object
+      description: 'Oggetto che rappresenta il form di modifica di un evento personale.'
+      properties:
+        nomeAtt:
+          type: string
+          description: 'Nuovo nome evento.'
+        categoria:
+          type: string
+          description: 'Nuova categoria evento.'
+        luogoEv:
+        type: object
+        properties:
+          indirizzo:
+            type: string
+            description: 'Nuovo indirizzo evento.'
+          citta:
+            type: string
+            description: 'Nuova città evento.'
