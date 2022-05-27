@@ -13,12 +13,12 @@ var request = (passato, idElem) => {
                 }
 
                 case 401: {
-                    resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
+                    resp.json().then(resp => document.getElementById(idElem).textContent = resp.message);
                     break;
                 }
 
                 case 404: {
-                    resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                    resp.json().then(resp => document.getElementById(idElem).textContent = resp.error);
                     break;
                 }
 
@@ -109,7 +109,7 @@ var manipulateDom = (response, id = "eventLists") => {
                         objectId.href = "layoutPrivato.html";
                     }
                 }
-                objectId.href = "?id=" + object.idevent + "&token=" + token;
+                objectId.href += "?id=" + object.idevent + "&token=" + token;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";
