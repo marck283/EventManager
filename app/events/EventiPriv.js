@@ -3,8 +3,10 @@ const eventPrivat = require('../collezioni/eventPrivat.js');
 const invit = require('../collezioni/invit.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
+const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
+var qrcode = require('qrcode');
 
 
 
@@ -54,28 +56,34 @@ router.get('/:id', async(req, res) => {
 router.post('/:id/Iscrizioni', async (req, res) => {
 
 
-    var utent = req.loggedUser.id;
+    var utent = "628e8c29d108a0e2094d364b";
 
 
-    var id_evento=req.params.id;
+    var id_evento= req.params.id;
 
     
     
     try{
 
-        let eventP = await eventPublic.findById(id_evento);
+        let eventP = await eventPrivat.findById(id_evento);
+        
+        
+
         if(eventP == undefined ){
             res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
             return;
 
         }
 
-        if(eventP.partecipantiID.length==eventP.partecipantiID.maxPers){
-
-            res.status(403).json({ error: "Non spazio nell'evento"}).send();
+        if(!eventP.invitatiID.includes(utent)){
+            res.status(403).json({ error: "Non sei invitato a questo evento"}).send();
             return;
-            
+
         }
+
+
+
+        
 
         for(elem of eventP.partecipantiID){
             if(elem==utent){
@@ -102,8 +110,8 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 throw Error("errore creazione biglietto")
             }
 
-            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"pub"});
-            console.log(bigl.qr);
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"priv"});
+           
             return await bigl.save();
 
             
@@ -129,7 +137,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
 
-        res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();
+        res.location("/api/v1/EventiPrivati/" +id_evento+ "/" + utent).status(201).send();
 
 
 
