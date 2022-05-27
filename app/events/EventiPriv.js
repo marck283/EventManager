@@ -54,7 +54,93 @@ router.get('/:id', async(req, res) => {
 router.post('/:id/Iscrizioni', async (req, res) => {
 
 
+    var utent = req.loggedUser.id;
+
+
+    var id_evento=req.params.id;
+
     
+    
+    try{
+
+        let eventP = await eventPublic.findById(id_evento);
+        if(eventP == undefined ){
+            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+            return;
+
+        }
+
+        if(eventP.partecipantiID.length==eventP.partecipantiID.maxPers){
+
+            res.status(403).json({ error: "Non spazio nell'evento"}).send();
+            return;
+            
+        }
+
+        for(elem of eventP.partecipantiID){
+            if(elem==utent){
+
+                 res.status(403).json({ error: "Già iscritto"}).send();
+                 return;
+            }
+
+        }
+
+        let data = {
+            idUtente: utent,
+            idEvento: id_evento
+        };
+
+
+
+        let stringdata = JSON.stringify(data);
+
+        //Print QR code to file using base64 encoding
+        
+        qrcode.toDataURL(stringdata, async function(err, qrcode) {
+            if(err) {
+                throw Error("errore creazione biglietto")
+            }
+
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"pub"});
+            console.log(bigl.qr);
+            return await bigl.save();
+
+            
+            
+        });
+
+        
+
+        
+
+
+        //Si cerca l'utente organizzatore dell'evento
+        let utente = await Users.findById(utent);
+
+        eventP.partecipantiID.push(utent);
+        utente.EventiIscrtto.push(id_evento);
+
+        await eventP.save()
+        await utente.save()
+
+        
+
+
+
+
+        res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();
+
+
+
+    }catch (error){
+        console.log(error);
+        res.status(500).json({ error: "Errore nel server"}).send();
+
+
+
+  
+    }
 
 
 
