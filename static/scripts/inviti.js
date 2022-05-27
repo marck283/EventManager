@@ -1,5 +1,7 @@
 
-fetch('../api/v1/Utente/me/inviti', {
+
+var token = '';
+fetch('../api/v1/Utenti/me/Inviti', {
 		        method: 'GET',
 		        headers: {
             		'x-access-token': token
@@ -19,12 +21,53 @@ fetch('../api/v1/Utente/me/inviti', {
         				resp.json().then(data => {
 
 
-        					for(var elem of data){
-        						let document.getElementById("error").innerHTML
+        					let paragrafo = document.getElementById("inviti");
+
+        					for(elem of data){
+        						
+
+        						if(elem.accettato == false){
+
+			                        let d = document.createElement("div");
+
+			                        let tipo = document.createElement("h4");
+
+			                        tipo.innerHTML = "Tipo Evento: "+elem.tipoevento;
+
+			                        d.appendChild(tipo);
+
+			                        let h1 = document.createElement("h4");
+
+			                        h1.innerHTML = "Evento: " + elem.nomeAtt;
+
+			                        d.appendChild(h1);
+
+			                        let h2 = document.createElement("h4");
+
+			                        h2.innerHTML = "Organizzatore: " + elem.nomeOrg;
+
+			                        d.appendChild(h2);
+
+			                        
+
+			                        let h3 = document.createElement("h4");
+
+			                        h3.innerHTML = "--------------------"
 
 
+			                        d.appendChild(h3);
 
-        					}
+			                        
+
+			                        paragrafo.appendChild(d)
+
+		                    	}else{
+
+		                    		paragrafo.innerHTML = "già accettato"
+		                    	}
+		                        
+
+		                    }
 
 
 
@@ -54,6 +97,6 @@ fetch('../api/v1/Utente/me/inviti', {
         			return;
     			}).catch( error => console.error(error) ); // If there is any error you will catch them here
 
-		}
+		
 
 

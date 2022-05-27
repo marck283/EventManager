@@ -638,7 +638,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /Utenti/me/inviti:
+  /Utenti/me/Inviti:
     get:
       summary: 'Visualizzazione degli inviti'
       description: 'Visualizzazione degli inviti per eventi privati e pubblici per l''utente corrente autenticato.'

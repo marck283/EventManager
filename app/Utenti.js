@@ -35,11 +35,12 @@ router.get('/me/Inviti', async (req, res) => {
     try{
         
 
-        IDexample = req.loggedUser.id;
+        IDexample = "628e8c29d108a0e2094d364b";
 
 
 
         ListaInviti = await Inviti.find({utenteid:IDexample});
+        
        
         if(ListaInviti.length == 0){
             
@@ -51,10 +52,11 @@ router.get('/me/Inviti', async (req, res) => {
         }
         
 
-        var ListInvit = []; 
+        var ListInvit = [];
         let utente = await Utente.findById(IDexample);
         var accettato = false;
         for(var elem of ListaInviti){
+            
             accettato = false;
             if(elem.tipoevent == "pub"){
 
@@ -75,7 +77,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                     }
 
-                    ListaInviti.push({ tipoevento: elem.tipoevent,
+                    ListInvit.push({ tipoevento: elem.tipoevent,
                         idevento: IDexample,
                         idutente: utente.nome,
                         nomeOrg: orga.nome,
@@ -89,6 +91,7 @@ router.get('/me/Inviti', async (req, res) => {
 
             if(elem.tipoevent == "priv"){
                 let evento = await eventPriv.findById(elem.eventoid);
+
 
                 if(evento){
 
@@ -105,7 +108,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                     }
 
-                    ListaInviti.push({ tipoevento: elem.tipoevent,
+                    ListInvit.push({ tipoevento: elem.tipoevent,
                         idevento: IDexample,
                         idutente: utente.nome,
                         nomeOrg: orga.nome,
@@ -120,7 +123,7 @@ router.get('/me/Inviti', async (req, res) => {
 
         }
 
-        if(ListaInviti.length==0){
+        if(ListInvit.length==0){
             
 
             res.status(403).json({error: "Non c'è nessun evento valido associato al biglietto"}).send();
@@ -131,7 +134,7 @@ router.get('/me/Inviti', async (req, res) => {
         
 
 
-        res.status(200).json(ListBigl);
+        res.status(200).json(ListInvit);
 
 
 
