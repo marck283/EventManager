@@ -1,6 +1,6 @@
 const express = require('express');
 const res = require('express/lib/response');
-const eventPublic = require('../collezioni/eventPublic.js');
+const eventPersonal = require('../collezioni/eventPersonal.js');
 const router = express.Router();
 const Users = require('../collezioni/utenti.js');
 
@@ -12,10 +12,10 @@ router.patch('/:id', async(req, resp) => {
     try{
         
         let utente = await Users.findById(utent);
-        let evento = await eventPublic.findById(id_evento);
+        let evento = await eventPersonal.findById(id_evento);
         
         if(evento == undefined){
-            res.status(404).json({error: "Non esiste alcun evento pubblico con l'id specificato."});
+            res.status(404).json({error: "Non esiste alcun evento personale con l'id specificato."});
             return;
         }
         
@@ -36,13 +36,10 @@ router.patch('/:id', async(req, resp) => {
         if(req.body.luogoEv.citta == ""){
             evento.luogoEv.citta = req.body.luogoEv.citta;
         }
-        if(req.body.maxPers == ""){
-            evento.maxPers = req.body.maxPers;
-        }
         
         await evento.save();
         
-        console.log('Evento pubblico modificato con successo');
+        console.log('Evento personale modificato con successo');
         
     }catch(error){
         console.log(error);
