@@ -33,17 +33,43 @@ router.get("/:data", async (req, res) => {
     }
 });
 
+var findPubEvents = async (user) => {
+    var eventsPub = await eventPublic.find({});
+    eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+    return eventsPub;
+};
+
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [];
     var obj = {}, token = req.header("x-access-token");
     
     
     var user = req.loggedUser.id;
-
-    //Eseguire la funzione verify, poi cercare gli eventi nel database
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
-    eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+
+    var passato = req.query.passato;
+        switch (passato) {
+            case "True": {
+                //Filtro per date passate
+                eventsPub = await findPubEvents(user);
+                eventsPub = eventsPub.filter(e => {
+                    var dateStr = e.data, hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
+                    dateStr = dateStr.split('/').join('-');
+                    d = new Date(dateStr), curr = new Date();
+                    d.setHours(hoursDB);
+                    d.setMinutes(minsDB);
+                    return d.getTime() < curr.getTime();
+                });
+                break;
+            }
+            case "False": {
+                eventsPub = await findPubEvents(user);
+                break;
+            }
+            default: {
+                res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
+            }
+        }
 
     if(eventsPers.length > 0 || eventsPub.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
@@ -53,7 +79,7 @@ router.get("", async (req, res) => {
         obj.eventi = eventsPers;
         res.status(200).json(obj);
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento programmato."});
+        res.status(404).json({error: "Non esiste alcun evento programmato."});
     }
 });
 

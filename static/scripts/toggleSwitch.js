@@ -1,5 +1,5 @@
-var request = (passato, idElem) => {    
-    fetch("/api/v1/eventiCalendarioPubblico/?passato=" + passato, {
+var request = (idElem) => {    
+    fetch("/api/v1/eventiCalendarioPubblico/", {
         method: 'GET',
         headers: {
             'x-access-token': token
@@ -32,18 +32,12 @@ var showIfChecked = () => {
         getId("divCal").style.display = "block";
         getId("eventLists").style.display = "none";
         getId("eventLists").innerHTML = "";
-        getId("storicoEventiContainer").style.display = "block";
-        getId("storicoEventi").style.display = "block";
-        request("True", "storicoEventi");
     } else {
-        request("False", "eventLists");
+        request("eventLists");
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
         getId("eventLists").style.display = "block";
-        getId("storicoEventiContainer").style.display = "none";
-        getId("storicoEventi").style.display = "none";
-        getId("storicoEventi").innerHTML = "";
     }
 };
 

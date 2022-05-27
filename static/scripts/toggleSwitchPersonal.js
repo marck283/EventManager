@@ -1,5 +1,5 @@
-var request = (idElem) => {    
-    fetch("/api/v1/eventiCalendarioPersonale/", {
+var request = (passato, idElem) => {    
+    fetch("/api/v1/eventiCalendarioPersonale/?passato=" + passato, {
         method: 'GET',
         headers: {
             'x-access-token': token
@@ -33,16 +33,22 @@ var getId = id => document.getElementById(id);
 
 var showIfChecked = () => {
     if (getId("buttonSwitch").checked) {
+        request("True", "storicoEventi");
         getId("calendarWrapper").style.display = "block";
         getId("divCal").style.display = "block";
         getId("eventLists").style.display = "none";
         getId("eventLists").innerHTML = "";
+        getId("storicoEventiContainer").style.display = "block";
+        getId("storicoEventi").style.display = "block";
     } else {
-        request("eventLists");
+        request("False", "eventLists");
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
         getId("eventLists").style.display = "block";
+        getId("storicoEventiContainer").style.display = "none";
+        getId("storicoEventi").style.display = "none";
+        getId("storicoEventi").innerHTML = "";
     }
 };
 

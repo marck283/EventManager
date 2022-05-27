@@ -4,18 +4,6 @@ const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 
-var findPubEvents = async (auth, res, user = "") => {
-    var events = await eventPublic.find({});
-    if(auth) {
-        events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined);
-    }
-    if (events.length > 0) {
-        res.status(200).json(eventsMap.map(events, "pub"));
-    } else {
-        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-    }
-}
-
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
 
@@ -24,52 +12,25 @@ router.get("", async (req, res) => {
     var user = "";
 
     if (token) {
-
-
         jwt.verify(token, process.env.SUPER_SECRET, function (err, decoded) {
 
             if (!err) {
                 user = decoded.id;
                 autenticato = true;
             }
-
         });
-
-
     }
 
-    if (autenticato == true) {
-        var passato = req.query.passato;
-        switch (passato) {
-            case "True": {
-                //Filtro per date passate
-                var eventsS = await eventPublic.find({});
-                eventsS = eventsS.filter(e => {
-                    var dateStr = e.data, hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
-                    dateStr = dateStr.split('/').join('-');
-                    d = new Date(dateStr), curr = new Date();
-                    d.setHours(hoursDB);
-                    d.setMinutes(minsDB);
-                    return d.getTime() < curr.getTime();
-                });
-                if (eventsS.length > 0) {
-                    res.status(200).json(eventsMap.map(eventsS, "pub"));
-                } else {
-                    res.status(404).json({ error: "Non sono presenti eventi passati." });
-                }
-                return;
-            }
-            case "False": {
-                findPubEvents(true, res, user);
-                return;
-            }
-            default: {
-                res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
-            }
-        }
+    var events = await eventPublic.find({});
+    if(autenticato) {
+        events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined);
+    }
+    if (events.length > 0) {
+        res.status(200).json(eventsMap.map(events, "pub"));
     } else {
-        findPubEvents(false, res);
+        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
     }
+
     return;
 });
 
