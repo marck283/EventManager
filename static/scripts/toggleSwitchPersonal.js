@@ -1,32 +1,32 @@
-var request = (passato, idElem) => {    
+var request = (passato, idElem) => {
     fetch("/api/v1/eventiCalendarioPersonale/?passato=" + passato, {
         method: 'GET',
         headers: {
             'x-access-token': token
         }
     })
-    .then(resp => {
-        switch(resp.status) {
-            case 200: {
-                resp.json().then(resp => manipulateDom(resp, idElem));
-                break;
-            }
+        .then(resp => {
+            switch (resp.status) {
+                case 200: {
+                    resp.json().then(resp => manipulateDom(resp, idElem));
+                    break;
+                }
 
-            case 401: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
-                break;
-            }
+                case 401: {
+                    resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
+                    break;
+                }
 
-            case 404: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
-                break;
-            }
+                case 404: {
+                    resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
+                    break;
+                }
 
-            default: {
-                console.log(resp.status);
+                default: {
+                    console.log(resp.status);
+                }
             }
-        }
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
 };
 
 var getId = id => document.getElementById(id);
@@ -75,8 +75,8 @@ var manipulateDom = (response, id = "eventLists") => {
             ul.appendChild(li);
 
             var row = document.createElement("div");
-            if(id === "eventLists") {
-                row.classList ="row row-cols-3";
+            if (id === "eventLists") {
+                row.classList = "row row-cols-3";
             } else {
                 row.className = "row";
             }
@@ -100,12 +100,16 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                if(object.id == "pers") {
-                    objectId.href = "layoutPersonale.html?id="+object.idevent+"&token="+token;
+                if (object.id == "pers") {
+                    objectId.href = "layoutPersonale.html";
+                } else {
+                    if (object.id == "pub") {
+                        objectId.href = "layoutPubblico.html";
+                    } else {
+                        objectId.href = "layoutPrivato.html";
+                    }
                 }
-                if(object.id == "pub") {
-                    objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
-                }
+                objectId.href = "?id=" + object.idevent + "&token=" + token;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";

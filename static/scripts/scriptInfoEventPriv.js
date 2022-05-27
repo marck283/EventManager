@@ -1,5 +1,5 @@
 let url = window.location.href;
-var id = '6290f15943783ca85272fa34';
+var id = '';
 var token = '';
 
 try{
@@ -13,7 +13,12 @@ try{
     console.log(error);
 }
 
-fetch('../api/v1/EventiPrivati/'+id)
+fetch('../api/v1/EventiPrivati/'+id, {
+    method: 'GET',
+    headers: {
+        'x-access-token': token
+    }
+})
     .then(resp => {
         switch(resp.status){
             case 200: {

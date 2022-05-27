@@ -4,6 +4,7 @@ var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
 const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
 const EventoPersonale = require('./events/EventiPers.js');
+const EventoPrivato = require('./events/EventiPriv.js');
 const calendarEventsPers = require("./events/elencoEventiPersonali.js");
 const calendarEventsPub = require("./events/elencoEventiPublic.js");
 const autenticato = require('./authentication.js');
@@ -36,6 +37,7 @@ app.use(tokenChecker);
 //********************************************************** attenzione *********************
 app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
 app.use('/api/v1/EventiPersonali', EventoPersonale);
+app.use('/api/v1/EventiPrivati', EventoPrivato);
 app.use('/api/v1/Utenti', Utente);
 app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
 
