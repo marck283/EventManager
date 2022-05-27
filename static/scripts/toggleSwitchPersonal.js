@@ -38,14 +38,18 @@ var showIfChecked = () => {
         getId("divCal").style.display = "block";
         getId("eventLists").style.display = "none";
         getId("eventLists").innerHTML = "";
+        getId("elencoEventi").style.display = "block";
         getId("storicoEventiContainer").style.display = "block";
         getId("storicoEventi").style.display = "block";
+        request("False", "elencoEventi");
     } else {
         request("False", "eventLists");
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
         getId("eventLists").style.display = "block";
+        getId("elencoEventi").style.display = "none";
+        getId("elencoEventi").innerHTML = "";
         getId("storicoEventiContainer").style.display = "none";
         getId("storicoEventi").style.display = "none";
         getId("storicoEventi").innerHTML = "";

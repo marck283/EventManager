@@ -1,13 +1,14 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const eventPersonal = require('../collezioni/eventPersonal.js');
+const eventPrivate = require('../collezioni/eventPrivat.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 
 router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
-    var eventsPers = [], eventsPub = [];
+    var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
     
     
@@ -18,13 +19,16 @@ router.get("/:data", async (req, res) => {
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
     eventsPers = eventsPers.filter(e => e.data.includes(str));
     eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str)); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
+    eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str));
+    eventsPriv = await eventPrivate.find({});
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str));
     
-
-    if(eventsPers.length > 0 || eventsPub.length > 0) {
+    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
         eventsPub = eventsMap.map(eventsPub, "pub");
+        eventsPriv = eventsMap.map(eventsPriv, "priv");
         eventsPub.forEach(e => eventsPers.push(e));
+        eventsPriv.forEach(e => eventsPers.push(e));
         obj.eventi = eventsPers;
         obj.data = str;
         res.status(200).json(obj);
