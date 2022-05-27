@@ -638,6 +638,58 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
+  /Utenti/me/inviti:
+    get:
+      summary: 'Visualizzazione degli inviti'
+      description: 'Visualizzazione degli inviti per eventi privati e pubblici per l''utente corrente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco inviti per l''utente corrente autenticato.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invito'
+        '404':
+          description: 'Non esiste alcun invito per l''utente corrente autenticato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Errore nel server.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
   
 components:
   schemas:
@@ -901,5 +953,35 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
+
+  Invito:
+    type: object
+    description: 'Oggetto che rappresenta le informazioni legate all''invito'
+    required:
+    - tipoevento
+    - idevento
+    - idutente
+    - nomeOrg
+    - nomeAtt
+    - urlInvito
+    properties:
+      tipoevento:
+        type: string
+        description: il tipo di evento dell'invito
+      idevento:
+        type: string
+        description: l'id dell'evento dell'invito
+      idutente:
+        type: number
+        description: l'id dell'utente a cui si riferisce l'invito
+      nomeOrg: 
+        type: string
+        description: nome dell'utente che ha organizzato l'evento
+      nomeAtt:
+        type: string
+        description: nome dell'evento
+      urlInvito:
+        type: string
+        description: Link all'indirizzo dell'invito
 
 
