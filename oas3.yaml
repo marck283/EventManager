@@ -985,6 +985,7 @@ components:
     - nomeOrg
     - nomeAtt
     - bigliettoUrl
+    - tipoevento
     - img
     properties:
       eventoUrl:
@@ -1008,4 +1009,7 @@ components:
       bigliettoUrl:
         type: string
         description: Link all'indirizzo del biglietto
+      tipoevento:
+        type: string
+        description: tipo dell'evento che è associato il biglietto
 

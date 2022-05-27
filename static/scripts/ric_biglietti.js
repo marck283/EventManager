@@ -12,7 +12,15 @@ fetch('../api/v1/Utenti/me/Biglietti', {method: 'GET', headers: {'x-access-token
 
                     for(elem of resp){
 
+
+
                         let d = document.createElement("div");
+
+                        let tipo = document.createElement("h4");
+
+                        tipo.innerHTML = "Tipo Evento: "+elem.tipoevento;
+
+                        d.appendChild(tipo);
 
                         let h1 = document.createElement("h4");
 

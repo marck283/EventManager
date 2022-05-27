@@ -58,7 +58,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 throw Error("errore creazione biglietto")
             }
 
-            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode});
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"pub"});
             console.log(bigl.qr);
             return await bigl.save();
 

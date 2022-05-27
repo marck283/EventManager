@@ -3,6 +3,8 @@ const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
 const Biglietto = require('./collezioni/biglietti.js');
 const eventPublic = require('./collezioni/eventPublic.js');
+const eventPrivat = require('./collezioni/eventPrivat.js');
+
 
 
 
@@ -54,19 +56,40 @@ router.get('/me/Biglietti', async (req, res) => {
         let utente = await Utente.findById(IDexample);
 
         for(var elem of ListaBiglietti){
-            let evento = await eventPublic.findById(elem.eventoid);
+            if(elem.tipoevento == "pub"){
+                let evento = await eventPublic.findById(elem.eventoid);
 
-            if(evento){
-                let orga = await Utente.findById(evento.organizzatoreID);
-                ListBigl.push({ eventoUrl: "/api/v1/EventiPubblici/" + evento._id,
-                    utenteUrl: "/api/v1/Utenti/" + IDexample,
-                    nomeUtente: utente.nome,
-                    nomeOrg: orga.nome,
-                    nomeAtt: evento.nomeAtt,
-                    img: elem.qr,
-                    bigliettoUrl: "/api/v2/Biglietti/" + elem._id });
-                
+                if(evento){
+                    let orga = await Utente.findById(evento.organizzatoreID);
+                    ListBigl.push({ eventoUrl: "/api/v1/EventiPubblici/" + evento._id,
+                        utenteUrl: "/api/v1/Utenti/" + IDexample,
+                        nomeUtente: utente.nome,
+                        nomeOrg: orga.nome,
+                        nomeAtt: evento.nomeAtt,
+                        tipoevento: elem.tipoevento,
+                        img: elem.qr,
+                        bigliettoUrl: "/api/v2/Biglietti/" + elem._id });
+                    
+                }
             }
+
+            if(elem.tipoevento == "priv"){
+                let evento = await eventPrivat.findById(elem.eventoid);
+
+                if(evento){
+                    let orga = await Utente.findById(evento.organizzatoreID);
+                    ListBigl.push({ eventoUrl: "/api/v1/EventiPrivati/" + evento._id,
+                        utenteUrl: "/api/v1/Utenti/" + IDexample,
+                        nomeUtente: utente.nome,
+                        nomeOrg: orga.nome,
+                        nomeAtt: evento.nomeAtt,
+                        tipoevento: elem.tipoevento,
+                        img: elem.qr,
+                        bigliettoUrl: "/api/v2/Biglietti/" + elem._id });
+                    
+                }
+            }
+
 
         }
 
