@@ -637,6 +637,8 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
+  
 components:
   schemas:
     PublicEvent:
