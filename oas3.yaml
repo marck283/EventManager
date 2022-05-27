@@ -637,8 +637,68 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
+  /ricercaUtenti:
+    get:
+      description: >-
+        Ritorna la lista di utenti il cui nome contiene la stringa cercata
+      summary: Ricerca gli utenti il cui nome contiene la stringa cercata
+      parameters:
+      - name: nome
+        in: query
+        description: Il nome dell'utente cercato
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione dell'utente
+        required: true
+    responses:
+      '200':
+        description: Lista di utenti il cui nome contiene la stringa indicata
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                utenti:
+                  type: array
+                  description: La lista di utenti il cui nome contiene la stringa cercata
+                  items:
+                    $ref: '#components/schemas/Utente'
+      
+      '401':
+        description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: "Messaggio d'errore"
+                success:
+                  type: boolean
+                  description: "Indicatore del successo o meno dell'operazione"
+      
+      '404':
+        description: Nessun nome utente contiene la stringa indicata
+        content:
+          application/json:
+            schema:
+              type: object
+                properties:
+                  error:
+                    type: string
+                    description: Messaggio di errore
+
 components:
   schemas:
+    Utente:
+      description: Il nome dell'utente trovato
+      type: string
+
     PublicEvent:
       description: Oggetto dell'evento pubblico per la sua creazione
       type: object
