@@ -51,6 +51,20 @@ router.get('/:id', async(req, res) => {
 });
 
 
+router.post('/:id/Iscrizioni', async (req, res) => {
+
+
+    
+
+
+
+});
+
+
+
+
+
+
 
 router.post('', async (req, res) => {
 
