@@ -356,21 +356,7 @@ paths:
                     description: "Messaggio d'errore"
                   success:
                     type: boolean
-                    description: "Indicatore del successo o meno dell'operazione"
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    description: "Indicatore del successo o meno dell'operazione"                  
 
   /EventiPubblici/{IDevento}:
     patch:
@@ -433,7 +419,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FormModificaPersonale'
+              $ref: '#/components/schemas/FormModificaPersonalePrivato'
       responses:
         '403':
           description: 'Non sei autorizzato a modificare l'evento personale corrente.'
@@ -466,18 +452,52 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+  /EventiPersonale/{IDevento}
+    patch:
+      summary: 'Modifica evento privato.'
+      description: 'Modifica di un evento privato programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento privato.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPersonalePrivato'
+      responses:
+        '403':
+          description: 'Non sei autorizzato a modificare l'evento privato corrente.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '404':
+          description: 'Non esiste alcun evento privato associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /Utenti/me:
     get:
@@ -1038,7 +1058,7 @@ components:
           type: integer
           description: 'Nuovo numero massimo partecipanti.'
 
-    FormModificaPersonale:
+    FormModificaPersonalePrivato:
       type: object
       description: 'Oggetto che rappresenta il form di modifica di un evento personale.'
       properties:
