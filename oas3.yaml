@@ -964,6 +964,7 @@ components:
     - nomeOrg
     - nomeAtt
     - urlInvito
+    - accettato
     properties:
       tipoevento:
         type: string
@@ -983,5 +984,9 @@ components:
       urlInvito:
         type: string
         description: Link all'indirizzo dell'invito
+      accettato:
+        type: boolean
+        description: indica se l'utente ha già o meno accettato l'invito
+
 
 
