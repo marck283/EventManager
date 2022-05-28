@@ -23,7 +23,7 @@ document.getElementById("input").addEventListener("keydown", (event) => {
 
 var manipulateDom = resp => {
     document.getElementById("result").innerHTML = "";
-    
+
     var h3 = document.createElement("h3");
     h3.textContent = "Elenco utenti trovati";
     document.getElementById("result").appendChild(h3);
@@ -54,6 +54,9 @@ var manipulateDom = resp => {
         var body = document.createElement("div");
         body.className = "card-body";
         body.textContent = u.nome;
+        body.onclick = function () {
+            window.location = "#";
+        }
         card.appendChild(body);
     }
 }
