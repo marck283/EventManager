@@ -153,7 +153,7 @@ paths:
 
   /EventiPrivati/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione e la creazione di un bliglietto per quell'evento da parte dell'utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
+      description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione, con biglietto allegato, per quell'evento da parte dell'utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
       summary: Iscrizione ad un evento privato
       parameters:
       - name: Idevento
@@ -168,7 +168,7 @@ paths:
         required: true
       responses:
         '201':
-          description: 'Iscrizione all"evento privato e creazione del biglietto. link all''iscrizione dell''evento'
+          description: 'Iscrizione all"evento privato. link all''iscrizione dell''evento'
           headers:
             'Location':
               schema:
