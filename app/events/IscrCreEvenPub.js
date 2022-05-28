@@ -96,6 +96,90 @@ router.post('/:id/Inviti', async (req, res) => {
 
         }
 
+        //controllo che le date non siano di una giornata precedente a quella odierna
+
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var data = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = data.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+
+        
+
+
         if(eventP.organizzatoreID != utent ){
             res.status(403).json({error: "L'utente non può invitare ad un evento che non è suo"}).send();
             return;

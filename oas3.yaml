@@ -767,7 +767,7 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
         '403':
-          description: "Il server ha impedito di creare l'invito (es: l'utente autenticato corrente non è l'organizzatore dell'evento; l'utente autenticato corrente sta invitando lo stesso utente allo stesso evento; L'utente autenticato corrente si sta auto invitando; l'utente a cui si sta inviando l'invito è già partecipante all'evento associato a IDevento"
+          description: "Il server ha impedito di creare l'invito (es: l'utente autenticato corrente non è l'organizzatore dell'evento; l'utente autenticato corrente sta invitando lo stesso utente allo stesso evento; L'utente autenticato corrente si sta auto invitando; l'utente a cui si sta inviando l'invito è già partecipante all'evento associato a IDevento; L'evento a cui si vuole invitare non è più disponibile"
           content:
             application/json:
               schema:
