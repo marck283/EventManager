@@ -26,45 +26,55 @@ fetch('../api/v1/Utenti/me/Inviti', {
         					for(elem of data){
         						
 
-        						if(elem.accettato == false){
 
-			                        let d = document.createElement("div");
+		                        let d = document.createElement("div");
 
-			                        let tipo = document.createElement("h4");
+		                        let tipo = document.createElement("h4");
 
-			                        tipo.innerHTML = "Tipo Evento: "+elem.tipoevento;
+		                        tipo.innerHTML = "Tipo Evento: "+elem.tipoevento;
 
-			                        d.appendChild(tipo);
+		                        d.appendChild(tipo);
 
-			                        let h1 = document.createElement("h4");
+		                        let h1 = document.createElement("h4");
 
-			                        h1.innerHTML = "Evento: " + elem.nomeAtt;
+		                        h1.innerHTML = "Evento: " + elem.nomeAtt;
 
-			                        d.appendChild(h1);
+		                        d.appendChild(h1);
 
-			                        let h2 = document.createElement("h4");
+		                        let h2 = document.createElement("h4");
 
-			                        h2.innerHTML = "Organizzatore: " + elem.nomeOrg;
+		                        h2.innerHTML = "Organizzatore: " + elem.nomeOrg;
 
-			                        d.appendChild(h2);
+		                        d.appendChild(h2);
 
-			                        
+		                        var h4 = document.createElement("h4");
 
-			                        let h3 = document.createElement("h4");
+		                      
 
-			                        h3.innerHTML = "--------------------"
+		                        if(elem.accettato == true){
+
+		                        	
+
+		                        	h4.innerHTML = "già accettato"
+
+		                        	d.appendChild(h4);
 
 
-			                        d.appendChild(h3);
+		                        }
 
-			                        
+		                        let h3 = document.createElement("h4");
 
-			                        paragrafo.appendChild(d)
+		                        h3.innerHTML = "--------------------"
 
-		                    	}else{
 
-		                    		paragrafo.innerHTML = "già accettato"
-		                    	}
+		                        d.appendChild(h3);
+
+		                        
+
+		                        paragrafo.appendChild(d)
+
+		                    	
+		                    	
 		                        
 
 		                    }

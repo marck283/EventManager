@@ -309,7 +309,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
