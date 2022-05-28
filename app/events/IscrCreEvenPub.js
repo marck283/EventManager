@@ -68,6 +68,18 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 });
 
 
+router.post('/:id/Inviti', async (req, res) => {
+
+    
+
+    
+    
+
+
+
+});
+
+
 router.post('', async (req, res) => {
 
     
