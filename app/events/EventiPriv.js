@@ -75,6 +75,84 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var data = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = data.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
         if(!eventP.invitatiID.includes(utent)){
             res.status(403).json({ error: "Non sei invitato a questo evento"}).send();
             return;

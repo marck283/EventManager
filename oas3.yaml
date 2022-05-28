@@ -153,7 +153,7 @@ paths:
 
   /EventiPrivati/{idEvento}/Iscrizioni (Bigliettiiiiii  ******************):
      post:
-      description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione e la creazione di un bliglietto per quell'evento da parte del utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
+      description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione e la creazione di un bliglietto per quell'evento da parte dell'utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
       summary: Iscrizione ad un evento privato
       parameters:
       - name: Idevento
@@ -175,7 +175,7 @@ paths:
                 type: string
               description: Link all'indirizzo dell'iscrizione (del biglietto **********************) a cui l'utente corrente si è iscritto.
         '403':
-          description: "Il server ha deciso di non iscriverti (per esempio sei già iscritto o non sei invitato)"
+          description: "Il server ha deciso di non iscriverti (per esempio sei già iscritto o non sei invitato o l'evento indicato non è più disponibile)"
           content:
             application/json:
               schema:
