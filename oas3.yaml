@@ -85,8 +85,8 @@ paths:
   
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione per quell'evento da parte del utente corrente loggato
-      summary: Iscrizione ad un evento
+      description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione, con biglietto allegato, per quell'evento da parte del utente corrente loggato
+      summary: Iscrizione ad un evento pubblico
       parameters:
       - name: Idevento
         in: path
@@ -107,7 +107,7 @@ paths:
                 type: string
               description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
         '403':
-          description: "Il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
+          description: "Il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto o l'evento indicato non è più disponibile)"
           content:
             application/json:
               schema:
