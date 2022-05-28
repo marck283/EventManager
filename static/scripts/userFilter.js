@@ -55,9 +55,8 @@ var manipulateDom = resp => {
         body.classList = "btn btn-primary";
         body.textContent = u.nome;
 
-        //Questo è il link da impostare
         body.onclick = function () {
-            window.location = "#";
+            //Qui devi impostare le azioni da compiere per invitare un utente
         }
         card.appendChild(body);
     }
