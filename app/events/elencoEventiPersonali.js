@@ -43,10 +43,20 @@ var findPubEvents = async (user) => {
     return eventsPub;
 };
 
+var filterEvents = eventsArr => {
+    return eventsArr.filter(e => {
+        var dateStr = e.data, hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
+        //dateStr = dateStr.split('/').join('-');
+        var d = new Date(dateStr), curr = new Date();
+        d.setHours(hoursDB);
+        d.setMinutes(minsDB);
+        return d.getTime() < curr.getTime();
+    });
+}
+
 router.get("", async (req, res) => {
-    var eventsPers = [], eventsPub = [];
+    var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
-    
     
     var user = req.loggedUser.id;
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
@@ -56,14 +66,9 @@ router.get("", async (req, res) => {
             case "True": {
                 //Filtro per date passate
                 eventsPub = await findPubEvents(user);
-                eventsPub = eventsPub.filter(e => {
-                    var dateStr = e.data, hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
-                    dateStr = dateStr.split('/').join('-');
-                    d = new Date(dateStr), curr = new Date();
-                    d.setHours(hoursDB);
-                    d.setMinutes(minsDB);
-                    return d.getTime() < curr.getTime();
-                });
+                eventsPub = filterEvents(eventsPub);
+                eventsPriv = await eventPrivate.find({});
+                eventsPriv = filterEvents(eventsPriv);
                 break;
             }
             case "False": {
@@ -75,11 +80,12 @@ router.get("", async (req, res) => {
             }
         }
 
-    if(eventsPers.length > 0 || eventsPub.length > 0) {
+    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
         eventsPub = eventsMap.map(eventsPub, "pub");
         eventsPub.forEach(e => eventsPers.push(e));
-        
+        eventsPriv = eventsMap.map(eventsPriv, "priv");
+        eventsPriv.forEach(e => eventsPers.push(e));
         obj.eventi = eventsPers;
         res.status(200).json(obj);
     } else {
