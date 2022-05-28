@@ -31,7 +31,7 @@ app.use('/api/v1/authentications', autenticato);
 app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v1/Utenti', registrato);
-app.use('/api/v2/Utenti', userInfo);
+app.use('/api/v1/Utenti', userInfo);
 
 app.use(tokenChecker);
 

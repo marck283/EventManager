@@ -647,7 +647,6 @@ paths:
       - name: email
         in: query
         description: La stringa cercata dall'utente
-        required: true
         schema:
           type: string
       responses:

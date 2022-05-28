@@ -4,8 +4,9 @@ const Utente = require('./collezioni/utenti.js');
 
 router.get("", async (req, res) => {
     var email = req.query.email;
-    if (email != "") {
-        var utenti = await Utente.find({});
+
+    var utenti = await Utente.find({});
+    if (email != undefined) {
         utenti = utenti.filter(e => e.email.includes(email));
         if (utenti.length > 0) {
             res.status(200).json({ email: email, utenti: utenti });
