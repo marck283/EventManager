@@ -41,6 +41,7 @@ router.get('/me/Inviti', async (req, res) => {
 
         ListaInviti = await Inviti.find({utenteid:IDexample});
         
+
        
         if(ListaInviti.length == 0){
             
@@ -89,6 +90,8 @@ router.get('/me/Inviti', async (req, res) => {
                 }
             }
 
+
+
             if(elem.tipoevent == "priv"){
                 let evento = await eventPriv.findById(elem.eventoid);
 
@@ -122,6 +125,8 @@ router.get('/me/Inviti', async (req, res) => {
 
 
         }
+
+        
 
         if(ListInvit.length==0){
             
