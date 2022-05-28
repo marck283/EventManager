@@ -641,17 +641,19 @@ paths:
   /Utenti:
     get:
       description: >-
-        Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
+        Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
+        sarà restituita una lista contenente tutti gli utenti.
       summary: Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
       parameters:
       - name: email
         in: query
-        description: La stringa cercata dall'utente
+        description: L'indirizzo email (o parte di esso) cercato dall'utente
         schema:
           type: string
       responses:
         '200':
-          description: Viene ritornata la lista di utenti il cui indirizzo email contiene la stringa cercata.
+          description: Viene ritornata la lista di utenti il cui indirizzo email contiene la stringa cercata. Nel caso in cui il campo "email" sia lasciato vuoto,
+          sarà restituita una lista contenente tutti gli utenti.
           content:
             application/json:
               schema:
@@ -665,17 +667,6 @@ paths:
                     description: La lista di utenti il cui indirizzo email contiene la stringa cercata
                     items:
                       $ref: '#components/schemas/Utente'
-        
-        '400':
-          description: Il campo di ricerca è stato lasciato vuoto
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Messaggio di errore relativo al fatto che il campo di ricerca non è stato compilato.
         
         '404':
           description: Nessun utente trovato.
@@ -692,7 +683,17 @@ components:
   schemas:
     Utente:
       description: Uno degli utenti il cui indirizzo email contiene la stringa cercata
-      type: string
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Il nome dell'utente
+        email:
+          type: string
+          description: L'indirizzo email dell'utente
+        urlUtente:
+          type: string
+          description: Il link all'indirizzo dell'utente
 
     PublicEvent:
       description: Oggetto dell'evento pubblico per la sua creazione

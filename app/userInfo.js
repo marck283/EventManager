@@ -8,14 +8,21 @@ router.get("", async (req, res) => {
     var utenti = await Utente.find({});
     if (email != undefined) {
         utenti = utenti.filter(e => e.email.includes(email));
-        if (utenti.length > 0) {
-            res.status(200).json({ email: email, utenti: utenti });
-        } else {
+        utenti = utenti.map(u => {
+            return {
+                nome: u.nome,
+                email: email,
+                urlUtente: "/api/v1/Utenti/" + u._id
+            }
+        });
+
+        if (utenti.length == 0) {
             res.status(404).json({ error: "Nessun utente trovato per il nome indicato." });
+            return;
         }
-    } else {
-        res.status(400).json({error: "Il campo di ricerca è stato lasciato vuoto."});
     }
+    res.status(200).json({utenti: utenti});
+    return;
 });
 
 module.exports = router;
