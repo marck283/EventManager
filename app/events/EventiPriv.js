@@ -602,7 +602,7 @@ router.post('', async (req, res) => {
 
         for(var elem of ListaInvitati){
 
-            let invito = new invit({utenteid:elem, eventoid: eventId, tipoevent: "Priv"});
+            let invito = new invit({utenteid:elem, eventoid: eventId, tipoevent: "priv"});
 
             await invito.save();
 
