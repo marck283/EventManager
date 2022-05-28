@@ -628,18 +628,18 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /Utenti/me/Biglietti:
+  /Utenti/me/Iscrizioni:
     get:
       description: >-
-        Permette di ottenere la lista di biglietti associati dell'utente autenticato associato ad un certo token
-      summary: Ottienere i propri biglietti
+        Permette di ottenere la lista delle iscrizioni associati dell'utente autenticato associato ad un certo token
+      summary: Ottienere le proprie iscrizioni
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
       responses:
         '200':
-          description: Lista di biglietti associati all'utente autenticato
+          description: Lista delle iscrizioni all'utente autenticato
           content:
             application/json:
               schema:
@@ -647,7 +647,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Biglietto'
         '404':
-          description: "Non è stato trovato nessun biglietto associato all'utente"
+          description: "Non è stato trovato nessuna iscrizione associato all'utente"
           content:
             application/json:
               schema:
@@ -657,7 +657,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
         '403':
-        description: "Non è stato possibile ritornare i bilglietti per via che tutti i bilgietti associati all'utente non sono validi"
+        description: "Non è stato possibile ritornare le iscrizioni per via che tutti i bilgietti associati all'utente non sono validi"
         content:
           application/json:
             schema:
@@ -977,7 +977,7 @@ components:
 
   Biglietti:
     type: object
-    description: Oggetto che descrive l'info legate ad un certo biglietto
+    description: Oggetto che descrive l'info legate ad una certa iscrizione 
     required:
     - eventoUrl
     - utenteUrl

@@ -31,7 +31,7 @@ router.get('/me', async (req, res) => {
     }
 });
 
-router.get('/me/Biglietti', async (req, res) => {
+router.get('/me/Iscrizioni', async (req, res) => {
 
     try{
         
