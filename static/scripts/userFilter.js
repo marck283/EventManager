@@ -51,9 +51,11 @@ var manipulateDom = resp => {
         card.className = "card";
         col.appendChild(card);
 
-        var body = document.createElement("div");
-        body.className = "card-body";
+        var body = document.createElement("button");
+        body.classList = "btn btn-primary";
         body.textContent = u.nome;
+
+        //Questo è il link da impostare
         body.onclick = function () {
             window.location = "#";
         }
