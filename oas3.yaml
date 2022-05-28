@@ -309,7 +309,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
@@ -638,65 +638,61 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /ricercaUtenti:
+  /Utenti:
     get:
       description: >-
-        Ritorna la lista di utenti il cui nome contiene la stringa cercata
-      summary: Ricerca gli utenti il cui nome contiene la stringa cercata
+        Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
+      summary: Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
       parameters:
-      - name: nome
+      - name: email
         in: query
-        description: Il nome dell'utente cercato
+        description: La stringa cercata dall'utente
         required: true
         schema:
           type: string
-      - name: x-access-token
-        in: header
-        description: Token di autenticazione dell'utente
-        required: true
-    responses:
-      '200':
-        description: Lista di utenti il cui nome contiene la stringa indicata
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                utenti:
-                  type: array
-                  description: La lista di utenti il cui nome contiene la stringa cercata
-                  items:
-                    $ref: '#components/schemas/Utente'
-      
-      '401':
-        description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  description: "Messaggio d'errore"
-                success:
-                  type: boolean
-                  description: "Indicatore del successo o meno dell'operazione"
-      
-      '404':
-        description: Nessun nome utente contiene la stringa indicata
-        content:
-          application/json:
-            schema:
-              type: object
+      responses:
+        '200':
+          description: Viene ritornata la lista di utenti il cui indirizzo email contiene la stringa cercata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: La stringa cercata dall'utente
+                  utenti:
+                    type: array
+                    description: La lista di utenti il cui indirizzo email contiene la stringa cercata
+                    items:
+                      $ref: '#components/schemas/Utente'
+        
+        '400':
+          description: Il campo di ricerca è stato lasciato vuoto
+          content:
+            application/json:
+              schema:
+                type: object
                 properties:
                   error:
                     type: string
-                    description: Messaggio di errore
+                    description: Messaggio di errore relativo al fatto che il campo di ricerca non è stato compilato.
+        
+        '404':
+          description: Nessun utente trovato.
+          content:
+            application/json:
+              schema:
+                type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Messaggio di errore
 
 components:
   schemas:
     Utente:
-      description: Il nome dell'utente trovato
+      description: Uno degli utenti il cui indirizzo email contiene la stringa cercata
       type: string
 
     PublicEvent:
