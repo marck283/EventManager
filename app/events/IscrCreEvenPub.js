@@ -26,6 +26,8 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        
+
         if(eventP.partecipantiID.length==eventP.partecipantiID.maxPers){
 
             res.status(403).json({ error: "Non spazio nell'evento"}).send();
@@ -82,7 +84,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         
 
-
+   
 
 
         res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();
