@@ -7,7 +7,7 @@ fetch('../api/v1/Utenti/me/Inviti', {
             		'x-access-token': token
         		}
 		    	}).then((resp) => {
-		    		console.log(resp);
+		    		
 		    		/**if(resp.status==403 || resp.status==400){
 		    			document.getElementById("iscrizione").innerHTML = "non iscritto";
 		    		}

@@ -689,6 +689,16 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: 'Campo email vuoto'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPubblici/{IDevento}/inviti:
     get:
@@ -701,17 +711,20 @@ paths:
         required: true
         schema:
           type: string
-       requestBody:
-        description: Viene indicata l'email dell'utente che si vuole invitare all'evento
-        content:
-          application/json:
-            schema:
-              type: string
-              description: email dell'invitato
       - name: x-access-token
         in: header
         description: 'Token di autenticazione dell''utente.'
         required: true
+      requestBody:
+        description: Viene indicata l'email dell'utente che si vuole invitare all'evento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email dell'invitato
       responses:
         '201':
           description: Invito Creato. link alla locazione dell'invito
@@ -754,7 +767,7 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
         '403':
-          description: "Il server ha impedito di creare l'invito (es. l'utente autenticato corrente non è l'organizzatore dell'evento oppure si sta invitando la stessa allo stesso evento"
+          description: "Il server ha impedito di creare l'invito (es: l'utente autenticato corrente non è l'organizzatore dell'evento; l'utente autenticato corrente sta invitando lo stesso utente allo stesso evento; L'utente autenticato corrente si sta auto invitando; l'utente a cui si sta inviando l'invito è già partecipante all'evento associato a IDevento"
           content:
             application/json:
               schema:
