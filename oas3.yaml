@@ -151,7 +151,7 @@ paths:
                     description: "Messaggio d'errore"
 
 
-  /EventiPrivati/{idEvento}/Iscrizioni (Bigliettiiiiii  ******************):
+  /EventiPrivati/{idEvento}/Iscrizioni:
      post:
       description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione e la creazione di un bliglietto per quell'evento da parte dell'utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
       summary: Iscrizione ad un evento privato
@@ -173,7 +173,7 @@ paths:
             'Location':
               schema:
                 type: string
-              description: Link all'indirizzo dell'iscrizione (del biglietto **********************) a cui l'utente corrente si è iscritto.
+              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
         '403':
           description: "Il server ha deciso di non iscriverti (per esempio sei già iscritto o non sei invitato o l'evento indicato non è più disponibile)"
           content:

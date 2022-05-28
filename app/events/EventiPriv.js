@@ -79,12 +79,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         for(var elem of dati){
 
-            var data = elem;
+            var datta = elem;
             var date = new Date();
             var mm = date.getMonth() + 1
             var dd = date.getDate()
             var yy = date.getFullYear()
-            dats = data.split('/');
+            dats = datta.split('/');
 
            
             if(dats[0][0] == '0'){
@@ -182,6 +182,8 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         let stringdata = JSON.stringify(data);
 
         //Print QR code to file using base64 encoding
+
+        var idBigl = "";
         
         qrcode.toDataURL(stringdata, async function(err, qrcode) {
             if(err) {
@@ -189,7 +191,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             }
 
             bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"priv"});
-           
+            idBigl = bigl._id;
             return await bigl.save();
 
             
@@ -215,7 +217,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
 
-        res.location("/api/v1/EventiPrivati/" +id_evento+ "/" + utent).status(201).send();
+        res.location("/api/v1/EventiPrivati/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
 
 
 
