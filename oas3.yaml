@@ -659,9 +659,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  email:
-                    type: string
-                    description: La stringa cercata dall'utente
                   utenti:
                     type: array
                     description: La lista di utenti il cui indirizzo email contiene la stringa cercata
