@@ -309,7 +309,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
@@ -415,7 +415,7 @@ paths:
   /eventiCalendarioPubblico:
     get:
       description: >-
-        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
+        In caso di utente autenticato, quindi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
       summary: Ottieni gli eventi pubblici del calendario pubblico sotto forma di lista.
       parameters:
       - name: x-access-token
@@ -445,12 +445,38 @@ paths:
   /eventiCalendarioPersonale:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente autenticato è iscritto o che ha organizzato. 
+        Permette di ottenere la lista di eventi personali, pubblici e privati a cui l'utente autenticato è iscritto o che ha organizzato. Tutti i parametri specificati sotto (tranne il token di autenticazione) potranno essere specificati solo per filtrare gli eventi.
       summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+        required: true
+      - name: nomeAtt
+        in: header
+        description: Il nome dell'attività cercata. Si noti che questo valore può anche essere indicato parzialmente. In questo caso verranno restituiti gli eventi il cui nome contiene la stringa qui specificata.
+        schema:
+          type: string
+      - name: categoria
+        in: header
+        description: La categoria dell'attività cercata.
+        schema:
+          type: string
+      - name: durata
+        in: header
+        description: La durata dell'evento. Si noti che il valore di questo parametro deve essere specificato in forma numerica e deve essere strettamente maggiore di zero.
+        schema:
+          type: integer
+      - name: indirizzo
+        in: header
+        description: L'indirizzo per cui effettuare la ricerca.
+        schema:
+          type: string
+      - name: citta
+        in: header
+        description: La città in cui sarà tenuto l'evento.
+        schema:
+          type: string
       responses:
         '200':
           description: Lista degli eventi del calendario personale ricevuta
@@ -461,6 +487,18 @@ paths:
                 items:
                   $ref: '#/components/schemas/Evento'
         
+        '400':
+          description: >-
+            E' stato commesso un errore nell'inserimento dei dati. Un errore associato a questo codice è restituito solo in caso di errore nel filtraggio degli eventi nel caso in cui sia specificato almeno un parametro tra quelli sopra comunicati.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Il messaggio di errore
+
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
           content:
@@ -489,8 +527,8 @@ paths:
   /eventiCalendarioPubblico/{data}:
     get:
       description: >-
-        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
-        In caso di utente non autenticato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
+        In caso di utente autenticato, quindi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
+        In caso di utente non autenticato, quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
       summary: Visualizza gli eventi per una certa data nel calendario pubblico.
       parameters:
       - name: data
@@ -637,6 +675,7 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
 components:
   schemas:
     PublicEvent:
