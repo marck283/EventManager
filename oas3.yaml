@@ -306,7 +306,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
@@ -374,6 +374,35 @@ paths:
             schema:
               $ref: '#/components/schemas/FormModificaPubblico'
       responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento pubblico modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '400':
+          description: 'Numero massimo partecipanti non valido.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
         '403':
           description: 'Non sei autorizzato a modificare l'evento pubblico corrente.'
           content:
@@ -405,7 +434,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     patch:
       summary: 'Modifica evento personale.'
       description: 'Modifica di un evento personale programmato dall''utente correntemente autenticato.'
@@ -421,6 +450,25 @@ paths:
             schema:
               $ref: '#/components/schemas/FormModificaPersonalePrivato'
       responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento personale modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
         '403':
           description: 'Non sei autorizzato a modificare l'evento personale corrente.'
           content:
@@ -451,8 +499,8 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
-      
-  /EventiPersonale/{IDevento}
+    
+  /EventiPrivati/{IDevento}:
     patch:
       summary: 'Modifica evento privato.'
       description: 'Modifica di un evento privato programmato dall''utente correntemente autenticato.'
@@ -468,6 +516,25 @@ paths:
             schema:
               $ref: '#/components/schemas/FormModificaPersonalePrivato'
       responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento privato modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
         '403':
           description: 'Non sei autorizzato a modificare l'evento privato corrente.'
           content:
