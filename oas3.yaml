@@ -150,7 +150,11 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-         
+  /EventiPubblici/{idEvento}/Iscrizioni:
+    delete:
+  
+  /EventiPrivati/{idEvento}/Iscrizioni:
+    delete:
 
   /EventiPubblici:
     post:
