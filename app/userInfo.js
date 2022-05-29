@@ -6,7 +6,7 @@ router.get("", async (req, res) => {
     var email = req.query.email;
 
     var utenti = await Utente.find({});
-    if (email != undefined) {
+    if (email != undefined && email != "") {
         utenti = utenti.filter(e => e.email.includes(email));
         utenti = utenti.map(u => {
             return {
