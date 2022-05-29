@@ -150,11 +150,123 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPubblici/{idEvento}/Iscrizioni:
+  /EventiPubblici/{idEvento}/Iscrizioni/{idIscrizione}:
     delete:
+      description: Si richiede l'annullamento dell'iscrizione ad un certo evento pubblico, da parte dell'utente corrente loggato.
+      summary: Annullamento iscrizione evento pubblico.
+      parameters:
+      - name: Idevento
+        in: path
+        description: Id dell'evento di cui si vuole annullare l'iscrizione.
+        required: true
+        schema:
+          type: string
+      - name: Idiscrizione
+        in: path
+        description: Id dell'iscrizione che si intende annullare.
+        required: true
+        schema:
+          type: string  
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione che identifica l'utente loggato.
+        required: true
+      responses:
+        '204':
+          description: 'Annullamento iscrizione effettuato con successo.'
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '404':
+          description: 'Non corrisponde alcun evento pubblico all''ID specificato,
+                          oppure non corrisponde alcuna iscrizione all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: "Errore del server"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
   
-  /EventiPrivati/{idEvento}/Iscrizioni:
+  /EventiPrivati/{idEvento}/Iscrizioni/{idIscrizione}:
     delete:
+      description: Si richiede l'annullamento dell'iscrizione ad un certo evento privato, da parte dell'utente corrente loggato.
+      summary: Annullamento iscrizione evento privato.
+      parameters:
+      - name: Idevento
+        in: path
+        description: Id dell'evento di cui si vuole annullare l'iscrizione.
+        required: true
+        schema:
+          type: string
+      - name: Idiscrizione
+        in: path
+        description: Id dell'iscrizione che si intende annullare.
+        required: true
+        schema:
+          type: string  
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione che identifica l'utente loggato.
+        required: true
+      responses:
+        '204':
+          description: 'Annullamento iscrizione effettuato con successo.'
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '404':
+          description: 'Non corrisponde alcun evento pubblico all''ID specificato,
+                          oppure non corrisponde alcuna iscrizione all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: "Errore del server"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPubblici:
     post:
