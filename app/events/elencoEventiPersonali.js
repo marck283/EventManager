@@ -39,20 +39,17 @@ router.get("/:data", async (req, res) => {
 
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    var obj = {}, token = req.header("x-access-token");
-    
+    var token = req.header("x-access-token");
     
     var user = req.loggedUser.id;
-    var nomeAtt = req.headers.nomeAtt, categoria = req.headers.categoria, durata = req.headers.durata;
-    var indirizzo = req.headers.indirizzo, citta = req.headers.citta;
+    var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
+    var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
-    
-    //Eseguire la funzione verify, poi cercare gli eventi nel database
-    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
+    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali.
     eventsPub = await eventPublic.find({});
     eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
     eventsPriv = await eventPrivate.find({});
-    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)));
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
 
     if(nomeAtt != undefined && nomeAtt != "") {
         eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
@@ -65,19 +62,24 @@ router.get("", async (req, res) => {
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
     if(durata != undefined && durata != "") {
-        eventsPers = eventsPers.filter(e => e.durata == durata);
-        eventsPub = eventsPub.filter(e => e.durata == durata);
-        eventsPriv = eventsPriv.filter(e => e.durata == durata);
+        if(!Number.isNaN(parseInt(durata))) {
+            eventsPers = eventsPers.filter(e => e.durata == durata);
+            eventsPub = eventsPub.filter(e => e.durata == durata);
+            eventsPriv = eventsPriv.filter(e => e.durata == durata);
+        } else {
+            res.status(400).json({error: "Richiesta malformata."});
+            return;
+        }
     }
     if(indirizzo != undefined && indirizzo != "") {
-        eventsPers = eventsPers.filter(e => e.indirizzo == indirizzo);
-        eventsPub = eventsPub.filter(e => e.indirizzo == indirizzo);
-        eventsPriv = eventsPriv.filter(e => e.indirizzo == indirizzo);
+        eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
+        eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
+        eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
     }
     if(citta != undefined && citta != "") {
-        eventsPers = eventsPers.filter(e => e.citta == citta);
-        eventsPub = eventsPub.filter(e => e.citta == citta);
-        eventsPriv = eventsPriv.filter(e => e.citta == citta);
+        eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
+        eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
+        eventsPriv = eventsPriv.filter(e => e.luogoEv.citta == citta);
     }
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
@@ -86,11 +88,10 @@ router.get("", async (req, res) => {
         eventsPub.forEach(e => eventsPers.push(e));
         eventsPriv = eventsMap.map(eventsPriv, "priv");
         eventsPriv.forEach(e => eventsPers.push(e));
-        
-        obj.eventi = eventsPers;
-        res.status(200).json(obj);
+
+        res.status(200).json({eventi: eventsPers});
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento programmato."});
+        res.status(404).json({error: "Non esiste alcun evento programmato."});
     }
 });
 

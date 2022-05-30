@@ -421,6 +421,31 @@ paths:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+      - name: nomeAtt
+        in: header
+        description: Il nome dell'attività cercata. Si noti che questo valore può anche essere indicato parzialmente. In questo caso verranno restituiti gli eventi il cui nome contiene la stringa qui specificata.
+        schema:
+          type: string
+      - name: categoria
+        in: header
+        description: La categoria dell'attività cercata.
+        schema:
+          type: string
+      - name: durata
+        in: header
+        description: La durata dell'evento. Si noti che il valore di questo parametro deve essere specificato in forma numerica e deve essere strettamente maggiore di zero.
+        schema:
+          type: integer
+      - name: indirizzo
+        in: header
+        description: L'indirizzo per cui effettuare la ricerca.
+        schema:
+          type: string
+      - name: citta
+        in: header
+        description: La città in cui sarà tenuto l'evento.
+        schema:
+          type: string
       responses:
         '200':
           description: Lista degli eventi del calendario pubblico ricevuta
@@ -430,6 +455,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Evento'
+        
+        '400':
+          description: >-
+            E' stato commesso un errore nell'inserimento dei dati. Un errore associato a questo codice è restituito solo in caso di errore nel filtraggio degli eventi nel caso in cui sia specificato almeno un parametro tra quelli sopra comunicati.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Il messaggio di errore
         
         '404':
           description: "Non esiste alcun evento legato al calendario pubblico."

@@ -30,12 +30,34 @@ router.get("", async (req, res) => {
 
     if(autenticato == true){
         events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
-        
-        
+    }
+
+    var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
+    var indirizzo = req.header("indirizzo"), citta = req.header("citta");
+
+    if(nomeAtt != undefined && nomeAtt != "") {
+        events = events.filter(e => e.nomeAtt.includes(nomeAtt));
+    }
+    if(categoria != undefined && categoria != "") {
+        events = events.filter(e => e.categoria == categoria);
+    }
+    if(durata != undefined && durata != "") {
+        if(!Number.isNaN(parseInt(durata))) {
+            events = events.filter(e => e.durata == durata);
+        } else {
+            res.status(400).json({error: "Richiesta malformata."});
+            return;
+        }
+    }
+    if(indirizzo != undefined && indirizzo != "") {
+        events = events.filter(e => e.luogoEv.indirizzo == indirizzo);
+    }
+    if(citta != undefined && citta != "") {
+        events = events.filter(e => e.luogoEv.citta == citta);
     }
 
     if(events.length > 0) {
-        res.status(200).json(eventsMap.map(events, "pub"));
+        res.status(200).json({eventi: eventsMap.map(events, "pub")});
     } else {
         res.status(404).json({"error": "Non sono presenti eventi organizzati."});
     }

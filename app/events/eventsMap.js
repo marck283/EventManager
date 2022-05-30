@@ -24,9 +24,16 @@ module.exports = {
                     name: event.nomeAtt,
                     category: event.categoria
                 }
+            }
 
-
-
+            if(eventType == "priv") {
+                return {
+                    id: eventType,
+                    idevent: event._id,
+                    self: "/api/v1/EventiPrivati/" + event._id,
+                    name: event.nomeAtt,
+                    category: event.categoria
+                }
             }
 
             
