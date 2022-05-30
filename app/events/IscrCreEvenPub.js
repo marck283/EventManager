@@ -69,6 +69,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 });
 
+//*******************+************************
 
 router.post('/:id/Inviti', async (req, res) => {
     
@@ -216,7 +217,7 @@ router.post('/:id/Inviti', async (req, res) => {
 
                 if(elem.eventoid == id_evento){
 
-                    res.status(403).json({error: "L'utente con quella email è già invitato"}).send();
+                    res.status(403).json({error: "L'utente con quella email è già invitato a quell'evento"}).send();
                     return;
 
                     

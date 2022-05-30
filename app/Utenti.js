@@ -65,10 +65,97 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
+                    var dati = evento.data.split(",");
+
+                    var disponibie = true;
+
+                    //controllo che inseisco solo gli eventi disponibili
+                    for(var elem of dati){
+
+                        var data = elem;
+                        var date = new Date();
+                        var mm = date.getMonth() + 1
+                        var dd = date.getDate()
+                        var yy = date.getFullYear()
+                        dats = data.split('/');
+
+                       
+                        if(dats[0][0] == '0'){
+
+                          mese = dats[0][1];
+
+                        }else{
+
+                          mese = dats[0];
+
+                        }
+
+
+                        if(dats[1][0] == '0'){
+
+                          giorno = dats[1][1];
+
+                        }else{
+
+                          giorno = dats[1];
+
+                        }
+
+                        anno = dats[2]
+
+                       
+
+                        if(yy > Number(anno)){
+
+
+                          disponibile = false;
+                           
+
+                        }else{
+
+                       
+                          if(yy == Number(anno)){
+                           
+
+                            if(mm > Number(mese)){
+                              disponibile = false;
+                             
+                            }else{
+
+                              if(mm == Number(mese)){
+                             
+
+                                if(dd > Number(giorno)){
+                                  disponibile = false;
+
+                                }
+
+                              }
+                           
+
+                            }
+
+                          }
+
+                        }
+
+
+
+
+
+                    }
+
+                    if(!disponibile){
+                        continue;
+                    }
+
+
+
+
 
                     let orga = await Utente.findById(evento.organizzatoreID);
 
-                 
+                    
 
                     if(evento.partecipantiID.includes(IDexample)){
 
@@ -97,6 +184,86 @@ router.get('/me/Inviti', async (req, res) => {
 
 
                 if(evento){
+
+                    //controllo che inseisco solo gli eventi disponibili
+                    for(var elem of dati){
+
+                        var data = elem;
+                        var date = new Date();
+                        var mm = date.getMonth() + 1
+                        var dd = date.getDate()
+                        var yy = date.getFullYear()
+                        dats = data.split('/');
+
+                       
+                        if(dats[0][0] == '0'){
+
+                          mese = dats[0][1];
+
+                        }else{
+
+                          mese = dats[0];
+
+                        }
+
+
+                        if(dats[1][0] == '0'){
+
+                          giorno = dats[1][1];
+
+                        }else{
+
+                          giorno = dats[1];
+
+                        }
+
+                        anno = dats[2]
+
+                       
+
+                        if(yy > Number(anno)){
+
+
+                          disponibile = false;
+                           
+
+                        }else{
+
+                       
+                          if(yy == Number(anno)){
+                           
+
+                            if(mm > Number(mese)){
+                              disponibile = false;
+                             
+                            }else{
+
+                              if(mm == Number(mese)){
+                             
+
+                                if(dd > Number(giorno)){
+                                  disponibile = false;
+
+                                }
+
+                              }
+                           
+
+                            }
+
+                          }
+
+                        }
+
+
+
+
+
+                    }
+
+                    if(!disponibile){
+                        continue;
+                    }
 
 
                     let orga = await Utente.findById(evento.organizzatoreID);

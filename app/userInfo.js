@@ -17,7 +17,7 @@ router.get("", async (req, res) => {
         });
 
         if (utenti.length == 0) {
-            res.status(404).json({ error: "Nessun utente trovato per il nome indicato." });
+            res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
             return;
         }
     }
