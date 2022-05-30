@@ -304,7 +304,7 @@ router.get('/me/Inviti', async (req, res) => {
         if(ListInvit.length==0){
             
 
-            res.status(404).json({error: "Non c'è nessun evento valido o disponibile associato al biglietto"}).send();
+            res.status(404).json({error: "Non c'è nessun evento valido o disponibile associato all'invito"}).send();
             return;
 
         }
