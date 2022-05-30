@@ -65,7 +65,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
-                    var dati = evento.data.split(",");
+                    /**var dati = evento.data.split(",");
 
 
 
@@ -153,7 +153,8 @@ router.get('/me/Inviti', async (req, res) => {
                     if(!disponibile){
                         continue;
                     }
-
+                    
+                    */
 
 
 
@@ -190,7 +191,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
-                    var dati = evento.data.split(",")
+                    /**var dati = evento.data.split(",")
                     //controllo che inseisco solo gli eventi disponibili
                     for(var elem of dati){
 
@@ -270,7 +271,7 @@ router.get('/me/Inviti', async (req, res) => {
                     if(!disponibile){
                         continue;
                     }
-
+                    */
 
                     let orga = await Utente.findById(evento.organizzatoreID);
 

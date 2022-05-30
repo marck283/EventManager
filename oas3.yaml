@@ -657,7 +657,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Invito'
         '404':
-          description: Non esiste alcun invito per l'utente corrente autenticato oppure non c'è nessun evento valido o disponibile associato all'invito 
+          description: Non esiste alcun invito per l'utente corrente autenticato oppure non c'è nessun evento valido 
           content:
             application/json:
               schema:
