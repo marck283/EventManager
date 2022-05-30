@@ -35,7 +35,7 @@ router.get('/:id', async(req, res) => {
 
 });
 
-
+//*******************************************
 
 router.post('', async (req, res) => {
 
@@ -46,6 +46,16 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
+
+        if(typeof req.body.durata === "number"){
+
+
+        }else{
+
+            res.status(400).json({error: "Campo non del formato corretto"}).send();
+            return;
+
+        }
 
         if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();

@@ -185,8 +185,11 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 });
 
+//********************************
 
 router.post('', async (req, res) => {
+
+
 
     
     var utent = req.loggedUser.id;
@@ -194,8 +197,19 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
+        if((typeof req.body.durata === "number") && (typeof req.body.maxPers === "number")){
+
+
+        }else{
+
+            res.status(400).json({error: "Campo non del formato corretto"}).send();
+            return;
+
+        }
+
         if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
+            return;
 
         }
 
