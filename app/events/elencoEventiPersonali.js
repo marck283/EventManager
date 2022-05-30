@@ -39,13 +39,35 @@ router.get("", async (req, res) => {
     
     
     var user = req.loggedUser.id;
+    var nomeAtt = req.headers.nomeAtt, categoria = req.headers.categoria, durata = req.headers.durata;
+    var indirizzo = req.headers.indirizzo, citta = req.headers.citta;
 
     
     //Eseguire la funzione verify, poi cercare gli eventi nel database
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
     eventsPub = await eventPublic.find({});
     eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
-    
+
+    if(nomeAtt != undefined && nomeAtt != "") {
+        eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
+        eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
+    }
+    if(categoria != undefined && categoria != "") {
+        eventsPers = eventsPers.filter(e => e.categoria == categoria);
+        eventsPub = eventsPub.filter(e => e.categoria == categoria);
+    }
+    if(durata != undefined && durata != "") {
+        eventsPers = eventsPers.filter(e => e.durata == durata);
+        eventsPub = eventsPub.filter(e => e.durata == durata);
+    }
+    if(indirizzo != undefined && indirizzo != "") {
+        eventsPers = eventsPers.filter(e => e.indirizzo == indirizzo);
+        eventsPub = eventsPub.filter(e => e.indirizzo == indirizzo);
+    }
+    if(citta != undefined && citta != "") {
+        eventsPers = eventsPers.filter(e => e.citta == citta);
+        eventsPub = eventsPub.filter(e => e.citta == citta);
+    }
 
     if(eventsPers.length > 0 || eventsPub.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");

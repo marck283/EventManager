@@ -1,10 +1,15 @@
 var getId = id => document.getElementById(id);
 
-var request = () => {    
+var request = (nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {    
     fetch("/api/v1/eventiCalendarioPersonale/", {
         method: 'GET',
         headers: {
-            'x-access-token': token
+            'x-access-token': token,
+            'nomeAtt': nomeAtt,
+            'categoria': categoria,
+            'durata': durata,
+            'indirizzo': indirizzo,
+            'citta': citta
         }
     })
     .then(resp => {
