@@ -187,6 +187,18 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: 'L''utente non risulta iscritto all''evento
+                          oppure L''iscrizione non corrisponde all''evento specificato
+                          oppure L''iscrizione non corrisponde all''utente specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '404':
           description: 'Non corrisponde alcun evento pubblico all''ID specificato,
                           oppure non corrisponde alcuna iscrizione all''ID specificato.'
@@ -246,6 +258,18 @@ paths:
                   success:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: 'L''utente non risulta iscritto all''evento
+                          oppure L''iscrizione non corrisponde all''evento specificato
+                          oppure L''iscrizione non corrisponde all''utente specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
         '404':
           description: 'Non corrisponde alcun evento pubblico all''ID specificato,
                           oppure non corrisponde alcuna iscrizione all''ID specificato.'

@@ -5,7 +5,7 @@ let url = window.location.href;
 var id = '';
 var token = '';
 
-try{
+/*try{
     url=url.split('?');
     url=url[1].split('&');
     idurl=url[0].split('=');
@@ -14,7 +14,7 @@ try{
     token=tokenurl[1];
 }catch(error){
     console.log(error);
-}
+}*/
 
 var disiscrPub = () => {
     
@@ -22,10 +22,11 @@ var disiscrPub = () => {
         .then(resp => {
             switch(resp.status){
                 case 204: {
-                    resp.json().then(data => {document.getElementById("message").textContent = 'Annullamento iscrizione effettuato con successo.'});
+                    document.getElementById("message").textContent = 'Annullamento iscrizione effettuato con successo.';
                     break;
                 }
                 case 401:
+                case 403:
                 case 404:
                 case 500: {
                     resp.json().then(data => {document.getElementById("error").textContent = data.error});
@@ -46,10 +47,11 @@ var disiscrPriv = () => {
         .then(resp => {
             switch(resp.status){
                 case 204: {
-                    resp.json().then(data => {document.getElementById("message").textContent = 'Annullamento iscrizione effettuato con successo.'});
+                    document.getElementById("message").textContent = 'Annullamento iscrizione effettuato con successo.';
                     break;
                 }
                 case 401:
+                case 403:
                 case 404:
                 case 500: {
                     resp.json().then(data => {document.getElementById("error").textContent = data.error});

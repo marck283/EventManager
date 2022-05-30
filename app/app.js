@@ -6,6 +6,8 @@ const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
 const EventoPersonale = require('./events/EventiPers.js');
 const calendarEventsPers = require("./events/elencoEventiPersonali.js");
 const calendarEventsPub = require("./events/elencoEventiPublic.js");
+const disiscrPub = require("./events/disiscrPub.js");
+const disiscrPriv = require("./events/disiscrPriv.js");
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
@@ -29,6 +31,8 @@ app.use('/', express.static('static'));
 app.use('/api/v1/authentications', autenticato);
 app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
+app.use("/api/v1/EventiPubblici", disiscrPub);
+app.use("/api/v1/EventiPrvati", disiscrPriv);
 app.use('/api/v1/Utenti', registrato);
 
 app.use(tokenChecker);
