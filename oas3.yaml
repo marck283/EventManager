@@ -657,7 +657,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Invito'
         '404':
-          description: 'Non esiste alcun invito per l''utente corrente autenticato.'
+          description: Non esiste alcun invito per l'utente corrente autenticato oppure non c'è nessun evento valido o disponibile associato all'invito 
           content:
             application/json:
               schema:
@@ -701,7 +701,7 @@ paths:
                     description: "Messaggio d'errore"
 
   /EventiPubblici/{IDevento}/inviti:
-    get:
+    post:
       description: Crea l'invito per l'evento associato ad IDevento. Questa operazione si potrà solo se l'utente corrente autenticato è l'organizzatore di quell'evento 
       summary: 'Visualizza informazioni evento pubblico.'
       parameters:

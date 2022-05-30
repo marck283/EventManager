@@ -67,6 +67,8 @@ router.get('/me/Inviti', async (req, res) => {
 
                     var dati = evento.data.split(",");
 
+
+
                     var disponibie = true;
 
                     //controllo che inseisco solo gli eventi disponibili
@@ -109,6 +111,7 @@ router.get('/me/Inviti', async (req, res) => {
 
 
                           disponibile = false;
+                          console.log("yy5")
                            
 
                         }else{
@@ -119,6 +122,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                             if(mm > Number(mese)){
                               disponibile = false;
+                              console.log("yy6")
                              
                             }else{
 
@@ -127,6 +131,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                                 if(dd > Number(giorno)){
                                   disponibile = false;
+                                  console.log("yy7")
 
                                 }
 
@@ -185,6 +190,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
+                    var dati = evento.data.split(",")
                     //controllo che inseisco solo gli eventi disponibili
                     for(var elem of dati){
 
@@ -225,7 +231,7 @@ router.get('/me/Inviti', async (req, res) => {
 
 
                           disponibile = false;
-                           
+                            console.log("yy1")
 
                         }else{
 
@@ -235,7 +241,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                             if(mm > Number(mese)){
                               disponibile = false;
-                             
+                             console.log("yy2")
                             }else{
 
                               if(mm == Number(mese)){
@@ -243,7 +249,7 @@ router.get('/me/Inviti', async (req, res) => {
 
                                 if(dd > Number(giorno)){
                                   disponibile = false;
-
+                                  console.log("yy3")
                                 }
 
                               }
@@ -298,7 +304,7 @@ router.get('/me/Inviti', async (req, res) => {
         if(ListInvit.length==0){
             
 
-            res.status(403).json({error: "Non c'è nessun evento valido associato al biglietto"}).send();
+            res.status(404).json({error: "Non c'è nessun evento valido o disponibile associato al biglietto"}).send();
             return;
 
         }
