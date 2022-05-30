@@ -1,13 +1,14 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const eventPersonal = require('../collezioni/eventPersonal.js');
+const eventPrivate = require('../collezioni/eventPrivat.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 
 router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
-    var eventsPers = [], eventsPub = [];
+    var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
     
     
@@ -19,12 +20,15 @@ router.get("/:data", async (req, res) => {
     eventsPers = eventsPers.filter(e => e.data.includes(str));
     eventsPub = await eventPublic.find({});
     eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str)); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
-    
+    eventsPriv = await eventPrivate.find({});
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str));
 
-    if(eventsPers.length > 0 || eventsPub.length > 0) {
+    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
         eventsPub = eventsMap.map(eventsPub, "pub");
         eventsPub.forEach(e => eventsPers.push(e));
+        eventsPriv = eventsMap.map(eventsPriv, "priv");
+        eventsPriv.forEach(e => eventsPers.push(e));
         obj.eventi = eventsPers;
         obj.data = str;
         res.status(200).json(obj);
@@ -34,7 +38,7 @@ router.get("/:data", async (req, res) => {
 });
 
 router.get("", async (req, res) => {
-    var eventsPers = [], eventsPub = [];
+    var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
     
     
@@ -47,32 +51,41 @@ router.get("", async (req, res) => {
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
     eventsPub = await eventPublic.find({});
     eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+    eventsPriv = await eventPrivate.find({});
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)));
 
     if(nomeAtt != undefined && nomeAtt != "") {
         eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
         eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
+        eventsPriv = eventsPriv.filter(e => e.nomeAtt.includes(nomeAtt));
     }
     if(categoria != undefined && categoria != "") {
         eventsPers = eventsPers.filter(e => e.categoria == categoria);
         eventsPub = eventsPub.filter(e => e.categoria == categoria);
+        eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
     if(durata != undefined && durata != "") {
         eventsPers = eventsPers.filter(e => e.durata == durata);
         eventsPub = eventsPub.filter(e => e.durata == durata);
+        eventsPriv = eventsPriv.filter(e => e.durata == durata);
     }
     if(indirizzo != undefined && indirizzo != "") {
         eventsPers = eventsPers.filter(e => e.indirizzo == indirizzo);
         eventsPub = eventsPub.filter(e => e.indirizzo == indirizzo);
+        eventsPriv = eventsPriv.filter(e => e.indirizzo == indirizzo);
     }
     if(citta != undefined && citta != "") {
         eventsPers = eventsPers.filter(e => e.citta == citta);
         eventsPub = eventsPub.filter(e => e.citta == citta);
+        eventsPriv = eventsPriv.filter(e => e.citta == citta);
     }
 
-    if(eventsPers.length > 0 || eventsPub.length > 0) {
+    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
         eventsPub = eventsMap.map(eventsPub, "pub");
         eventsPub.forEach(e => eventsPers.push(e));
+        eventsPriv = eventsMap.map(eventsPriv, "priv");
+        eventsPriv.forEach(e => eventsPers.push(e));
         
         obj.eventi = eventsPers;
         res.status(200).json(obj);
