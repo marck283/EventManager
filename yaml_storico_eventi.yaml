@@ -625,12 +625,20 @@ paths:
   /eventiCalendarioPersonale:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente autenticato è iscritto o che ha organizzato. 
+        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente autenticato è iscritto o che ha organizzato.
+        Nel caso in cui il parametro "passato" sia impostato a "true" verranno restituiti solo gli eventi personali e pubblici organizzati per giornate già trascorse;
+        altrimenti verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
       summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+      - name: passato
+        in: query
+        description: valore per indicare al sistema se restituire tutti gli eventi personali e pubblici o solo quelli organizzati per giornate passate.
+        required: true
+        schema:
+          type: boolean
       responses:
         '200':
           description: Lista degli eventi del calendario personale ricevuta
@@ -665,6 +673,17 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        
+        '400':
+          description: "Richiesta malformata."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio di errore"
   
   /eventiCalendarioPubblico/{data}:
     get:
@@ -818,7 +837,6 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-<<<<<<< HEAD
   /Utenti/me/Iscrizioni:
     get:
       description: >-
@@ -872,7 +890,6 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
 
-=======
 
   /Utenti/me/Inviti:
     get:

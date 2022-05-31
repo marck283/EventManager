@@ -1,44 +1,58 @@
-var request = () => {    
-    fetch("/api/v1/eventiCalendarioPersonale/", {
+var request = (passato, idElem) => {
+    fetch("/api/v1/eventiCalendarioPersonale/?passato=" + passato, {
         method: 'GET',
         headers: {
             'x-access-token': token
         }
     })
-    .then(resp => {
-        switch(resp.status) {
-            case 200: {
-                resp.json().then(resp => manipulateDom(resp))
-                break;
-            }
-            case 401: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
-                break;
-            }
-            case 404: {
-                resp.json().then(resp => document.getElementById("eventLists").textContent = resp.error);
-                break;
-            }
+        .then(resp => {
+            switch (resp.status) {
+                case 200: {
+                    resp.json().then(resp => manipulateDom(resp, idElem));
+                    break;
+                }
 
-            default: {
-                console.log(resp.status);
+                case 401: {
+                    resp.json().then(resp => document.getElementById(idElem).textContent = resp.message);
+                    break;
+                }
+
+                case 404: {
+                    resp.json().then(resp => document.getElementById(idElem).textContent = resp.error);
+                    break;
+                }
+
+                default: {
+                    console.log(resp.status);
+                }
             }
-        }
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
 };
 
+var getId = id => document.getElementById(id);
+
 var showIfChecked = () => {
-    if (document.getElementById("buttonSwitch").checked) {
-        document.getElementById("calendarWrapper").style.display = "block";
-        document.getElementById("divCal").style.display = "block";
-        document.getElementById("eventLists").style.display = "none";
-        document.getElementById("eventLists").innerHTML = "";
+    if (getId("buttonSwitch").checked) {
+        request("True", "storicoEventi");
+        getId("calendarWrapper").style.display = "block";
+        getId("divCal").style.display = "block";
+        getId("eventLists").style.display = "none";
+        getId("eventLists").innerHTML = "";
+        getId("elencoEventi").style.display = "block";
+        getId("storicoEventiContainer").style.display = "block";
+        getId("storicoEventi").style.display = "block";
+        request("False", "elencoEventi");
     } else {
-        request();
-        document.getElementById("calendarWrapper").style.display = "none";
-        document.getElementById("divCal").style.display = "none";
-        document.getElementById("myPopup1").style.display = "none";
-        document.getElementById("eventLists").style.display = "block";
+        request("False", "eventLists");
+        getId("calendarWrapper").style.display = "none";
+        getId("divCal").style.display = "none";
+        getId("myPopup1").style.display = "none";
+        getId("eventLists").style.display = "block";
+        getId("elencoEventi").style.display = "none";
+        getId("elencoEventi").innerHTML = "";
+        getId("storicoEventiContainer").style.display = "none";
+        getId("storicoEventi").style.display = "none";
+        getId("storicoEventi").innerHTML = "";
     }
 };
 
@@ -61,8 +75,8 @@ var manipulateDom = (response, id = "eventLists") => {
             ul.appendChild(li);
 
             var row = document.createElement("div");
-            if(id === "eventLists") {
-                row.classList ="row row-cols-4";
+            if (id === "eventLists") {
+                row.classList = "row row-cols-3";
             } else {
                 row.className = "row";
             }
@@ -86,14 +100,16 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                if(object.id == "pers"){
-                                     objectId.href = "layoutPersonale.html?id="+object.idevent+"&token="+token;
-
-                                }
-                if(object.id == "pub"){
-                                     objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
-
+                if (object.id == "pers") {
+                    objectId.href = "layoutPersonale.html";
+                } else {
+                    if (object.id == "pub") {
+                        objectId.href = "layoutPubblico.html";
+                    } else {
+                        objectId.href = "layoutPrivato.html";
+                    }
                 }
+                objectId.href += "?id=" + object.idevent + "&token=" + token;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";

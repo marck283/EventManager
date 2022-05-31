@@ -43,7 +43,8 @@ app.use(tokenChecker);
 //********************************************************** attenzione *********************
 
 app.use('/api/v1/EventiPersonali', EventoPersonale);
-
+app.use('/api/v1/EventiPrivati', EventoPrivato);
+app.use('/api/v1/Utenti', Utente);
 app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
 
 
