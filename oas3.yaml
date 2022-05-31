@@ -1926,6 +1926,9 @@ components:
     - bigliettoUrl
     - tipoevento
     - img
+    - eventoid
+    - bigliettoid
+    - utenteid
     properties:
       eventoUrl:
         type: string
@@ -1951,6 +1954,16 @@ components:
       tipoevento:
         type: string
         description: tipo dell'evento che è associato il biglietto
+      eventoid:
+        type: string
+        description: id dell'evento
+      bigliettoid:
+        type: string
+        description: id del biglietto
+      utenteid:
+        type: string
+        description: id dell'utente
+
 
   Invito:
     type: object

@@ -2,7 +2,7 @@ var createElem = (dest, id, link) => {
     var cev = document.createElement("a");
     cev.className = "nav-link";
     cev.setAttribute("id",link);
-    cev.href = dest + ".html?token=" + TokenUser;
+    cev.href = dest + ".html";
     document.getElementById(id).appendChild(cev);
   };
 

@@ -15,18 +15,11 @@
 
   <script>
 
-    let url = window.location.href;
-    token = "";
-    try{
+    var token = "";
 
-      url=url.split('?');
-      url=url[1].split('=');
-      token = url[1];
+    if(localStorage.getItem('token') != null){
 
-    }catch(error){
-
-      console.log(error);
-
+        token = localStorage.getItem('token');
     }
 
 
@@ -52,16 +45,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="CreazioneEvento.html?token=" id="navItem1">Creazione evento</a>
+          <a class="nav-link" href="CreazioneEvento.html" id="navItem1">Creazione evento</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="publicCalendar.html?token=" id="navItem2">Calendario pubblico</a>
+          <a class="nav-link" href="publicCalendar.html" id="navItem2">Calendario pubblico</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="calendarioPersonale.html?token=" id="navItem3">Calendario personale</a>
+          <a class="nav-link" href="calendarioPersonale.html" id="navItem3">Calendario personale</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="layoutUtente.html?token=" id="navItem4">Dati personali</a>
+          <a class="nav-link" href="layoutUtente.html" id="navItem4">Dati personali</a>
         </li>
       </ul>
     </div>
@@ -76,21 +69,14 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="/CreazioneEventoPubblico.html?token=" id ="Pub">Evento pubblico</a>
+        <a class="nav-link" href="/CreazioneEventoPubblico.html" id ="Pub">Evento pubblico</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/CreazioneEventoPersonale.html?token=" id ="Pers">Evento personale</a>
+        <a class="nav-link" href="/CreazioneEventoPersonale.html" id ="Pers">Evento personale</a>
       </li>
     </ul>
   </div>
 </nav>
-
-<script>
-document.getElementById('Pub').href += token;
-document.getElementById('Pers').href += token;
-
-</script>
-
 
 
 

@@ -1,8 +1,8 @@
 var invip = () => {
 			
 			
-			token = "";
-			id = "628fbe89d969d3e2bdc79f80"
+			
+			
 
 			let email = document.getElementById("posta").value; 
 			console.log(email)

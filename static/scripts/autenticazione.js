@@ -39,10 +39,8 @@ var login = () => {
         }
         if(resp.status==200){
             resp.json().then(data => {document.getElementById("usr").innerHTML = data.message; 
-            TokenUser = data.token;
-            
+            localStorage.setItem('token', data.token);          
             impostPagina();});
-
         }
         
 

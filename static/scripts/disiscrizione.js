@@ -1,20 +1,21 @@
-const idIscr = '628fc32d8e12efe877108f4c';
-const idEvento = '628fbe89d969d3e2bdc79f80';
+const idIscr = ''; //da sistemareeeeeeeeeeeeeeee
+
 
 let url = window.location.href;
-var id = '';
+var idEvento = '';
 var token = '';
 
-/*try{
-    url=url.split('?');
-    url=url[1].split('&');
-    idurl=url[0].split('=');
-    tokenurl=url[1].split('=');
-    id=idurl[1];
-    token=tokenurl[1];
+if(localStorage.getItem('token') != null){
+
+    token = localStorage.getItem('token');
+}
+
+try{
+    url=url.split('=');
+    idEvento=url[1];
 }catch(error){
     console.log(error);
-}*/
+}
 
 var disiscrPub = () => {
     

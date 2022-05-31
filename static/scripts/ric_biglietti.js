@@ -53,6 +53,25 @@ fetch('../api/v1/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-toke
 
                         d.appendChild(img);
 
+                        let pulsante = document.createElement("button");
+                        let eventoid = elem.eventoid;
+                        let utenteid = elem.utenteid;
+                        let iscrid = bigliettoid;
+
+                        if(elem.tipoevento == "pub"){
+                            var eventoid;
+
+                            pulsante.onclick = "" //*************************************************************************
+                        
+                        }else{
+
+                            pulsante.onclick = "" //*************************************************************************
+
+
+                        }
+
+
+
                         let h3 = document.createElement("h4");
 
                         h3.innerHTML = "--------------------"

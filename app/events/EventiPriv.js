@@ -10,6 +10,115 @@ var qrcode = require('qrcode');
 
 
 
+router.patch('/:id', async(req, res) => {
+    
+    //var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id;
+    var id_evento = req.params.id;
+    
+    try{
+        
+        let evento = await eventPrivat.findById(id_evento);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non esiste alcun evento privato con l'id specificato."});
+            return;
+        }
+        
+        if(utent != evento.organizzatoreID){
+            res.status(403).json({error: "Non sei autorizzato a modificare l'evento."});
+            return;
+        }
+        
+        if(req.body.nomeAtt != ""){
+            evento.nomeAtt = req.body.nomeAtt;
+        }
+        if(req.body.categoria != ""){
+            evento.categoria = req.body.categoria
+        }
+        if(req.body.indirizzo != ""){
+            evento.luogoEv.indirizzo = req.body.indirizzo
+        }
+        if(req.body.citta != ""){
+            evento.luogoEv.citta = req.body.citta;
+        }
+        
+        await evento.save();
+        res.location("/api/v1/EventiPrivati/" + id_evento).status(200).send();
+        console.log('Evento privato modificato con successo');
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore lato server."}).send();
+    }
+    
+});
+
+router.delete('/:idEvento/Iscrizioni/:idIscr', async(req, res) => {
+    
+    try{
+        
+        var evento = await eventPrivat.findById(req.params.idEvento);
+        var utente = req.loggedUser.id; 
+        var utenteObj = await Users.findById(utente);
+        var iscr = await biglietti.findById(req.params.idIscr);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non corrisponde alcun evento privato all'ID specificato."});
+            return;
+        }
+        
+        if(iscr == undefined){
+            res.status(404).json({error: "Non corrisponde alcuna iscrizione all'ID specificato."});
+            return;
+        }
+        
+        if(iscr.eventoid != req.params.idEvento){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'evento specificato."}).send();
+            return;
+        }
+        
+        if(iscr.utenteid != utente){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'utente specificato."}).send();
+            return;
+        }
+        
+        var array1 = evento.partecipantiID;
+        var index1 = array1.indexOf(utente);
+        if (index1 > -1) {
+            array1.splice(index1, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        evento.partecipantiID = array1;
+        await evento.save(); //Aggiornamento partecipantiID
+        
+        var array2 = utenteObj.EventiIscrtto;
+        var index2 = array2.indexOf(req.params.idEvento);
+        if (index2 > -1) {
+            array2.splice(index2, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        utenteObj.EventiIscrtto = array2;
+        await utenteObj.save(); //Aggiornamento EventiIscritto
+        
+        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+        
+        console.log('Annullamento iscrizione effettuato con successo.');
+        
+        res.status(204).send();
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore nel Server"}).send();
+    }
+    
+});
+
+
 router.get('/:id', async(req, res) => {
 
    try{
@@ -26,7 +135,7 @@ router.get('/:id', async(req, res) => {
             partecipanti.push(tmp.nome);
         }
 
-        let invitati = []
+        let invitati = [];
 
         for (var i of eventoPrivato.invitatiID){
             let tmp = await Users.findById(i);
@@ -56,7 +165,7 @@ router.get('/:id', async(req, res) => {
 router.post('/:id/Iscrizioni', async (req, res) => {
 
 
-    var utent = "628e8c29d108a0e2094d364b";
+    var utent = req.loggedUser.id;
 
 
     var id_evento= req.params.id;
@@ -242,7 +351,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 router.post('', async (req, res) => {
 
-    utent= "628f8b448031650249b5d6bb";
+    utent= req.loggedUser.id;
     try{
 
 
@@ -261,8 +370,15 @@ router.post('', async (req, res) => {
 
         }
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == "" || req.body.ElencoEmailInviti.lenth == 0){
-            res.status(400).json({error: "Campo vuoto"}).send();
+        if(req.body.data == "" || req.body.data == undefined ||
+            req.body.durata <= 0 || req.body.durata == undefined ||
+            req.body.ora == "" || req.body.ora == undefined ||
+            req.body.categoria == "" || eq.body.categoria == undefined ||
+            req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
+            req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined || 
+            req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined ||
+            req.body.ElencoEmailInviti.lenth == 0 || req.body.ElencoEmailInviti.lenth == undefined){
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
         }

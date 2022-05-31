@@ -1,12 +1,11 @@
-let url = window.location.href;
+
 var token = "";
-try {
-    url = url.split('?');
-    url = url[1].split('=');
-    token = url[1];
-} catch (error) {
-    console.log(error);
+
+if(localStorage.getItem('token') != null){
+
+    token = localStorage.getItem('token');
 }
+
 
 
 fetch('../api/v1/Utenti/me', {method: 'GET', headers: {'x-access-token': token}})

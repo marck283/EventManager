@@ -1,8 +1,6 @@
 var iscr = () => {
 			
-			var id = "6290f15943783ca85272fa34";
-
-			var token = "";
+			
 
 			
 

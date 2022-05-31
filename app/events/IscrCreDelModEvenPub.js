@@ -6,7 +6,124 @@ const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
 const biglietti = require('../collezioni/biglietti.js')
 
+router.patch('/:id', async(req, res) => {
+    
+    //var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id;
+    var id_evento = req.params.id;
+    
+    try{
+        
+        let evento = await eventPublic.findById(id_evento);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non esiste alcun evento pubblico con l'id specificato."});
+            return;
+        }
+        
+        if(utent != evento.organizzatoreID){
+            res.status(403).json({error: "Non sei autorizzato a modificare l'evento."});
+            return;
+        }
+        
+        if(req.body.nomeAtt != ""){
+            evento.nomeAtt = req.body.nomeAtt;
+        }
+        if(req.body.categoria != ""){
+            evento.categoria = req.body.categoria
+        }
+        if(req.body.indirizzo != ""){
+            evento.luogoEv.indirizzo = req.body.indirizzo
+        }
+        if(req.body.citta != ""){
+            evento.luogoEv.citta = req.body.citta;
+        }
+        if(req.body.maxPers != ""){
+            if(Number.isNaN(parseInt(req.body.maxPers))){
+                res.status(400).json({error: "Numero massimo partecipanti non valido: formato non valido."});
+                return;
+            }
+            if(req.body.maxPers < 2){
+                res.status(400).json({error: "Numero massimo partecipanti non valido: inferiore a 2."});
+                return;
+            }
+            evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+        }
+        
+        await evento.save();
+        res.location("/api/v1/EventiPubblici/" + id_evento).status(200).send();
+        console.log('Evento pubblico modificato con successo');
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore lato server."}).send();
+    }
+    
+});
 
+router.delete('/:idEvento/Iscrizioni/:idIscr', async(req, res) => {
+    
+    try{
+        
+        var evento = await eventPublic.findById(req.params.idEvento);
+        var utente = req.loggedUser.id; 
+        var utenteObj = await Users.findById(utente);
+        var iscr = await biglietti.findById(req.params.idIscr);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non corrisponde alcun evento pubblico all'ID specificato."});
+            return;
+        }
+        
+        if(iscr == undefined){
+            res.status(404).json({error: "Non corrisponde alcuna iscrizione all'ID specificato."});
+            return;
+        }
+        
+        if(iscr.eventoid != req.params.idEvento){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'evento specificato."}).send();
+            return;
+        }
+        
+        if(iscr.utenteid != utente){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'utente specificato."}).send();
+            return;
+        }
+        
+        var array1 = evento.partecipantiID;
+        var index1 = array1.indexOf(utente);
+        if (index1 > -1) {
+            array1.splice(index1, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        evento.partecipantiID = array1;
+        await evento.save(); //Aggiornamento partecipantiID
+        
+        var array2 = utenteObj.EventiIscrtto;
+        var index2 = array2.indexOf(req.params.idEvento);
+        if (index2 > -1) {
+            array2.splice(index2, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        utenteObj.EventiIscrtto = array2;
+        await utenteObj.save(); //Aggiornamento EventiIscritto
+        
+        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+        
+        console.log('Annullamento iscrizione effettuato con successo.');
+        
+        res.status(204).send();
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore nel Server"}).send();
+    }
+    
+});
 
 router.post('/:id/Iscrizioni', async (req, res) => {
 
@@ -194,14 +311,14 @@ router.post('/:id/Inviti', async (req, res) => {
 
     try{
 
-        var utent = "628f8b448031650249b5d6bb";
+        var utent = req.loggedUser.id;
 
         var id_evento=req.params.id;
 
 
-        if(req.body.email == ""){
+        if(req.body.email == "" || req.body.email == undefined){
 
-            res.status(400).json({error: "Campo vuoto"}).send();
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
         }
 

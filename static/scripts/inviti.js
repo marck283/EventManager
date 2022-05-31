@@ -1,6 +1,16 @@
 
 
-var token = '';
+
+var token = "";
+
+if(localStorage.getItem('token') != null){
+
+    token = localStorage.getItem('token');
+}
+
+
+
+
 fetch('../api/v1/Utenti/me/Inviti', {
 		        method: 'GET',
 		        headers: {
