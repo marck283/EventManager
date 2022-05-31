@@ -1,9 +1,9 @@
 var getId = id => document.getElementById(id);
 
-var request = (listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {  
+var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {  
     var api = "";
     if(listType === "pers") {
-        api = "/api/v1/eventiCalendarioPersonale/";
+        api = "/api/v1/eventiCalendarioPersonale/?passato=" + passato;
     } else {
         api = "/api/v1/eventiCalendarioPubblico/";
     }
@@ -21,18 +21,18 @@ var request = (listType, nomeAtt = "", categoria = "", durata = "", indirizzo = 
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(listType, resp));
+                resp.json().then(resp => manipulateDom(listType, resp, idElem));
                 break;
             }
 
             case 401: {
-                resp.json().then(resp => getId("eventLists").textContent = resp.message);
+                resp.json().then(resp => getId(idElem).textContent = resp.message);
                 break;
             }
 
             case 400:
             case 404: {
-                resp.json().then(resp => getId("eventLists").textContent = resp.error);
+                resp.json().then(resp => getId(idElem).textContent = resp.error);
                 break;
             }
 
