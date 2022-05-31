@@ -153,7 +153,7 @@ var requestWithParams = async (id, day) => {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
         }
     }).then(resp => {
-        switch(resp.status) {
+        switch (resp.status) {
             case 200: {
                 resp.json().then(resp => {
                     var categories = []; //Lista di categorie già stampate a video
@@ -181,7 +181,7 @@ var requestWithParams = async (id, day) => {
                             li.appendChild(row);
     
                             var jr1 = resp.eventi.filter(item => item.category === category);
-    
+
                             //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
                             for (var object of jr1) {
                                 var col = document.createElement("div");
@@ -215,7 +215,7 @@ var requestWithParams = async (id, day) => {
                             }
                         }
                     }
-                })
+                });
                 break;
             }
 
@@ -235,8 +235,8 @@ var requestWithParams = async (id, day) => {
 };
 
 function myPopup(day) {
-    var popup = document.getElementById("myPopup1");
-    document.getElementById("myPopup1").style.display = "block";
+    var popup = getId("myPopup1");
+    popup.style.display = "block";
 
     //Niente da vedere qui... (inserire gli eventi del giorno selezionato
     //trovati per richiesta GET e query secondo il parametro 'day', espresso come 'giorno/mese/anno').

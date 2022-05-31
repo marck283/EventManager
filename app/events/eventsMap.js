@@ -1,8 +1,7 @@
 module.exports = {
     map: function(events, eventType) {
         return events.map(event => {
-            if(eventType == "pers"){
-
+            if(eventType == "pers") {
                 return {
                     id: eventType,
                     idevent: event._id,
@@ -10,13 +9,9 @@ module.exports = {
                     name: event.nomeAtt,
                     category: event.categoria
                 }
-
-
-
             }
 
-            if(eventType == "pub"){
-
+            if(eventType == "pub") {
                 return {
                     id: eventType,
                     idevent: event._id,
@@ -35,8 +30,6 @@ module.exports = {
                     category: event.categoria
                 }
             }
-
-            
         });
     }
 }
