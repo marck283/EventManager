@@ -1,8 +1,10 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
+var qrcode = require('qrcode');
 const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
+const biglietti = require('../collezioni/biglietti.js')
 
 
 
@@ -25,6 +27,86 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var datta = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = datta.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+        
+
         if(eventP.partecipantiID.length==eventP.partecipantiID.maxPers){
 
             res.status(403).json({ error: "Non spazio nell'evento"}).send();
@@ -41,6 +123,38 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        let data = {
+            idUtente: utent,
+            idEvento: id_evento
+        };
+
+
+
+        let stringdata = JSON.stringify(data);
+
+        //Print QR code to file using base64 encoding
+
+        var idBigl = "";
+        
+        qrcode.toDataURL(stringdata, async function(err, qrcode) {
+            if(err) {
+                throw Error("errore creazione biglietto")
+            }
+
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"pub"});
+          
+            idBigl = bigl._id;
+            return await bigl.save();
+
+            
+            
+        });
+
+        
+
+        
+
+
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
@@ -50,8 +164,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         await eventP.save()
         await utente.save()
 
+        
 
-        res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();
+   
+
+
+        res.location("/api/v1/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
 
 
 
@@ -69,7 +187,6 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 });
 
-//*******************+************************
 
 router.post('/:id/Inviti', async (req, res) => {
     
@@ -268,7 +385,10 @@ router.post('/:id/Inviti', async (req, res) => {
 });
 
 
+
 router.post('', async (req, res) => {
+
+
 
     
     var utent = req.loggedUser.id;
@@ -276,8 +396,19 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
+        if((typeof req.body.durata === "number") && (typeof req.body.maxPers === "number")){
+
+
+        }else{
+
+            res.status(400).json({error: "Campo non del formato corretto"}).send();
+            return;
+
+        }
+
         if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
+            return;
 
         }
 
