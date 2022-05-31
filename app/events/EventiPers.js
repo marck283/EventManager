@@ -6,8 +6,6 @@ const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
 
-
-
 router.get('/:id', async(req, res) => {
 
     try{
