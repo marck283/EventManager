@@ -41,8 +41,8 @@ fetch('../api/v1/EventiPersonali/'+id, {method: 'GET', headers: {'x-access-token
                 });
                 break;
             }
-            case 404:
             case 401:
+            case 404:
             case 500: {
                 resp.json().then(data => {document.getElementById("error").textContent = data.error});
                 break;

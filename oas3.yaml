@@ -417,9 +417,6 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
-                  
-              
-              
 
   /EventiPersonali:
     post:
@@ -637,7 +634,216 @@ paths:
                     description: "Messaggio d'errore"
                   success:
                     type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"                  
+
+  /EventiPubblici/{IDevento}:
+    patch:
+      summary: 'Modifica evento pubblico.'
+      description: 'Modifica di un evento pubblico programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento pubblico.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPubblico'
+      responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento pubblico modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '400':
+          description: 'Numero massimo partecipanti non valido.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: 'Non sei autorizzato a modificare l'evento pubblico corrente.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+  /EventiPersonali/{IDevento}:
+    patch:
+      summary: 'Modifica evento personale.'
+      description: 'Modifica di un evento personale programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento personale.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPersonalePrivato'
+      responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento personale modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: 'Non sei autorizzato a modificare l'evento personale corrente.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '404':
+          description: 'Non esiste alcun evento personale associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+    
+  /EventiPrivati/{IDevento}:
+    patch:
+      summary: 'Modifica evento privato.'
+      description: 'Modifica di un evento privato programmato dall''utente correntemente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: 'Di seguito sono indicati i dati per la modifica di un evento privato.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormModificaPersonalePrivato'
+      responses:
+        '200':
+          description: 'Oggetto che rappresenta l'evento privato modificato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPubblico'
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: 'Non sei autorizzato a modificare l'evento privato corrente.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '404':
+          description: 'Non esiste alcun evento privato associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
 
   /EventiPrivati/{IDevento}:
     get:
@@ -1472,10 +1678,6 @@ components:
           type: string
           description: "La categoria in cui l'attività è classificata"
 
-
-    
-   
-
     EventoPubblico:
       type: object
       description: 'Oggetto che rappresenta un evento pubblico.'
@@ -1668,6 +1870,49 @@ components:
               type: string
               description: 'Città dell''Evento.'
 
+    FormModificaPubblico:
+      type: object
+      description: 'Oggetto che rappresenta il form di modifica di un evento pubblico.'
+      properties:
+        nomeAtt:
+          type: string
+          description: 'Nuovo nome evento.'
+        categoria:
+          type: string
+          description: 'Nuova categoria evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Nuovo indirizzo evento.'
+            citta:
+              type: string
+              description: 'Nuova città evento.'
+        maxPers:
+          type: integer
+          description: 'Nuovo numero massimo partecipanti.'
+
+
+    FormModificaPersonalePrivato:
+      type: object
+      description: 'Oggetto che rappresenta il form di modifica di un evento personale.'
+      properties:
+        nomeAtt:
+          type: string
+          description: 'Nuovo nome evento.'
+        categoria:
+          type: string
+          description: 'Nuova categoria evento.'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Nuovo indirizzo evento.'
+            citta:
+              type: string
+              description: 'Nuova città evento.'
 
   Biglietti:
     type: object
@@ -1740,6 +1985,7 @@ components:
       accettato:
         type: boolean
         description: indica se l'utente ha già o meno accettato l'invito
+
 
 
 

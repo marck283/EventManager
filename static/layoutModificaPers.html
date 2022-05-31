@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <title>Modifica Evento Personale</title>
+    <script src="./scripts/richiestaModificaEvento.js"></script>
+</head>
+
+<body>
+
+<h1>Modifica Evento Personale</h1>
+
+Nome attività: <input type="text" id="nomeAtt"/><br></br>
+Categoria: <select id="categoria" name="categoria">
+    <option value="lavoro">lavoro</option>
+    <option value="scuola">scuola</option>
+    <option value="operazione" >operazione</option>
+    <option value="svago" selected>svago</option>
+    </select><br></br>
+Indirizzo: <input type="text" id="indirizzo"/> Città: <input type="text" id="citta"/><br></br>
+
+<button type="button" onclick="modificaPers()" class="btn btn-primary">Applica</button>
+<input type="reset" value="Reset" class="btn btn-secondary"/>
+
+<p id=""></p>
+
+<h3 id="error"></h3>
+
+</body>
+
+</html>

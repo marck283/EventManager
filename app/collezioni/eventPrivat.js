@@ -5,3 +5,4 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('EventoPr', new Schema({ 
 	data: String,  ora: String, durata: Number, categoria: String, nomeAtt: String, luogoEv: {indirizzo: String, citta: String}, organizzatoreID: String, partecipantiID: [String], invitatiID: [String]}
 ));
+
