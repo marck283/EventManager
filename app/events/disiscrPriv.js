@@ -1,5 +1,5 @@
 const express = require('express');
-const eventPriv = require('../collezioni/eventiPrivat.js');
+const eventPriv = require('../collezioni/eventPrivat.js');
 const Users = require('../collezioni/utenti.js');
 const Biglietto = require('../collezioni/biglietti.js');
 const router = express.Router();
