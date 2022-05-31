@@ -11,6 +11,7 @@ const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
 const registrato = require('./registrazione.js')
+const userInfo = require('./userInfo.js');
 
 
 
@@ -32,13 +33,16 @@ app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use("/api/v1/EventiPrivati", EventoPrivato);
 app.use('/api/v1/Utenti', registrato);
+app.use('/api/v1/Utenti', Utente);
+app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
+app.use('/api/v1/Utenti', userInfo);
 
 app.use(tokenChecker);
 
 //********************************************************** attenzione *********************
-app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
+
 app.use('/api/v1/EventiPersonali', EventoPersonale);
-app.use('/api/v1/Utenti', Utente);
+
 app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
 
 

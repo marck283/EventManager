@@ -1,6 +1,7 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
+const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
 
 
@@ -54,6 +55,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
 
+
     }catch (error){
         console.log(error);
         res.status(500).json({ error: "Errore nel server"}).send();
@@ -62,6 +64,204 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
   
     }
+
+
+
+});
+
+//*******************+************************
+
+router.post('/:id/Inviti', async (req, res) => {
+    
+    
+
+    try{
+
+        var utent = "628f8b448031650249b5d6bb";
+
+        var id_evento=req.params.id;
+
+
+        if(req.body.email == ""){
+
+            res.status(400).json({error: "Campo vuoto"}).send();
+            return;
+        }
+
+       
+
+        let eventP = await eventPublic.findById(id_evento);
+        if(eventP == undefined ){
+            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+            return;
+
+        }
+
+        //controllo che le date non siano di una giornata precedente a quella odierna
+
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var data = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = data.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+
+        
+
+
+        if(eventP.organizzatoreID != utent ){
+            res.status(403).json({error: "L'utente non può invitare ad un evento che non è suo"}).send();
+            return;
+
+        }
+
+        var utenteorg = await Users.findById(utent)
+
+        if(utenteorg.email == req.body.email){
+            res.status(403).json({error: "L'utente non può auto invitarsi"}).send();
+            return;
+
+        }
+
+
+        
+
+
+        var utente = await Users.find({email:req.body.email})
+        
+        if(utente.length == 0){
+            res.status(404).json({error: "Non esiste un utente con quella email"}).send();
+            return;
+
+        }
+
+
+
+        var ListaInviti = await Inviti.find({utenteid:utente[0]._id})
+
+        if(ListaInviti.length>0){
+
+            for(var elem of ListaInviti){
+
+                if(elem.eventoid == id_evento){
+
+                    res.status(403).json({error: "L'utente con quella email è già invitato a quell'evento"}).send();
+                    return;
+
+                    
+                }
+            }
+
+        }
+
+        if(eventP.partecipantiID.includes(utente[0]._id)){
+
+             res.status(403).json({error: "L'utente con quella email è già partecipante all'evento"}).send();
+            return;
+
+
+        }
+
+
+
+
+
+
+
+        
+
+        let invito = new Inviti({utenteid:utente[0]._id, eventoid: id_evento, tipoevent: "pub"});
+
+        await invito.save();
+
+        res.location("/api/v1/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
+
+
+
+        
+
+    }catch(error){
+
+        console.log(error)
+        res.status(500).json({error: "Errore nel server"}).send();
+        return;
+
+
+    }
+    
+    
 
 
 
