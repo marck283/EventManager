@@ -63,8 +63,7 @@ router.get("", async (req, res) => {
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali.
-    eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+    eventsPub = await findPubEvents(user);
     eventsPriv = await eventPrivate.find({});
     eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
 
@@ -79,10 +78,11 @@ router.get("", async (req, res) => {
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
     if(durata != undefined && durata != "") {
-        if(!Number.isNaN(parseInt(durata))) {
-            eventsPers = eventsPers.filter(e => e.durata == durata);
-            eventsPub = eventsPub.filter(e => e.durata == durata);
-            eventsPriv = eventsPriv.filter(e => e.durata == durata);
+        const duration = parseInt(durata);
+        if(!Number.isNaN(duration)) {
+            eventsPers = eventsPers.filter(e => e.durata == duration);
+            eventsPub = eventsPub.filter(e => e.durata == duration);
+            eventsPriv = eventsPriv.filter(e => e.durata == duration);
         } else {
             res.status(400).json({error: "Richiesta malformata."});
             return;
@@ -103,14 +103,11 @@ router.get("", async (req, res) => {
     switch (passato) {
         case "True": {
             //Filtro per date passate
-            eventsPub = await findPubEvents(user);
             eventsPub = filterEvents(eventsPub);
-            eventsPriv = await eventPrivate.find({});
             eventsPriv = filterEvents(eventsPriv);
             break;
         }
         case "False": {
-            eventsPub = await findPubEvents(user);
             break;
         }
         default: {

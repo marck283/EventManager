@@ -43,7 +43,7 @@ var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata =
     }).catch(error => console.log(error));
 };
 
-var showIfChecked = () => {
+var showIfChecked = pageType => {
     if (getId("buttonSwitch").checked) {
         getId("calendarWrapper").style.display = "block";
         getId("divCal").style.display = "block";
@@ -55,13 +55,29 @@ var showIfChecked = () => {
         getId("durata").value = "";
         getId("indirizzo").value = "";
         getId("citta").value = "";
+
+        request("False", "elencoEventi", pageType);
+
+        //Se la chiamata a questa funzione proviene dalla pagina dell'elenco personale di eventi, allora mostro lo storico degli eventi.
+        if(pageType == "pers") {
+            request("True", "storicoEventi", pageType);
+            getId("storicoEventiContainer").style.display = "block";
+            getId("storicoEventi").style.display = "block";
+        }
     } else {
-        request();
+        request("False", "eventLists", pageType);
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
         getId("eventLists").style.display = "block";
         getId("filtroEventi").style.display = "block";
+
+        //Se la chiamata a questa funzione proviene dalla pagina dell'elenco personale di eventi, allora nascondo lo storico degli eventi.
+        if(pageType == "pers") {
+            getId("storicoEventiContainer").style.display = "none";
+            getId("storicoEventi").style.display = "none";
+            getId("storicoEventi").innerHTML = "";
+        }
     }
 };
 
