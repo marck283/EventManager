@@ -1,19 +1,32 @@
-var request = (idElem) => {    
-    fetch("/api/v1/eventiCalendarioPubblico/", {
+var getId = id => document.getElementById(id);
+
+var request = (nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {
+    fetch(api, {
         method: 'GET',
         headers: {
-            'x-access-token': token
+            'x-access-token': token,
+            'nomeAtt': nomeAtt,
+            'categoria': categoria,
+            'durata': durata,
+            'indirizzo': indirizzo,
+            'citta': citta
         }
     })
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(resp, idElem));
+                resp.json().then(resp => manipulateDom(resp));
                 break;
             }
 
+            case 401: {
+                resp.json().then(resp => getId("eventLists").textContent = resp.message);
+                break;
+            }
+
+            case 400:
             case 404: {
-                resp.json().then(resp => getId(idElem).textContent = resp.error);
+                resp.json().then(resp => getId("eventLists").textContent = resp.error);
                 break;
             }
 
@@ -24,36 +37,42 @@ var request = (idElem) => {
     }).catch(error => console.log(error));
 };
 
-var getId = id => document.getElementById(id);
-
 var showIfChecked = () => {
     if (getId("buttonSwitch").checked) {
         getId("calendarWrapper").style.display = "block";
         getId("divCal").style.display = "block";
         getId("eventLists").style.display = "none";
         getId("eventLists").innerHTML = "";
+        getId("filtroEventi").style.display = "none";
+        getId("nomeAtt").value = "";
+        getId("categoria").value = "";
+        getId("durata").value = "";
+        getId("indirizzo").value = "";
+        getId("citta").value = "";
     } else {
-        request("eventLists");
+        request();
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
         getId("eventLists").style.display = "block";
+        getId("filtroEventi").style.display = "block";
     }
 };
 
 var manipulateDom = (response, id = "eventLists") => {
     var categories = [];
-    for (var f of response) {
+    getId(id).innerHTML = "";
+    for (var f of response.eventi) {
         if (categories.find(e => e === f.category) == undefined) {
             categories.push(f.category);
             category = f.category;
             var h3 = document.createElement("h3");
             h3.textContent = category;
-            document.getElementById(id).appendChild(h3);
+            getId(id).appendChild(h3);
 
             var ul = document.createElement("ul");
             ul.classList = "list-group list-group-flush";
-            document.getElementById(id).appendChild(ul);
+            getId(id).appendChild(ul);
 
             var li = document.createElement("li");
             li.className = "list-group-item";
@@ -61,13 +80,13 @@ var manipulateDom = (response, id = "eventLists") => {
 
             var row = document.createElement("div");
             if(id === "eventLists") {
-                row.classList ="row row-cols-3";
+                row.classList ="row row-cols-4";
             } else {
                 row.className = "row";
             }
             row.setAttribute("id", category);
             li.appendChild(row);
-            var jr1 = response.filter(item => item.category === category);
+            var jr1 = response.eventi.filter(item => item.category === category);
 
             //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
             for (var object of jr1) {
@@ -85,7 +104,20 @@ var manipulateDom = (response, id = "eventLists") => {
                 card.appendChild(cardTitle);
 
                 var objectId = document.createElement("a");
-                objectId.href = "layoutPubblico.html?id="+object.idevent+"&token="+token;
+                if(listType === "pers") {
+                    if (object.id == "pers") {
+                        objectId.href = "layoutPersonale.html";
+                    } else {
+                        if (object.id == "pub") {
+                            objectId.href = "layoutPubblico.html";
+                        } else {
+                            objectId.href = "layoutPrivato.html";
+                        }
+                    }
+                } else {
+                    objectId.href = "layoutPubblico.html";
+                }
+                objectId.href += "?id=" + object.idevent + "&token=" + token;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";
