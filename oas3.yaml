@@ -309,7 +309,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
@@ -637,8 +637,61 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
+  /Utenti:
+    get:
+      description: >-
+        Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
+        sarà restituita una lista contenente tutti gli utenti.
+      summary: Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
+      parameters:
+      - name: email
+        in: query
+        description: L'indirizzo email (o parte di esso) cercato dall'utente
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Viene ritornata la lista di utenti il cui indirizzo email contiene la stringa cercata. Nel caso in cui il campo "email" sia lasciato vuoto,
+          sarà restituita una lista contenente tutti gli utenti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  utenti:
+                    type: array
+                    description: La lista di utenti il cui indirizzo email contiene la stringa cercata
+                    items:
+                      $ref: '#components/schemas/Utente'
+        
+        '404':
+          description: Nessun utente trovato.
+          content:
+            application/json:
+              schema:
+                type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Messaggio di errore
+
 components:
   schemas:
+    Utente:
+      description: Uno degli utenti il cui indirizzo email contiene la stringa cercata
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Il nome dell'utente
+        email:
+          type: string
+          description: L'indirizzo email dell'utente
+        urlUtente:
+          type: string
+          description: Il link all'indirizzo dell'utente
+
     PublicEvent:
       description: Oggetto dell'evento pubblico per la sua creazione
       type: object

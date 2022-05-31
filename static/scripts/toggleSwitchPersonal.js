@@ -11,7 +11,6 @@ var request = () => {
                 resp.json().then(resp => manipulateDom(resp))
                 break;
             }
-
             case 401: {
                 resp.json().then(resp => document.getElementById("eventLists").textContent = resp.message);
                 break;
