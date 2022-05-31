@@ -26,7 +26,8 @@
   <!-- Scripts -->
   <script src="scripts/estrazioneToken.js"></script>
   <script src="scripts/personalCalendar.js"></script>
-  <script src="scripts/toggleSwitchPersonal.js"></script>
+  <script src="scripts/toggleSwitch.js"></script>
+  <script src="scripts/filtroEventi.js"></script>
 </head>
 
 <body>
@@ -66,33 +67,32 @@
 
   <h1>Elenco eventi</h1>
   <div class="container">
-      <div class="form-check form-switch">
-        <label class="form-check-label" for="flexSwitchCheckChecked">Vista eventi in calendario</label>
-        <input id="buttonSwitch" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-          onclick="showIfChecked();" placeholder="Visualizza eventi in calendario" />
-      </div>
-      <div class="row">
-        <div class="col justify-content-center">
-          <div id="eventGrouping">
-            <div class="calendar-wrapper" id="calendarWrapper">
-              <button id="btnPrev" type="button">Precedente</button>
-              <button id="btnNext" type="button">Successivo</button>
-              <div id="divCal"></div>
-              <div class="popup">
-                <span class="popuptext" id="myPopup1">
-                  <br />
-                  <div class="card">
-                    <div class="card-body">
-                      <h3 class="card-title">Elenco eventi</h3>
-                      <div class="card-text" id="elencoEventi"></div>
-                    </div>
-                  </div>
-                </span>
+    <div class="form-check form-switch">
+      <label class="form-check-label" for="flexSwitchCheckChecked">Vista eventi in calendario</label>
+      <input id="buttonSwitch" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+        onclick="showIfChecked();" placeholder="Visualizza eventi in calendario" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col justify-content-center">
+      <div id="eventGrouping">
+        <div class="calendar-wrapper" id="calendarWrapper">
+          <button id="btnPrev" type="button">Precedente</button>
+          <button id="btnNext" type="button">Successivo</button>
+          <div id="divCal"></div>
+          <div class="popup">
+            <span class="popuptext" id="myPopup1">
+              <br />
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="card-title">Elenco eventi</h3>
+                  <div class="card-text" id="elencoEventi"></div>
+                </div>
               </div>
-            </div>
-            <div id="eventLists"></div>
+            </span>
           </div>
         </div>
+        <div id="eventLists"></div>
         <div class="col justify-content-center">
           <span id="storicoEventiContainer">
             <br />
@@ -104,10 +104,35 @@
             </div>
           </span>
         </div>
+        <div id="filtroEventi">
+          <h3>Filtro eventi</h3>
+          <div id="filtroNomeAtt">
+            <label for="nomeAtt">Nome attivit&agrave;: </label>&nbsp;<input type="text" id="nomeAtt" /><br /><br />
+          </div>
+          <div id="filtroCat">
+            <label for="categoria">Categoria: </label>&nbsp;<input type="text" id="categoria" /><br /><br />
+          </div>
+          <div id="filtroDurata">
+            <label for="durata">Durata: </label>&nbsp;<input type="number" id="durata" min="1" /><br /><br />
+          </div>
+          <div id="filtroIndirizzo">
+            <label for="indirizzo">Indirizzo: </label>&nbsp;<input type="text" id="indirizzo" /><br /><br />
+          </div>
+          <div id="filtroCitta">
+            <label for="citta">Citt&agrave;: </label>&nbsp;<input type="text" id="citta" /><br /><br />
+          </div>
+          <div id="submitButton">
+            <input type="submit" class="btn btn-primary" value="Invia" onclick="filtroEventi('False', 'pers');" />
+          </div>
+        </div>
         <script>
           showIfChecked();
         </script>
       </div>
+      <script>
+        showIfChecked();
+      </script>
+    </div>
   </div>
 </body>
 

@@ -59,26 +59,64 @@ router.get("", async (req, res) => {
     var obj = {}, token = req.header("x-access-token");
     
     var user = req.loggedUser.id;
-    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
+    var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
+    var indirizzo = req.header("indirizzo"), citta = req.header("citta");
+
+    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali.
+    eventsPub = await eventPublic.find({});
+    eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+    eventsPriv = await eventPrivate.find({});
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
+
+    if(nomeAtt != undefined && nomeAtt != "") {
+        eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
+        eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
+        eventsPriv = eventsPriv.filter(e => e.nomeAtt.includes(nomeAtt));
+    }
+    if(categoria != undefined && categoria != "") {
+        eventsPers = eventsPers.filter(e => e.categoria == categoria);
+        eventsPub = eventsPub.filter(e => e.categoria == categoria);
+        eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
+    }
+    if(durata != undefined && durata != "") {
+        if(!Number.isNaN(parseInt(durata))) {
+            eventsPers = eventsPers.filter(e => e.durata == durata);
+            eventsPub = eventsPub.filter(e => e.durata == durata);
+            eventsPriv = eventsPriv.filter(e => e.durata == durata);
+        } else {
+            res.status(400).json({error: "Richiesta malformata."});
+            return;
+        }
+    }
+    if(indirizzo != undefined && indirizzo != "") {
+        eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
+        eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
+        eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
+    }
+    if(citta != undefined && citta != "") {
+        eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
+        eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
+        eventsPriv = eventsPriv.filter(e => e.luogoEv.citta == citta);
+    }
 
     var passato = req.query.passato;
-        switch (passato) {
-            case "True": {
-                //Filtro per date passate
-                eventsPub = await findPubEvents(user);
-                eventsPub = filterEvents(eventsPub);
-                eventsPriv = await eventPrivate.find({});
-                eventsPriv = filterEvents(eventsPriv);
-                break;
-            }
-            case "False": {
-                eventsPub = await findPubEvents(user);
-                break;
-            }
-            default: {
-                res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
-            }
+    switch (passato) {
+        case "True": {
+            //Filtro per date passate
+            eventsPub = await findPubEvents(user);
+            eventsPub = filterEvents(eventsPub);
+            eventsPriv = await eventPrivate.find({});
+            eventsPriv = filterEvents(eventsPriv);
+            break;
         }
+        case "False": {
+            eventsPub = await findPubEvents(user);
+            break;
+        }
+        default: {
+            res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
+        }
+    }
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = eventsMap.map(eventsPers, "pers");
@@ -86,8 +124,8 @@ router.get("", async (req, res) => {
         eventsPub.forEach(e => eventsPers.push(e));
         eventsPriv = eventsMap.map(eventsPriv, "priv");
         eventsPriv.forEach(e => eventsPers.push(e));
-        obj.eventi = eventsPers;
-        res.status(200).json(obj);
+
+        res.status(200).json({eventi: eventsPers});
     } else {
         res.status(404).json({error: "Non esiste alcun evento programmato."});
     }

@@ -1,27 +1,38 @@
 var getId = id => document.getElementById(id);
 
-var request = () => {
+var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {  
+    var api = "";
+    if(listType === "pers") {
+        api = "/api/v1/eventiCalendarioPersonale/?passato=" + passato;
+    } else {
+        api = "/api/v1/eventiCalendarioPubblico/";
+    }
     fetch(api, {
         method: 'GET',
         headers: {
             'x-access-token': token,
+            'nomeAtt': nomeAtt,
+            'categoria': categoria,
+            'durata': durata,
+            'indirizzo': indirizzo,
+            'citta': citta
         }
     })
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(resp));
+                resp.json().then(resp => manipulateDom(listType, resp, idElem));
                 break;
             }
 
             case 401: {
-                resp.json().then(resp => getId("eventLists").textContent = resp.message);
+                resp.json().then(resp => getId(idElem).textContent = resp.message);
                 break;
             }
 
             case 400:
             case 404: {
-                resp.json().then(resp => getId("eventLists").textContent = resp.error);
+                resp.json().then(resp => getId(idElem).textContent = resp.error);
                 break;
             }
 
@@ -54,7 +65,7 @@ var showIfChecked = () => {
     }
 };
 
-var manipulateDom = (response, id = "eventLists") => {
+var manipulateDom = (listType, response, id = "eventLists") => {
     var categories = [];
     getId(id).innerHTML = "";
     for (var f of response.eventi) {

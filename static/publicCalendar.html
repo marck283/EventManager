@@ -27,6 +27,7 @@
   <script src="scripts/estrazioneToken.js"></script>
   <script src="scripts/calendar.js"></script>
   <script src="scripts/toggleSwitch.js"></script>
+  <script src="scripts/filtroEventi.js"></script>
 </head>
 
 <body>
@@ -89,6 +90,31 @@
         </div>
       </div>
       <div id="eventLists"></div>
+      <hr>
+      <div id="filtroEventi">
+        <h3>Filtro eventi</h3>
+        <div id="filtroNomeAtt">
+          <label for="nomeAtt">Nome attivit&agrave;: </label>&nbsp;<input type="text" id="nomeAtt" /><br /><br />
+        </div>
+        <div id="filtroCat">
+          <label for="categoria">Categoria: </label>&nbsp;<input type="text" id="categoria" /><br /><br />
+        </div>
+        <div id="filtroDurata">
+          <label for="durata">Durata: </label>&nbsp;<input type="number" id="durata" min="1" /><br /><br />
+        </div>
+        <div id="filtroIndirizzo">
+          <label for="indirizzo">Indirizzo: </label>&nbsp;<input type="text" id="indirizzo" /><br /><br />
+        </div>
+        <div id="filtroCitta">
+          <label for="citta">Citt&agrave;: </label>&nbsp;<input type="text" id="citta" /><br /><br />
+        </div>
+        <div id="submitButton">
+          <input type="submit" class="btn btn-primary" value="Invia" onclick="filtroEventi('False', 'pub');" />
+        </div>
+      </div>
+      <script>
+        showIfChecked();
+      </script>
     </div>
     <script>
       showIfChecked();
