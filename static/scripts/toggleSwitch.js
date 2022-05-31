@@ -1,15 +1,10 @@
 var getId = id => document.getElementById(id);
 
-var request = (nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {
+var request = () => {
     fetch(api, {
         method: 'GET',
         headers: {
             'x-access-token': token,
-            'nomeAtt': nomeAtt,
-            'categoria': categoria,
-            'durata': durata,
-            'indirizzo': indirizzo,
-            'citta': citta
         }
     })
     .then(resp => {
