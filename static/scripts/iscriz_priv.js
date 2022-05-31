@@ -1,7 +1,7 @@
-var iscr = () => {
+var iscrPr = (id) => {
 			
 			
-
+			console.log(id);
 			
 
 			fetch('../api/v1/EventiPrivati/' + id + '/Iscrizioni', {
@@ -20,25 +20,25 @@ var iscr = () => {
 					*/
 		    		
         			if(resp.status==201){
-        				document.getElementById("iscrizione").innerHTML = "Iscritto"
+        				alert("Iscritto")
 
         			}
         			if(resp.status==403){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
         				
         				
 
         			}
         			if(resp.status==500){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
         			if(resp.status==404){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
         			if(resp.status==401){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.message});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
 

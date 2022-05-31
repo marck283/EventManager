@@ -198,7 +198,7 @@ var requestWithParams = async (id, day) => {
                                 card.appendChild(h5);
 
                                 var a = document.createElement("a");
-                                a.href = "layoutPubblico.html?id="+ object.idevent + "&token=" + token;
+                                a.href = "layoutPubblico.html?id="+ object.idevent;
                                 a.classList = "btn btn-primary";
                                 a.setAttribute("name", "cardButton");
                                 a.textContent = "Maggiori informazioni...";

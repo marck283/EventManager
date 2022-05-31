@@ -54,21 +54,23 @@ fetch('../api/v1/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-toke
                         d.appendChild(img);
 
                         let pulsante = document.createElement("button");
-                        let eventoid = elem.eventoid;
-                        let utenteid = elem.utenteid;
-                        let iscrid = bigliettoid;
+                        pulsante.textContent = "Disiscrizione"
 
                         if(elem.tipoevento == "pub"){
-                            var eventoid;
+                            
 
-                            pulsante.onclick = "" //*************************************************************************
+                            pulsante.onclick = disiscrPub.bind(this,elem.eventoid,elem.bigliettoid) //*************************************************************************
                         
                         }else{
 
-                            pulsante.onclick = "" //*************************************************************************
+                            pulsante.onclick = disiscrPriv.bind(this,elem.eventoid,elem.bigliettoid) //*************************************************************************
 
 
                         }
+
+                        d.appendChild(pulsante)
+
+                        
 
 
 

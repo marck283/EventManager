@@ -123,7 +123,7 @@ var manipulateDom = (listType, response, id = "eventLists") => {
                 } else {
                     objectId.href = "layoutPubblico.html";
                 }
-                objectId.href += "?id=" + object.idevent + "&token=" + token;
+                objectId.href += "?id=" + object.idevent;
                 objectId.classList = "btn btn-primary";
                 objectId.setAttribute("name", "cardButton");
                 objectId.textContent = "Maggiori informazioni...";

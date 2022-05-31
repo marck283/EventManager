@@ -4,6 +4,7 @@ const Utente = require('./collezioni/utenti.js');
 const Biglietto = require('./collezioni/biglietti.js');
 const eventPublic = require('./collezioni/eventPublic.js');
 const eventPrivat = require('./collezioni/eventPrivat.js');
+const Inviti = require('./collezioni/invit.js');
 
 
 
@@ -187,7 +188,7 @@ router.get('/me/Inviti', async (req, res) => {
 
 
             if(elem.tipoevent == "priv"){
-                let evento = await eventPriv.findById(elem.eventoid);
+                let evento = await eventPrivat.findById(elem.eventoid);
 
 
                 if(evento){

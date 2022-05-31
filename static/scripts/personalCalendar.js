@@ -207,7 +207,7 @@ var requestWithParams = async (id, day) => {
                                         a.href = "layoutPrivato.html";
                                     }
                                 }
-                                a.href += "?id="+ object.idevent + "&token=" + token;
+                                a.href += "?id="+ object.idevent;
                                 a.classList = "btn btn-primary";
                                 a.setAttribute("name", "cardButton");
                                 a.textContent = "Maggiori informazioni...";

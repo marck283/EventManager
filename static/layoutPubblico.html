@@ -5,6 +5,7 @@
     <title>Evento Pubblico</title>
     <script src="./scripts/scriptInfoEventPub.js"></script>
     <script src="/scripts/iscriz.js"></script>
+
 </head>
 
 <body>
@@ -40,6 +41,11 @@ Numero partecipanti: <p id="numPers"></p>
 
 <button onclick="iscr()">Iscriviti</button><br>
 <h2 id="iscrizione"></h2>
+
+<a href="layoutModificaPub.html?id=" id="modifica">modifica evento</a>
+
+<script> document.getElementById("modifica").href += id; </script>
+
 
 <h3 id="error"></h3>
 

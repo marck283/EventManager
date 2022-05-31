@@ -72,6 +72,27 @@ fetch('../api/v1/Utenti/me/Inviti', {
 
 		                        }
 
+
+
+		                        let pulsante = document.createElement("button");
+		                        pulsante.textContent = "Iscrizione"
+
+		                        if(elem.tipoevento == "pub"){
+		                            
+
+		                            pulsante.onclick = iscrInv.bind(this,elem.idevento);
+		                        
+
+		                        }else{
+
+		                            pulsante.onclick = iscrPr.bind(this,elem.idevento);
+
+
+		                        }
+
+		                        d.appendChild(pulsante)
+
+
 		                        let h3 = document.createElement("h4");
 
 		                        h3.innerHTML = "--------------------"
