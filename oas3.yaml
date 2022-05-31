@@ -85,8 +85,8 @@ paths:
   
   /EventiPubblici/{idEvento}/Iscrizioni:
      post:
-      description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione per quell'evento da parte del utente corrente loggato
-      summary: Iscrizione ad un evento
+      description: Si richiede,secondo un certo id dell'evento pubblico, l'iscrizione, con biglietto allegato, per quell'evento da parte del utente corrente loggato
+      summary: Iscrizione ad un evento pubblico
       parameters:
       - name: Idevento
         in: path
@@ -107,7 +107,75 @@ paths:
                 type: string
               description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
         '403':
-          description: "Il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto)"
+          description: "Il server ha deciso di non iscriverti (per esempio perchè non ci sono più posti o sei già iscritto o l'evento indicato non è più disponibile)"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: "Errore del server"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+
+  /EventiPrivati/{idEvento}/Iscrizioni:
+     post:
+      description: Si richiede,secondo un certo idEvento dell'evento privato, l'iscrizione, con biglietto allegato, per quell'evento da parte dell'utente corrente loggato. Questa iscrizione si compierà solo se l'utente loggato appartiene alla lista degli utenti invitati dell'evento privato con quell'idEvento.
+      summary: Iscrizione ad un evento privato
+      parameters:
+      - name: Idevento
+        in: path
+        description: Id dell'evento a cui si vuole iscrivere
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: Token di autenticazione che identifica l'utente loggato
+        required: true
+      responses:
+        '201':
+          description: 'Iscrizione all"evento privato. link all''iscrizione dell''evento'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'indirizzo dell'iscrizione a cui l'utente corrente si è iscritto.
+        '403':
+          description: "Il server ha deciso di non iscriverti (per esempio sei già iscritto o non sei invitato o l'evento indicato non è più disponibile)"
           content:
             application/json:
               schema:
@@ -410,6 +478,76 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
+  /EventiPrivati:
+    post:
+      description: Inviare le info per creare un nuovo evento privato.
+      summary: Crea un nuovo evento pubblico
+      parameters:
+      - name: x-access-token
+        in: header
+        description: Token d'autenticazione
+        required: true
+      requestBody:
+        description: Vengono indicati quali siano i dati per la programmazione di un certo evento privato, che comporta l'invito delle persone indicate da voler invitare
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateEvent'
+      responses:
+        '201':
+          description: 'Evento privato creato. link alla locazione del evento privato'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'evento privato nuovo creato.
+        '500':
+          description: Errore al'interno del server (probabilmente riguardante il DB)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: l'utente non è autenticato (cioè il token è errato)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: errore nell'inserimento dei dati per la creazione dell'evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '403':
+          description: Input non permesso (es. invitare tramite la stessa email)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+
+
+
   /EventiPubblici/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento pubblico specificandone l''ID.'
@@ -449,7 +587,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /EventiPersonale/{IDevento}:
+  /EventiPersonali/{IDevento}:
     get:
       description: 'Ottieni informazioni riguardanti un evento personale specificandone l''ID.'
       summary: 'Visualizza informazioni evento personale.'
@@ -501,6 +639,58 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
 
+  /EventiPrivati/{IDevento}:
+    get:
+      description: 'Ottieni informazioni riguardanti un evento privato specificandone l''ID.'
+      summary: 'Visualizza informazioni evento privato.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento privato che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Elenco informazioni evento privato.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventoPrivato'
+        '404':
+          description: 'Non esiste alcun evento privato associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
 
   /Utenti/me:
     get:
@@ -517,17 +707,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: 'Non esiste alcun utente associato all''ID specificato.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: "Messaggio d'errore"
+                $ref: '#/components/schemas/Utente'
         '500':
           description: 'Errore nel server.'
           content:
@@ -555,12 +735,37 @@ paths:
   /eventiCalendarioPubblico:
     get:
       description: >-
-        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
+        In caso di utente autenticato, quindi in possesso di un token valido, permette di ottenere la lista di eventi pubblici a cui l'utente non si è ancora iscritto e non è organizzatore. In caso di utente non autetnicato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati. 
       summary: Ottieni gli eventi pubblici del calendario pubblico sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+      - name: nomeAtt
+        in: header
+        description: Il nome dell'attività cercata. Si noti che questo valore può anche essere indicato parzialmente. In questo caso verranno restituiti gli eventi il cui nome contiene la stringa qui specificata.
+        schema:
+          type: string
+      - name: categoria
+        in: header
+        description: La categoria dell'attività cercata.
+        schema:
+          type: string
+      - name: durata
+        in: header
+        description: La durata dell'evento. Si noti che il valore di questo parametro deve essere specificato in forma numerica e deve essere strettamente maggiore di zero.
+        schema:
+          type: integer
+      - name: indirizzo
+        in: header
+        description: L'indirizzo per cui effettuare la ricerca.
+        schema:
+          type: string
+      - name: citta
+        in: header
+        description: La città in cui sarà tenuto l'evento.
+        schema:
+          type: string
       responses:
         '200':
           description: Lista degli eventi del calendario pubblico ricevuta
@@ -570,6 +775,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Evento'
+        
+        '400':
+          description: >-
+            E' stato commesso un errore nell'inserimento dei dati. Un errore associato a questo codice è restituito solo nel caso in cui la durata sia stata inserita in un formato non numerico.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Il messaggio di errore
         
         '404':
           description: "Non esiste alcun evento legato al calendario pubblico."
@@ -585,12 +802,46 @@ paths:
   /eventiCalendarioPersonale:
     get:
       description: >-
-        Permette di ottenere la lista di eventi personali e pubblici a cui l'utente autenticato è iscritto o che ha organizzato. 
+        Permette di ottenere la lista di eventi personali, pubblici e privati a cui l'utente autenticato è iscritto o che ha organizzato. Tutti i parametri specificati sotto (tranne il token di autenticazione ed il parametro booleano "passato") potranno essere specificati solo per filtrare gli eventi.
+        Nel caso in cui il parametro "passato" sia impostato a "true" verranno restituiti solo gli eventi personali, pubblici e privati organizzati per giornate già trascorse;
+        altrimenti verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
       summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
         in: header
         description: token di autenticazione dell'utente
+        required: true
+      - name: nomeAtt
+        in: header
+        description: Il nome dell'attività cercata. Si noti che questo valore può anche essere indicato parzialmente. In questo caso verranno restituiti gli eventi il cui nome contiene la stringa qui specificata.
+        schema:
+          type: string
+      - name: categoria
+        in: header
+        description: La categoria dell'attività cercata.
+        schema:
+          type: string
+      - name: durata
+        in: header
+        description: La durata dell'evento. Si noti che il valore di questo parametro deve essere specificato in forma numerica e deve essere strettamente maggiore di zero.
+        schema:
+          type: integer
+      - name: indirizzo
+        in: header
+        description: L'indirizzo per cui effettuare la ricerca.
+        schema:
+          type: string
+      - name: citta
+        in: header
+        description: La città in cui sarà tenuto l'evento.
+        schema:
+          type: string
+      - name: passato
+        in: query
+        description: valore per indicare al sistema se restituire tutti gli eventi personali e pubblici o solo quelli organizzati per giornate passate.
+        required: true
+        schema:
+          type: boolean
       responses:
         '200':
           description: Lista degli eventi del calendario personale ricevuta
@@ -601,6 +852,18 @@ paths:
                 items:
                   $ref: '#/components/schemas/Evento'
         
+        '400':
+          description: >-
+            E' stato commesso un errore nell'inserimento dei dati. Un errore associato a questo codice è restituito solo in caso di errore nel filtraggio degli eventi nel caso in cui sia specificato almeno un parametro tra quelli sopra comunicati.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Il messaggio di errore
+
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
           content:
@@ -625,12 +888,23 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        
+        '400':
+          description: "Richiesta malformata."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio di errore"
   
   /eventiCalendarioPubblico/{data}:
     get:
       description: >-
-        In caso di utente autenticato, quinidi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
-        In caso di utente non autenticato,quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
+        In caso di utente autenticato, quindi in possesso di un token valido, permette di ottenere la lista di eventi pubblici del giorno selezionato a cui l'utente non si è ancora iscritto e non è organizzatore. 
+        In caso di utente non autenticato, quindi non in possesso di un token valido, la lista degli eventi restituita comprenderà tutti gli eventi pubblici organizzati del giorno selezionato.
       summary: Visualizza gli eventi per una certa data nel calendario pubblico.
       parameters:
       - name: data
@@ -777,8 +1051,255 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+
+  /Utenti/me/Iscrizioni:
+    get:
+      description: >-
+        Permette di ottenere la lista delle iscrizioni associati dell'utente autenticato associato ad un certo token
+      summary: Ottienere le proprie iscrizioni
+      parameters:
+      - name: x-access-token
+        in: header
+        description: token di autenticazione dell'utente
+      responses:
+        '200':
+          description: Lista delle iscrizioni all'utente autenticato
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Biglietto'
+        '404':
+          description: "Non è stato trovato nessuna iscrizione associato all'utente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+         '403':
+            description: "Non è stato possibile ritornare le iscrizioni per via che tutti i biglietti associati all'utente non sono validi"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                  type: string
+                  description: "Messaggio d'errore"
+        
+        '401':
+          description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+
+
+  /Utenti/me/Inviti:
+    get:
+      summary: 'Visualizzazione degli inviti'
+      description: 'Visualizzazione degli inviti per eventi privati e pubblici per l''utente corrente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco inviti per l''utente corrente autenticato.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                   $ref: '#/components/schemas/Invito'
+        '404':
+          description: Non esiste alcun invito per l'utente corrente autenticato oppure non c'è nessun evento valido 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Errore nel server.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: 'Campo email vuoto'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+   /EventiPubblici/{IDevento}/inviti:
+    post:
+      description: Crea l'invito per l'evento associato ad IDevento. Questa operazione si potrà solo se l'utente corrente autenticato è l'organizzatore di quell'evento 
+      summary: 'Visualizza informazioni evento pubblico.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento pubblico che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: Viene indicata l'email dell'utente che si vuole invitare all'evento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email dell'invitato
+      responses:
+        '201':
+          description: Invito Creato. link alla locazione dell'invito
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'invito nuovo creato.
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"      
+        '401':
+          description: 'Non si è autenticati'
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: "Il server ha impedito di creare l'invito (es: l'utente autenticato corrente non è l'organizzatore dell'evento; l'utente autenticato corrente sta invitando lo stesso utente allo stesso evento; L'utente autenticato corrente si sta auto invitando; l'utente a cui si sta inviando l'invito è già partecipante all'evento associato a IDevento; L'evento a cui si vuole invitare non è più disponibile"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+          
+/Utenti:
+    get:
+      description: >-
+        Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
+        sarà restituita una lista contenente tutti gli utenti.
+      summary: Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata.
+      parameters:
+      - name: email
+        in: query
+        description: L'indirizzo email (o parte di esso) cercato dall'utente
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Viene ritornata la lista di utenti il cui indirizzo email contiene la stringa cercata. Nel caso in cui il campo "email" sia lasciato vuoto,
+          sarà restituita una lista contenente tutti gli utenti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  utenti:
+                    type: array
+                    description: La lista di utenti il cui indirizzo email contiene la stringa cercata
+                    items:
+                      $ref: '#components/schemas/Utente'
+
+        '404':
+          description: Nessun utente trovato.
+          content:
+            application/json:
+              schema:
+                type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Messaggio di errore
+
 components:
   schemas:
+    Utente:
+      description: Uno degli utenti il cui indirizzo email contiene la stringa cercata
+      type: object
+      properties:
+        nome:
+          type: string
+          description: Il nome dell'utente
+        email:
+          type: string
+          description: L'indirizzo email dell'utente
+        urlUtente:
+          type: string
+          description: Il link all'indirizzo dell'utente
+
     PublicEvent:
       description: Oggetto dell'evento pubblico per la sua creazione
       type: object
@@ -844,10 +1365,43 @@ components:
         nomeAtt:
           type: string
           description: 'Nome dell''Evento'
+
+    PrivateEvent:
+      description: Oggetto dell'evento personale per la sua creazione
+      type: object
+      required:
+      - data
+      - ora
+      - durata
+      - categoria
+      - nomeAtt
+      - ElencoEmailInviti
+      properties:
+        data:
+          type: string
+          description: 'Data dell''evento'
+        ora:
+          type: string
+          description: 'Ora dell''evento'
+        durata:
+          type: number
+          description: 'Durata dell''evento'
+        categoria: 
+          type: string
+          description: 'Categoria dell''evento'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''Evento'
+        ElencoEmailInviti:
+          type: array
+          description: elenco dele email dell'utenti che si è voluto invitare
+          items:
+            type: string
+            description: email dell'utente che si ha invitato invitare
   
     User:
       type: object
-      description: Oggetto che descrive un certo utente sia per la registrazione che visualizzazione
+      description: Oggetto che descrive un certo utente sia per la registrazione 
       required:
       - password
       - email
@@ -862,6 +1416,35 @@ components:
         nome:
           type: number
           description: nome dell'utente
+        telefono:
+          type: string
+          description: numero di telefono dell'utente
+
+
+
+
+    Utente:
+      type: object
+      description: Oggetto che descrive un certo utente per la visualizzazione dei suoi dati 
+      required:
+      - password
+      - email
+      - nome
+      - url
+      - idUtente
+      properties:
+        password:
+          type: string
+          description: password dell'utente
+        email:
+          type: string
+          description: email utente
+        nome:
+          type: number
+          description: nome dell'utente
+        url:
+          type: string
+          description: Link all'indirizzo dell'utente
         telefono:
           type: string
           description: numero di telefono dell'utente
@@ -888,6 +1471,8 @@ components:
         category:
           type: string
           description: "La categoria in cui l'attività è classificata"
+
+
     
    
 
@@ -965,6 +1550,49 @@ components:
           type: string
           description: 'Organizzatore dell''evento.'
 
+     EventoPrivato:
+      type: object
+      description: 'Oggetto che rappresenta un evento privato.'
+      properties:
+        data:
+          type: string
+          description: 'Data o lista date dell''evento.'
+        ora:
+          type: string
+          description: 'Ora d''inizio dell''evento.'
+        durata:
+          type: number
+          description: 'Durata dell''evento.'
+        categoria:
+          type: string
+          description: 'Categoria dell''evento.'
+        nomeAtt:
+          type: string
+          description: 'Nome dell''evento.'
+        luogoEv:
+          type: object
+          description: 'Luogo dell''evento.'
+          properties:
+            indirizzo:
+              type: string
+              description: 'Inidirizzo dell''evento.'
+            citta:
+              type: string
+              description: 'Città dell''evento.'
+        organizzatore:
+          type: string
+          description: 'Organizzatore dell''evento.'
+        partecipanti:
+          type: array
+          items:
+            type: string
+          description: 'Nomi dei partecipanti iscritti all''evento.'
+        invitati:
+          type: array
+          items:
+            type: string
+          description: 'Nomi degli invitati all''evento.'
+
     FormEventoPubblico:
       type: object
       description: 'Oggetto che rappresenta il form di creazione di un evento pubblico.'
@@ -1039,5 +1667,80 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
+
+
+  Biglietti:
+    type: object
+    description: Oggetto che descrive l'info legate ad una certa iscrizione 
+    required:
+    - eventoUrl
+    - utenteUrl
+    - nomeUtente
+    - nomeOrg
+    - nomeAtt
+    - bigliettoUrl
+    - tipoevento
+    - img
+    properties:
+      eventoUrl:
+        type: string
+        description: Link all'indirizzo dell'utente associato al biglietto
+      utenteUrl:
+        type: string
+        description: Link all'indirizzo dell'evento associato al biglietto
+      nomeUtente:
+        type: string
+        description: nome dell'utente associato al biglietto
+      nomeOrg:
+        type: string
+        description: nome dell'organizzatore dell'evento associato al biglietto
+      nomeAtt:
+        type: string
+        description: nome dell'evento associato al biglietto
+      img:
+        type: string
+        description: immagine in base64 del qr code del biglietto
+      bigliettoUrl:
+        type: string
+        description: Link all'indirizzo del biglietto
+      tipoevento:
+        type: string
+        description: tipo dell'evento che è associato il biglietto
+
+  Invito:
+    type: object
+    description: 'Oggetto che rappresenta le informazioni legate all''invito'
+    required:
+    - tipoevento
+    - idevento
+    - idutente
+    - nomeOrg
+    - nomeAtt
+    - urlInvito
+    - accettato
+    properties:
+      tipoevento:
+        type: string
+        description: il tipo di evento dell'invito
+      idevento:
+        type: string
+        description: l'id dell'evento dell'invito
+      idutente:
+        type: number
+        description: l'id dell'utente a cui si riferisce l'invito
+      nomeOrg: 
+        type: string
+        description: nome dell'utente che ha organizzato l'evento
+      nomeAtt:
+        type: string
+        description: nome dell'evento
+      urlInvito:
+        type: string
+        description: Link all'indirizzo dell'invito
+      accettato:
+        type: boolean
+        description: indica se l'utente ha già o meno accettato l'invito
+
+
 
 

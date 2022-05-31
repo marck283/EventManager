@@ -5,3 +5,4 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('Biglietto', new Schema({ 
 	eventoid: String, utenteid: String, qr: String, tipoevento: String}
 ));
+

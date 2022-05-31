@@ -1,13 +1,12 @@
-
-
-
-
-
+//Aggiunto un listener di evento "keydown" sul tasto "Enter" della tastiera per permettere
+//all'utente di autenticarsi anche senza premere il bottone "Login".
+document.addEventListener("keydown", event => {
+    if(event.code === "Enter") {
+        login();
+    }
+});
 
 var login = () => {
-
-	
- 
     var email = document.getElementById("loginEmail").value;
     var password = document.getElementById("loginPassword").value;
 

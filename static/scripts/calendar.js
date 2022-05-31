@@ -163,19 +163,47 @@ var requestWithParams = async (id, day) => {
                             //già stampate a video, la inserisco e stampo tutti gli eventi ad essa appartenenti tale categoria.
                             categories.push(f.category);
                             category = f.category;
-                            getId(id).innerHTML += "<h3>" + category + "</h3>\
-                        <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row\"\
-                        id=\"" + category + "\">";
+                            var h3 = document.createElement("h3");
+                            h3.textContent = category;
+                            getId(id).appendChild(h3);
+
+                            var ul = document.createElement("ul");
+                            ul.classList = "list-group list-group-flush";
+                            getId(id).appendChild(ul);
+                            
+                            var li = document.createElement("li");
+                            li.className = "list-group-item";
+                            ul.appendChild(li);
+
+                            var row = document.createElement("div");
+                            row.className = "row";
+                            row.setAttribute("id", category);
+                            li.appendChild(row);
     
                             var jr1 = resp.eventi.filter(item => item.category === category);
     
                             //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
                             for (var object of jr1) {
-                                getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                        <h5 class=\"card-title\">" + object.name + "</h5>\
-                        <a href=\"" + "layoutPubblico.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
+                                var col = document.createElement("div");
+                                col.className = "col";
+                                row.appendChild(col);
+
+                                var card = document.createElement("div");
+                                card.className = "card";
+                                col.appendChild(card);
+
+                                var h5 = document.createElement("h5");
+                                h5.className = "card-title";
+                                h5.textContent = object.name;
+                                card.appendChild(h5);
+
+                                var a = document.createElement("a");
+                                a.href = "layoutPubblico.html?id="+ object.idevent + "&token=" + token;
+                                a.classList = "btn btn-primary";
+                                a.setAttribute("name", "cardButton");
+                                a.textContent = "Maggiori informazioni...";
+                                card.appendChild(a);
                             }
-                            getId(id).innerHTML += "</div></li></ul>";
                         }
                     }
                 })

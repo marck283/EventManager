@@ -4,6 +4,7 @@ var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
 const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
 const EventoPersonale = require('./events/EventiPers.js');
+const EventoPrivato = require('./events/EventiPriv.js');
 const calendarEventsPers = require("./events/elencoEventiPersonali.js");
 const calendarEventsPub = require("./events/elencoEventiPublic.js");
 const disiscrPub = require("./events/disiscrPub.js");
@@ -12,6 +13,8 @@ const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
 const registrato = require('./registrazione.js')
+const userInfo = require('./userInfo.js');
+
 
 
 
@@ -33,13 +36,18 @@ app.use('/api/v1/EventiPubblici', EventoPubblico);
 app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
 app.use("/api/v1/EventiPubblici", disiscrPub);
 app.use("/api/v1/EventiPrvati", disiscrPriv);
+app.use("/api/v1/EventiPrivati", EventoPrivato);
 app.use('/api/v1/Utenti', registrato);
+app.use('/api/v1/Utenti', Utente);
+app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
+app.use('/api/v1/Utenti', userInfo);
 
 app.use(tokenChecker);
 
 //********************************************************** attenzione *********************
-app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
+
 app.use('/api/v1/EventiPersonali', EventoPersonale);
+app.use('/api/v1/EventiPrivati', EventoPrivato);
 app.use('/api/v1/Utenti', Utente);
 app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
 

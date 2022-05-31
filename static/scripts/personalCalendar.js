@@ -153,7 +153,7 @@ var requestWithParams = async (id, day) => {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
         }
     }).then(resp => {
-        switch(resp.status) {
+        switch (resp.status) {
             case 200: {
                 resp.json().then(resp => {
                     var categories = []; //Lista di categorie già stampate a video
@@ -163,32 +163,59 @@ var requestWithParams = async (id, day) => {
                             //già stampate a video, la inserisco e stampo tutti gli eventi ad essa appartenenti tale categoria.
                             categories.push(f.category);
                             category = f.category;
-                            getId(id).innerHTML += "<h3>" + category + "</h3>\
-                        <ul class=\"list-group list-group-flush\"><li class=\"list-group-item\"><div class=\"row\"\
-                        id=\"" + category + "\">";
+                            var h3 = document.createElement("h3");
+                            h3.textContent = category;
+                            getId(id).appendChild(h3);
+
+                            var ul = document.createElement("ul");
+                            ul.classList = "list-group list-group-flush";
+                            getId(id).appendChild(ul);
+                            
+                            var li = document.createElement("li");
+                            li.className = "list-group-item";
+                            ul.appendChild(li);
+
+                            var row = document.createElement("div");
+                            row.className = "row";
+                            row.setAttribute("id", category);
+                            li.appendChild(row);
     
                             var jr1 = resp.eventi.filter(item => item.category === category);
-    
+
                             //Itero sulla risposta JSON filtrata per categoria, ottenendo i valori dei campi desiderati
                             for (var object of jr1) {
+                                var col = document.createElement("div");
+                                col.className = "col";
+                                row.appendChild(col);
+
+                                var card = document.createElement("div");
+                                card.className = "card";
+                                col.appendChild(card);
+
+                                var h5 = document.createElement("h5");
+                                h5.className = "card-title";
+                                h5.textContent = object.name;
+                                card.appendChild(h5);
+
+                                var a = document.createElement("a");
                                 if(object.id == "pers"){
-                                     getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                        <h5 class=\"card-title\">" + object.name + "</h5>\
-                        <a href=\"" + "layoutPersonale.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
-
+                                    a.href = "layoutPersonale.html";
+                                } else {
+                                    if(object.id == "pub"){
+                                        a.href = "layoutPubblico.html";
+                                    } else {
+                                        a.href = "layoutPrivato.html";
+                                    }
                                 }
-                                if(object.id == "pub"){
-                                     getId(category).innerHTML += "<div class=\"col\"><div class=\"card\">\
-                        <h5 class=\"card-title\">" + object.name + "</h5>\
-                        <a href=\"" + "layoutPubblico.html?id="+ object.idevent + "&token=" + token + "\" class=\"btn btn-primary\" name=\"cardButton\">Maggiori informazioni...</a></div></div>";
-
-                                }
-                                
+                                a.href += "?id="+ object.idevent + "&token=" + token;
+                                a.classList = "btn btn-primary";
+                                a.setAttribute("name", "cardButton");
+                                a.textContent = "Maggiori informazioni...";
+                                card.appendChild(a);
                             }
-                            getId(id).innerHTML += "</div></li></ul>";
                         }
                     }
-                })
+                });
                 break;
             }
 
@@ -208,8 +235,8 @@ var requestWithParams = async (id, day) => {
 };
 
 function myPopup(day) {
-    var popup = document.getElementById("myPopup1");
-    document.getElementById("myPopup1").style.display = "block";
+    var popup = getId("myPopup1");
+    popup.style.display = "block";
 
     //Niente da vedere qui... (inserire gli eventi del giorno selezionato
     //trovati per richiesta GET e query secondo il parametro 'day', espresso come 'giorno/mese/anno').

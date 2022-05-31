@@ -29,9 +29,12 @@ fetch('../api/v1/Utenti/me', {method: 'GET', headers: {'x-access-token': token}}
             }
             case 403:
             case 404:
-            case 401:
             case 500: {
                 resp.json().then(data => {document.getElementById("error").textContent = data.error});
+                break;
+            }
+            case 401:{
+                resp.json().then(data => {document.getElementById("error").textContent = data.message});
                 break;
             }
             default: {
@@ -40,3 +43,7 @@ fetch('../api/v1/Utenti/me', {method: 'GET', headers: {'x-access-token': token}}
         }
     })
     .catch( error => console.error(error) );
+
+
+
+
