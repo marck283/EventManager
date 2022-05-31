@@ -638,7 +638,148 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
 
-  /Utenti:
+<<<<<<< HEAD:oas3INVITI.yaml
+  /Utenti/me/Inviti:
+    get:
+      summary: 'Visualizzazione degli inviti'
+      description: 'Visualizzazione degli inviti per eventi privati e pubblici per l''utente corrente autenticato.'
+      parameters:
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      responses:
+        '200':
+          description: 'Elenco inviti per l''utente corrente autenticato.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invito'
+        '404':
+          description: Non esiste alcun invito per l'utente corrente autenticato oppure non c'è nessun evento valido 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Errore nel server.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '400':
+          description: 'Campo email vuoto'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+   /EventiPubblici/{IDevento}/inviti:
+    post:
+      description: Crea l'invito per l'evento associato ad IDevento. Questa operazione si potrà solo se l'utente corrente autenticato è l'organizzatore di quell'evento 
+      summary: 'Visualizza informazioni evento pubblico.'
+      parameters:
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento pubblico che si intende visualizzare.'
+        required: true
+        schema:
+          type: string
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
+      requestBody:
+        description: Viene indicata l'email dell'utente che si vuole invitare all'evento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email dell'invitato
+      responses:
+        '201':
+          description: Invito Creato. link alla locazione dell'invito
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link all'invito nuovo creato.
+        '404':
+          description: 'Non esiste alcun evento pubblico associato all''ID specificato.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+        '500':
+          description: 'Si è verificato un errore lato server'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"      
+        '401':
+          description: 'Non si è autenticati'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Messaggio d'errore"
+                  success:
+                    type: boolean
+                    description: "Indicatore del successo o meno dell'operazione"
+        '403':
+          description: "Il server ha impedito di creare l'invito (es: l'utente autenticato corrente non è l'organizzatore dell'evento; l'utente autenticato corrente sta invitando lo stesso utente allo stesso evento; L'utente autenticato corrente si sta auto invitando; l'utente a cui si sta inviando l'invito è già partecipante all'evento associato a IDevento; L'evento a cui si vuole invitare non è più disponibile"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
+          
+/Utenti:
     get:
       description: >-
         Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
@@ -664,7 +805,7 @@ paths:
                     description: La lista di utenti il cui indirizzo email contiene la stringa cercata
                     items:
                       $ref: '#components/schemas/Utente'
-        
+
         '404':
           description: Nessun utente trovato.
           content:
@@ -675,7 +816,6 @@ paths:
                     error:
                       type: string
                       description: Messaggio di errore
-
 components:
   schemas:
     Utente:
@@ -952,5 +1092,40 @@ components:
             citta:
               type: string
               description: 'Città dell''Evento.'
+
+  Invito:
+    type: object
+    description: 'Oggetto che rappresenta le informazioni legate all''invito'
+    required:
+    - tipoevento
+    - idevento
+    - idutente
+    - nomeOrg
+    - nomeAtt
+    - urlInvito
+    - accettato
+    properties:
+      tipoevento:
+        type: string
+        description: il tipo di evento dell'invito
+      idevento:
+        type: string
+        description: l'id dell'evento dell'invito
+      idutente:
+        type: number
+        description: l'id dell'utente a cui si riferisce l'invito
+      nomeOrg: 
+        type: string
+        description: nome dell'utente che ha organizzato l'evento
+      nomeAtt:
+        type: string
+        description: nome dell'evento
+      urlInvito:
+        type: string
+        description: Link all'indirizzo dell'invito
+      accettato:
+        type: boolean
+        description: indica se l'utente ha già o meno accettato l'invito
+
 
 
