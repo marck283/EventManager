@@ -1,7 +1,10 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
+var qrcode = require('qrcode');
+const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
+const biglietti = require('../collezioni/biglietti.js')
 
 
 
@@ -24,6 +27,86 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var datta = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = datta.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+        
+
         if(eventP.partecipantiID.length==eventP.partecipantiID.maxPers){
 
             res.status(403).json({ error: "Non spazio nell'evento"}).send();
@@ -40,6 +123,38 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         }
 
+        let data = {
+            idUtente: utent,
+            idEvento: id_evento
+        };
+
+
+
+        let stringdata = JSON.stringify(data);
+
+        //Print QR code to file using base64 encoding
+
+        var idBigl = "";
+        
+        qrcode.toDataURL(stringdata, async function(err, qrcode) {
+            if(err) {
+                throw Error("errore creazione biglietto")
+            }
+
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"pub"});
+          
+            idBigl = bigl._id;
+            return await bigl.save();
+
+            
+            
+        });
+
+        
+
+        
+
+
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
@@ -49,8 +164,13 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         await eventP.save()
         await utente.save()
 
+        
 
-        res.location("/api/v1/EventiPubblici/" +id_evento+ "/" + utent).status(201).send();
+   
+
+
+        res.location("/api/v1/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
+
 
 
 
@@ -68,7 +188,207 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 });
 
 
+router.post('/:id/Inviti', async (req, res) => {
+    
+    
+
+    try{
+
+        var utent = "628f8b448031650249b5d6bb";
+
+        var id_evento=req.params.id;
+
+
+        if(req.body.email == ""){
+
+            res.status(400).json({error: "Campo vuoto"}).send();
+            return;
+        }
+
+       
+
+        let eventP = await eventPublic.findById(id_evento);
+        if(eventP == undefined ){
+            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+            return;
+
+        }
+
+        //controllo che le date non siano di una giornata precedente a quella odierna
+
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var data = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = data.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+
+        
+
+
+        if(eventP.organizzatoreID != utent ){
+            res.status(403).json({error: "L'utente non può invitare ad un evento che non è suo"}).send();
+            return;
+
+        }
+
+        var utenteorg = await Users.findById(utent)
+
+        if(utenteorg.email == req.body.email){
+            res.status(403).json({error: "L'utente non può auto invitarsi"}).send();
+            return;
+
+        }
+
+
+        
+
+
+        var utente = await Users.find({email:req.body.email})
+        
+        if(utente.length == 0){
+            res.status(404).json({error: "Non esiste un utente con quella email"}).send();
+            return;
+
+        }
+
+
+
+        var ListaInviti = await Inviti.find({utenteid:utente[0]._id})
+
+        if(ListaInviti.length>0){
+
+            for(var elem of ListaInviti){
+
+                if(elem.eventoid == id_evento){
+
+                    res.status(403).json({error: "L'utente con quella email è già invitato a quell'evento"}).send();
+                    return;
+
+                    
+                }
+            }
+
+        }
+
+        if(eventP.partecipantiID.includes(utente[0]._id)){
+
+             res.status(403).json({error: "L'utente con quella email è già partecipante all'evento"}).send();
+            return;
+
+
+        }
+
+
+
+
+
+
+
+        
+
+        let invito = new Inviti({utenteid:utente[0]._id, eventoid: id_evento, tipoevent: "pub"});
+
+        await invito.save();
+
+        res.location("/api/v1/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
+
+
+
+        
+
+    }catch(error){
+
+        console.log(error)
+        res.status(500).json({error: "Errore nel server"}).send();
+        return;
+
+
+    }
+    
+    
+
+
+
+});
+
+
+
 router.post('', async (req, res) => {
+
+
 
     
     var utent = req.loggedUser.id;
@@ -76,8 +396,19 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
+        if((typeof req.body.durata === "number") && (typeof req.body.maxPers === "number")){
+
+
+        }else{
+
+            res.status(400).json({error: "Campo non del formato corretto"}).send();
+            return;
+
+        }
+
         if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
+            return;
 
         }
 

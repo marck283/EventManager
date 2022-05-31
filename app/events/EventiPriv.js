@@ -1,10 +1,12 @@
 const express = require('express');
 const eventPrivat = require('../collezioni/eventPrivat.js');
-//const invit = require('../collezioni/invit.js');
+const invit = require('../collezioni/invit.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
+const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
+var qrcode = require('qrcode');
 
 
 
@@ -51,8 +53,194 @@ router.get('/:id', async(req, res) => {
 });
 
 
+router.post('/:id/Iscrizioni', async (req, res) => {
 
-/*router.post('', async (req, res) => {
+
+    var utent = "628e8c29d108a0e2094d364b";
+
+
+    var id_evento= req.params.id;
+
+    
+    
+    try{
+
+        let eventP = await eventPrivat.findById(id_evento);
+        
+        
+
+        if(eventP == undefined ){
+            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+            return;
+
+        }
+
+        var dati = eventP.data.split(",");
+
+        for(var elem of dati){
+
+            var datta = elem;
+            var date = new Date();
+            var mm = date.getMonth() + 1
+            var dd = date.getDate()
+            var yy = date.getFullYear()
+            dats = datta.split('/');
+
+           
+            if(dats[0][0] == '0'){
+
+              mese = dats[0][1];
+
+            }else{
+
+              mese = dats[0];
+
+            }
+
+
+            if(dats[1][0] == '0'){
+
+              giorno = dats[1][1];
+
+            }else{
+
+              giorno = dats[1];
+
+            }
+
+            anno = dats[2]
+
+           
+
+            if(yy > Number(anno)){
+
+              res.status(403).json({error: "evento non disponibile"}).send()
+              return; 
+
+            }else{
+
+           
+              if(yy == Number(anno)){
+               
+
+                if(mm > Number(mese)){
+                  res.status(403).json({error: "evento non disponibile"}).send()
+                  return; 
+                 
+                }else{
+
+                  if(mm == Number(mese)){
+                 
+
+                    if(dd > Number(giorno)){
+                      res.status(403).json({error: "evento non disponibile"}).send()
+                      return; 
+
+                    }
+
+                  }
+               
+
+                }
+
+              }
+
+            }
+
+
+
+
+
+        }
+
+        if(!eventP.invitatiID.includes(utent)){
+            res.status(403).json({ error: "Non sei invitato a questo evento"}).send();
+            return;
+
+        }
+
+
+
+        
+
+        for(elem of eventP.partecipantiID){
+            if(elem==utent){
+
+                 res.status(403).json({ error: "Già iscritto"}).send();
+                 return;
+            }
+
+        }
+
+        let data = {
+            idUtente: utent,
+            idEvento: id_evento
+        };
+
+
+
+        let stringdata = JSON.stringify(data);
+
+        //Print QR code to file using base64 encoding
+
+        var idBigl = "";
+        
+        qrcode.toDataURL(stringdata, async function(err, qrcode) {
+            if(err) {
+                throw Error("errore creazione biglietto")
+            }
+
+            bigl = new biglietti({eventoid:id_evento,utenteid:utent,qr:qrcode,tipoevento:"priv"});
+            idBigl = bigl._id;
+            return await bigl.save();
+
+            
+            
+        });
+
+        
+
+        
+
+
+        //Si cerca l'utente organizzatore dell'evento
+        let utente = await Users.findById(utent);
+
+        eventP.partecipantiID.push(utent);
+        utente.EventiIscrtto.push(id_evento);
+
+        await eventP.save()
+        await utente.save()
+
+        
+
+
+
+
+        res.location("/api/v1/EventiPrivati/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
+
+
+
+    }catch (error){
+        console.log(error);
+        res.status(500).json({ error: "Errore nel server"}).send();
+
+
+
+  
+    }
+
+
+
+});
+
+
+
+
+
+
+
+router.post('', async (req, res) => {
 
     utent= "628f8b448031650249b5d6bb";
     try{
@@ -61,6 +249,17 @@ router.get('/:id', async(req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
+
+        if(typeof req.body.durata === "number"){
+
+
+
+        }else{
+            res.status(400).json({error: "Campo non del formato corretto"}).send();
+            return;
+
+
+        }
 
         if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == "" || req.body.ElencoEmailInviti.lenth == 0){
             res.status(400).json({error: "Campo vuoto"}).send();
@@ -494,7 +693,7 @@ router.get('/:id', async(req, res) => {
 
         for(var elem of ListaInvitati){
 
-            let invito = new invit({utenteid:elem, eventoid: eventId, tipoevent: "Priv"});
+            let invito = new invit({utenteid:elem, eventoid: eventId, tipoevent: "priv"});
 
             await invito.save();
 
@@ -511,7 +710,7 @@ router.get('/:id', async(req, res) => {
         /**
          * Si posiziona il link alla risorsa appena creata nel header location della risposata
          */
-     /*   res.location("/api/v1/EventiPrivati/" + eventId).status(201).send();
+        res.location("/api/v1/EventiPrivati/" + eventId).status(201).send();
 
     }catch(error){
         console.log(error);
@@ -519,6 +718,6 @@ router.get('/:id', async(req, res) => {
 
     }
     
-});*/
+});
 
 module.exports = router;
