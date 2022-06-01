@@ -17,7 +17,7 @@ document.getElementById("input").addEventListener("keydown", (event) => {
                     case 400:
                     case 404:
                     default: {
-                        resp.json().then(resp => document.getElementById("result").innerHTMl += "<p>" + resp.error + "</p>");
+                        resp.json().then(resp => document.getElementById("result").innerHTML = "<p>" + resp.error + "</p>");
                         break;
                     }
                 }

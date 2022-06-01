@@ -13,7 +13,7 @@ document.getElementById("input").addEventListener("keydown", (event) => {
                     case 400:
                     case 404:
                     default: {
-                        resp.json().then(resp => document.getElementById("result").innerHTMl += "<p>" + resp.error + "</p>");
+                        resp.json().then(resp => document.getElementById("result").innerHTML = "<p>" + resp.error + "</p>");
                         break;
                     }
                 }
@@ -52,7 +52,6 @@ var manipulateDom = resp => {
         col.appendChild(card);
 
         card.innerHTML = "<button class = \"btn btn-primary\" onclick = \"document.getElementById('invitati').value = '" + u.email + "'\">" + u.nome + "</button>" ;
-
 
         
     }
