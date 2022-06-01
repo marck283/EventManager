@@ -24,15 +24,12 @@ var modificaPub = () => {
     
     //Controlli maxPers
     
-    if(Number.isNaN(parseInt(getID("maxPers").value))){
-        getID("error").textContent = "Numero massimo partecipanti non valido: formato non valido.";
-        return;
-    }
-    
-    if(getID("maxPers").value < 2){
+    if(getID("maxPers").value != "" && Number.isNaN(parseInt(getID("maxPers").value)) && getID("maxPers").value < 2){    
         getID("error").textContent = "Numero massimo partecipanti non valido: inferiore a 2.";
         return;
     }
+    
+    
     
     fetch('../api/v1/EventiPubblici/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
@@ -45,7 +42,7 @@ var modificaPub = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => {
+                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
                 });
                 break;
             }
@@ -82,7 +79,7 @@ var modificaPers = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => {
+                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
                 });
                 break;
             }
@@ -119,7 +116,7 @@ var modificaPriv = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => {
+                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
                 });
                 break;
             }

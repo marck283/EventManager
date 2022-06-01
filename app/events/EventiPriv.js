@@ -30,16 +30,16 @@ router.patch('/:id', async(req, res) => {
             return;
         }
         
-        if(req.body.nomeAtt != ""){
+        if(req.body.nomeAtt != "" || eq.body.nomeAtt != undefined){
             evento.nomeAtt = req.body.nomeAtt;
         }
-        if(req.body.categoria != ""){
+        if(req.body.categoria != "" || req.body.categoria != undefined){
             evento.categoria = req.body.categoria
         }
-        if(req.body.indirizzo != ""){
+        if(req.body.indirizzo != "" || req.body.indirizzo != undefined){
             evento.luogoEv.indirizzo = req.body.indirizzo
         }
-        if(req.body.citta != ""){
+        if(req.body.citta != "" || req.body.citta != undefined){
             evento.luogoEv.citta = req.body.citta;
         }
         
@@ -377,12 +377,13 @@ router.post('', async (req, res) => {
             req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
             req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined || 
             req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined ||
-            req.body.ElencoEmailInviti.lenth == 0 || req.body.ElencoEmailInviti.lenth == undefined){
+            req.body.ElencoEmailInviti.length == 0){
             res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
         }
 
+       
         
         var ElencoDate = req.body.data;
         var dateEv = ElencoDate.split(",");

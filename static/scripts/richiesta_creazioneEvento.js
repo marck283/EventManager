@@ -145,6 +145,18 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
     }
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+        document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
+        inviare = false;
+    } else {
+        document.getElementById("vuotoDu").innerHTML = "";
+    }
+    if (document.getElementById("maxPers").value == "" || Number.isNaN(parseInt(document.getElementById("maxPers").value)) ||  Number(document.getElementById("maxPers").value) < 2) {
+        document.getElementById("vuotoM").innerHTML = "inserire numero massimo utenti corretto";
+        inviare = false;
+    } else {
+        document.getElementById("vuotoM").innerHTML = "";
+    }
     if (inviare == true) {
 
         var Token = token
@@ -357,6 +369,12 @@ var requestPe = () => {
         inviare = false;
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
+    }
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+        document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
+        inviare = false;
+    } else {
+        document.getElementById("vuotoDu").innerHTML = "";
     }
     if (inviare == true) {
         Token = token
@@ -572,6 +590,12 @@ var requestPr = () => {
         inviare = false;
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
+    }
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+        document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
+        inviare = false;
+    } else {
+        document.getElementById("vuotoDu").innerHTML = "";
     }
     if (inviare == true) {
         Token = token

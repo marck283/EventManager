@@ -26,19 +26,20 @@ router.patch('/:id', async(req, res) => {
             return;
         }
         
-        if(req.body.nomeAtt != ""){
+        if(req.body.nomeAtt != "" || req.body.nomeAtt != undefined){
             evento.nomeAtt = req.body.nomeAtt;
         }
-        if(req.body.categoria != ""){
+        if(req.body.categoria != "" || req.body.nomeAtt != undefined){
             evento.categoria = req.body.categoria
         }
-        if(req.body.indirizzo != ""){
+        if(req.body.indirizzo != ""  || req.body.indirizzo != undefined){
             evento.luogoEv.indirizzo = req.body.indirizzo
         }
-        if(req.body.citta != ""){
+        if(req.body.citta != "" || req.body.citta != undefined){
             evento.luogoEv.citta = req.body.citta;
         }
-        if(req.body.maxPers != ""){
+        console.log(req.body.maxPers);
+        if(req.body.maxPers != "" || req.body.maxPers != undefined){
             if(Number.isNaN(parseInt(req.body.maxPers))){
                 res.status(400).json({error: "Numero massimo partecipanti non valido: formato non valido."});
                 return;
@@ -519,7 +520,7 @@ router.post('', async (req, res) => {
         if(req.body.data == "" || req.body.data == undefined ||
          req.body.durata <= 0 || req.body.durata == undefined ||
          req.body.ora == "" || req.body.ora == undefined ||
-         req.body.maxPers<=0  || req.body.maxPers == undefined ||
+         req.body.maxPers<=1  || req.body.maxPers == undefined ||
          req.body.categoria == "" || req.body.categoria == undefined ||
          req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
          req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
