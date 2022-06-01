@@ -321,7 +321,7 @@ router.post('', async (req, res) => {
 
             if(yy > Number(anno)){
 
-              res.status(400).json({error: "giorno non disponibile"}).send()
+              res.status(403).json({error: "giorno non disponibile"}).send()
               return; 
 
             }else{
@@ -331,7 +331,7 @@ router.post('', async (req, res) => {
                
 
                 if(mm > Number(mese)){
-                  res.status(400).json({error: "giorno non disponibile"}).send()
+                  res.status(403).json({error: "giorno non disponibile"}).send()
                   return; 
                  
                 }else{
@@ -340,7 +340,7 @@ router.post('', async (req, res) => {
                  
 
                     if(dd > Number(giorno)){
-                      res.status(400).json({error: "giorno non disponibile"}).send()
+                      res.status(403).json({error: "giorno non disponibile"}).send()
                       return; 
 
                     }
@@ -427,7 +427,7 @@ router.post('', async (req, res) => {
 
                                 if(Number(str2) < d.getMinutes()){
 
-                                       res.status(400).json({error: "orario non permesso"}).send()
+                                       res.status(403).json({error: "orario non permesso"}).send()
                                         return;
 
 
@@ -438,7 +438,7 @@ router.post('', async (req, res) => {
 
 
                         }else{
-                            res.status(400).json({error: "orario non permesso"}).send()
+                            res.status(403).json({error: "orario non permesso"}).send()
                             return;
 
                         }
