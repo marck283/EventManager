@@ -4,6 +4,7 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/common.css" />
     <script src="/scripts/profiloUtente.js"> </script>
     <script src="/scripts/ric_biglietti.js"></script>
     <script src="/scripts/disiscrizione.js"></script>
@@ -49,41 +50,39 @@
         </div>
     </nav>
 
-<h1>Profilo Utente</h1>
+    <div class="container">
+        <h1>Profilo Utente</h1>
 
-<h2>Generale</h2>
+        <h2>Generale</h2>
 
-Nome Utente: <p id="nome"></p>
-Email: <p id="email"></p>
-Telefono: <p id="tel"></p>
+        Nome Utente: <p id="nome"></p>
+        Email: <p id="email"></p>
+        Telefono: <p id="tel"></p>
 
-<h2>Password</h2>
+        <h2>Password</h2>
 
-<!--<label for="password">Password: </label><input id="password" type="text" readonly/>-->
-Password: <p id="password"></p>
+        <!--<label for="password">Password: </label><input id="password" type="text" readonly/>-->
+        Password: <p id="password"></p>
 
-<h3 id="error"></h3>
+        <h3 id="error"></h3>
 
-<hr>
+        <hr>
 
-<h3>Biglietti utente</h3>
+        <h3>Biglietti utente</h3>
 
-<div id = "biglietti">
-    
-
-</div>
-
-<h3 id="error2"></h3>
+        <div id="biglietti">
 
 
-<hr>
+        </div>
 
-<button class="btn btn-primary" onclick="logout()">logout</button> 
-
-
+        <h3 id="error2"></h3>
 
 
+        <hr>
 
+        <button class="btn btn-primary" onclick="logout()">logout</button>
+    </div>
+    <br>
 </body>
 
 </html>

@@ -21,25 +21,7 @@
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
   <link rel="stylesheet" href="/styles/common.css" />
-
-  <!-- Inline CSS based on choices in "Settings" tab -->
-  <style>
-    .bootstrap-iso .formden_header h2,
-    .bootstrap-iso .formden_header p,
-    .bootstrap-iso form {
-      font-family: Arial, Helvetica, sans-serif;
-      color: black
-    }
-
-    .bootstrap-iso form button,
-    .bootstrap-iso form button:hover {
-      color: white !important;
-    }
-
-    .asteriskField {
-      color: red;
-    }
-  </style>
+  <link rel="stylesheet" href="/styles/bootstrapIso.css" />
 
   <script>
 
@@ -122,55 +104,57 @@
     </div>
   </nav>
 
-  <h1>Creazione evento pubblico</h1>
+  <div class="container">
+    <h1>Creazione evento pubblico</h1>
 
-  <!-- indicazione di tutti i campi di input per creare un certo evento pubblico-->
-  <label for="nomeAtt">Nome attivit&agrave:</label>
-  <input type="text" name="nomeAtt" id="nomeAtt" /><span id="vuotoN"></span><br>
-  <label>Luogo evento:</label><br>
-  <label for="indirizzo">Indirizzo:</label>
-  <input type="text" name="indirizzo" id="indirizzo" /><span id="vuotoI"></span><br>
-  <label for="Citta">Citt&agrave:</label>
-  <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
-  <label for="categoria">Categoria:</label>
-  <select class="form-select" id="categoria" name="categoria">
-    <option value="lavoro">lavoro</option>
-    <option value="scuola">scuola</option>
-    <option value="operazione">operazione</option>
-    <option value="svago" selected>svago</option>
-  </select><span id="vuotoCa"></span><br>
-  <div class="form-group ">
-    <label class="control-label col-sm-2 requiredField" for="date">
-      Date
-    </label>
-    <div class="col-sm-10">
-      <div class="input-group">
-        <div class="input-group-addon">
+    <!-- indicazione di tutti i campi di input per creare un certo evento pubblico-->
+    <label for="nomeAtt">Nome attivit&agrave:</label>
+    <input type="text" name="nomeAtt" id="nomeAtt" /><span id="vuotoN"></span><br>
+    <label>Luogo evento:</label><br>
+    <label for="indirizzo">Indirizzo:</label>
+    <input type="text" name="indirizzo" id="indirizzo" /><span id="vuotoI"></span><br>
+    <label for="Citta">Citt&agrave:</label>
+    <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
+    <label for="categoria">Categoria:</label>
+    <select class="form-select" id="categoria" name="categoria">
+      <option value="lavoro">lavoro</option>
+      <option value="scuola">scuola</option>
+      <option value="operazione">operazione</option>
+      <option value="svago" selected>svago</option>
+    </select><span id="vuotoCa"></span><br>
+    <div class="form-group ">
+      <label class="control-label col-sm-2 requiredField" for="date">
+        Date
+      </label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <div class="input-group-addon">
+          </div>
+          <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" />
+          <span id="vuotoDa"></span>
+          <button class="btn btn-primary" onclick="aggiungi()">Aggiungi data</button>
+          <button class="btn btn-secondary" onclick="reset()">Reset date</button>
+          <br>
+          <span id="dates"></span>
         </div>
-        <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" />
-        <span id="vuotoDa"></span>
-        <button class="btn btn-primary" onclick="aggiungi()">Aggiungi data</button>
-        <button class="btn btn-secondary" onclick="reset()">Reset date</button>
-        <br>
-        <span id="dates"></span>
       </div>
     </div>
+    <br>
+    <label for="ora">Ora d'inizio:</label>
+    <input type="ora" name="ora" id="ora" /><span id="vuotoO"></span><br>
+    <label for="durata">Durata in ore:</label>
+    <input type="number" min="1" name="durata" value="1" id="durata" /><span id="vuotoDu"></span><br>
+    <label for="maxPers">Massimo di partecipanti:</label>
+    <input type="number" min="2" name="maxPers" value="2" id="maxPers" /><span id="vuotoM"></span><br><br>
+
+
+
+
+
+    <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
+
+    <h2 id="loc"></h2>
   </div>
-  <br>
-  <label for="ora">Ora d'inizio:</label>
-  <input type="ora" name="ora" id="ora" /><span id="vuotoO"></span><br>
-  <label for="durata">Durata in ore:</label>
-  <input type="number" min="1" name="durata" value="1" id="durata" /><span id="vuotoDu"></span><br>
-  <label for="maxPers">Massimo di partecipanti:</label>
-  <input type="number" min="2" name="maxPers" value="2" id="maxPers" /><span id="vuotoM"></span><br>
-
-
-
-
-
-  <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
-
-  <h2 id="loc"></h2>
 
   <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
   <!-- Include jQuery -->

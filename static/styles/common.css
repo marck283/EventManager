@@ -1,3 +1,8 @@
+h1, h3 {
+    padding: 1.2rem;
+    text-align: center;
+}
+
 .container {
     min-width: 80% !important;
     max-width: 80% !important;
