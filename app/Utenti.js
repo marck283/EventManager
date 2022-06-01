@@ -174,8 +174,8 @@ router.get('/me/Inviti', async (req, res) => {
                     }
 
                     ListInvit.push({ tipoevento: elem.tipoevent,
-                        idevento: IDexample,
-                        idutente: utente.nome,
+                        idevento: elem.eventoid,
+                        idutente: IDexample,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
                         urlInvito: "/api/v1/Utenti/" + elem._id,
@@ -288,8 +288,8 @@ router.get('/me/Inviti', async (req, res) => {
                     }
 
                     ListInvit.push({ tipoevento: elem.tipoevent,
-                        idevento: IDexample,
-                        idutente: utente.nome,
+                        idevento: elem.eventoid,
+                        idutente: IDexample,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
                         urlInvito: "/api/v1/Utenti/" + elem._id,
