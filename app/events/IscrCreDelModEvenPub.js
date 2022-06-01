@@ -335,15 +335,13 @@ router.post('/:id/Inviti', async (req, res) => {
 
         var dati = eventP.data.split(",");
 
-        for(var elem of dati){
-
+        for(var elem of dati) {
             var data = elem;
             var date = new Date();
             var mm = date.getMonth() + 1
             var dd = date.getDate()
             var yy = date.getFullYear()
             dats = data.split('/');
-
            
             if(dats[0][0] == '0'){
 
@@ -513,17 +511,12 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if((typeof req.body.durata === "number") && (typeof req.body.maxPers === "number")){
-
-
-        }else{
-
+        if((typeof req.body.durata !== "number") && (typeof req.body.maxPers !== "number")){
             res.status(400).json({error: "Campo non del formato corretto"}).send();
             return;
-
         }
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
+        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers <= 0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
             res.status(400).json({error: "Campo vuoto"}).send();
             return;
 
@@ -542,6 +535,14 @@ router.post('', async (req, res) => {
                     res.status(400).json({error: "formato data non valido"}).send()
                     return;
                 }else{
+                    //Non bisognerebbe controllare che tutti i campi della data siano espressi in formato numerico?
+                    /* 
+                    strin.forEach(e => {
+                        if(Number.isNaN(parseInt(e))) {
+                            res.status(400).json({error: "Formato data non numerico."});
+                            return;
+                        }
+                    }) */
                     if(strin[0].length==2 && strin[1].length==2 && strin[2].length==4){
                         str1 = strin[0];
                         str2 = strin[1];

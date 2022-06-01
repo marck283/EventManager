@@ -1,4 +1,4 @@
-
+//Dobbiamo per forza mantenere questo file? Questi link ci sono già in tutte le pagine in cui è presente la navbar...
 
 document.getElementById('navItem1').href = "";
 document.getElementById('navItem1').href = "CreazioneEvento" + ".html";
