@@ -417,6 +417,16 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        '403':
+          description: Input non permesso (es. si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPersonali:
     post:
@@ -474,6 +484,17 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        '403':
+          description: Input non permesso (es. si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
 
   /EventiPrivati:
     post:
@@ -532,7 +553,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
         '403':
-          description: Input non permesso (es. invitare tramite la stessa email)
+          description: Input non permesso (es. invitare tramite la stessa email, invitare tramite email non valide, invitare con email ripettute, si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
           content:
             application/json:
               schema:
@@ -1450,6 +1471,16 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        "400"
+          description: "Errore nell'inserimento dell'email"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
           
 /Utenti:
@@ -1541,7 +1572,7 @@ components:
           properties:
             indirizzo:
               type: string
-              description: 'Inidirizzo dell''Evento'
+              description: 'Indirizzo dell''Evento'
             citta:
               type: string
               description: 'Città dell''Evento'
@@ -1555,6 +1586,7 @@ components:
       - durata
       - categoria
       - nomeAtt
+      - luogoEv
       properties:
         data:
           type: string
@@ -1571,6 +1603,15 @@ components:
         nomeAtt:
           type: string
           description: 'Nome dell''Evento'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Indirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
 
     PrivateEvent:
       description: Oggetto dell'evento personale per la sua creazione
@@ -1582,6 +1623,7 @@ components:
       - categoria
       - nomeAtt
       - ElencoEmailInviti
+      - luogoEv
       properties:
         data:
           type: string
@@ -1604,6 +1646,15 @@ components:
           items:
             type: string
             description: email dell'utente che si ha invitato invitare
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Indirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
   
     User:
       type: object
