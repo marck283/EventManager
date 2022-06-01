@@ -206,9 +206,9 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
         };
 
 
-
-        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "maxPers": document.getElementById("maxPers").value, "categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": { "indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value } }))
-    }
+    
+        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": Number(document.getElementById("durata").value), "maxPers": Number(document.getElementById("maxPers").value),"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+    }   
 
 };
 
@@ -415,10 +415,10 @@ var requestPe = () => {
 
             }
         };
-
-
-        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": { "indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value } }))
-    }
+        
+    
+        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": Number(document.getElementById("durata").value),"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}}))
+    }   
 
 };
 
@@ -630,10 +630,10 @@ var requestPr = () => {
 
             }
         };
-
-
-        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": document.getElementById("durata").value, "categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": { "indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value }, ElencoEmailInviti: guest }))
-    }
+        
+    
+        reqObj.send(JSON.stringify({ "data": ElencoDate, "ora": document.getElementById("ora").value, "durata": Number(document.getElementById("durata").value),"categoria": document.getElementById("categoria").value, "nomeAtt": document.getElementById("nomeAtt").value, "luogoEv": {"indirizzo": document.getElementById("indirizzo").value, "citta": document.getElementById("Citta").value}, ElencoEmailInviti: guest}))
+    }   
 
 };
 

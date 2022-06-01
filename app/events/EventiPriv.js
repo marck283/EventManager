@@ -373,7 +373,7 @@ router.post('', async (req, res) => {
         if(req.body.data == "" || req.body.data == undefined ||
             req.body.durata <= 0 || req.body.durata == undefined ||
             req.body.ora == "" || req.body.ora == undefined ||
-            req.body.categoria == "" || eq.body.categoria == undefined ||
+            req.body.categoria == "" || req.body.categoria == undefined ||
             req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
             req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined || 
             req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined ||
