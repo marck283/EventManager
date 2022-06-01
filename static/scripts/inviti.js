@@ -75,7 +75,8 @@ fetch('../api/v2/Utenti/me/Inviti', {
 
 
 		                        let pulsante = document.createElement("button");
-		                        pulsante.textContent = "Iscrizione"
+		                        pulsante.textContent = "Iscrizione";
+								pulsante.classList = "btn btn-primary";
 
 		                        if(elem.tipoevento == "pub"){
 		                            
