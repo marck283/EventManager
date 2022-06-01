@@ -52,7 +52,7 @@ router.patch('/:id', async(req, res) => {
         }
         
         await evento.save();
-        res.location("/api/v1/EventiPubblici/" + id_evento).status(200).send();
+        res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
         console.log('Evento pubblico modificato con successo');
         
     }catch(error){
@@ -287,7 +287,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
    
 
 
-        res.location("/api/v1/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
+        res.location("/api/v2/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
 
 
 
@@ -479,7 +479,7 @@ router.post('/:id/Inviti', async (req, res) => {
 
         await invito.save();
 
-        res.location("/api/v1/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
+        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
 
 
 
@@ -918,7 +918,7 @@ router.post('', async (req, res) => {
         /**
          * Si posiziona il link alla risorsa appena creata nel header location della risposata
          */
-        res.location("/api/v1/EventiPubblici/" + eventId).status(201).send();
+        res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
     }catch(error){
         console.log(error);
         res.status(500).json({error: "Errore del server"}).send();

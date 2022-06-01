@@ -161,7 +161,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
 
         var Token = token
         var reqObj = new XMLHttpRequest(), eventJSONList;
-        reqObj.open("Post", "/api/v1/EventiPubblici", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.open("Post", "/api/v2/EventiPubblici", true); //Invio una richiesta asincrona al server Node.js
         reqObj.setRequestHeader('Content-Type', 'application/json');
         reqObj.setRequestHeader('x-access-token', Token);
         reqObj.responseType = "json";
@@ -379,7 +379,7 @@ var requestPe = () => {
     if (inviare == true) {
         Token = token
         var reqObj = new XMLHttpRequest(), eventJSONList;
-        reqObj.open("Post", "/api/v1/EventiPersonali", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.open("Post", "/api/v2/EventiPersonali", true); //Invio una richiesta asincrona al server Node.js
         reqObj.setRequestHeader('Content-Type', 'application/json');
         reqObj.setRequestHeader('x-access-token', Token);
         reqObj.responseType = "json";
@@ -600,7 +600,7 @@ var requestPr = () => {
     if (inviare == true) {
         Token = token
         var reqObj = new XMLHttpRequest(), eventJSONList;
-        reqObj.open("Post", "/api/v1/EventiPrivati", true); //Invio una richiesta asincrona al server Node.js
+        reqObj.open("Post", "/api/v2/EventiPrivati", true); //Invio una richiesta asincrona al server Node.js
         reqObj.setRequestHeader('Content-Type', 'application/json');
         reqObj.setRequestHeader('x-access-token', Token);
         reqObj.responseType = "json";

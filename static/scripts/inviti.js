@@ -11,7 +11,7 @@ if(localStorage.getItem('token') != null){
 
 
 
-fetch('../api/v1/Utenti/me/Inviti', {
+fetch('../api/v2/Utenti/me/Inviti', {
 		        method: 'GET',
 		        headers: {
             		'x-access-token': token

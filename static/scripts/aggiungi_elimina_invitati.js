@@ -1,4 +1,4 @@
-guest = []; //array degli invitati possiibli dell'evento
+guest = []; //array degli invitati possibli dell'evento
 
 var aggiungiI = () =>  { 
   

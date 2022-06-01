@@ -7,7 +7,7 @@ var invip = () => {
 			let email = document.getElementById("posta").value; 
 			console.log(email)
 
-			fetch('../api/v1/EventiPubblici/' + id + '/Inviti', {
+			fetch('../api/v2/EventiPubblici/' + id + '/Inviti', {
 		        method: 'POST',
 		        headers:{
             		'x-access-token': token,

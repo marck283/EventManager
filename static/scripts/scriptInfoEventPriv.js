@@ -14,7 +14,7 @@ try{
     console.log(error);
 }
 
-fetch('../api/v1/EventiPrivati/'+id, {
+fetch('../api/v2/EventiPrivati/'+id, {
     method: 'GET',
     headers: {
         'x-access-token': token

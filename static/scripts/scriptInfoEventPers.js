@@ -14,7 +14,7 @@ try{
     console.log(error);
 }
 
-fetch('../api/v1/EventiPersonali/'+id, {method: 'GET', headers: {'x-access-token': token}})
+fetch('../api/v2/EventiPersonali/'+id, {method: 'GET', headers: {'x-access-token': token}})
     .then(resp => {
         switch(resp.status){
             case 200: {

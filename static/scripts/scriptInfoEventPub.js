@@ -14,7 +14,7 @@ try{
     console.log(error);
 }
 
-fetch('../api/v1/EventiPubblici/'+id)
+fetch('../api/v2/EventiPubblici/'+id)
     .then(resp => {
         switch(resp.status){
             case 200: {

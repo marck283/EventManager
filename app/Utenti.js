@@ -22,7 +22,7 @@ router.get('/me', async (req, res) => {
             nome: utente.nome,
             email: utente.email,
             tel: utente.tel,
-            url: "/api/v1/Utenti/" + IDexample,
+            url: "/api/v2/Utenti/" + IDexample,
             password: utente.password
         });
     }catch(error){
@@ -178,7 +178,7 @@ router.get('/me/Inviti', async (req, res) => {
                         idutente: IDexample,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
-                        urlInvito: "/api/v1/Utenti/" + elem._id,
+                        urlInvito: "/api/v2/Utenti/" + elem._id,
                         accettato: accettato
                         });
                     
@@ -292,7 +292,7 @@ router.get('/me/Inviti', async (req, res) => {
                         idutente: IDexample,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
-                        urlInvito: "/api/v1/Utenti/" + elem._id,
+                        urlInvito: "/api/v2/Utenti/" + elem._id,
                         accettato: accettato
                         });
                     
@@ -356,9 +356,9 @@ router.get('/me/Iscrizioni', async (req, res) => {
 
                 if(evento){
                     let orga = await Utente.findById(evento.organizzatoreID);
-                    ListBigl.push({ eventoUrl: "/api/v1/EventiPubblici/" + evento._id,
+                    ListBigl.push({ eventoUrl: "/api/v2/EventiPubblici/" + evento._id,
                         eventoid: evento._id,
-                        utenteUrl: "/api/v1/Utenti/" + IDexample,
+                        utenteUrl: "/api/v2/Utenti/" + IDexample,
                         utenteid: IDexample,
                         nomeUtente: utente.nome,
                         nomeOrg: orga.nome,
@@ -376,9 +376,9 @@ router.get('/me/Iscrizioni', async (req, res) => {
 
                 if(evento){
                     let orga = await Utente.findById(evento.organizzatoreID);
-                    ListBigl.push({ eventoUrl: "/api/v1/EventiPrivati/" + evento._id,
+                    ListBigl.push({ eventoUrl: "/api/v2/EventiPrivati/" + evento._id,
                         eventoid: evento._id,
-                        utenteUrl: "/api/v1/Utenti/" + IDexample,
+                        utenteUrl: "/api/v2/Utenti/" + IDexample,
                         utenteid: IDexample,
                         nomeUtente: utente.nome,
                         nomeOrg: orga.nome,

@@ -31,7 +31,7 @@ var modificaPub = () => {
     
     
     
-    fetch('../api/v1/EventiPubblici/'+id, {method: 'PATCH', body: JSON.stringify({
+    fetch('../api/v2/EventiPubblici/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
         categoria: getID("categoria").value,
         indirizzo: getID("indirizzo").value,
@@ -69,7 +69,7 @@ var modificaPub = () => {
 //Metodo per il patching di eventi Personali
 var modificaPers = () => {
     
-    fetch('../api/v1/EventiPersonali/'+id, {method: 'PATCH', body: JSON.stringify({
+    fetch('../api/v2/EventiPersonali/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
         categoria: getID("categoria").value,
         indirizzo: getID("indirizzo").value,
@@ -106,7 +106,7 @@ var modificaPers = () => {
 //Metodo per il patching di eventi Privati
 var modificaPriv = () => {
     
-    fetch('../api/v1/EventiPrivati/'+id, {method: 'PATCH', body: JSON.stringify({
+    fetch('../api/v2/EventiPrivati/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
         categoria: getID("categoria").value,
         indirizzo: getID("indirizzo").value,

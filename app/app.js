@@ -24,20 +24,20 @@ app.use(cors());
  * Serve front-end static files
  */
 app.use('/', express.static('static'));
-app.use('/api/v1/authentications', autenticato);
-app.use('/api/v1/EventiPubblici', EventoPubblico);
-app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
-app.use('/api/v1/Utenti', regandric);
+app.use('/api/v2/authentications', autenticato);
+app.use('/api/v2/EventiPubblici', EventoPubblico);
+app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
+app.use('/api/v2/Utenti', regandric);
 
 
 app.use(tokenChecker);
 
 
-app.use('/api/v1/EventiPubblici', EventoPubIscrCreaDelMod);
-app.use('/api/v1/EventiPersonali', EventoPersonale);
-app.use('/api/v1/EventiPrivati', EventoPrivato);
-app.use('/api/v1/Utenti', Utente);
-app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
+app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
+app.use('/api/v2/EventiPersonali', EventoPersonale);
+app.use('/api/v2/EventiPrivati', EventoPrivato);
+app.use('/api/v2/Utenti', Utente);
+app.use("/api/v2/eventiCalendarioPersonale", calendarEventsPers);
 
 /* Default 404 handler */
 app.use((req, res) => {

@@ -1,7 +1,7 @@
 
 
 
-fetch('../api/v1/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-token': token}})
+fetch('../api/v2/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-token': token}})
     .then(resp => {
 
         switch(resp.status){

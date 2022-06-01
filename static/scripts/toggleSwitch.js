@@ -3,9 +3,9 @@ var getId = id => document.getElementById(id);
 var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {  
     var api = "";
     if(listType === "pers") {
-        api = "/api/v1/eventiCalendarioPersonale/?passato=" + passato;
+        api = "/api/v2/eventiCalendarioPersonale/?passato=" + passato;
     } else {
-        api = "/api/v1/eventiCalendarioPubblico/";
+        api = "/api/v2/eventiCalendarioPubblico/";
     }
     fetch(api, {
         method: 'GET',

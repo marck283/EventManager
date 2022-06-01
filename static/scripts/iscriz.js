@@ -3,7 +3,7 @@ var iscr = () => {
 			
 			
 
-			fetch('../api/v1/EventiPubblici/' + id + '/Iscrizioni', {
+			fetch('../api/v2/EventiPubblici/' + id + '/Iscrizioni', {
 		        method: 'POST',
 		        headers: {
             		'x-access-token': token
@@ -51,7 +51,7 @@ var iscrInv = (id) => {
 			console.log(id);
 			
 
-			fetch('../api/v1/EventiPubblici/' + id + '/Iscrizioni', {
+			fetch('../api/v2/EventiPubblici/' + id + '/Iscrizioni', {
 		        method: 'POST',
 		        headers: {
             		'x-access-token': token

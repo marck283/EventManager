@@ -12,7 +12,7 @@ router.get("", async (req, res) => {
             return {
                 nome: u.nome,
                 email: u.email,
-                urlUtente: "/api/v1/Utenti/" + u._id
+                urlUtente: "/api/v2/Utenti/" + u._id
             }
         });
 
@@ -68,7 +68,7 @@ router.post('', async (req, res) => {
          * Link to the newly created resource is returned in the Location header
          * https://www.restapitutorial.com/lessons/httpmethods.html
          */
-        res.location("/api/v1/Utenti/" + utenteId).status(201).send();
+        res.location("/api/v2/Utenti/" + utenteId).status(201).send();
 
     }catch(error){
         console.log(error)

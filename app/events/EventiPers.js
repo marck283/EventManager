@@ -40,7 +40,7 @@ router.patch('/:id', async(req, res) => {
         }
         
         await evento.save();
-        res.location("/api/v1/EventiPersonali/" + id_evento).status(200).send();
+        res.location("/api/v2/EventiPersonali/" + id_evento).status(200).send();
         console.log('Evento personale modificato con successo');
         
     }catch(error){
@@ -494,7 +494,7 @@ router.post('', async (req, res) => {
         /**
          * Si posiziona il link alla risorsa appena creata nel header location della risposata
          */
-        res.location("/api/v1/EventiPersonali/" + eventId).status(201).send();
+        res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
 
     }catch(error){
         console.log(error);

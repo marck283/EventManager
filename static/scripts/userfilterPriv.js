@@ -2,7 +2,7 @@
 document.getElementById("input").addEventListener("keydown", (event) => {
     if (event.code === "Enter") {
         //Avvia richiesta di filtrazione degli eventi.
-        fetch("../api/v1/Utenti?email=" + document.getElementById("input").value)
+        fetch("../api/v2/Utenti?email=" + document.getElementById("input").value)
             .then(resp => {
                 switch (resp.status) {
                     case 200: {

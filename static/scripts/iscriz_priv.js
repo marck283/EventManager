@@ -4,7 +4,7 @@ var iscrPr = (id) => {
 			console.log(id);
 			
 
-			fetch('../api/v1/EventiPrivati/' + id + '/Iscrizioni', {
+			fetch('../api/v2/EventiPrivati/' + id + '/Iscrizioni', {
 		        method: 'POST',
 		        headers: {
             		'x-access-token': token
