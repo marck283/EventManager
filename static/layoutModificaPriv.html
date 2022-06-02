@@ -50,22 +50,23 @@
     <div class="container">
         <h1>Modifica Evento Privato</h1>
 
-    <label for="nomeAtt">Nome attività: </label><input type="text" id="nomeAtt" /><br></br>
-    <label for="categoria">Categoria: </label><select class="form-select" id="categoria" name="categoria">
-        <option value="lavoro">lavoro</option>
-        <option value="scuola">scuola</option>
-        <option value="operazione">operazione</option>
-        <option value="svago" selected>svago</option>
-    </select><br></br>
-    <label for="indirizzo">Indirizzo: </label><input type="text" id="indirizzo" /> Città: <input type="text"
-        id="citta" /><br></br>
+        <label for="nomeAtt">Nome attività: </label><input type="text" id="nomeAtt" /><br></br>
+        <label for="categoria">Categoria: </label><select class="form-select" id="categoria" name="categoria">
+            <option value="---" selected>---</option>
+            <option value="lavoro">lavoro</option>
+            <option value="scuola">scuola</option>
+            <option value="operazione">operazione</option>
+            <option value="svago">svago</option>
+        </select><br></br>
+        <label for="indirizzo">Indirizzo: </label><input type="text" id="indirizzo" /> Città: <input type="text"
+            id="citta" /><br></br>
 
-    <button type="button" onclick="modificaPriv()" class="btn btn-primary">Applica</button>
-    <input type="reset" value="Reset" class="btn btn-secondary" />
+        <button type="button" onclick="modificaPriv()" class="btn btn-primary">Applica</button>
+        <input type="reset" value="Reset" class="btn btn-secondary" />
 
-    <p id=""></p>
+        <p id=""></p>
 
-    <h3 id="error"></h3>
+        <h3 id="error"></h3>
     </div>
 
 </body>

@@ -30,7 +30,7 @@ var disiscrPub = (idEvento,idIscr) => {
 
 var disiscrPriv = (idEvento,idIscr) => {
     
-    fetch('../api/2/EventiPrivati/'+idEvento+'/Iscrizioni/'+idIscr, {method: 'DELETE', headers: {'x-access-token': token}})
+    fetch('../api/v2/EventiPrivati/'+idEvento+'/Iscrizioni/'+idIscr, {method: 'DELETE', headers: {'x-access-token': token}})
         .then(resp => {
             switch(resp.status){
                 case 204: {

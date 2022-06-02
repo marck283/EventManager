@@ -145,7 +145,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
     }
-    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) <= 0) {
         document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
         inviare = false;
     } else {
@@ -370,7 +370,7 @@ var requestPe = () => {
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
     }
-    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) <= 0) {
         document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
         inviare = false;
     } else {
@@ -591,7 +591,7 @@ var requestPr = () => {
     } else {
         document.getElementById("vuotoCi").innerHTML = "";
     }
-    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) < 2) {
+    if (document.getElementById("durata").value == "" || Number.isNaN(parseInt(document.getElementById("durata").value)) ||  Number(document.getElementById("durata").value) <= 0) {
         document.getElementById("vuotoDu").innerHTML = "inserire durata corretta";
         inviare = false;
     } else {

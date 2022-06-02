@@ -54,7 +54,8 @@ fetch('../api/v2/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-toke
                         d.appendChild(img);
 
                         let pulsante = document.createElement("button");
-                        pulsante.textContent = "Disiscrizione"
+                        pulsante.textContent = "Disiscrizione";
+                        pulsante.classList = "btn btn-primary";
 
                         if(elem.tipoevento == "pub"){
                             

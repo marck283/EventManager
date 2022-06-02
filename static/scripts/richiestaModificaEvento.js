@@ -21,9 +21,12 @@ var getID = elemID => {
 
 //Metodo per il patching di eventi Pubblici
 var modificaPub = () => {
+    var categoria = "";
+    if(getID("categoria").value != "---") {
+        categoria = getID("categoria").value;
+    }
     
     //Controlli maxPers
-    
     if(getID("maxPers").value != "" && Number.isNaN(parseInt(getID("maxPers").value)) && getID("maxPers").value < 2){    
         getID("error").textContent = "Numero massimo partecipanti non valido: inferiore a 2.";
         return;
@@ -33,7 +36,7 @@ var modificaPub = () => {
     
     fetch('../api/v2/EventiPubblici/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
-        categoria: getID("categoria").value,
+        categoria: categoria,
         indirizzo: getID("indirizzo").value,
         citta: getID("citta").value,
         maxPers: getID("maxPers").value
@@ -42,8 +45,7 @@ var modificaPub = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
-                });
+                getID("error").textContent = "Modifica fatta";
                 break;
             }
             case 401: {
@@ -68,10 +70,14 @@ var modificaPub = () => {
 
 //Metodo per il patching di eventi Personali
 var modificaPers = () => {
-    
+    var categoria = "";
+    if(getID("categoria").value != "---") {
+        categoria = getID("categoria").value;
+    }
+
     fetch('../api/v2/EventiPersonali/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
-        categoria: getID("categoria").value,
+        categoria: categoria,
         indirizzo: getID("indirizzo").value,
         citta: getID("citta").value
     }),
@@ -79,8 +85,7 @@ var modificaPers = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
-                });
+                getID("error").textContent = "Modifica fatta";
                 break;
             }
             case 401: {
@@ -105,10 +110,14 @@ var modificaPers = () => {
 
 //Metodo per il patching di eventi Privati
 var modificaPriv = () => {
+    var categoria = "";
+    if(getID("categoria").value != "---") {
+        categoria = getID("categoria").value;
+    }
     
     fetch('../api/v2/EventiPrivati/'+id, {method: 'PATCH', body: JSON.stringify({
         nomeAtt: getID("nomeAtt").value,
-        categoria: getID("categoria").value,
+        categoria: categoria,
         indirizzo: getID("indirizzo").value,
         citta: getID("citta").value
     }),
@@ -116,8 +125,7 @@ var modificaPriv = () => {
     .then(resp => {
         switch(resp.status){
             case 200: {
-                resp.json().then(resp => { getID("error").textContent = "Modifca fatta";
-                });
+                getID("error").textContent = "Modifica fatta";
                 break;
             }
             case 401: {
