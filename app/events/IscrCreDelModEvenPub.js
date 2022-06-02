@@ -512,7 +512,7 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if((typeof req.body.durata !== "number") && (typeof req.body.maxPers !== "number")){
+        if((typeof req.body.durata !== "number") || (typeof req.body.maxPers !== "number")){
             res.status(400).json({error: "Campo non del formato corretto"}).send();
             return;
         }
