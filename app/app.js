@@ -2,25 +2,15 @@ var express = require('express');
 const cors = require('cors');
 var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
-const EventoPubIscrCrea = require('./events/IscrCreEvenPub.js');
+const EventoPubIscrCreaDelMod = require('./events/IscrCreDelModEvenPub.js');
 const EventoPersonale = require('./events/EventiPers.js');
 const EventoPrivato = require('./events/EventiPriv.js');
 const calendarEventsPers = require("./events/elencoEventiPersonali.js");
 const calendarEventsPub = require("./events/elencoEventiPublic.js");
-const modificaPub = require("./events/modificaEventoPub.js");
-const modificaPers = require("./events/modificaEventoPers.js");
-const modificaPriv = require("./events/modificaEventoPriv.js");
-const disiscrPub = require("./events/disiscrPub.js");
-const disiscrPriv = require("./events/disiscrPriv.js");
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
-const registrato = require('./registrazione.js')
-const userInfo = require('./userInfo.js');
-
-
-
-
+const regandric = require('./regAndRicerca.js')
 
 /**
  * Configure Express.js parsing middleware
@@ -34,29 +24,20 @@ app.use(cors());
  * Serve front-end static files
  */
 app.use('/', express.static('static'));
-app.use('/api/v1/authentications', autenticato);
-app.use('/api/v1/EventiPubblici', EventoPubblico);
-app.use("/api/v1/eventiCalendarioPubblico", calendarEventsPub);
-app.use("/api/v1/EventiPubblici", disiscrPub);
-app.use("/api/v1/EventiPrvati", disiscrPriv);
-app.use("/api/v1/EventiPrivati", EventoPrivato);
-app.use('/api/v1/Utenti', registrato);
-app.use('/api/v1/EventiPubblici', modificaPub); //DA METTERE SOTTO tokenChecker
-app.use('/api/v1/EventiPersonali', modificaPers);
-app.use('/api/v1/EventiPrivati', modificaPriv);
-app.use('/api/v1/Utenti', Utente);
-app.use('/api/v1/EventiPubblici', EventoPubIscrCrea);
-app.use('/api/v1/Utenti', userInfo);
+app.use('/api/v2/authentications', autenticato);
+app.use('/api/v2/EventiPubblici', EventoPubblico);
+app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
+app.use('/api/v2/Utenti', regandric);
 
 
 app.use(tokenChecker);
 
-//********************************************************** attenzione *********************
 
-app.use('/api/v1/EventiPersonali', EventoPersonale);
-app.use('/api/v1/EventiPrivati', EventoPrivato);
-app.use('/api/v1/Utenti', Utente);
-app.use("/api/v1/eventiCalendarioPersonale", calendarEventsPers);
+app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
+app.use('/api/v2/EventiPersonali', EventoPersonale);
+app.use('/api/v2/EventiPrivati', EventoPrivato);
+app.use('/api/v2/Utenti', Utente);
+app.use("/api/v2/eventiCalendarioPersonale", calendarEventsPers);
 
 /* Default 404 handler */
 app.use((req, res) => {

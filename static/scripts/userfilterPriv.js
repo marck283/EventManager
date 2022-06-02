@@ -1,7 +1,3 @@
-
-
-
-
 //Aziona il filtro dopo il click del bottone "Enter" sulla tastiera.
 document.getElementById("input").addEventListener("keydown", (event) => {
     if (event.code === "Enter") {
@@ -55,8 +51,7 @@ var manipulateDom = resp => {
         card.className = "card";
         col.appendChild(card);
 
-        card.innerHTML = "<button class = \"btn btn-primary\" onclick = \"document.getElementById('posta').value = '" + u.email + "'\">" + u.nome + "</button>" ;
-
+        card.innerHTML = "<button class = \"btn btn-primary\" onclick = \"document.getElementById('invitati').value = '" + u.email + "'\">" + u.nome + "</button>" ;
 
         
     }

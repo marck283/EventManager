@@ -2,18 +2,19 @@ let url = window.location.href;
 var id = '';
 var token = '';
 
+if(localStorage.getItem('token') != null){
+
+    token = localStorage.getItem('token');
+}
+
 try{
-    url=url.split('?');
-    url=url[1].split('&');
-    idurl=url[0].split('=');
-    tokenurl=url[1].split('=');
-    id=idurl[1];
-    token=tokenurl[1];
+    url=url.split('=');
+    id=url[1];
 }catch(error){
     console.log(error);
 }
 
-fetch('../api/v1/EventiPrivati/'+id, {
+fetch('../api/v2/EventiPrivati/'+id, {
     method: 'GET',
     headers: {
         'x-access-token': token

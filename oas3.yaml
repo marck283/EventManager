@@ -10,7 +10,7 @@ info:
 
 servers:
 
-  - url: http://localhost:8000/api/v1
+  - url: http://localhost:8000/api/v2
     description: Localhost
 
 
@@ -417,6 +417,16 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        '403':
+          description: Input non permesso (es. si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
   /EventiPersonali:
     post:
@@ -474,6 +484,17 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        '403':
+          description: Input non permesso (es. si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
+
 
   /EventiPrivati:
     post:
@@ -532,7 +553,7 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
         '403':
-          description: Input non permesso (es. invitare tramite la stessa email)
+          description: Input non permesso (es. invitare tramite la stessa email, invitare tramite email non valide, invitare con email ripettute, si indica una data non disponibile, nel caso l'utente cerca di auto invitarsi)
           content:
             application/json:
               schema:
@@ -1115,7 +1136,7 @@ paths:
       parameters:
       - name: data
         in: path
-        description: Il giorno selezionato dall'utente
+        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
         required: true
         schema:
           type: string
@@ -1132,7 +1153,7 @@ paths:
                 properties:
                   data:
                     type: string
-                    description: La data selezionata
+                    description: La data selezionata. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
                   list:
                     type: array
                     description: La lista degli eventi del calendario pubblico per la data selezionata
@@ -1158,7 +1179,7 @@ paths:
       parameters:
       - name: data
         in: path
-        description: Il giorno selezionato dall'utente
+        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
         required: true
         schema:
           type: string
@@ -1450,6 +1471,16 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        "400"
+          description: "Errore nell'inserimento dell'email"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Messaggio d'errore"
 
           
 /Utenti:
@@ -1520,7 +1551,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data dell''evento o lista date dell''evento'
+          description: 'Data dell''evento o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento'
@@ -1541,7 +1572,7 @@ components:
           properties:
             indirizzo:
               type: string
-              description: 'Inidirizzo dell''Evento'
+              description: 'Indirizzo dell''Evento'
             citta:
               type: string
               description: 'Città dell''Evento'
@@ -1555,10 +1586,11 @@ components:
       - durata
       - categoria
       - nomeAtt
+      - luogoEv
       properties:
         data:
           type: string
-          description: 'Data dell''evento'
+          description: 'Data dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora dell''evento'
@@ -1571,6 +1603,15 @@ components:
         nomeAtt:
           type: string
           description: 'Nome dell''Evento'
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Indirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
 
     PrivateEvent:
       description: Oggetto dell'evento personale per la sua creazione
@@ -1582,10 +1623,11 @@ components:
       - categoria
       - nomeAtt
       - ElencoEmailInviti
+      - luogoEv
       properties:
         data:
           type: string
-          description: 'Data dell''evento'
+          description: 'Data dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora dell''evento'
@@ -1604,6 +1646,15 @@ components:
           items:
             type: string
             description: email dell'utente che si ha invitato invitare
+        luogoEv:
+          type: object
+          properties:
+            indirizzo:
+              type: string
+              description: 'Indirizzo dell''Evento'
+            citta:
+              type: string
+              description: 'Città dell''Evento'
   
     User:
       type: object
@@ -1684,7 +1735,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento.'
+          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1725,7 +1776,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento.'
+          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1758,7 +1809,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento.'
+          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1809,7 +1860,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento.'
+          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1847,7 +1898,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data dell''evento.'
+          description: 'Data dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
         ora:
           type: string
           description: 'Ora dell''evento.'
@@ -1926,6 +1977,9 @@ components:
     - bigliettoUrl
     - tipoevento
     - img
+    - eventoid
+    - bigliettoid
+    - utenteid
     properties:
       eventoUrl:
         type: string
@@ -1951,6 +2005,16 @@ components:
       tipoevento:
         type: string
         description: tipo dell'evento che è associato il biglietto
+      eventoid:
+        type: string
+        description: id dell'evento
+      bigliettoid:
+        type: string
+        description: id del biglietto
+      utenteid:
+        type: string
+        description: id dell'utente
+
 
   Invito:
     type: object

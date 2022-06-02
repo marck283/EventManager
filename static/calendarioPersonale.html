@@ -31,8 +31,11 @@
 </head>
 
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Scegli azione</a>
@@ -42,95 +45,87 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="CreazioneEvento.html">Creazione evento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="publicCalendar.html">Calendario pubblico</a>
+        </li>
         <li class="nav-item active">
-          <a class="nav-link" href="CreazioneEvento.html?token=" id="navItem1">Creazione evento</a>
+          <a class="nav-link" href="calendarioPersonale.html">Calendario personale</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="publicCalendar.html?token=" id="navItem2">Calendario pubblico</a>
+          <a class="nav-link" href="layoutUtente.html">Dati personali</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="calendarioPersonale.html?token=" id="navItem3">Calendario personale</a>
+          <a class="nav-link" href="inviti.html">Inviti</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="layoutUtente.html?token=" id="navItem4">Dati personali</a>
+          <a class="nav-link" href="index.html">Login</a>
         </li>
       </ul>
     </div>
   </nav>
-  <script src="/scripts/impostazione_nav_bar_pagine.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-    crossorigin="anonymous"></script>
-
-  <h1>Elenco eventi</h1>
   <div class="container">
+    <h1>Elenco eventi</h1>
     <div class="form-check form-switch">
       <label class="form-check-label" for="flexSwitchCheckChecked">Vista eventi in calendario</label>
       <input id="buttonSwitch" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-        onclick="showIfChecked();" placeholder="Visualizza eventi in calendario" />
+        onclick="showIfChecked('pers');" placeholder="Visualizza eventi in calendario" />
     </div>
-  </div>
-  <div class="row">
-    <div class="col justify-content-center">
-      <div id="eventGrouping">
-        <div class="calendar-wrapper" id="calendarWrapper">
-          <button id="btnPrev" type="button">Precedente</button>
-          <button id="btnNext" type="button">Successivo</button>
-          <div id="divCal"></div>
-          <div class="popup">
-            <span class="popuptext" id="myPopup1">
-              <br />
-              <div class="card">
-                <div class="card-body">
-                  <h3 class="card-title">Elenco eventi</h3>
-                  <div class="card-text" id="elencoEventi"></div>
+    <div class="row">
+      <div class="col justify-content-center">
+        <div id="eventGrouping">
+          <div class="calendar-wrapper" id="calendarWrapper">
+            <button id="btnPrev" type="button">Precedente</button>
+            <button id="btnNext" type="button">Successivo</button>
+            <div id="divCal"></div>
+            <div class="popup">
+              <span class="popuptext" id="myPopup1">
+                <br />
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="card-title">Elenco eventi</h3>
+                    <div class="card-text" id="elencoEventi"></div>
+                  </div>
                 </div>
-              </div>
-            </span>
-          </div>
-        </div>
-        <div id="eventLists"></div>
-        <div class="col justify-content-center">
-          <span id="storicoEventiContainer">
-            <br />
-            <div class="card">
-              <div class="card-body">
-                <h3 class="card-title">Storico eventi</h3>
-                <div class="card-text" id="storicoEventi"></div>
-              </div>
+              </span>
             </div>
-          </span>
+          </div>
+          <div id="eventLists"></div>
         </div>
-        <div id="filtroEventi">
-          <h3>Filtro eventi</h3>
-          <div id="filtroNomeAtt">
-            <label for="nomeAtt">Nome attivit&agrave;: </label>&nbsp;<input type="text" id="nomeAtt" /><br /><br />
-          </div>
-          <div id="filtroCat">
-            <label for="categoria">Categoria: </label>&nbsp;<input type="text" id="categoria" /><br /><br />
-          </div>
-          <div id="filtroDurata">
-            <label for="durata">Durata: </label>&nbsp;<input type="number" id="durata" min="1" /><br /><br />
-          </div>
-          <div id="filtroIndirizzo">
-            <label for="indirizzo">Indirizzo: </label>&nbsp;<input type="text" id="indirizzo" /><br /><br />
-          </div>
-          <div id="filtroCitta">
-            <label for="citta">Citt&agrave;: </label>&nbsp;<input type="text" id="citta" /><br /><br />
-          </div>
-          <div id="submitButton">
-            <input type="submit" class="btn btn-primary" value="Invia" onclick="filtroEventi('False', 'pers');" />
+      </div>
+      <div class="col justify-content-center" id="storicoEventiContainer">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">Storico eventi</h3>
+            <div class="card-text" id="storicoEventi"></div>
           </div>
         </div>
-        <script>
-          showIfChecked();
-        </script>
+      </div>
+      <div id="filtroEventi">
+        <h3>Filtro eventi</h3>
+        <div id="filtroNomeAtt">
+          <label for="nomeAtt">Nome attivit&agrave;: </label>&nbsp;<input type="text" id="nomeAtt" /><br /><br />
+        </div>
+        <div id="filtroCat">
+          <label for="categoria">Categoria: </label>&nbsp;<input type="text" id="categoria" /><br /><br />
+        </div>
+        <div id="filtroDurata">
+          <label for="durata">Durata: </label>&nbsp;<input type="number" id="durata" min="1" /><br /><br />
+        </div>
+        <div id="filtroIndirizzo">
+          <label for="indirizzo">Indirizzo: </label>&nbsp;<input type="text" id="indirizzo" /><br /><br />
+        </div>
+        <div id="filtroCitta">
+          <label for="citta">Citt&agrave;: </label>&nbsp;<input type="text" id="citta" /><br /><br />
+        </div>
+        <div id="submitButton">
+          <input type="submit" class="btn btn-primary" value="Invia" onclick="filtroEventi('False', 'pers');" />
+        </div>
       </div>
       <script>
-        showIfChecked();
+        showIfChecked("pers");
       </script>
     </div>
   </div>

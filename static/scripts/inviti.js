@@ -1,7 +1,17 @@
 
 
-var token = '';
-fetch('../api/v1/Utenti/me/Inviti', {
+
+var token = "";
+
+if(localStorage.getItem('token') != null){
+
+    token = localStorage.getItem('token');
+}
+
+
+
+
+fetch('../api/v2/Utenti/me/Inviti', {
 		        method: 'GET',
 		        headers: {
             		'x-access-token': token
@@ -61,6 +71,28 @@ fetch('../api/v1/Utenti/me/Inviti', {
 
 
 		                        }
+
+
+
+		                        let pulsante = document.createElement("button");
+		                        pulsante.textContent = "Iscrizione";
+								pulsante.classList = "btn btn-primary";
+
+		                        if(elem.tipoevento == "pub"){
+		                            
+
+		                            pulsante.onclick = iscrInv.bind(this,elem.idevento);
+		                        
+
+		                        }else{
+
+		                            pulsante.onclick = iscrPr.bind(this,elem.idevento);
+
+
+		                        }
+
+		                        d.appendChild(pulsante)
+
 
 		                        let h3 = document.createElement("h4");
 

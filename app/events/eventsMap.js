@@ -5,7 +5,7 @@ module.exports = {
                 return {
                     id: eventType,
                     idevent: event._id,
-                    self: "/api/v1/EventiPersonali/" + event._id,
+                    self: "/api/v2/EventiPersonali/" + event._id,
                     name: event.nomeAtt,
                     category: event.categoria
                 }
@@ -15,7 +15,7 @@ module.exports = {
                 return {
                     id: eventType,
                     idevent: event._id,
-                    self: "/api/v1/EventiPubblici/" + event._id,
+                    self: "/api/v2/EventiPubblici/" + event._id,
                     name: event.nomeAtt,
                     category: event.categoria
                 }
@@ -25,7 +25,7 @@ module.exports = {
                 return {
                     id: eventType,
                     idevent: event._id,
-                    self: "/api/v1/EventiPrivati/" + event._id,
+                    self: "/api/v2/EventiPrivati/" + event._id,
                     name: event.nomeAtt,
                     category: event.categoria
                 }

@@ -147,7 +147,7 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v1/eventiCalendarioPubblico/" + day.join("-"), {
+    fetch("/api/v2/eventiCalendarioPubblico/" + day.join("-"), {
         method: 'GET',
         headers: {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
@@ -198,7 +198,7 @@ var requestWithParams = async (id, day) => {
                                 card.appendChild(h5);
 
                                 var a = document.createElement("a");
-                                a.href = "layoutPubblico.html?id="+ object.idevent + "&token=" + token;
+                                a.href = "layoutPubblico.html?id="+ object.idevent;
                                 a.classList = "btn btn-primary";
                                 a.setAttribute("name", "cardButton");
                                 a.textContent = "Maggiori informazioni...";

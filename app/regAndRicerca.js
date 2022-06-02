@@ -2,6 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
 
+router.get("", async (req, res) => {
+    var email = req.query.email;
+
+    var utenti = await Utente.find({});
+    if (email != undefined && email != "") {
+        utenti = utenti.filter(e => e.email.includes(email));
+        utenti = utenti.map(u => {
+            return {
+                nome: u.nome,
+                email: u.email,
+                urlUtente: "/api/v2/Utenti/" + u._id
+            }
+        });
+
+        if (utenti.length == 0) {
+            res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
+            return;
+        }
+    }
+    res.status(200).json({utenti: utenti});
+    return;
+});
 
 
 router.post('', async (req, res) => {
@@ -11,8 +33,10 @@ router.post('', async (req, res) => {
     
     try{
 
-        if(req.body.nome == "" || req.body.email == "" || req.body.pass == "" ){
-            res.status(400).json({error: "Campo vuoto"}).send();
+        if(req.body.nome == "" || eq.body.nome == undefined ||
+         req.body.email == "" || req.body.email == undefined ||
+         req.body.pass == "" || req.body.pass == undefined){
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
         }
@@ -44,7 +68,7 @@ router.post('', async (req, res) => {
          * Link to the newly created resource is returned in the Location header
          * https://www.restapitutorial.com/lessons/httpmethods.html
          */
-        res.location("/api/v1/Utenti/" + utenteId).status(201).send();
+        res.location("/api/v2/Utenti/" + utenteId).status(201).send();
 
     }catch(error){
         console.log(error)

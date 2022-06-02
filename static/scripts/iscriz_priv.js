@@ -1,12 +1,10 @@
-var iscr = () => {
+var iscrPr = (id) => {
 			
-			var id = "6290f15943783ca85272fa34";
-
-			var token = "";
-
+			
+			console.log(id);
 			
 
-			fetch('../api/v1/EventiPrivati/' + id + '/Iscrizioni', {
+			fetch('../api/v2/EventiPrivati/' + id + '/Iscrizioni', {
 		        method: 'POST',
 		        headers: {
             		'x-access-token': token
@@ -22,25 +20,25 @@ var iscr = () => {
 					*/
 		    		
         			if(resp.status==201){
-        				document.getElementById("iscrizione").innerHTML = "Iscritto"
+        				alert("Iscritto")
 
         			}
         			if(resp.status==403){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
         				
         				
 
         			}
         			if(resp.status==500){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
         			if(resp.status==404){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
         			if(resp.status==401){
-        				resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.message});
+        				resp.json().then(data => {alert(data.error)});
 
         			}
 

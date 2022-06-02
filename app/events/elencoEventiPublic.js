@@ -88,8 +88,8 @@ router.get("/:data", async (req, res) => {
     events = await eventPublic.find({});
     events = events.filter(e => e.data.includes(str));
     if (autenticato) {
-        //Eseguire la funzione verify, poi cercare gli eventi nel database
-        events = events.filter(e => (e.partecipantiID.find(e => e == user) == undefined)); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
+        //Cerco nel database gli eventi a cui l'utente autenticato non è iscritto
+        events = events.filter(e => (e.partecipantiID.find(e => e == user) == undefined));
     }
 
     if (events.length > 0) {

@@ -1,13 +1,13 @@
 var invip = () => {
 			
 			
-			token = "";
-			id = "628fbe89d969d3e2bdc79f80"
+			
+			
 
 			let email = document.getElementById("posta").value; 
 			console.log(email)
 
-			fetch('../api/v1/EventiPubblici/' + id + '/Inviti', {
+			fetch('../api/v2/EventiPubblici/' + id + '/Inviti', {
 		        method: 'POST',
 		        headers:{
             		'x-access-token': token,

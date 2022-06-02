@@ -6,6 +6,50 @@ const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
 
+router.patch('/:id', async(req, res) => {
+    
+    //var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id;
+    var id_evento = req.params.id;
+    
+    try{
+        
+        let evento = await eventPersonal.findById(id_evento);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non esiste alcun evento personale con l'id specificato."});
+            return;
+        }
+        
+        if(utent != evento.organizzatoreID){
+            res.status(403).json({error: "Non sei autorizzato a modificare l'evento."});
+            return;
+        }
+        
+        if(req.body.nomeAtt != "" && req.body.nomeAtt != undefined){
+            evento.nomeAtt = req.body.nomeAtt;
+        }
+        if(req.body.categoria != "" && req.body.categoria != undefined){
+            evento.categoria = req.body.categoria
+        }
+        if(req.body.indirizzo != "" && req.body.indirizzo != undefined){
+            evento.luogoEv.indirizzo = req.body.indirizzo
+        }
+        if(req.body.citta != "" && req.body.citta != undefined){
+            evento.luogoEv.citta = req.body.citta;
+        }
+        
+        await evento.save();
+        res.location("/api/v2/EventiPersonali/" + id_evento).status(200).send();
+        console.log('Evento personale modificato con successo');
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore lato server."}).send();
+    }
+    
+});
+
 router.get('/:id', async(req, res) => {
 
     try{
@@ -33,7 +77,7 @@ router.get('/:id', async(req, res) => {
 
 });
 
-//*******************************************
+
 
 router.post('', async (req, res) => {
 
@@ -55,8 +99,14 @@ router.post('', async (req, res) => {
 
         }
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
-            res.status(400).json({error: "Campo vuoto"}).send();
+        if(req.body.data == "" || req.body.data == undefined ||
+         req.body.durata <= 0 || req.body.durata == undefined || 
+         req.body.ora == "" || req.body.ora == undefined ||
+         req.body.categoria == "" || req.body.categoria == undefined ||
+         req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
+         req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
+         req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined){
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
         }
@@ -271,7 +321,7 @@ router.post('', async (req, res) => {
 
             if(yy > Number(anno)){
 
-              res.status(400).json({error: "giorno non disponibile"}).send()
+              res.status(403).json({error: "giorno non disponibile"}).send()
               return; 
 
             }else{
@@ -281,7 +331,7 @@ router.post('', async (req, res) => {
                
 
                 if(mm > Number(mese)){
-                  res.status(400).json({error: "giorno non disponibile"}).send()
+                  res.status(403).json({error: "giorno non disponibile"}).send()
                   return; 
                  
                 }else{
@@ -290,7 +340,7 @@ router.post('', async (req, res) => {
                  
 
                     if(dd > Number(giorno)){
-                      res.status(400).json({error: "giorno non disponibile"}).send()
+                      res.status(403).json({error: "giorno non disponibile"}).send()
                       return; 
 
                     }
@@ -377,7 +427,7 @@ router.post('', async (req, res) => {
 
                                 if(Number(str2) < d.getMinutes()){
 
-                                       res.status(400).json({error: "orario non permesso"}).send()
+                                       res.status(403).json({error: "orario non permesso"}).send()
                                         return;
 
 
@@ -388,7 +438,7 @@ router.post('', async (req, res) => {
 
 
                         }else{
-                            res.status(400).json({error: "orario non permesso"}).send()
+                            res.status(403).json({error: "orario non permesso"}).send()
                             return;
 
                         }
@@ -444,7 +494,7 @@ router.post('', async (req, res) => {
         /**
          * Si posiziona il link alla risorsa appena creata nel header location della risposata
          */
-        res.location("/api/v1/EventiPersonali/" + eventId).status(201).send();
+        res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
 
     }catch(error){
         console.log(error);

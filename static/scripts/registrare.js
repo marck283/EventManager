@@ -44,7 +44,7 @@ var reg = () => {
 			
 
 
-			fetch('../api/v1/Utenti', {
+			fetch('../api/v2/Utenti', {
 			    method: 'POST',
 			    headers: { 'Content-Type': 'application/json' },
 			    body: JSON.stringify( { email: email, pass: password, nome: nome, tel: telefono

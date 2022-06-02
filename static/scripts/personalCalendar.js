@@ -147,7 +147,7 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v1/eventiCalendarioPersonale/" + day.join("-"), {
+    fetch("/api/v2/eventiCalendarioPersonale/" + day.join("-"), {
         method: 'GET',
         headers: {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
@@ -207,7 +207,7 @@ var requestWithParams = async (id, day) => {
                                         a.href = "layoutPrivato.html";
                                     }
                                 }
-                                a.href += "?id="+ object.idevent + "&token=" + token;
+                                a.href += "?id="+ object.idevent;
                                 a.classList = "btn btn-primary";
                                 a.setAttribute("name", "cardButton");
                                 a.textContent = "Maggiori informazioni...";

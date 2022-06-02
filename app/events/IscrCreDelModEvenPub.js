@@ -6,7 +6,125 @@ const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
 const biglietti = require('../collezioni/biglietti.js')
 
+router.patch('/:id', async(req, res) => {
+    
+    //var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id;
+    var id_evento = req.params.id;
+    
+    try{
+        
+        let evento = await eventPublic.findById(id_evento);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non esiste alcun evento pubblico con l'id specificato."});
+            return;
+        }
+        
+        if(utent != evento.organizzatoreID){
+            res.status(403).json({error: "Non sei autorizzato a modificare l'evento."});
+            return;
+        }
+        
+        if(req.body.nomeAtt != "" && req.body.nomeAtt != undefined){
+            evento.nomeAtt = req.body.nomeAtt;
+        }
+        if(req.body.categoria != "" && req.body.nomeAtt != undefined){
+            evento.categoria = req.body.categoria
+        }
+        if(req.body.indirizzo != "" && req.body.indirizzo != undefined){
+            evento.luogoEv.indirizzo = req.body.indirizzo
+        }
+        if(req.body.citta != "" && req.body.citta != undefined){
+            evento.luogoEv.citta = req.body.citta;
+        }
+        console.log(req.body.maxPers);
+        if(req.body.maxPers != "" && req.body.maxPers != undefined){
+            if(Number.isNaN(parseInt(req.body.maxPers))){
+                res.status(400).json({error: "Numero massimo partecipanti non valido: formato non valido."});
+                return;
+            }
+            if(req.body.maxPers < 2){
+                res.status(400).json({error: "Numero massimo partecipanti non valido: inferiore a 2."});
+                return;
+            }
+            evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+        }
+        
+        await evento.save();
+        res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
+        console.log('Evento pubblico modificato con successo');
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore lato server."}).send();
+    }
+    
+});
 
+router.delete('/:idEvento/Iscrizioni/:idIscr', async(req, res) => {
+    
+    try{
+        
+        var evento = await eventPublic.findById(req.params.idEvento);
+        var utente = req.loggedUser.id; 
+        var utenteObj = await Users.findById(utente);
+        var iscr = await biglietti.findById(req.params.idIscr);
+        
+        if(evento == undefined){
+            res.status(404).json({error: "Non corrisponde alcun evento pubblico all'ID specificato."});
+            return;
+        }
+        
+        if(iscr == undefined){
+            res.status(404).json({error: "Non corrisponde alcuna iscrizione all'ID specificato."});
+            return;
+        }
+        
+        if(iscr.eventoid != req.params.idEvento){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'evento specificato."}).send();
+            return;
+        }
+        
+        if(iscr.utenteid != utente){
+            res.status(403).json({error: "L'iscrizione non corrisponde all'utente specificato."}).send();
+            return;
+        }
+        
+        var array1 = evento.partecipantiID;
+        var index1 = array1.indexOf(utente);
+        if (index1 > -1) {
+            array1.splice(index1, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        evento.partecipantiID = array1;
+        await evento.save(); //Aggiornamento partecipantiID
+        
+        var array2 = utenteObj.EventiIscrtto;
+        var index2 = array2.indexOf(req.params.idEvento);
+        if (index2 > -1) {
+            array2.splice(index2, 1);
+        }else{
+            res.status(403).json({error: "L'utente non risulta iscritto all'evento."}).send();
+            return;
+        }
+        utenteObj.EventiIscrtto = array2;
+        await utenteObj.save(); //Aggiornamento EventiIscritto
+        
+        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+        
+        console.log('Annullamento iscrizione effettuato con successo.');
+        
+        res.status(204).send();
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({error: "Errore nel Server"}).send();
+    }
+    
+});
 
 router.post('/:id/Iscrizioni', async (req, res) => {
 
@@ -169,7 +287,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
    
 
 
-        res.location("/api/v1/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
+        res.location("/api/v2/EventiPubblici/" +id_evento+ "/Iscrizioni/" + idBigl).status(201).send();
 
 
 
@@ -194,14 +312,14 @@ router.post('/:id/Inviti', async (req, res) => {
 
     try{
 
-        var utent = "628f8b448031650249b5d6bb";
+        var utent = req.loggedUser.id;
 
         var id_evento=req.params.id;
 
 
-        if(req.body.email == ""){
+        if(req.body.email == "" || req.body.email == undefined){
 
-            res.status(400).json({error: "Campo vuoto"}).send();
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
         }
 
@@ -218,15 +336,13 @@ router.post('/:id/Inviti', async (req, res) => {
 
         var dati = eventP.data.split(",");
 
-        for(var elem of dati){
-
+        for(var elem of dati) {
             var data = elem;
             var date = new Date();
             var mm = date.getMonth() + 1
             var dd = date.getDate()
             var yy = date.getFullYear()
             dats = data.split('/');
-
            
             if(dats[0][0] == '0'){
 
@@ -363,7 +479,7 @@ router.post('/:id/Inviti', async (req, res) => {
 
         await invito.save();
 
-        res.location("/api/v1/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
+        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
 
 
 
@@ -396,18 +512,20 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if((typeof req.body.durata === "number") && (typeof req.body.maxPers === "number")){
-
-
-        }else{
-
+        if((typeof req.body.durata !== "number") && (typeof req.body.maxPers !== "number")){
             res.status(400).json({error: "Campo non del formato corretto"}).send();
             return;
-
         }
 
-        if(req.body.data == "" || req.body.durata <= 0 || req.body.ora == "" || req.body.maxPers<=0 || req.body.categoria == "" || req.body.nomeAtt == "" || req.body.luogoEv.indirizzo == "" || req.body.luogoEv.citta == ""){
-            res.status(400).json({error: "Campo vuoto"}).send();
+        if(req.body.data == "" || req.body.data == undefined ||
+         req.body.durata <= 0 || req.body.durata == undefined ||
+         req.body.ora == "" || req.body.ora == undefined ||
+         req.body.maxPers<=1  || req.body.maxPers == undefined ||
+         req.body.categoria == "" || req.body.categoria == undefined ||
+         req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
+         req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
+         req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined){
+            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
         }
@@ -425,6 +543,14 @@ router.post('', async (req, res) => {
                     res.status(400).json({error: "formato data non valido"}).send()
                     return;
                 }else{
+                    //Non bisognerebbe controllare che tutti i campi della data siano espressi in formato numerico?
+                    /* 
+                    strin.forEach(e => {
+                        if(Number.isNaN(parseInt(e))) {
+                            res.status(400).json({error: "Formato data non numerico."});
+                            return;
+                        }
+                    }) */
                     if(strin[0].length==2 && strin[1].length==2 && strin[2].length==4){
                         str1 = strin[0];
                         str2 = strin[1];
@@ -622,7 +748,7 @@ router.post('', async (req, res) => {
 
             if(yy > Number(anno)){
 
-              res.status(400).json({error: "giorno non disponibile"}).send()
+              res.status(403).json({error: "giorno non disponibile"}).send()
               return; 
 
             }else{
@@ -632,7 +758,7 @@ router.post('', async (req, res) => {
                
 
                 if(mm > Number(mese)){
-                  res.status(400).json({error: "giorno non disponibile"}).send()
+                  res.status(403).json({error: "giorno non disponibile"}).send()
                   return; 
                  
                 }else{
@@ -641,7 +767,7 @@ router.post('', async (req, res) => {
                  
 
                     if(dd > Number(giorno)){
-                      res.status(400).json({error: "giorno non disponibile"}).send()
+                      res.status(403).json({error: "giorno non disponibile"}).send()
                       return; 
 
                     }
@@ -728,7 +854,7 @@ router.post('', async (req, res) => {
 
                                 if(Number(str2) < d.getMinutes()){
 
-                                       res.status(400).json({error: "orario non permesso"}).send()
+                                       res.status(403).json({error: "orario non permesso"}).send()
                                         return;
 
 
@@ -739,7 +865,7 @@ router.post('', async (req, res) => {
 
 
                         }else{
-                            res.status(400).json({error: "orario non permesso"}).send()
+                            res.status(403).json({error: "orario non permesso"}).send()
                             return;
 
                         }
@@ -792,7 +918,7 @@ router.post('', async (req, res) => {
         /**
          * Si posiziona il link alla risorsa appena creata nel header location della risposata
          */
-        res.location("/api/v1/EventiPubblici/" + eventId).status(201).send();
+        res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
     }catch(error){
         console.log(error);
         res.status(500).json({error: "Errore del server"}).send();

@@ -1,14 +1,14 @@
 <!--  Pagina della creazione di un evento personale -->
-
+<!DOCTYPE html>
 <html>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>creazione_evento_privato</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
-    <!--formden.js communicates with FormDen server to validate fields and submit via AJAX -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!--formden.js communicates with FormDen server to validate fields and submit via AJAX -->
   <script type="text/javascript" src="https://formden.com/static/cdn/formden.js"></script>
 
   <!-- Special version of Bootstrap that is isolated to content wrapped in .bootstrap-iso -->
@@ -16,169 +16,184 @@
 
   <!--Font Awesome (added because you use icons in your prepend/append)-->
   <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
-
-  <!-- Inline CSS based on choices in "Settings" tab -->
-  <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
+  <link rel="stylesheet" href="/styles/common.css" />
+  <link rel="stylesheet" href="/styles/bootstrapIso.css" />
 
   <script>
 
-    let url = window.location.href;
-    token = "";
-    try{
+    var token = "";
 
-      url=url.split('?');
-      url=url[1].split('=');
-      token = url[1];
+    if (localStorage.getItem('token') != null) {
 
-    }catch(error){
-
-      console.log(error);
-
+      token = localStorage.getItem('token');
     }
-   
+
 
 
   </script>
-    
+
   <script src="scripts/aggiungi_elimina_date.js"></script>
   <script src="scripts/aggiungi_elimina_invitati.js"></script>
   <script src="scripts/richiesta_creazioneEvento.js"></script>
 
 
-  
+
 
 
 </head>
 
 
 <body>
- <!--< <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Scegli azione</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="CreazioneEvento.html?token=" id="navItem1">Creazione evento</a>
+          <a class="nav-link" href="CreazioneEvento.html">Creazione evento</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="publicCalendar.html?token=" id="navItem2">Calendario pubblico</a>
+          <a class="nav-link" href="publicCalendar.html">Calendario pubblico</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="calendarioPersonale.html?token=" id="navItem3">Calendario personale</a>
+          <a class="nav-link" href="calendarioPersonale.html">Calendario personale</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="layoutUtente.html?token=" id="navItem4">Dati personali</a>
+          <a class="nav-link" href="layoutUtente.html">Dati personali</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="inviti.html">Inviti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Login</a>
         </li>
       </ul>
     </div>
   </nav>
-  <script src="/scripts/impostazione_nav_bar_pagine.js"></script>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Scegli evento</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="/CreazioneEventoPubblico.html?token=" id ="Pub">Evento pubblico</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/CreazioneEventoPersonale.html?token=" id ="Pers">Evento personale <span class="sr-only">(current)</span></a>
-      </li>
-    </ul>
-  </div>
-</nav>
+    <a class="navbar-brand" href="#">Scegli evento</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="/CreazioneEventoPubblico.html" id="Pub">Evento pubblico</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/CreazioneEventoPersonale.html" id="Pers">Evento personale</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/creazioneEventoPrivato.html" id="Priv">Evento privato<span
+              class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
-<script>
-document.getElementById('Pub').href += token;
-document.getElementById('Pers').href += token;
 
-</script>-->
+  <div class="container">
+    <h1>Creazione evento privato</h1>
 
-<h1>Creazione evento privato</h1>
-
-<!-- indicazione di tutti i campi di input per creare un certo evento pubblico -->
-  <label for="nomeAtt">Nome attivit&agrave:</label>
-  <input type="text" name="nomeAtt" id="nomeAtt"/><span id="vuotoN"></span><br>
-  <label>Luogo evento:</label><br>
-  <label for="indirizzo">Indirizzo:</label>
-  <input type="text" name="indirizzo" id="indirizzo"/><span id="vuotoI"></span><br>
-  <label for="Citta">Citt&agrave:</label>
-  <input type="text" name="Citta" id="Citta"/><span id="vuotoCi"></span><br>
-  <label for="categoria">Categoria:</label>
-  <select id="categoria" name="categoria">
-    <option value="lavoro">lavoro</option>
-    <option value="scuola">scuola</option>
-    <option value="operazione" >operazione</option>
-    <option value="svago" selected>svago</option>
-  </select><span id="vuotoCa"></span><br>
-  <div class="form-group ">
+    <!-- indicazione di tutti i campi di input per creare un certo evento pubblico -->
+    <label for="nomeAtt">Nome attivit&agrave:</label>
+    <input type="text" name="nomeAtt" id="nomeAtt" /><span id="vuotoN"></span><br>
+    <label>Luogo evento:</label><br>
+    <label for="indirizzo">Indirizzo:</label>
+    <input type="text" name="indirizzo" id="indirizzo" /><span id="vuotoI"></span><br>
+    <label for="Citta">Citt&agrave:</label>
+    <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
+    <label for="categoria">Categoria:</label>
+    <select class="form-select" aria-label="Selezione categoria evento" id="categoria" name="categoria">
+      <option value="lavoro">lavoro</option>
+      <option value="scuola">scuola</option>
+      <option value="operazione">operazione</option>
+      <option value="svago" selected>svago</option>
+    </select><span id="vuotoCa"></span><br>
+    <div class="form-group ">
       <label class="control-label col-sm-2 requiredField" for="date">
-       Date
+        Date
       </label>
       <div class="col-sm-10">
-       <div class="input-group">
-        <div class="input-group-addon">
+        <div class="input-group">
+          <div class="input-group-addon">
+          </div>
+          <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" />
+          <span id="vuotoDa"></span>
+          <button class="btn btn-primary" onclick="aggiungi()">Aggiungi data</button>
+          <button class="btn btn-secondary" onclick="reset()">Reset date</button>
+          <br>
+          <span id="dates"></span>
         </div>
-        <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
-        <span id="vuotoDa"></span>
-        <button onclick="aggiungi()">aggiungi_data</button>
-        <button onclick="reset()">reset_date</button>
-        <br>
-        <span id="dates"></span>
       </div>
     </div>
+    <br>
+    <label for="ora">Ora d'inizio:</label>
+    <input type="ora" name="ora" id="ora" /><span id="vuotoO"></span><br>
+    <label for="durata">Durata in ore:</label>
+    <input type="number" min="1" name="durata" value="1" id="durata" /><span id="vuotoDu"></span><br>
+    <label for="invitati">Invitati:</label>
+    <input type="text" name="invitati" id="invitati" /><span id="vuotoIn"></span><br><br>
+    <button class="btn btn-primary" onclick="aggiungiI()">Aggiungi invitato</button>
+    <button class="btn btn-secondary" onclick="resetI()">Reset invitati</button>
+    <br><br>
+    <span id="guests"></span>
+
+
+
+
+
+
+    <button class="btn btn-primary" onclick="requestPr()">Crea Evento</button>
+
+    <h2 id="loc"></h2>
+
+    <h3>Ricerca utenti</h3>
+    <h4>Cerca utente per indirizzo email</h4>
+    <input type="text" id="input" class="form-control" placeholder="Cerca..." />
+    <script src="./scripts/userfilterPriv.js"></script>
+    <div id="result"></div>
   </div>
-  <br>
-  <label for="ora">Ora d'inizio:</label>
-  <input type="ora" name="ora" id="ora"/><span id="vuotoO"></span><br>
-  <label for="nomeAtt">Durata in ore:</label>
-  <input type="number" min=1 name="durata" value=1 id="durata"/><span id="vuotoDu"></span><br>
-  <label for="invitati">Invitati:</label>
-  <input type="text" name="invitati" id="invitati"/><span id="vuotoIn"></span><br>
-  <button onclick="aggiungiI()">aggiungi_invitato</button>
-  <button onclick="resetI()">reset_invitati</button>
-  <br>
-  <span id="guests"></span>
-  
 
 
-  
+  <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+  <!-- Include jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
-
- <button onclick="requestPr()">Crea Evento</button>
-
-<h2 id="loc"></h2> 
-
-<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
-<!-- Include jQuery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-
-<!-- Include Date Range Picker -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  <!-- Include Date Range Picker -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 
 
 
-<script>
-  $(document).ready(function(){
-    var date_input=$('input[name="date"]'); //our date input has the name "date"
-    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-    date_input.datepicker({
-      format: 'mm/dd/yyyy',
-      container: container,
-      todayHighlight: true,
-      autoclose: true,
+
+  <script>
+    $(document).ready(function () {
+      var date_input = $('input[name="date"]'); //our date input has the name "date"
+      var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+      date_input.datepicker({
+        format: 'mm/dd/yyyy',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+      })
     })
-  })
 
-  
-</script>
-    
+
+  </script>
+
 </body>
 
 </html>

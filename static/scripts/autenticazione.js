@@ -11,7 +11,7 @@ var login = () => {
     var password = document.getElementById("loginPassword").value;
 
 
-    fetch('../api/v1/authentications', {
+    fetch('../api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),
@@ -39,10 +39,8 @@ var login = () => {
         }
         if(resp.status==200){
             resp.json().then(data => {document.getElementById("usr").innerHTML = data.message; 
-            TokenUser = data.token;
-            
-            impostPagina();});
-
+            localStorage.setItem('token', data.token);          
+            });
         }
         
 

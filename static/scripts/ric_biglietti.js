@@ -1,7 +1,7 @@
 
 
 
-fetch('../api/v1/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-token': token}})
+fetch('../api/v2/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-token': token}})
     .then(resp => {
 
         switch(resp.status){
@@ -52,6 +52,28 @@ fetch('../api/v1/Utenti/me/Iscrizioni', {method: 'GET', headers: {'x-access-toke
                         fr.readAsDataURL(the_file);
 
                         d.appendChild(img);
+
+                        let pulsante = document.createElement("button");
+                        pulsante.textContent = "Disiscrizione";
+                        pulsante.classList = "btn btn-primary";
+
+                        if(elem.tipoevento == "pub"){
+                            
+
+                            pulsante.onclick = disiscrPub.bind(this,elem.eventoid,elem.bigliettoid) //*************************************************************************
+                        
+                        }else{
+
+                            pulsante.onclick = disiscrPriv.bind(this,elem.eventoid,elem.bigliettoid) //*************************************************************************
+
+
+                        }
+
+                        d.appendChild(pulsante)
+
+                        
+
+
 
                         let h3 = document.createElement("h4");
 
