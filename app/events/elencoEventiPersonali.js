@@ -112,6 +112,7 @@ router.get("", async (req, res) => {
         }
         default: {
             res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
+            return;
         }
     }
 

@@ -1031,7 +1031,7 @@ paths:
       description: >-
         Permette di ottenere la lista di eventi personali, pubblici e privati a cui l'utente autenticato è iscritto o che ha organizzato. Tutti i parametri specificati sotto (tranne il token di autenticazione ed il parametro booleano "passato") potranno essere specificati solo per filtrare gli eventi.
         Nel caso in cui il parametro "passato" sia impostato a "true" verranno restituiti solo gli eventi personali, pubblici e privati organizzati per giornate già trascorse;
-        altrimenti verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
+        altrimenti, nel caso in cui il parametro "passato" sia impostato a "false" verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
       summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
