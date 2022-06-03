@@ -39,7 +39,7 @@ router.get("", async (req, res) => {
     }
 
     if(durata != undefined && durata != "") {
-        if(isNumeric(durata)) {
+        if(isNumeric(durata) && parseInt(durata) >= 1) {
             events = events.filter(e => e.durata == durata);
         } else {
             res.status(400).json({error: "Richiesta malformata."});

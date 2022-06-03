@@ -54,11 +54,14 @@ var filterEvents = eventsArr => {
     });
 }
 
+var isNumeric = str => parseInt(str) == str ? true : false;
+
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
     
     var user = req.loggedUser.id;
+
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
@@ -78,8 +81,7 @@ router.get("", async (req, res) => {
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
     if(durata != undefined && durata != "") {
-        const duration = parseInt(durata);
-        if(!Number.isNaN(duration)) {
+        if(isNumeric(durata)) {
             eventsPers = eventsPers.filter(e => e.durata == duration);
             eventsPub = eventsPub.filter(e => e.durata == duration);
             eventsPriv = eventsPriv.filter(e => e.durata == duration);

@@ -42,5 +42,18 @@ module.exports = describe("GET /api/v2/eventiCalendarioPubblico", () => {
         .set('citta', 'Mortara')
         .send()
         .expect(400, {error: "Richiesta malformata."});
-    })
+    });
+
+    test("GET /api/v2/eventiCalendarioPubblico con campo 'data' compilato con un valore minore o uguale a 0", () => {
+        return request(app)
+        .get("/api/v2/eventiCalendarioPubblico")
+        .set('Accept', 'application/json')
+        .set('nomeAtt', 'Girare a vuoto')
+        .set('categoria', 'svago')
+        .set('durata', '0')
+        .set('indirizzo', 'Via del campo')
+        .set('citta', 'Mortara')
+        .send()
+        .expect(400, {error: "Richiesta malformata."});
+    });
 });
