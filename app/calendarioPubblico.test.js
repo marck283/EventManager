@@ -4,8 +4,9 @@ const app     = require('./app');
 
 describe('/api/v2/eventiCalendarioPubblico', () => {
 
-  // Moking User.findOne method
-  let userSpy;
+  
+  let eventsPubSpy;
+  
 
   beforeAll( () => {
     const eventPublic = require('./collezioni/eventPublic');
@@ -32,7 +33,7 @@ describe('/api/v2/eventiCalendarioPubblico', () => {
   }
   var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
   
-  test('GET /api/v2/eventiCalendarioPubblico da autenticati, quindi con token valido, nel caso ci siano eventi', async () => {
+  test("GET /api/v2/eventiCalendarioPubblico da autenticati, quindi con token valido, nel caso ci siano eventi pubblici a cui l'utente non si è iscritto o creato", async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPubblico').
     set('x-access-token', token).
     expect('Content-Type', /json/).

@@ -542,7 +542,7 @@ router.post('', async (req, res) => {
                 }
 
             }else{
-                res.status(400).json({error: "formato data errato"}).send()
+                res.status(400).json({error: "formato data non valido"}).send()
                 return; 
 
             }

@@ -4,8 +4,10 @@ const app     = require('./app');
 
 describe('/api/v2/eventiCalendarioPersonale', () => {
 
-  // Moking User.findOne method
-  let userSpy;
+ 
+  let eventsPubSpy;
+  let eventsPerSpy;
+  let eventsPrivSpy;
 
   beforeAll( () => {
     const eventPublic = require('./collezioni/eventPublic.js');
@@ -30,8 +32,8 @@ describe('/api/v2/eventiCalendarioPersonale', () => {
     const eventPrivate = require('./collezioni/eventPrivat.js');
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation((criterias) => {
       return [
-        {_id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1234','2222'], invitatiID: ['2323']},
-        {_id:'785478458',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['1234','1111'], invitatiID: ['2323']}
+        {_id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']},
+        {_id:'785478458',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}
       ]
     });
   });
