@@ -263,14 +263,15 @@ module.exports = describe("GET /api/v2/EventiPersonali", () => {
         .expect(400, {error: "formato ora non valido"});
     });
 
+    let dateObj = new Date();
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'ora' compilato con un orario antecedente all'ora corrente per la data corrente", () => {
         return request(app)
         .post('/api/v2/EventiPersonali')
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/03/2022",
-            ora: "11:00",
+            data: String(dateObj.getMonth() + 1).padStart(2, '0') + "/" + String(dateObj.getDate()).padStart(2, '0') + "/" + dateObj.getFullYear(),
+            ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"

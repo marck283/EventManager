@@ -4,6 +4,8 @@ const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 
+var isNumeric = str => parseInt(str) == str ? true : false;
+
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
 
@@ -35,8 +37,9 @@ router.get("", async (req, res) => {
     if(categoria != undefined && categoria != "") {
         events = events.filter(e => e.categoria == categoria);
     }
+
     if(durata != undefined && durata != "") {
-        if(!Number.isNaN(parseInt(durata))) {
+        if(isNumeric(durata)) {
             events = events.filter(e => e.durata == durata);
         } else {
             res.status(400).json({error: "Richiesta malformata."});
