@@ -36,7 +36,8 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         { expiresIn: 86400 }
     );
 
-    test("GET /api/v2/eventiCalendarioPersonale con campo 'data' compilato con un valore non numerico", () => {
+    //Perché questi test vanno oltre il limite di tempo massimo?
+    test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPersonale")
         .set('x-access-token', token)
@@ -44,6 +45,20 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('nomeAtt', 'Girare a vuoto')
         .set('categoria', 'svago')
         .set('durata', '2 giorni')
+        .set('indirizzo', 'Via del campo')
+        .set('citta', 'Mortara')
+        .send()
+        .expect(400, {error: "Richiesta malformata."});
+    });
+
+    test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
+        return request(app)
+        .get("/api/v2/eventiCalendarioPersonale")
+        .set('x-access-token', token)
+        .set('Accept', 'application/json')
+        .set('nomeAtt', 'Girare a vuoto')
+        .set('categoria', 'svago')
+        .set('durata', '0')
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()

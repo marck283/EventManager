@@ -81,7 +81,7 @@ router.get("", async (req, res) => {
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
     if(durata != undefined && durata != "") {
-        if(isNumeric(durata)) {
+        if(isNumeric(durata) && parseInt(durata) >= 1) {
             eventsPers = eventsPers.filter(e => e.durata == duration);
             eventsPub = eventsPub.filter(e => e.durata == duration);
             eventsPriv = eventsPriv.filter(e => e.durata == duration);

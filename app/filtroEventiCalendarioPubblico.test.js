@@ -31,7 +31,7 @@ module.exports = describe("GET /api/v2/eventiCalendarioPubblico", () => {
         jest.restoreAllMocks();
     });
 
-    test("GET /api/v2/eventiCalendarioPubblico con campo 'data' compilato con un valore non numerico", () => {
+    test("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPubblico")
         .set('Accept', 'application/json')
@@ -44,7 +44,7 @@ module.exports = describe("GET /api/v2/eventiCalendarioPubblico", () => {
         .expect(400, {error: "Richiesta malformata."});
     });
 
-    test("GET /api/v2/eventiCalendarioPubblico con campo 'data' compilato con un valore minore o uguale a 0", () => {
+    test("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore minore o uguale a 0", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPubblico")
         .set('Accept', 'application/json')
