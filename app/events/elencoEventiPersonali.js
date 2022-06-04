@@ -54,11 +54,14 @@ var filterEvents = eventsArr => {
     });
 }
 
+var isNumeric = str => parseInt(str) == str ? true : false;
+
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {}, token = req.header("x-access-token");
     
     var user = req.loggedUser.id;
+
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
@@ -72,14 +75,15 @@ router.get("", async (req, res) => {
         eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
         eventsPriv = eventsPriv.filter(e => e.nomeAtt.includes(nomeAtt));
     }
+
     if(categoria != undefined && categoria != "") {
         eventsPers = eventsPers.filter(e => e.categoria == categoria);
         eventsPub = eventsPub.filter(e => e.categoria == categoria);
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
+
     if(durata != undefined && durata != "") {
-        const duration = parseInt(durata);
-        if(!Number.isNaN(duration)) {
+        if(isNumeric(durata) && parseInt(durata) >= 1) {
             eventsPers = eventsPers.filter(e => e.durata == duration);
             eventsPub = eventsPub.filter(e => e.durata == duration);
             eventsPriv = eventsPriv.filter(e => e.durata == duration);
@@ -88,11 +92,13 @@ router.get("", async (req, res) => {
             return;
         }
     }
+
     if(indirizzo != undefined && indirizzo != "") {
         eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
         eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
         eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
     }
+
     if(citta != undefined && citta != "") {
         eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
         eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
@@ -112,6 +118,7 @@ router.get("", async (req, res) => {
         }
         default: {
             res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
+            return;
         }
     }
 
