@@ -616,6 +616,10 @@ paths:
         required: true
         schema:
           type: string
+      - name: x-access-token
+        in: header
+        description: 'Token di autenticazione dell''utente.'
+        required: true
       responses:
         '200':
           description: 'Elenco informazioni evento personale.'
@@ -666,6 +670,12 @@ paths:
         in: header
         description: 'Token di autenticazione dell''utente.'
         required: true
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento pubblico che si intende modificare.'
+        required: true
+        schema:
+          type: string
       requestBody:
         description: 'Di seguito sono indicati i dati per la modifica di un evento pubblico.'
         content:
@@ -742,6 +752,12 @@ paths:
         in: header
         description: 'Token di autenticazione dell''utente.'
         required: true
+      - name: IDevento
+        in: path
+        description: 'ID dell''evento personale che si intende modificare.'
+        required: true
+        schema:
+        type: string
       requestBody:
         description: 'Di seguito sono indicati i dati per la modifica di un evento personale.'
         content:
@@ -808,6 +824,12 @@ paths:
         in: header
         description: 'Token di autenticazione dell''utente.'
         required: true
+     - name: IDevento
+        in: path
+        description: 'ID dell''evento privato che si intende modifcare.'
+        required: true
+        schema:
+        type: string
       requestBody:
         description: 'Di seguito sono indicati i dati per la modifica di un evento privato.'
         content:
@@ -1031,7 +1053,7 @@ paths:
       description: >-
         Permette di ottenere la lista di eventi personali, pubblici e privati a cui l'utente autenticato è iscritto o che ha organizzato. Tutti i parametri specificati sotto (tranne il token di autenticazione ed il parametro booleano "passato") potranno essere specificati solo per filtrare gli eventi.
         Nel caso in cui il parametro "passato" sia impostato a "true" verranno restituiti solo gli eventi personali, pubblici e privati organizzati per giornate già trascorse;
-        altrimenti verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
+        altrimenti, nel caso in cui il parametro "passato" sia impostato a "false" verranno restituiti tutti gli eventi (personali e pubblici) organizzati. 
       summary: Ottieni gli eventi eventi del calendario personale sotto forma di lista.
       parameters:
       - name: x-access-token
@@ -1136,7 +1158,7 @@ paths:
       parameters:
       - name: data
         in: path
-        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
+        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè con la forma mese-giorno-anno).
         required: true
         schema:
           type: string
@@ -1153,7 +1175,7 @@ paths:
                 properties:
                   data:
                     type: string
-                    description: La data selezionata. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
+                    description: La data selezionata. Si noti che la data deve essere espressa nel formato americano (cioè con la forma mese-giorno-anno).
                   list:
                     type: array
                     description: La lista degli eventi del calendario pubblico per la data selezionata
@@ -1179,7 +1201,7 @@ paths:
       parameters:
       - name: data
         in: path
-        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).
+        description: Il giorno selezionato dall'utente. Si noti che la data deve essere espressa nel formato americano (cioè con la forma mese-giorno-anno).
         required: true
         schema:
           type: string
@@ -1197,7 +1219,7 @@ paths:
                 properties:
                   data:
                     type: string
-                    description: Il giorno selezionato
+                    description: La data selezionata. Si noti che la data deve essere espressa nel formato americano (cioè con la forma mese-giorno-anno).
                   list:
                     type: array
                     description: La lista degli eventi del calendario personale per la data selezionata
