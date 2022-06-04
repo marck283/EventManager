@@ -366,7 +366,7 @@ router.get('/me/Iscrizioni', async (req, res) => {
                         tipoevento: elem.tipoevento,
                         img: elem.qr,
                         bigliettoid: elem._id,
-                        bigliettoUrl: "/api/v2/Biglietti/" + elem._id });
+                        bigliettoUrl: "/api/v2/Iscrizioni/" + elem._id });
                     
                 }
             }
@@ -386,7 +386,7 @@ router.get('/me/Iscrizioni', async (req, res) => {
                         tipoevento: elem.tipoevento,
                         img: elem.qr,
                         bigliettoid: elem._id,
-                        bigliettoUrl: "/api/v2/Biglietti/" + elem._id });
+                        bigliettoUrl: "/api/v2/Iscrizioni/" + elem._id });
                     
                 }
             }

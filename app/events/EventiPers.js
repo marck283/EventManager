@@ -68,7 +68,7 @@ router.get('/:id', async(req, res) => {
             ora: eventoPersonale.ora,
             durata: eventoPersonale.durata,
             luogoEv: eventoPersonale.luogoEv,
-            organizzatore: organizzatore.nome,
+            organizzatore: organizzatore.nome
         });
     }catch(error){
         console.log(error);

@@ -331,7 +331,7 @@ router.post('/:id/Inviti', async (req, res) => {
             return;
 
         }
-
+        
         //controllo che le date non siano di una giornata precedente a quella odierna
 
         var dati = eventP.data.split(",");
@@ -477,9 +477,9 @@ router.post('/:id/Inviti', async (req, res) => {
 
         let invito = new Inviti({utenteid:utente[0]._id, eventoid: id_evento, tipoevent: "pub"});
 
-        await invito.save();
+        invitii = await invito.save();
 
-        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invito._id).status(201).send();
+        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
 
 
 
