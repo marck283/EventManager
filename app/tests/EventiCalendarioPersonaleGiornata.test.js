@@ -1,8 +1,8 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+const app     = require('../app');
 
-describe('/api/v2/eventiCalendarioPersonale/:data', () => {
+describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
 
   
   let eventsPubSpy;
@@ -11,7 +11,7 @@ describe('/api/v2/eventiCalendarioPersonale/:data', () => {
   
 
   beforeAll( () => {
-    const eventPublic = require('./collezioni/eventPublic');
+    const eventPublic = require('../collezioni/eventPublic');
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation((criterias) => {
       return [
         {_id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
@@ -19,7 +19,7 @@ describe('/api/v2/eventiCalendarioPersonale/:data', () => {
         {_id:'9878456846784568', data: '05/12/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']}
       ]
     });
-    const eventPersonal = require('./collezioni/eventPersonal');
+    const eventPersonal = require('../collezioni/eventPersonal');
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation((criterias) => {
       if(criterias.organizzatoreID == '2222'){
         return [
@@ -30,7 +30,7 @@ describe('/api/v2/eventiCalendarioPersonale/:data', () => {
       }
       return []
     });
-    const eventPrivate = require('./collezioni/eventPrivat');
+    const eventPrivate = require('../collezioni/eventPrivat');
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation((criterias) => {
       return [
         {_id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1234','2222'], invitatiID: ['2323']},
@@ -98,7 +98,7 @@ describe('/api/v2/eventiCalendarioPersonale/:data', () => {
     expect(404).expect({error: "Non esiste alcun evento programmato per la giornata selezionata."});
   });
 
-
+  
 
   /**test('GET /api/v2/eventiCalendarioPubblico da non autenticati, quindi con token non valido, nel caso ci siano eventi', async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPubblico').

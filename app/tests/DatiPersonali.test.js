@@ -1,13 +1,13 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+const app     = require('../app');
 
-describe('/api/v2/Utenti/me', () => {
+describe('GET /api/v2/Utenti/me', () => {
 
   let UtenteSpy;
 
   beforeAll( () => {
-    const Utente = require('./collezioni/utenti.js');
+    const Utente = require('../collezioni/utenti.js');
     UtenteSpy = jest.spyOn(Utente, 'findById').mockImplementation((criterias) => {
       if(criterias == "2222"){
         return {_id:'2222',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}  

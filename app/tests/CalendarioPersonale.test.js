@@ -1,8 +1,8 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+const app     = require('../app');
 
-describe('/api/v2/eventiCalendarioPersonale', () => {
+describe('GET /api/v2/eventiCalendarioPersonale', () => {
 
  
   let eventsPubSpy;
@@ -10,14 +10,14 @@ describe('/api/v2/eventiCalendarioPersonale', () => {
   let eventsPrivSpy;
 
   beforeAll( () => {
-    const eventPublic = require('./collezioni/eventPublic.js');
+    const eventPublic = require('../collezioni/eventPublic.js');
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation((criterias) => {
       return [
         {_id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
         {_id:'987653', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '123', partecipantiID: ['2222','1234']}
       ]
     });
-    const eventPersonal = require('./collezioni/eventPersonal.js');
+    const eventPersonal = require('../collezioni/eventPersonal.js');
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation((criterias) => {
       if(criterias.organizzatoreID == '2222'){
         return [
@@ -29,7 +29,7 @@ describe('/api/v2/eventiCalendarioPersonale', () => {
         return []
       }
           });
-    const eventPrivate = require('./collezioni/eventPrivat.js');
+    const eventPrivate = require('../collezioni/eventPrivat.js');
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation((criterias) => {
       return [
         {_id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']},

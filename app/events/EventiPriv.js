@@ -377,7 +377,7 @@ router.post('', async (req, res) => {
             req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
             req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined || 
             req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined ||
-            req.body.ElencoEmailInviti.length == 0){
+            req.body.ElencoEmailInviti == undefined || req.body.ElencoEmailInviti.length == 0){
             res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
 
@@ -741,14 +741,18 @@ router.post('', async (req, res) => {
                 return;
         }
 
-        //controllo che le date non siano ripetute
-        var counti = 0;
-        req.body.ElencoEmailInviti.forEach( e => {if(e==elem){counti += 1 }});
-        if(counti > 1){
-            res.status(400).json({error: "email ripetute"}).send()
-            return; 
+        for(elem of req.body.ElencoEmailInviti){
+            //controllo che le date non siano ripetute
+            var counti = 0;
+            req.body.ElencoEmailInviti.forEach( e => {if(e==elem){counti += 1 }});
+            if(counti > 1){
+                res.status(400).json({error: "email ripetute"}).send()
+                return; 
+
+            }
 
         }
+        
             
         
         //controllo se l'elenco dell'email contiene solo email di utenti nel sistema

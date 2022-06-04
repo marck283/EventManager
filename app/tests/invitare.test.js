@@ -1,8 +1,8 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+const app     = require('../app');
 
-describe('/api/v2//api/v2/EventiPubblici', () => {
+describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
   let eventsPubSpy;
   let UsersSpy;
@@ -11,7 +11,7 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
   let InvitiSspy;
 
   beforeAll( () => {
-    const eventPublic = require('./collezioni/eventPublic.js');
+    const eventPublic = require('../collezioni/eventPublic.js');
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation((criterias) => {
       if(criterias == '9876543'){
         return {_id:'9876543', data: '05/11/2023',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234','12365']}
@@ -26,7 +26,7 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
       
 
     });
-    const Users = require('./collezioni/utenti.js');
+    const Users = require('../collezioni/utenti.js');
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation((criterias) => {
       if(criterias == '1234'){
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'] , EventiIscrtto: ['9876543']}
@@ -54,7 +54,7 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
       }
       return [];
     });
-    const Inviti = require('./collezioni/invit.js');
+    const Inviti = require('../collezioni/invit.js');
     Invitispy = jest.spyOn(Inviti, 'find').mockImplementation((criterias) => {
       if(criterias.utenteid == '12345'){
         return [{_id:'43534',utenteid:'12345',  eventoid: '9876543', tipoevent: 'pub'}];
