@@ -13,12 +13,26 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
   beforeAll( () => {
     const eventPublic = require('./collezioni/eventPublic.js');
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation((criterias) => {
-      return {_id:'9876543', data: '05/11/2023',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
+      if(criterias == '9876543'){
+        return {_id:'9876543', data: '05/11/2023',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234','12365']}
+
+      }
+
+      if(criterias == '987654'){
+        return {_id:'987654', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '12365', partecipantiID: ['12365']}
+
+      }
+
+      
+
     });
     const Users = require('./collezioni/utenti.js');
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation((criterias) => {
       if(criterias == '1234'){
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'] , EventiIscrtto: ['9876543']}
+      }
+      if(criterias == '12365'){
+        return {_id:'12365', nome: 'Carlo', email: 'gg.et@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['987654'] , EventiIscrtto: ['987654']}
       }
     });
     UsersFSpy = jest.spyOn(Users, 'find').mockImplementation((criterias) => {
@@ -28,6 +42,14 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
       }
       if(criterias.email == 'gg.tt@gmail.com'){
         return [{_id:'1237676',nome: 'Carlo', email: 'gg.tt@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}]
+
+      }
+      if(criterias.email == 'gg.et@gmail.com'){
+        return [{_id:'12365', nome: 'Carlo', email: 'gg.et@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['987654'] , EventiIscrtto: ['987654','9876543']}]
+
+      }
+      if(criterias.email == 'gg.ee@gmail.com'){
+        return [{_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'] , EventiIscrtto: ['9876543']}]
 
       }
       return [];
@@ -58,7 +80,7 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
 
  
   
-
+  
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente", async () => {
       // create a valid token
     expect.assertions(2);
@@ -115,6 +137,81 @@ describe('/api/v2//api/v2/EventiPubblici', () => {
       
       
     });
+
+
+  test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente non sia organizzatore dell'evento", async () => {
+        // create a valid token
+      var payload4 = {
+        email: "gg.et@gmail.com",
+        id: "123"
+      }
+
+      var options4 = {
+        expiresIn: 3600 // expires in 24 hours
+      }
+      var id4 = "9876543";
+      var token = jwt.sign(payload4,process.env.SUPER_SECRET, options4);
+      const response = await request(app).post('/api/v2/EventiPubblici/'+id4+'/Inviti').
+      set('x-access-token', token).send({email: 'gg.ee@gmail.com'}).expect('Content-Type', /json/).expect(403).expect({error: "L'utente non può invitare ad un evento che non è suo"});
+      
+      
+    });
+
+  test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente associato all'email passata sia già partecipante all'evento", async () => {
+        // create a valid token
+      var payload5 = {
+        email: "gg.ee@gmail.com",
+        id: "1234"
+      }
+
+      var options5 = {
+        expiresIn: 3600 // expires in 24 hours
+      }
+      var id5 = "9876543";
+      var token = jwt.sign(payload5,process.env.SUPER_SECRET, options5);
+      const response = await request(app).post('/api/v2/EventiPubblici/'+id5+'/Inviti').
+      set('x-access-token', token).send({email: 'gg.et@gmail.com'}).expect('Content-Type', /json/).expect(403).expect({error: "L'utente con quella email è già partecipante all'evento"});
+      
+      
+    });
+
+  test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'evento non sia disponibile", async () => {
+        // create a valid token
+      var payload6 = {
+        email: "gg.et@gmail.com",
+        id: "12365"
+      }
+
+      var options6 = {
+        expiresIn: 3600 // expires in 24 hours
+      }
+      var id6 = "987654";
+      var token1 = jwt.sign(payload6,process.env.SUPER_SECRET, options6);
+      const response = await request(app).post('/api/v2/EventiPubblici/'+id6+'/Inviti').
+      set('x-access-token', token1).send({email: 'gg.aa@gmail.com'}).expect('Content-Type', /json/).expect(403).expect({error: "evento non disponibile"});
+      
+      
+    });
+
+    test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente indica la sua email per l'invito", async () => {
+      // create a valid token
+      var payload7 = {
+        email: "gg.ee@gmail.com",
+        id: "1234"
+      }
+
+      var options7 = {
+        expiresIn: 3600 // expires in 24 hours
+      }
+      var id7 = "9876543";
+      var token1 = jwt.sign(payload7,process.env.SUPER_SECRET, options7);
+      const response = await request(app).post('/api/v2/EventiPubblici/'+id7+'/Inviti').
+      set('x-access-token', token1).send({email: 'gg.ee@gmail.com'}).expect('Content-Type', /json/).expect(403).expect({error: "L'utente non può auto invitarsi"});
+      
+      
+    });
+
+
 
 
 

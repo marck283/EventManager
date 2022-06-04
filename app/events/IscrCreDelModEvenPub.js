@@ -331,7 +331,7 @@ router.post('/:id/Inviti', async (req, res) => {
             return;
 
         }
-
+        
         //controllo che le date non siano di una giornata precedente a quella odierna
 
         var dati = eventP.data.split(",");

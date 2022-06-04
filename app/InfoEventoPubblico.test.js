@@ -46,7 +46,7 @@ describe('/api/v2/EventiPubblici/:id', () => {
             partecipanti: ['Carlo']});
   });
 
-  test('GET /api/v2/EventoPubblico/:id nel caso di evento non esistente', async () => {
+  test('GET /api/v2/EventiPubblici/:id nel caso di evento non esistente', async () => {
     const response = await request(app).get('/api/v2/EventiPubblici/34567876543').
     expect('Content-Type', /json/).
     expect(404).expect({error: "Non esiste nessun evento con l'id selezionato"});
