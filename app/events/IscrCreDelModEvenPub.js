@@ -29,7 +29,7 @@ router.patch('/:id', async (req, res) => {
         if (req.body.nomeAtt != "" && req.body.nomeAtt != undefined) {
             evento.nomeAtt = req.body.nomeAtt;
         }
-        if (req.body.categoria != "" && req.body.nomeAtt != undefined) {
+        if(req.body.categoria != "" && req.body.categoria != undefined){
             evento.categoria = req.body.categoria
         }
         if (req.body.indirizzo != "" && req.body.indirizzo != undefined) {
@@ -224,13 +224,14 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         }
 
 
-
-        if (eventP.partecipantiID.length == eventP.partecipantiID.maxPers) {
-
-            res.status(403).json({ error: "Non spazio nell'evento" }).send();
+        if(eventP.partecipantiID.length==eventP.maxPers){
+            
+            res.status(403).json({ error: "Non spazio nell'evento"}).send();
             return;
 
         }
+        
+        
 
         for (elem of eventP.partecipantiID) {
             if (elem == utent) {
