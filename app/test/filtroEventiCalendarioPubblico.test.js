@@ -1,11 +1,11 @@
 const request = require('supertest');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 
-module.exports = describe("GET /api/v2/eventiCalendarioPubblico", () => {
+describe("GET /api/v2/eventiCalendarioPubblico", () => {
     let mockFind;
     beforeAll(async () => {
-        const eventPublic = require('./collezioni/eventPublic.js');
+        const eventPublic = require('../collezioni/eventPublic.js');
 
         jest.setTimeout(8000);
         mockFind = jest.spyOn(eventPublic, "find").mockImplementation(criterias => {

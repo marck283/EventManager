@@ -1,8 +1,9 @@
 const request = require('supertest'), mongoose = require('mongoose');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
+const utenti = require('../collezioni/utenti.js');
 
-module.exports = describe("GET /api/v2/Utenti", () => {
+describe("GET /api/v2/Utenti", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
         app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
@@ -19,7 +20,6 @@ module.exports = describe("GET /api/v2/Utenti", () => {
             .expect(404, { error: "Nessun utente trovato per la email indicata." });
     });
 
-    //Perché ritorna un risultato in questa forma? Non dovrebbe ritornarne uno come sotto?
     test("GET /api/v2/Utenti con campo 'email' non compilato", () => {
         return request(app)
             .get('/api/v2/Utenti')

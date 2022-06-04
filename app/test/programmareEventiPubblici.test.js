@@ -1,13 +1,20 @@
 const request = require('supertest'), mongoose = require('mongoose');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
+const EventPublic = require('../collezioni/eventPublic.js');
+const utenti = require('../collezioni/utenti.js');
 
-module.exports = describe("GET /api/v2/EventiPubblici", () => {
+describe("POST /api/v2/EventiPubblici", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
         app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
+        let utente = await utenti.findById("62993bc81430d0dd9a208934");
+        utente.EventiCreati = [];
+        utente.EventiIscrtto = [];
+        await utente.save();
+        await EventPublic.deleteMany({});
         mongoose.connection.close(true);
     });
 

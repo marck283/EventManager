@@ -1,13 +1,16 @@
 const request = require('supertest'), mongoose = require('mongoose');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
+const EventPriv = require('../collezioni/eventPrivat.js'), inviti = require('../collezioni/invit.js');
 
-module.exports = describe("GET /api/v2/EventiPrivati", () => {
+describe("POST /api/v2/EventiPrivati", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
         app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
+        await EventPriv.deleteMany({});
+        await inviti.deleteMany({});
         mongoose.connection.close(true);
     });
 

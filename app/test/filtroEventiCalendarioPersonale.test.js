@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 
-module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
+describe("GET /api/v2/eventiCalendarioPersonale", () => {
     let mockFindPers, mockFindPub, mockFindPriv;
     beforeAll(async () => {
         jest.setTimeout(8000);

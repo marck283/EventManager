@@ -1,8 +1,8 @@
 const request = require('supertest'), mongoose = require('mongoose');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 
-module.esports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
+describe("GET /api/v2/eventiCalendarioPersonale", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
         app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
