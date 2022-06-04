@@ -33,7 +33,7 @@ router.post('', async (req, res) => {
     
     try{
 
-        if(req.body.nome == "" || eq.body.nome == undefined ||
+        if(req.body.nome == "" || req.body.nome == undefined ||
          req.body.email == "" || req.body.email == undefined ||
          req.body.pass == "" || req.body.pass == undefined){
             res.status(400).json({error: "Campo vuoto o indefinito"}).send();
