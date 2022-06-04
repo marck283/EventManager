@@ -8,18 +8,18 @@ router.get("", async (req, res) => {
     var utenti = await Utente.find({});
     if (email != undefined && email != "") {
         utenti = utenti.filter(e => e.email.includes(email));
-        utenti = utenti.map(u => {
-            return {
-                nome: u.nome,
-                email: u.email,
-                urlUtente: "/api/v2/Utenti/" + u._id
-            }
-        });
-
-        if (utenti.length == 0) {
-            res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
-            return;
+    }
+    utenti = utenti.map(u => {
+        return {
+            nome: u.nome,
+            email: u.email,
+            urlUtente: "/api/v2/Utenti/" + u._id
         }
+    });
+
+    if (utenti.length == 0) {
+        res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
+        return;
     }
     res.status(200).json({utenti: utenti});
     return;

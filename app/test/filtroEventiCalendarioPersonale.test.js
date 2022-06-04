@@ -1,13 +1,13 @@
 const request = require('supertest');
-const app = require('./app.js');
+const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 
 module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
     let mockFindPers, mockFindPub, mockFindPriv;
     beforeAll(async () => {
         jest.setTimeout(8000);
-        const eventPers = require('./collezioni/eventPersonal.js'), eventPub = require('./collezioni/eventPublic.js');
-        const eventPriv = require('./collezioni/eventPrivat.js');
+        const eventPers = require('../collezioni/eventPersonal.js'), eventPub = require('../collezioni/eventPublic.js');
+        const eventPriv = require('../collezioni/eventPrivat.js');
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
             return [{
                 _id: "12344",
@@ -72,7 +72,6 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         { expiresIn: 86400 }
     );
 
-    //Perché questi test vanno oltre il limite di tempo massimo?
     test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPersonale?passato=False")
@@ -84,8 +83,7 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."})
-        .catch(error => console.log(error));
+        .expect(400, {error: "Richiesta malformata."});
     });
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
@@ -99,7 +97,6 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."})
-        .catch(error => console.log(error));
+        .expect(400, {error: "Richiesta malformata."});
     });
 });
