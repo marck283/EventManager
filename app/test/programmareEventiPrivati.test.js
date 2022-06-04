@@ -2,6 +2,7 @@ const request = require('supertest'), mongoose = require('mongoose');
 const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 const EventPriv = require('../collezioni/eventPrivat.js'), inviti = require('../collezioni/invit.js');
+const utenti = require('../collezioni/utenti.js');
 
 describe("POST /api/v2/EventiPrivati", () => {
     beforeAll(async () => {
@@ -9,6 +10,10 @@ describe("POST /api/v2/EventiPrivati", () => {
         app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
+        let utente = await utenti.findById("62993bc81430d0dd9a208934");
+        utente.EventiCreati = [];
+        utente.EventiIscrtto = [];
+        await utente.save();
         await EventPriv.deleteMany({});
         await inviti.deleteMany({});
         mongoose.connection.close(true);
