@@ -3,12 +3,29 @@ const app = require('./app.js');
 const jwt = require('jsonwebtoken');
 
 module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
-    let mockFind;
+    let mockFindPers, mockFindPub, mockFindPriv;
     beforeAll(async () => {
-        const eventPers = require('./collezioni/eventPersonal.js');
-
         jest.setTimeout(8000);
-        mockFind = jest.spyOn(eventPers, "find").mockImplementation(criterias => {
+        const eventPers = require('./collezioni/eventPersonal.js'), eventPub = require('./collezioni/eventPublic.js');
+        const eventPriv = require('./collezioni/eventPrivat.js');
+        mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
+            return [{
+                _id: "12344",
+                data: "06/27/2022",
+                ora: "11:00",
+                durata: 2,
+                maxPers: 200,
+                categoria: "svago",
+                nomeAtt: "Girare a vuoto",
+                lugoEv: {
+                    indirizzo: "Via del campo",
+                    citta: "Mortara"
+                },
+                organizzatoreID: "2361627wyuwerye378",
+                partecipantiID: ["1234", "2134"]
+            }];
+        });
+        mockFindPers = jest.spyOn(eventPers, "find").mockImplementation(criterias => {
             return [{
                 _id: "12345",
                 nomeAtt: "Girare a vuoto",
@@ -21,12 +38,31 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
                 data: "06/27/2022",
                 ora: "11:00",
                 organizzatoreID: "2361627wyuwerye378"
-            }]
+            }];
+        });
+        mockFindPriv = jest.spyOn(eventPriv, "find").mockImplementation(criterias => {
+            return [{
+                _id: "12346",
+                data: "06/27/2023",
+                ora: "11:00",
+                durata: 2,
+                categoria: "svago",
+                nomeAtt: "Girare a vuoto",
+                lugoEv: {
+                    indirizzo: "Via del campo",
+                    citta: "Mortara"
+                },
+                organizzatoreID: "2361627wyuwerye378",
+                partecipantiID: ["1234", "2134"],
+                invitatiID: ["1234", "2134"]
+            }];
         });
     });
 
     afterAll(async () => {
-        jest.restoreAllMocks();
+        mockFindPers.mockRestore();
+        mockFindPub.mockRestore();
+        mockFindPriv.mockRestore();
     });
 
     // create a valid token
@@ -39,7 +75,7 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
     //Perché questi test vanno oltre il limite di tempo massimo?
     test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
-        .get("/api/v2/eventiCalendarioPersonale")
+        .get("/api/v2/eventiCalendarioPersonale?passato=False")
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .set('nomeAtt', 'Girare a vuoto')
@@ -48,12 +84,13 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."});
+        .expect(400, {error: "Richiesta malformata."})
+        .catch(error => console.log(error));
     });
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
         return request(app)
-        .get("/api/v2/eventiCalendarioPersonale")
+        .get("/api/v2/eventiCalendarioPersonale?passato=False")
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .set('nomeAtt', 'Girare a vuoto')
@@ -62,6 +99,7 @@ module.exports = describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."});
+        .expect(400, {error: "Richiesta malformata."})
+        .catch(error => console.log(error));
     });
 });

@@ -75,11 +75,13 @@ router.get("", async (req, res) => {
         eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
         eventsPriv = eventsPriv.filter(e => e.nomeAtt.includes(nomeAtt));
     }
+
     if(categoria != undefined && categoria != "") {
         eventsPers = eventsPers.filter(e => e.categoria == categoria);
         eventsPub = eventsPub.filter(e => e.categoria == categoria);
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
+
     if(durata != undefined && durata != "") {
         if(isNumeric(durata) && parseInt(durata) >= 1) {
             eventsPers = eventsPers.filter(e => e.durata == duration);
@@ -90,11 +92,13 @@ router.get("", async (req, res) => {
             return;
         }
     }
+
     if(indirizzo != undefined && indirizzo != "") {
         eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
         eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
         eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
     }
+
     if(citta != undefined && citta != "") {
         eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
         eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
