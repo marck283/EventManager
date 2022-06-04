@@ -48,3 +48,4 @@ jobs:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         heroku_app_name: "eventmanagerzlf" #Must be unique in Heroku
         heroku_email: "marco.lasagna@studenti.unitn.it"
+        branch: master
