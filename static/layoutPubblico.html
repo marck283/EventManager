@@ -12,7 +12,9 @@
     <script src="/scripts/iscriz.js"></script>
     <link href="./styles/common.css" rel="stylesheet" />
     <link href="./styles/ricercaUtente.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles/cardsLayout.css" />
     <script src="/scripts/invit_pub.js"></script>
+    <script src="/scripts/alerts/tutorialAlert.js"></script>
 
 </head>
 
@@ -55,7 +57,9 @@
     </nav>
     <div class="container">
         <h1></h1>
-
+        <input id="guida" type="submit" class="btn btn-primary" value="Guida" /><br><br>
+        <span id="title"></span>
+        <br><br>
         Data: <p id="data"></p>
         Ora: <p id="ora"></p>
         Durata: <p id="durata"></p>
@@ -86,7 +90,8 @@
         <button class="btn btn-primary" onclick="iscr()">Iscriviti</button><br>
         <h2 id="iscrizione"></h2>
 
-        <a href="layoutModificaPub.html?id=" id="modifica">Modifica evento</a>
+        <a class="btn btn-secondary" href="layoutModificaPub.html?id=" id="modifica">Modifica evento</a>
+        <div id="modificaBlock"></div>
 
         <script> document.getElementById("modifica").href += id; </script>
 
@@ -97,7 +102,8 @@
         <h1>Invita un utente ad un tuo evento pubblico</h1>
 
         <label for="posta">Email utente:</label>
-        <input type="search" name="posta" id="posta" />
+        <input type="search" name="posta" id="posta" readonly />
+        <div id="invitoResultBlock"></div>
 
 
         <button class="btn btn-primary" onclick="invip()">Invita</button>
@@ -106,10 +112,14 @@
         <h2 id="invitip"></h2>
         <h3>Ricerca utenti</h3>
         <h4>Cerca utente per indirizzo email</h4>
+        <div id="invitoBlock"></div>
         <input type="text" id="input" class="form-control" placeholder="Cerca..." />
         <script src="./scripts/userFilter.js"></script>
-        <div id="result"></div><br><br>
+        <div id="result"></div>
+        <div id="resultBlock"></div><br><br>
     </div>
+
+    <script src="./scripts/alerts/layoutPubblicoAlerts.js"></script>
 
 </body>
 

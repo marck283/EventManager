@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>creazione_evento_pubblico</title>
+  <title>Creazione evento pubblico</title>
   <!--formden.js communicates with FormDen server to validate fields and submit via AJAX -->
   <script type="text/javascript" src="https://formden.com/static/cdn/formden.js"></script>
 
@@ -22,6 +22,8 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
   <link rel="stylesheet" href="/styles/common.css" />
   <link rel="stylesheet" href="/styles/bootstrapIso.css" />
+  <link rel="stylesheet" href="/styles/cardsLayout.css" />
+  <script src="./scripts/alerts/tutorialAlert.js"></script>
 
   <script>
 
@@ -92,7 +94,7 @@
       <ul class="navbar-nav">
         <li class="nav-item active">
           <a class="nav-link" href="/CreazioneEventoPubblico.html" id="Pub">Evento pubblico <span
-              class="sr-only">(current)</span></a>
+              class="sr-only">(corrente)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/CreazioneEventoPersonale.html" id="Pers">Evento personale</a>
@@ -106,14 +108,16 @@
 
   <div class="container">
     <h1>Creazione evento pubblico</h1>
+    <input type="submit" id="guida" class="btn btn-primary" value="Guida" /><br><br>
+    <span id="title-card"></span><br><br>
 
     <!-- indicazione di tutti i campi di input per creare un certo evento pubblico-->
-    <label for="nomeAtt">Nome attivit&agrave:</label>
+    <label for="nomeAtt">Nome attivit&agrave;:</label>
     <input type="text" name="nomeAtt" id="nomeAtt" /><span id="vuotoN"></span><br>
     <label>Luogo evento:</label><br>
     <label for="indirizzo">Indirizzo:</label>
     <input type="text" name="indirizzo" id="indirizzo" /><span id="vuotoI"></span><br>
-    <label for="Citta">Citt&agrave:</label>
+    <label for="Citta">Citt&agrave;:</label>
     <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
     <label for="categoria">Categoria:</label>
     <select class="form-select" id="categoria" name="categoria">
@@ -180,6 +184,7 @@
 
 
   </script>
+  <script src="/scripts/alerts/CreazioneEventoPubblicoAlerts.js"></script>
 
 </body>
 

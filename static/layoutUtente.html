@@ -5,10 +5,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="/styles/common.css" />
+    <link rel="stylesheet" href="/styles/cardsLayout.css" />
     <script src="/scripts/profiloUtente.js"> </script>
     <script src="/scripts/ric_biglietti.js"></script>
     <script src="/scripts/disiscrizione.js"></script>
-    <script src="/scripts/logout.js"> </script>
+    <script src="/scripts/logout.js"></script>
+    <script src="/scripts/alerts/tutorialAlert.js"></script>
 
 </head>
 
@@ -53,6 +55,9 @@
     <div class="container">
         <h1>Profilo Utente</h1>
 
+        <input type="submit" id="guida" class="btn btn-primary" value="Guida" /><br><br>
+        <span id="title-card"></span><br>
+
         <h2>Generale</h2>
 
         Nome Utente: <p id="nome"></p>
@@ -68,11 +73,10 @@
 
         <hr>
 
-        <h3>Biglietti utente</h3>
 
         <div id="biglietti">
-
-
+            <h3>Biglietti utente</h3>
+            <span id="biglietti-card"></span>
         </div>
 
         <h3 id="error2"></h3>
@@ -80,8 +84,11 @@
 
         <hr>
 
-        <button class="btn btn-primary" onclick="logout()">logout</button>
+        <button class="btn btn-primary" onclick="logout()">Logout</button>
     </div>
+
+    <script src="/scripts/alerts/userLayoutAlert.js"></script>
+
     <br>
 </body>
 

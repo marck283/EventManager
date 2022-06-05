@@ -41,7 +41,21 @@ fetch('../api/v2/Utenti/me/Inviti', {
 
 		                        let tipo = document.createElement("h4");
 
-		                        tipo.innerHTML = "Tipo Evento: "+elem.tipoevento;
+		                        tipo.innerHTML = "Tipo Evento: ";
+								switch(elem.tipoevento) {
+									case "pub": {
+										tipo.innerHTML += "pubblico";
+										break;
+									}
+									case "priv": {
+										tipo.innerHTML += "privato";
+										break;
+									}
+									default: {
+										tipo.innerHTML += "tipo evento non riconosciuto";
+										break;
+									}
+								}
 
 		                        d.appendChild(tipo);
 
