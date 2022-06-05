@@ -52,5 +52,6 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
         set('x-access-token', token).expect('Content-Type', /json/).expect(403).expect({error: "Non spazio nell'evento"});
         
     });
+
     
 });
