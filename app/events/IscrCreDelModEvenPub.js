@@ -208,6 +208,50 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
                             }
 
+                            if(dd == Number(giorno)){
+
+                                let orario = eventP.ora.split(':');
+
+                                let str1 = orario[0];
+                                let str2 = orario[1];
+                                if (orario[0][0] == 0) {
+                                    str1 = orario[0][1];
+
+                                }
+                                if (orario[1][0] == 0) {
+                                    str2 = orario[1][1];
+                                }
+
+                                if (Number(str1) >= date.getHours()) {
+
+
+                                    if (Number(str1) == date.getHours()) {
+
+
+
+                                        if (Number(str2) < date.getMinutes()) {
+                                            res.status(403).json({ error: "evento non disponibile" }).send()
+                                            return;
+
+
+                                        }
+
+
+                                    }
+
+
+                                } else {
+                                    res.status(403).json({ error: "evento non disponibile" }).send()
+                                    return;
+
+                                }
+
+
+
+                                
+
+                            }
+
                         }
 
 
@@ -393,6 +437,50 @@ router.post('/:id/Inviti', async (req, res) => {
                             if (dd > Number(giorno)) {
                                 res.status(403).json({ error: "evento non disponibile" }).send()
                                 return;
+
+                            }
+
+                            if(dd == Number(giorno)){
+
+                                let orario = eventP.ora.split(':');
+
+                                let str1 = orario[0];
+                                let str2 = orario[1];
+                                if (orario[0][0] == 0) {
+                                    str1 = orario[0][1];
+
+                                }
+                                if (orario[1][0] == 0) {
+                                    str2 = orario[1][1];
+                                }
+
+                                if (Number(str1) >= date.getHours()) {
+
+
+                                    if (Number(str1) == date.getHours()) {
+
+
+
+                                        if (Number(str2) < date.getMinutes()) {
+                                            res.status(403).json({ error: "evento non disponibile" }).send()
+                                            return;
+
+
+                                        }
+
+
+                                    }
+
+
+                                } else {
+                                    res.status(403).json({ error: "evento non disponibile" }).send()
+                                    return;
+
+                                }
+
+
+
+                                
 
                             }
 
