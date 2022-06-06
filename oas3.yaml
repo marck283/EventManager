@@ -684,11 +684,12 @@ paths:
               $ref: '#/components/schemas/FormModificaPubblico'
       responses:
         '200':
-          description: 'Oggetto che rappresenta l'evento pubblico modificato.'
-          content:
-            application/json:
+          description: 'Modifica dell''evento. link all''evento modificato'
+          headers:
+            'Location':
               schema:
-                $ref: '#/components/schemas/EventoPubblico'
+                type: string
+              description: Link all'indirizzo dell'evento pubblico modificato.
         '400':
           description: 'Numero massimo partecipanti non valido.'
           content:
@@ -766,11 +767,12 @@ paths:
               $ref: '#/components/schemas/FormModificaPersonalePrivato'
       responses:
         '200':
-          description: 'Oggetto che rappresenta l'evento personale modificato.'
-          content:
-            application/json:
+          description: 'Modifica dell''evento. link all''evento modificato'
+          headers:
+            'Location':
               schema:
-                $ref: '#/components/schemas/EventoPubblico'
+                type: string
+              description: Link all'indirizzo dell'evento personale modificato.
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
           content:
@@ -785,7 +787,7 @@ paths:
                     type: boolean
                     description: "Indicatore del successo o meno dell'operazione"
         '403':
-          description: 'Non sei autorizzato a modificare l'evento personale corrente.'
+          description: 'Non sei autorizzato a modificare l''evento personale corrente.'
           content:
             application/json:
               schema:
@@ -838,11 +840,12 @@ paths:
               $ref: '#/components/schemas/FormModificaPersonalePrivato'
       responses:
         '200':
-          description: 'Oggetto che rappresenta l'evento privato modificato.'
-          content:
-            application/json:
+          description: 'Modifica dell''evento. link all''evento modificato'
+          headers:
+            'Location':
               schema:
-                $ref: '#/components/schemas/EventoPubblico'
+                type: string
+              description: Link all'indirizzo dell'evento privato modificato.
         '401':
           description: "Non è stato possibile accedere alla risorsa perché l'utente non è autenticato."
           content:
@@ -1138,16 +1141,6 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
         
-        '400':
-          description: "Richiesta malformata."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: "Messaggio di errore"
   
   /eventiCalendarioPubblico/{data}:
     get:
@@ -1318,7 +1311,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Biglietto'
+                  $ref: '#/components/schemas/Iscrizione'
         '404':
           description: "Non è stato trovato nessuna iscrizione associato all'utente"
           content:
@@ -1530,7 +1523,7 @@ paths:
                     type: array
                     description: La lista di utenti il cui indirizzo email contiene la stringa cercata
                     items:
-                      $ref: '#components/schemas/Utente'
+                      $ref: '#components/schemas/UtenteCercato'
 
         '404':
           description: Nessun utente trovato.
@@ -1545,7 +1538,7 @@ paths:
 
 components:
   schemas:
-    Utente:
+    UtenteCercato:
       description: Uno degli utenti il cui indirizzo email contiene la stringa cercata
       type: object
       properties:
@@ -1636,7 +1629,7 @@ components:
               description: 'Città dell''Evento'
 
     PrivateEvent:
-      description: Oggetto dell'evento personale per la sua creazione
+      description: Oggetto dell'evento privato per la sua creazione
       type: object
       required:
       - data
@@ -1757,7 +1750,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
+          description: 'Data o lista date dell''evento.'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1798,7 +1791,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
+          description: 'Data o lista date dell''evento.'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1831,7 +1824,7 @@ components:
       properties:
         data:
           type: string
-          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
+          description: 'Data o lista date dell''evento.'
         ora:
           type: string
           description: 'Ora d''inizio dell''evento.'
@@ -1868,80 +1861,6 @@ components:
             type: string
           description: 'Nomi degli invitati all''evento.'
 
-    FormEventoPubblico:
-      type: object
-      description: 'Oggetto che rappresenta il form di creazione di un evento pubblico.'
-      required:
-      - data
-      - ora
-      - durata
-      - categoria
-      - nomeAtt
-      - luogoEv
-      - maxPers
-      properties:
-        data:
-          type: string
-          description: 'Data o lista date dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
-        ora:
-          type: string
-          description: 'Ora d''inizio dell''evento.'
-        durata:
-          type: number
-          description: 'Durata dell''evento.'
-        categoria: 
-          type: string
-          description: 'Categoria dell''evento.'
-        nomeAtt:
-          type: string
-          description: 'Nome dell''evento.'
-        luogoEv:
-          type: object
-          properties:
-            indirizzo:
-              type: string
-              description: 'Inidirizzo dell''Evento'
-            citta:
-              type: string
-              description: 'Città dell''Evento'
-        maxPers:
-          type: integer
-          description: 'Numero massimo delle persone.'
-
-    FormEventoPersonale:
-      type: object
-      description: 'Oggetto che rappresenta il form di creazione di un evento personale.'
-      required:
-      - data
-      - ora
-      - durata
-      - categoria
-      - nomeAtt
-      properties:
-        data:
-          type: string
-          description: 'Data dell''evento. Si noti che la data deve essere espressa nel formato americano (cioè mese/giorno/anno).'
-        ora:
-          type: string
-          description: 'Ora dell''evento.'
-        durata:
-          type: number
-          description: 'Durata dell''evento.'
-        categoria: 
-          type: string
-          description: 'Categoria dell''evento.'
-        nomeAtt:
-          type: string
-          description: 'Nome dell''Evento.'
-        luogoEv:
-          type: object
-          properties:
-            indirizzo:
-              type: string
-              description: 'Inidirizzo dell''Evento.'
-            citta:
-              type: string
-              description: 'Città dell''Evento.'
 
     FormModificaPubblico:
       type: object
@@ -1987,7 +1906,7 @@ components:
               type: string
               description: 'Nuova città evento.'
 
-  Biglietti:
+  Iscrizione:
     type: object
     description: Oggetto che descrive l'info legate ad una certa iscrizione 
     required:
