@@ -46,7 +46,7 @@ describe('GET /api/v2/eventiCalendarioPubblico', () => {
 
 
 
-  test('GET /api/v2/eventiCalendarioPubblico da non autenticati, quindi con token non valido, nel caso ci siano eventi', async () => {
+  test('GET /api/v2/eventiCalendarioPubblico da non autenticati, quindi con token non valido, nel caso ci siano eventi pubblici', async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPubblico').
     set('x-access-token', '').
     expect('Content-Type', /json/).

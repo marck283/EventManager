@@ -45,7 +45,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
  
   
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email che non esiste", async () => {
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata ad nessun utente nel sistema", async () => {
       // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
@@ -126,7 +126,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo nome attività non è specificato", async () => {
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
       // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
@@ -159,7 +159,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   });
 
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute", async () => {
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
       // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
@@ -175,7 +175,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato ora non valido", async () => {
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
       // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
@@ -192,21 +192,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   });
 
 
-  /**test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
-      // create a valid token
-    var payload = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options = {
-      expiresIn: 3600 // expires in 24 hours
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-    const response = await request(app).post('/api/v2/EventiPrivati').
-      set('x-access-token', token).send({data: "11-11-2050,11-12-2050", ora: "11:33", durata: 3,categoria: "svago", nomeAtt: "Evento", luogoEv: {indirizzo: "via panini", citta: "Bologna"}, ElencoEmailInviti: ['gg.tt@gmail.com']}).expect('Content-Type', /json/).expect(400).expect({error: "formato data non valido"});
-    
-  });*/
+  
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si passano correttamente tutti i campi", async () => {
     expect.assertions(2);

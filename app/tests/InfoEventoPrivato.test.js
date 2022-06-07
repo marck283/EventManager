@@ -64,7 +64,7 @@ describe('GET /api/v2/EventiPrivati/:id', () => {
             invitati: ['Federico']});
   });
 
-  test('GET /api/v2/EventoPubblico/:id nel caso di evento non esistente', async () => {
+  test('GET /api/v2/EventiPrivati/:id nel caso di evento non esistente', async () => {
     const response = await request(app).get('/api/v2/EventiPrivati/34567876543').set('x-access-token', token).
     expect('Content-Type', /json/).
     expect(404).expect({error: "Non esiste nessun evento con l'id selezionato"});

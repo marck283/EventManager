@@ -52,7 +52,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
     expect(404).expect({error: "Non esiste alcun evento legato alla risorsa richiesta."});
   });
 
-  test("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, indicando una data di cui non esiste l'evento", async () => {
+  test("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, indicando una data di cui non esiste nessun evento pubblico a cui l'utente non si è iscritto o creato", async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPubblico/05-13-2010').
     set('x-access-token', token).
     expect('Content-Type', /json/).
@@ -61,20 +61,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
 
 
 
-  /**test('GET /api/v2/eventiCalendarioPubblico da non autenticati, quindi con token non valido, nel caso ci siano eventi', async () => {
-    const response = await request(app).get('/api/v2/eventiCalendarioPubblico').
-    set('x-access-token', '').
-    expect('Content-Type', /json/).
-    expect(200).expect({eventi: [{id: "pub",
-                    idevent:'9876543',
-                    self: "/api/v2/EventiPubblici/9876543",
-                    name: "Evento",
-                    category: "svago"},{id: "pub",
-                    idevent:'987653',
-                    self: "/api/v2/EventiPubblici/987653",
-                    name: "Event",
-                    category: "svago"}]});
-  });*/
+  
 
   
   

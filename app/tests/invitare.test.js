@@ -81,7 +81,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
  
   
   
-  test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente", async () => {
+  test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente non ancora invitato o partecipante a quell'evento", async () => {
       // create a valid token
     expect.assertions(2);
     var payload = {
@@ -193,7 +193,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
       
     });
 
-    test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente indica la sua email per l'invito", async () => {
+    test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente indica la sua stessa email per l'invito", async () => {
       // create a valid token
       var payload7 = {
         email: "gg.ee@gmail.com",

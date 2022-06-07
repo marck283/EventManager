@@ -67,98 +67,6 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
-                    /**var dati = evento.data.split(",");
-
-
-
-                    var disponibie = true;
-
-                    //controllo che inseisco solo gli eventi disponibili
-                    for(var elem of dati){
-
-                        var data = elem;
-                        var date = new Date();
-                        var mm = date.getMonth() + 1
-                        var dd = date.getDate()
-                        var yy = date.getFullYear()
-                        dats = data.split('/');
-
-                       
-                        if(dats[0][0] == '0'){
-
-                          mese = dats[0][1];
-
-                        }else{
-
-                          mese = dats[0];
-
-                        }
-
-
-                        if(dats[1][0] == '0'){
-
-                          giorno = dats[1][1];
-
-                        }else{
-
-                          giorno = dats[1];
-
-                        }
-
-                        anno = dats[2]
-
-                       
-
-                        if(yy > Number(anno)){
-
-
-                          disponibile = false;
-                          console.log("yy5")
-                           
-
-                        }else{
-
-                       
-                          if(yy == Number(anno)){
-                           
-
-                            if(mm > Number(mese)){
-                              disponibile = false;
-                              console.log("yy6")
-                             
-                            }else{
-
-                              if(mm == Number(mese)){
-                             
-
-                                if(dd > Number(giorno)){
-                                  disponibile = false;
-                                  console.log("yy7")
-
-                                }
-
-                              }
-                           
-
-                            }
-
-                          }
-
-                        }
-
-
-
-
-
-                    }
-
-                    if(!disponibile){
-                        continue;
-                    }
-                    
-                    */
-
-
 
 
                     let orga = await Utente.findById(evento.organizzatoreID);
@@ -193,87 +101,6 @@ router.get('/me/Inviti', async (req, res) => {
 
                 if(evento){
 
-                    /**var dati = evento.data.split(",")
-                    //controllo che inseisco solo gli eventi disponibili
-                    for(var elem of dati){
-
-                        var data = elem;
-                        var date = new Date();
-                        var mm = date.getMonth() + 1
-                        var dd = date.getDate()
-                        var yy = date.getFullYear()
-                        dats = data.split('/');
-
-                       
-                        if(dats[0][0] == '0'){
-
-                          mese = dats[0][1];
-
-                        }else{
-
-                          mese = dats[0];
-
-                        }
-
-
-                        if(dats[1][0] == '0'){
-
-                          giorno = dats[1][1];
-
-                        }else{
-
-                          giorno = dats[1];
-
-                        }
-
-                        anno = dats[2]
-
-                       
-
-                        if(yy > Number(anno)){
-
-
-                          disponibile = false;
-                            console.log("yy1")
-
-                        }else{
-
-                       
-                          if(yy == Number(anno)){
-                           
-
-                            if(mm > Number(mese)){
-                              disponibile = false;
-                             console.log("yy2")
-                            }else{
-
-                              if(mm == Number(mese)){
-                             
-
-                                if(dd > Number(giorno)){
-                                  disponibile = false;
-                                  console.log("yy3")
-                                }
-
-                              }
-                           
-
-                            }
-
-                          }
-
-                        }
-
-
-
-
-
-                    }
-
-                    if(!disponibile){
-                        continue;
-                    }
-                    */
 
                     let orga = await Utente.findById(evento.organizzatoreID);
 
@@ -307,7 +134,7 @@ router.get('/me/Inviti', async (req, res) => {
         if(ListInvit.length==0){
             
 
-            res.status(404).json({error: "Non c'è nessun evento valido o disponibile associato all'invito"}).send();
+            res.status(404).json({error: "Non c'è nessun evento valido associato all'invito"}).send();
             return;
 
         }
