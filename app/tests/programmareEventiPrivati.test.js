@@ -27,7 +27,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto",
             categoria: "svago",
@@ -47,7 +47,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', '')
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 1",
             categoria: "svago",
@@ -67,7 +67,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 6",
             categoria: "svago",
@@ -87,7 +87,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 2",
             categoria: "svago",
@@ -107,7 +107,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 2",
             categoria: "svago",
@@ -146,7 +146,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/27/2022,07/08/2024,07/09/2023,06/27/2022,07/08/2022",
+            data: "11/11/2022,07/08/2024,07/09/2023,11/11/2022,11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -207,7 +207,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "02/06/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -226,7 +226,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "02/06/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -245,7 +245,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "02/06/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -265,7 +265,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/06/2022",
+            data: "11/11/2022",
             ora: "11|00",
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -306,7 +306,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/03/2022",
+            data: "11/11/2022",
             ora: "11:00",
             categoria: "svago",
             durata: 2,
@@ -325,7 +325,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06/03/2022",
+            data: "11/11/2022",
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
             durata: 2,
