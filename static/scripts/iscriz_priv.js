@@ -22,27 +22,13 @@ var iscrPr = (id) => {
         			if(resp.status==201){
         				alert("Iscritto")
 
-        			}
-        			if(resp.status==403){
-        				resp.json().then(data => {alert(data.error)});
-        				
-        				
-
-        			}
-        			if(resp.status==500){
-        				resp.json().then(data => {alert(data.error)});
-
-        			}
-        			if(resp.status==404){
-        				resp.json().then(data => {alert(data.error)});
-
-        			}
-        			if(resp.status==401){
-        				resp.json().then(data => {alert(data.error)});
-
-        			}
+        			} else {
+						if(resp.status==403 || resp.status==500 || resp.status==404 || resp.status==401){
+							resp.json().then(data => {alert(data.error)});
+						}
+					}
 
         			return;
-    			}).catch( error => console.error(error) ); // If there is any error you will catch them here
+    			}).catch(error => console.error(error)); // If there is any error you will catch them here
 
 		}

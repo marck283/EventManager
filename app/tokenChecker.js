@@ -17,11 +17,11 @@ const tokenChecker = function(req, res, next) {
 
 	jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded) {			
 		if (err) {
+			console.log("ho il token errato");
 			return res.status(401).send({
 				success: false,
 				message: 'fallita autenticazione'
-			});		
-			console.log("ho il token errato");
+			});
 		} else {
 			console.log("ho il token");
 			req.loggedUser = decoded;
@@ -31,4 +31,4 @@ const tokenChecker = function(req, res, next) {
 	
 };
 
-module.exports = tokenChecker
+module.exports = tokenChecker;
