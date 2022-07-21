@@ -26,29 +26,12 @@ var invip = () => {
 		    		
         			if(resp.status==201){
         				document.getElementById("invitip").innerHTML = "Invitato"
-
         			}
-        			if(resp.status==403){
+        			if(resp.status==403 || resp.status == 500 || resp.status == 404 || resp.status == 400){
         				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-        				
-        				
-
-        			}
-        			if(resp.status==500){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-
-        			}
-        			if(resp.status==404){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-
         			}
         			if(resp.status==401){
         				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.message});
-
-        			}
-        			if(resp.status==400){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-
         			}
 
         			return;
