@@ -15,6 +15,39 @@ servers:
 
 
 paths:
+  /recuperoPassword:
+    post:
+      description: L'utente richiede il recupero della password dimenticata.
+      summary: Recupero password
+      parameters:
+      - name: email
+        in: body
+        description: L'indirizzo email dell'utente richiedente
+        required: true
+        schema:
+          type: string
+          description: L'indirizzo email del richiedente
+      responses:
+        '201':
+          description: Email inviata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Messaggio di risposta
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Messaggio di errore
 
   /authentications:
     post:
@@ -154,7 +187,7 @@ paths:
 
 
   /EventiPrivati/{idEvento}/Iscrizioni:
-     post:
+    post:
       description: Si richiede,secondo un certo id dell'evento privato, l'iscrizione, con biglietto allegato, per quell'evento da parte dell'utente autenticato corrente. Questa iscrizione si compierà solo se l'utente in questione appartiene alla lista degli utenti invitati dell'evento privato con quell'id.
       summary: Iscrizione ad un evento privato
       parameters:
