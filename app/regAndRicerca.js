@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
+const crypto = require('crypto');
 
 router.get("", async (req, res) => {
     var email = req.query.email;
@@ -27,24 +28,18 @@ router.get("", async (req, res) => {
 
 
 router.post('', async (req, res) => {
-
-    
-
-    
-    try{
-
+    try {
         if(req.body.nome == "" || req.body.nome == undefined ||
          req.body.email == "" || req.body.email == undefined ||
          req.body.pass == "" || req.body.pass == undefined){
             res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
-
         }
 
         let ut = await Utente.findOne({email: req.body.email })
 
         if(ut){
-            res.status(409).json({ error: 'Non si può registrarsi perchè si ha messo la stessa email' }).send();
+            res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
             return;
         }
         
@@ -52,6 +47,7 @@ router.post('', async (req, res) => {
             nome: req.body.nome,
             email: req.body.email,
             password: req.body.pass,
+            salt: crypto.randomBytes(10).toString('hex'),
             tel: req.body.tel
         });
 
@@ -60,9 +56,7 @@ router.post('', async (req, res) => {
             return;
         }
         
-        Utentes = await Utent.save();
-        
-        let utenteId = Utentes.id;
+        let Utentes = await Utent.save(), utenteId = Utentes.id;
 
         /**
          * Link to the newly created resource is returned in the Location header

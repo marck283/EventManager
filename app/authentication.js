@@ -23,7 +23,7 @@ router.post('', async function(req, res) {
 	}
 	
 	// check if password matches
-	if (user.password != req.body.password) {
+	if (user.password + user.salt != req.body.password + user.salt) {
 		res.status(403).json({ success: false, message: 'Autenticazione fallita. Password sbagliata.' }).send();
 		return;
 	}

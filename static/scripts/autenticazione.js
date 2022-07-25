@@ -14,7 +14,7 @@ var login = () => {
     fetch('../api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { email: email, password: password } ),
+        body: JSON.stringify( { email: email, password: CryptoJS.SHA3(password, {outputLength: 512}).toString() } ),
     })
     .then((resp) => {
 
