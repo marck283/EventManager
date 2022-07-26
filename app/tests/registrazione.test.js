@@ -49,7 +49,7 @@ describe('POST /api/v2/Utenti', () => {
         
         await request(app).post('/api/v2/Utenti').
         send({nome: 'Fabio', email: 'gg.ee@gmail.com', pass: 'abcd', tel: ''}).
-        expect('Content-Type', /json/).expect(409).expect({error: "Non si può registrarsi perchè si ha messo la stessa email"});
+        expect('Content-Type', /json/).expect(409).expect({error: "L'email inserita corrisponde ad un profilo già creato."});
         
     });
     

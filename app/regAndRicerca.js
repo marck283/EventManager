@@ -42,11 +42,10 @@ router.post('', async (req, res) => {
             res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
             return;
         }
-        
         let Utent = new Utente({
             nome: req.body.nome,
             email: req.body.email,
-            password: req.body.pass,
+            password: crypto.createHash('sha3-512').digest(req.body.pass),
             salt: crypto.randomBytes(10).toString('hex'),
             tel: req.body.tel
         });

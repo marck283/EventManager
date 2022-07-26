@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const crypto = require('crypto');
 
 
 // ---------------------------------------------------------
@@ -13,17 +14,15 @@ router.post('', async function(req, res) {
 	// find the user
 	let user = await Utente.findOne({
 		email: req.body.email
-	}).exec();
+	});
 	
 	// user not found
 	if (!user){
 		res.status(404).json({ success: false, message: 'Autenticazione fallita. Utente non trovato.' }).send();
 		return;
-
 	}
-	
 	// check if password matches
-	if (user.password + user.salt != req.body.password + user.salt) {
+	if (user.password + user.salt != crypto.createHash("sha3-512").digest(req.body.password) + user.salt) {
 		res.status(403).json({ success: false, message: 'Autenticazione fallita. Password sbagliata.' }).send();
 		return;
 	}
