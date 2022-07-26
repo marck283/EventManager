@@ -65,7 +65,7 @@ paths:
                   description: email dell'utente
                 password:
                   type: string
-                  description: password dell'utente
+                  description: password dell'utente (criptata con SHA3 e lunga 512 bit)
       responses:
         '200':
           description: Avvenuta autetnticazione
