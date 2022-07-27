@@ -45,7 +45,7 @@ router.post('', async (req, res) => {
         let Utent = new Utente({
             nome: req.body.nome,
             email: req.body.email,
-            password: crypto.createHash('sha3-512').digest(req.body.pass),
+            password: crypto.createHash('sha3-512').update(req.body.pass).digest('hex'),
             salt: crypto.randomBytes(10).toString('hex'),
             tel: req.body.tel
         });

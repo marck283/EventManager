@@ -7,14 +7,10 @@ document.addEventListener("keydown", event => {
 });
 
 var login = () => {
-    var email = document.getElementById("loginEmail").value;
-    var password = document.getElementById("loginPassword").value;
-
-
     fetch('../api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { email: email, password: CryptoJS.SHA3(password, {outputLength: 512}).toString() } ),
+        body: JSON.stringify({ email: document.getElementById("loginEmail").value, password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString() }),
     })
     .then((resp) => {
 

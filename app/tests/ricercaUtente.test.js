@@ -29,12 +29,12 @@ describe("GET /api/v2/Utenti", () => {
                     {
                         nome: 'Marco Villa',
                         email: 'marco.villa@gmail.com',
-                        urlUtente: '/api/v2/Utenti/62e011665ca4870439ca76d9'
+                        urlUtente: '/api/v2/Utenti/62e1667818bfa6ca7793fdeb'
                     },
                     {
                         nome: 'Marco Lasagna',
                         email: 'marcolasagna9@gmail.com',
-                        urlUtente: '/api/v2/Utenti/62e01e3a5ca4870439ca76db'
+                        urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
                     }
                 ]
             });
@@ -47,14 +47,14 @@ describe("GET /api/v2/Utenti", () => {
             .expect(200, {
                 utenti: [
                     {
-                        "nome": 'Marco Villa',
-                        "email": 'marco.villa@gmail.com',
-                        "urlUtente": '/api/v2/Utenti/62e011665ca4870439ca76d9'
+                        nome: 'Marco Villa',
+                        email: 'marco.villa@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e1667818bfa6ca7793fdeb'
                     },
                     {
-                        "nome": "Marco Lasagna",
-                        "email": "marcolasagna9@gmail.com",
-                        "urlUtente": "/api/v2/Utenti/62e01e3a5ca4870439ca76db"
+                        nome: 'Marco Lasagna',
+                        email: 'marcolasagna9@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
                     }
                 ]
             });

@@ -16,7 +16,7 @@ describe("POST /api/v2/EventiPrivati", () => {
 
     // create a valid token
     var token = jwt.sign(
-        { id: "62e011665ca4870439ca76d9", email: 'marco.villa@gmail.com' },
+        { id: "62e1667818bfa6ca7793fdeb", email: 'marco.villa@gmail.com' },
         process.env.SUPER_SECRET,
         { expiresIn: 86400 }
     );

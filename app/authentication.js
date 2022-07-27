@@ -9,8 +9,6 @@ const crypto = require('crypto');
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 router.post('', async function(req, res) {
-
-	
 	// find the user
 	let user = await Utente.findOne({
 		email: req.body.email
@@ -22,7 +20,7 @@ router.post('', async function(req, res) {
 		return;
 	}
 	// check if password matches
-	if (user.password + user.salt != crypto.createHash("sha3-512").digest(req.body.password) + user.salt) {
+	if (user.password + user.salt != crypto.createHash('sha3-512').update(req.body.password).digest('hex') + user.salt) {
 		res.status(403).json({ success: false, message: 'Autenticazione fallita. Password sbagliata.' }).send();
 		return;
 	}
