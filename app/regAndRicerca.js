@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
 const crypto = require('crypto');
+const utenti = require('./collezioni/utenti.js');
 
 router.get("", async (req, res) => {
     var email = req.query.email;
@@ -26,6 +27,27 @@ router.get("", async (req, res) => {
     return;
 });
 
+router.patch('', async (req, res) => {
+    try {
+        if(req.body.email == "" || req.body.email == undefined || req.body.psw == "" || req.body.psw == undefined) {
+            res.status(400).json({error: "Campo vuoto o indefinito."}).send();
+            return;
+        }
+        var utente = await utenti.findOne({email: req.body.email}).exec();
+        if(utente == undefined) {
+            res.status(404).json({error: "Utente non trovato."}).send();
+            return;
+        }
+        utente.password = crypto.createHash('sha3-512').update(req.body.psw).digest('hex');
+        let user = await utente.save();
+        res.status(200).json({message: "Password modificata con successo."}).send();
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({error: "Errore interno al server."}).send();
+    }
+    return;
+});
+
 
 router.post('', async (req, res) => {
     try {
@@ -36,7 +58,7 @@ router.post('', async (req, res) => {
             return;
         }
 
-        let ut = await Utente.findOne({email: req.body.email })
+        let ut = await Utente.findOne({email: req.body.email }).exec();
 
         if(ut){
             res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();

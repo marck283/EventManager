@@ -1,6 +1,10 @@
 var send = () => {
+    console.log(document.getElementById("email").value);
     fetch('../api/v2/RecuperoPassword', {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
             email: document.getElementById("email").value
         })
