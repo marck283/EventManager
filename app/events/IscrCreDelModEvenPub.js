@@ -592,10 +592,6 @@ router.post('/:id/Inviti', async (req, res) => {
 
 
 router.post('', async (req, res) => {
-
-
-
-
     var utent = req.loggedUser.id;
     try {
         //Si cerca l'utente organizzatore dell'evento
@@ -616,9 +612,7 @@ router.post('', async (req, res) => {
             req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined) {
             res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
             return;
-
         }
-
 
         var ElencoDate = req.body.data;
         var dateEv = ElencoDate.split(",");
@@ -632,31 +626,27 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "formato data non valido" }).send()
                     return;
                 } else {
-                    //Non bisognerebbe controllare che tutti i campi della data siano espressi in formato numerico?
-                    /* 
-                    strin.forEach(e => {
-                        if(Number.isNaN(parseInt(e))) {
-                            res.status(400).json({error: "Formato data non numerico."});
-                            return;
-                        }
-                    }) */
                     if (strin[0].length == 2 && strin[1].length == 2 && strin[2].length == 4) {
                         str1 = strin[0];
                         str2 = strin[1];
                         str3 = strin[3];
                         if (strin[0][0] == 0) {
                             str1 = strin[0][1];
-
                         }
                         if (strin[1][0] == 0) {
                             str2 = strin[1][1];
                         }
                         switch (str1) {
-                            case "1": {
+                            case "1":
+                            case "3":
+                            case "5":
+                            case "7":
+                            case "8":
+                            case "10":
+                            case "12": {
                                 if (Number(str2) > 31 || Number(str2) < 0) {
                                     res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
-
                                 }
                                 break;
                             }
@@ -665,103 +655,22 @@ router.post('', async (req, res) => {
                                     if (Number(str2) > 29 || Number(str2) < 0) {
                                         res.status(400).json({ error: "formato data non valido" }).send()
                                         return;
-
                                     }
                                 } else {
                                     if (Number(str2) > 28 || Number(str2) < 0) {
                                         res.status(400).json({ error: "formato data non valido" }).send()
                                         return;
-
                                     }
-
-
-                                }
-
-                                break;
-
-                            }
-                            case "3": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "4": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "5": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "6": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
                                 }
                                 break;
                             }
-                            case "7": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "8": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "9": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "10": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
+                            case "4":
+                            case "6":
+                            case "9":
                             case "11": {
                                 if (Number(str2) > 30 || Number(str2) < 0) {
                                     res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
-
-                                }
-                                break;
-                            }
-                            case "12": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
                                 }
                                 break;
                             }
@@ -769,27 +678,15 @@ router.post('', async (req, res) => {
                                 res.status(400).json({ error: "formato data non valido" }).send()
                                 return;
                             }
-
-
-
                         }
-
-
                     } else {
-
                         res.status(400).json({ error: "formato data non valido" }).send()
                         return;
-
-
                     }
-
-
                 }
-
             } else {
                 res.status(400).json({ error: "formato data errato" }).send()
                 return;
-
             }
 
             //controllo che le date non siano ripetute
@@ -798,7 +695,6 @@ router.post('', async (req, res) => {
             if (count > 1) {
                 res.status(400).json({ error: "date ripetute" }).send()
                 return;
-
             }
 
 
@@ -813,73 +709,39 @@ router.post('', async (req, res) => {
 
 
             if (dats[0][0] == '0') {
-
                 mese = dats[0][1];
-
             } else {
-
                 mese = dats[0];
-
             }
 
 
             if (dats[1][0] == '0') {
-
                 giorno = dats[1][1];
-
             } else {
-
                 giorno = dats[1];
-
             }
 
-            anno = dats[2]
-
-
+            anno = dats[2];
 
             if (yy > Number(anno)) {
-
                 res.status(403).json({ error: "giorno non disponibile" }).send()
                 return;
-
             } else {
-
-
                 if (yy == Number(anno)) {
-
-
                     if (mm > Number(mese)) {
                         res.status(403).json({ error: "giorno non disponibile" }).send()
                         return;
-
                     } else {
-
                         if (mm == Number(mese)) {
-
-
                             if (dd > Number(giorno)) {
                                 res.status(403).json({ error: "giorno non disponibile" }).send()
                                 return;
-
                             }
-
                         }
-
-
                     }
-
                 }
-
             }
-
-
-
-
-
-
         }
-
-
 
         //controllo che l'ora sia del formato corretto
         var reg = /([0-9]+):([0-9]+)/
@@ -895,7 +757,6 @@ router.post('', async (req, res) => {
                     str2 = strin[1];
                     if (strin[0][0] == 0) {
                         str1 = strin[0][1];
-
                     }
                     if (strin[1][0] == 0) {
                         str2 = strin[1][1];
@@ -912,20 +773,14 @@ router.post('', async (req, res) => {
                             var mese = ""
 
                             if (dd < 10) {
-
                                 giorno = "0" + dd;
-
                             } else {
-
                                 giorno = "" + dd;
                             }
 
                             if (mm < 10) {
-
                                 mese = "0" + mm;
-
                             } else {
-
                                 mese = "" + mm;
                             }
 
@@ -934,52 +789,28 @@ router.post('', async (req, res) => {
                             var temp_poz = mese + '/' + giorno + '/' + anno;
 
                             if (ElencoDate.includes(temp_poz) == true) {
-
-
                                 if (Number(str1) >= d.getHours()) {
-
-
                                     if (Number(str1) == d.getHours()) {
-
-
-
                                         if (Number(str2) < d.getMinutes()) {
                                             res.status(403).json({ error: "orario non permesso" }).send()
                                             return;
-
-
                                         }
-
-
                                     }
-
-
                                 } else {
                                     res.status(403).json({ error: "orario non permesso" }).send()
                                     return;
-
                                 }
-
-
-
                             }
-
-
                         }
-
-
                     } else {
                         res.status(400).json({ error: "formato ora non valido" }).send()
                         return;
                     }
-
                 } else {
                     res.status(400).json({ error: "formato ora non valido" }).send()
                     return;
                 }
             }
-
-
         } else {
             res.status(400).json({ error: "formato ora non valido" }).send()
             return;

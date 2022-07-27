@@ -7,14 +7,10 @@ document.addEventListener("keydown", event => {
 });
 
 var login = () => {
-    var email = document.getElementById("loginEmail").value;
-    var password = document.getElementById("loginPassword").value;
-
-
     fetch('../api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { email: email, password: password } ),
+        body: JSON.stringify({ email: document.getElementById("loginEmail").value, password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString() }),
     })
     .then((resp) => {
 
@@ -27,19 +23,15 @@ var login = () => {
         }
         */
         
-        if(resp.status==404){
+        if(resp.status==404 || resp.status==403){
             resp.json().then(data => {document.getElementById("usr").innerHTML = data.message});
-
-        }
-        if(resp.status==403){
-            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message});
-            
-            
 
         }
         if(resp.status==200){
-            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message; 
-            localStorage.setItem('token', data.token);          
+            resp.json().then(data => {
+                document.getElementById("usr").innerHTML = data.message; 
+                localStorage.setItem('token', data.token);   
+                window.location.href="../publicCalendar.html";       
             });
         }
         

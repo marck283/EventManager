@@ -25,28 +25,37 @@ describe("GET /api/v2/Utenti", () => {
             .get('/api/v2/Utenti')
             .set('Accept', 'application/json')
             .expect(200, {
-                utenti: [{
-                    "nome": "geronimo",
-                    "email": "gg.ee@gmail.com",
-                    "urlUtente": "/api/v2/Utenti/62993bc81430d0dd9a208934"
-                }, {
-                    "nome": "giacomo",
-                    "email": "gg.aa@gmail.com",
-                    "urlUtente": "/api/v2/Utenti/629a28681289fe12b1f1eae9"
-                }]
+                utenti: [
+                    {
+                        nome: 'Marco Villa',
+                        email: 'marco.villa@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e1667818bfa6ca7793fdeb'
+                    },
+                    {
+                        nome: 'Marco Lasagna',
+                        email: 'marcolasagna9@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
+                    }
+                ]
             });
     });
 
     test("GET /api/v2/Utenti con campo email compilato con email parziale", () => {
         return request(app)
-            .get("/api/v2/Utenti?email=gg.a")
+            .get("/api/v2/Utenti?email=marc")
             .set("Accept", "application/json")
             .expect(200, {
-                utenti: [{
-                    "nome": 'giacomo',
-                    "email": 'gg.aa@gmail.com',
-                    "urlUtente": '/api/v2/Utenti/629a28681289fe12b1f1eae9'
-                }
+                utenti: [
+                    {
+                        nome: 'Marco Villa',
+                        email: 'marco.villa@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e1667818bfa6ca7793fdeb'
+                    },
+                    {
+                        nome: 'Marco Lasagna',
+                        email: 'marcolasagna9@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
+                    }
                 ]
             });
     });

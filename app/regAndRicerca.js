@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
+const crypto = require('crypto');
+const utenti = require('./collezioni/utenti.js');
 
 router.get("", async (req, res) => {
     var email = req.query.email;
@@ -25,33 +27,48 @@ router.get("", async (req, res) => {
     return;
 });
 
+router.patch('', async (req, res) => {
+    try {
+        if(req.body.email == "" || req.body.email == undefined || req.body.psw == "" || req.body.psw == undefined) {
+            res.status(400).json({error: "Campo vuoto o indefinito."}).send();
+            return;
+        }
+        var utente = await utenti.findOne({email: req.body.email}).exec();
+        if(utente == undefined) {
+            res.status(404).json({error: "Utente non trovato."}).send();
+            return;
+        }
+        utente.password = crypto.createHash('sha3-512').update(req.body.psw).digest('hex');
+        let user = await utente.save();
+        res.status(200).json({message: "Password modificata con successo."}).send();
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({error: "Errore interno al server."}).send();
+    }
+    return;
+});
+
 
 router.post('', async (req, res) => {
-
-    
-
-    
-    try{
-
+    try {
         if(req.body.nome == "" || req.body.nome == undefined ||
          req.body.email == "" || req.body.email == undefined ||
          req.body.pass == "" || req.body.pass == undefined){
             res.status(400).json({error: "Campo vuoto o indefinito"}).send();
             return;
-
         }
 
-        let ut = await Utente.findOne({email: req.body.email })
+        let ut = await Utente.findOne({email: req.body.email });
 
         if(ut){
-            res.status(409).json({ error: 'Non si può registrarsi perchè si ha messo la stessa email' }).send();
+            res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
             return;
         }
-        
         let Utent = new Utente({
             nome: req.body.nome,
             email: req.body.email,
-            password: req.body.pass,
+            password: crypto.createHash('sha3-512').update(req.body.pass).digest('hex'),
+            salt: crypto.randomBytes(10).toString('hex'),
             tel: req.body.tel
         });
 
@@ -60,9 +77,7 @@ router.post('', async (req, res) => {
             return;
         }
         
-        Utentes = await Utent.save();
-        
-        let utenteId = Utentes.id;
+        let Utentes = await Utent.save(), utenteId = Utentes.id;
 
         /**
          * Link to the newly created resource is returned in the Location header

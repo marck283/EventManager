@@ -19,7 +19,11 @@ fetch('../api/v2/Utenti/me', {method: 'GET', headers: {'x-access-token': token}}
                     let email = document.getElementById("email");
                     email.textContent = resp.email;
                     let tel = document.getElementById("tel");
-                    tel.textContent = resp.tel;
+                    if(resp.tel != "") {
+                        tel.textContent = resp.tel;
+                    } else {
+                        tel.textContent = "Non impostato.";
+                    }
 
                     let password = document.getElementById("password");
                     password.textContent = resp.password;

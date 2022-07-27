@@ -10,7 +10,8 @@ const calendarEventsPub = require("./events/elencoEventiPublic.js");
 const autenticato = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
-const regandric = require('./regAndRicerca.js')
+const regandric = require('./regAndRicerca.js');
+const recPsw = require('./pswRecovery.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -28,6 +29,7 @@ app.use('/api/v2/authentications', autenticato);
 app.use('/api/v2/EventiPubblici', EventoPubblico);
 app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v2/Utenti', regandric);
+app.use('/api/v2/RecuperoPassword', recPsw);
 
 
 app.use(tokenChecker);

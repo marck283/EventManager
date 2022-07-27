@@ -16,7 +16,7 @@ describe("POST /api/v2/EventiPrivati", () => {
 
     // create a valid token
     var token = jwt.sign(
-        { id: "62993bc81430d0dd9a208934", email: 'gg.ee@gmail.com' },
+        { id: "62e1667818bfa6ca7793fdeb", email: 'marco.villa@gmail.com' },
         process.env.SUPER_SECRET,
         { expiresIn: 86400 }
     );
@@ -36,7 +36,7 @@ describe("POST /api/v2/EventiPrivati", () => {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
-            ElencoEmailInviti: ["gg.aa@gmail.com"]
+            ElencoEmailInviti: ["marcolasagna9@gmail.com"]
         })
         .expect(201);
     });
