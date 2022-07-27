@@ -58,7 +58,7 @@ router.post('', async (req, res) => {
             return;
         }
 
-        let ut = await Utente.findOne({email: req.body.email }).exec();
+        let ut = await Utente.findOne({email: req.body.email });
 
         if(ut){
             res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
