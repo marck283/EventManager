@@ -156,7 +156,7 @@ router.post('', async (req, res) => {
                                                   </h1>\
                                                   <p style="margin-top:0px">Ecco il link da Lei richiesto per il recupero della password: \
                                                   </p>\
-                                                  <a href="http://localhost:8080/pswRecovery.html" target="_blank">http://eventmanagerzlf.herokuapp.com/pswRecovery.html</a></span>\
+                                                  <a href="http://eventmanagerzlf.herokuapp.com/pswRecovery.html" target="_blank">http://eventmanagerzlf.herokuapp.com/pswRecovery.html</a></span>\
                                                 <div class="greyLine">\
                                                 </div>\
                                               </td>\
