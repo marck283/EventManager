@@ -1,6 +1,6 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('../app');
+const app     = require('../app.js');
 
 describe('GET /api/v2/eventiCalendarioPersonale', () => {
 

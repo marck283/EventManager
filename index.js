@@ -1,6 +1,5 @@
-import app from './app/app.mjs';
-import pkg from 'mongoose';
-const {connect} = pkg;
+const app = require('./app/app.js');
+const mongoose = require('mongoose');
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -22,8 +21,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const appf = initializeApp(firebaseConfig);
 
-import dotenv from 'dotenv';
-dotenv.config();
+
+require('dotenv').config();
 
 
 const port = process.env.PORT || 8080;
@@ -34,7 +33,7 @@ const port = process.env.PORT || 8080;
  */
 // mongoose.Promise = global.Promise;
 
-app.locals.db = connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
+app.locals.db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 .then ( () => {
     
     console.log("Connected to Database!");

@@ -1,23 +1,23 @@
-import express, { json, urlencoded, } from 'express';
-import cors from 'cors';
+var express = require('express');
+const cors = require('cors');
 var app = express();
-import EventoPubblico from './events/EventiPub.js';
-import EventoPubIscrCreaDelMod from './events/IscrCreDelModEvenPub.js';
-import EventoPersonale from './events/EventiPers.js';
-import EventoPrivato from './events/EventiPriv.js';
-import calendarEventsPers from "./events/elencoEventiPersonali.js";
-import calendarEventsPub from "./events/elencoEventiPublic.js";
-import autenticato from './authentication.js';
-import tokenChecker from './tokenChecker.js';
-import Utente from './Utenti.js';
-import regandric from './regAndRicerca.js';
-import recPsw from './pswRecovery.js';
+const EventoPubblico = require('./events/EventiPub.js');
+const EventoPubIscrCreaDelMod = require('./events/IscrCreDelModEvenPub.js');
+const EventoPersonale = require('./events/EventiPers.js');
+const EventoPrivato = require('./events/EventiPriv.js');
+const calendarEventsPers = require("./events/elencoEventiPersonali.js");
+const calendarEventsPub = require("./events/elencoEventiPublic.js");
+const autenticato = require('./authentication.js');
+const tokenChecker = require('./tokenChecker.js');
+const Utente = require('./Utenti.js');
+const regandric = require('./regAndRicerca.js');
+const recPsw = require('./pswRecovery.js');
 
 /**
  * Configure Express.js parsing middleware
  */
-app.use(json());
-app.use(urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
@@ -47,4 +47,4 @@ app.use((req, res) => {
     res.json({ error: 'Non Trovato' });
 });
 
-export default app;
+module.exports = app;
