@@ -14,14 +14,14 @@ describe("POST /api/v2/EventiPrivati", () => {
         mongoose.connection.close(true);
     });
 
+    console.log(process.env.SUPER_SECRET);
+
     // create a valid token
     var token = jwt.sign(
         { id: "62e1667818bfa6ca7793fdeb", email: 'marco.villa@gmail.com' },
         process.env.SUPER_SECRET,
         { expiresIn: 86400 }
     );
-
-    console.log(process.env.SUPER_SECRET);
 
     test("POST /api/v2/EventiPrivati con utente autenticato e tutti i campi obbligatori compilati correttamente", () => {
         return request(app)
