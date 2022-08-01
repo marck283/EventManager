@@ -10,9 +10,13 @@
   <link rel="stylesheet" href="/styles/common.css" />
   <link rel="stylesheet" href="/styles/cardsLayout.css" />
   <script src="./scripts/alerts/tutorialAlert.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LcFNDshAAAAACVBq4EVAPCurLB4xFbBeKaqey1V"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" integrity="sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     var TokenUser = "";
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
   </script>
   <script src="/scripts/autenticazione.js"></script>
 </head>
@@ -67,7 +71,8 @@
       <label for="loginPassword">Password:</label>
       <input name="pass" required type="password" id="loginPassword" /><br />
       <a href="sendPswRecoveryEmail.html" target="_blank" id="pswreset">Password dimenticata?</a><br /><br />
-      <button type="button" onclick="login()" class="btn btn-primary">Login</button>
+      <button type="button" onclick="login()" class="g-recaptcha btn btn-primary"data-sitekey="reCAPTCHA_site_key" 
+      data-callback='onSubmit' data-action='submit'>Login</button>
       <input type="reset" value="Reimposta" class="btn btn-secondary" />
     </form>
     <br />
