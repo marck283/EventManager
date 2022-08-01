@@ -1,6 +1,6 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const app = require('../app.js');
+const app = require('../app.mjs').default;
 
 describe('POST /api/v2/Utenti', () => {
     
