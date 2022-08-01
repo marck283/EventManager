@@ -1,5 +1,5 @@
 const request = require('supertest'), mongoose = require('mongoose');
-const app = require('../app.mjs').default;
+const app = require('../app.mjs');
 const jwt = require('jsonwebtoken');
 const EventPublic = require('../collezioni/eventPublic.js');
 
