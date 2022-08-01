@@ -1,3 +1,4 @@
+require('dotenv').config();
 const app = require('./app/app.js');
 const mongoose = require('mongoose');
 
@@ -20,9 +21,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const appf = initializeApp(firebaseConfig);
-
-
-require('dotenv').config();
 
 
 const port = process.env.PORT || 8080;
