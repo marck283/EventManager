@@ -21,6 +21,8 @@ describe("POST /api/v2/EventiPrivati", () => {
         { expiresIn: 86400 }
     );
 
+    console.log(process.env.SUPER_SECRET);
+
     test("POST /api/v2/EventiPrivati con utente autenticato e tutti i campi obbligatori compilati correttamente", () => {
         return request(app)
         .post('/api/v2/EventiPrivati')
