@@ -769,37 +769,18 @@ router.post('', async (req, res) => {
                             var dd = d.getDate()
                             var yy = d.getFullYear()
 
-                            var giorno = ""
-                            var mese = ""
+                            var giorno = "", mese = "";
 
-                            if (dd < 10) {
-                                giorno = "0" + dd;
-                            } else {
-                                giorno = "" + dd;
-                            }
+                            (dd < 10) ? giorno = "0" + dd : giorno = dd.toString();
+                            (mm < 10) ? mese = "0" + mm : mese = mm.toString();
 
-                            if (mm < 10) {
-                                mese = "0" + mm;
-                            } else {
-                                mese = "" + mm;
-                            }
-
-                            var anno = "" + yy;
+                            var anno = yy.toString();
 
                             var temp_poz = mese + '/' + giorno + '/' + anno;
 
-                            if (ElencoDate.includes(temp_poz) == true) {
-                                if (Number(str1) >= d.getHours()) {
-                                    if (Number(str1) == d.getHours()) {
-                                        if (Number(str2) < d.getMinutes()) {
-                                            res.status(403).json({ error: "orario non permesso" }).send()
-                                            return;
-                                        }
-                                    }
-                                } else {
-                                    res.status(403).json({ error: "orario non permesso" }).send()
-                                    return;
-                                }
+                            if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
+                                res.status(403).json({ error: "orario non permesso" }).send()
+                                return;
                             }
                         }
                     } else {
