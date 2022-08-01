@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "eventmanagerzlf",
+    "site": "eventmanagerzlf.web.app",
     "public": "static",
     "ignore": [
       "firebase.json",
