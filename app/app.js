@@ -1,3 +1,4 @@
+const functions = require('firebase-functions');
 var express = require('express');
 const cors = require('cors');
 var app = express();
@@ -47,4 +48,4 @@ app.use((req, res) => {
     res.json({ error: 'Non Trovato' });
 });
 
-module.exports = app;
+exports.app = functions.https.onRequest(app);
