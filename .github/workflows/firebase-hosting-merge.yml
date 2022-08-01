@@ -13,14 +13,24 @@ jobs:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
       DB_URL: ${{ secrets.DB_URL }}
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }}
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        
     steps:
-      - uses: actions/checkout@v3
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EVENT_MANAGER_1649890278206 }}'
-          channelId: live
-          projectId: event-manager-1649890278206
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    - uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EVENT_MANAGER_1649890278206 }}'
+        channelId: live
+        projectId: event-manager-1649890278206
