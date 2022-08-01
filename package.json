@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "npm install core-js@3.24.1 && jest"
+    "test": "jest",
+    "deploy": "firebase deploy --only hosting"
   },
   "repository": {
     "type": "git",
