@@ -26,7 +26,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11/11/2022",
+            data: "11/11/2024",
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
