@@ -1,6 +1,28 @@
 const app = require('./app/app.js');
 const mongoose = require('mongoose');
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAuZtlyfk2C46hNxmSTv9fG3vGYYlDz7yg",
+  authDomain: "eventmanager-cbe2d.firebaseapp.com",
+  projectId: "eventmanager-cbe2d",
+  storageBucket: "eventmanager-cbe2d.appspot.com",
+  messagingSenderId: "666454225517",
+  appId: "1:666454225517:web:721eb8a341dbeedaac8564",
+  measurementId: "G-D19RMY08YF"
+};
+
+// Initialize Firebase
+const appf = initializeApp(firebaseConfig);
+const analytics = getAnalytics(appf);
+
 
 require('dotenv').config();
 
