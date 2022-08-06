@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const crypto = require('crypto');
+const crypto = require('bcrypt');
 
 
 // ---------------------------------------------------------
@@ -11,7 +11,7 @@ const crypto = require('crypto');
 router.post('', async function(req, res) {
 	// find the user
 	let user = await Utente.findOne({
-		email: req.body.email
+		email: {$eq: req.body.email}
 	});
 	
 	// user not found
@@ -19,8 +19,14 @@ router.post('', async function(req, res) {
 		res.status(404).json({ success: false, message: 'Autenticazione fallita. Utente non trovato.' }).send();
 		return;
 	}
-	// check if password matches
-	if (user.password + user.salt != crypto.createHash('sha3-512').update(req.body.password).digest('hex') + user.salt) {
+	// check if password matches. Again hashing + salting to mitigate digest clashes and digest pre-computation
+	if (!await crypto.compare(req.body.password, user.password)
+	.then(result => result)
+	.catch(err => {
+		console.log(err);
+		res.status(500).json({error: "Errore interno al server."}).send();
+		return;
+	})) {
 		res.status(403).json({ success: false, message: 'Autenticazione fallita. Password sbagliata.' }).send();
 		return;
 	}
@@ -47,7 +53,5 @@ router.post('', async function(req, res) {
 	
 
 });
-
-
 
 module.exports = router;

@@ -21,6 +21,7 @@ jobs:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
       DB_URL: ${{ secrets.DB_URL }}
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }}
+      GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT}}
 
     strategy:
       matrix:

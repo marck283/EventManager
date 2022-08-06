@@ -807,7 +807,7 @@ router.post('', async (req, res) => {
 
            
 
-            u = await Users.find({email: elem})
+            u = await Users.find({email: {$eq: elem}});
             if(u.length == 0){
 
                 res.status(404).json({error: "un email di un utente da invitare non è corretto"});
