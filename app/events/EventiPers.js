@@ -112,7 +112,31 @@ router.post('', async (req, res) => {
 
         for(var elem of dateEv){
             //controllo che la data ha un formato corretto
-            var regu = /[0-9]+\/[0-9]+\/[0-9]+/i;
+            var regu;
+            switch(d.getMonth() + 1) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12: {
+                    regu = /[1-31]/;
+                    break;
+                }
+                case 2: {
+                    regu = /[1-28]/;
+                    break;
+                }
+                case 4:
+                case 6:
+                case 9:
+                case 11: {
+                    regu = /[1-30]/;
+                    break;
+                }
+            }
+            regu += /[1-12]\/[1000-9999]/;
             if(regu.test(elem)){
                 strin=elem.split("/");
                 if(strin.length>3){
@@ -359,7 +383,7 @@ router.post('', async (req, res) => {
     
 
         //controllo che l'ora sia del formato corretto
-        var reg= /([0-9]+):([0-9]+)/
+        var reg= /[0-23]:[0-59]/;
         var ora = req.body.ora;
         if(reg.test(ora)){
             strin=ora.split(":");
