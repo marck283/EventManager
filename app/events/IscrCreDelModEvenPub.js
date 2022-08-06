@@ -651,11 +651,9 @@ router.post('', async (req, res) => {
                                 break;
                             }
                             case "2": {
-                                if ((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) {
-                                    if (Number(str2) > 29 || Number(str2) < 0) {
-                                        res.status(400).json({ error: "formato data non valido" }).send()
-                                        return;
-                                    }
+                                if (((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) && (Number(str2) > 29 || Number(str2) < 0)) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
+                                    return;
                                 } else {
                                     if (Number(str2) > 28 || Number(str2) < 0) {
                                         res.status(400).json({ error: "formato data non valido" }).send()

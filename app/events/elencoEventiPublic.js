@@ -1,10 +1,22 @@
 const express = require('express');
+const RateLimit = require('express-rate-limit');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 
 var isNumeric = str => parseInt(str) == str ? true : false;
+
+var limiter = RateLimit ({
+    windowMs: 1*60*1000, //1 minute
+    max: 100, //Limit each IP to 10 requests per minute
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+//Apply rate limiter to all requests
+//Avoids Denial of Service attacks by limiting the number of requests per IP
+router.use(limiter);
 
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');

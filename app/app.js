@@ -1,4 +1,5 @@
 var express = require('express');
+const RateLimit = require('express-rate-limit');
 const cors = require('cors');
 var app = express();
 const EventoPubblico = require('./events/EventiPub.js');
@@ -30,6 +31,17 @@ app.use('/api/v2/EventiPubblici', EventoPubblico);
 app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v2/Utenti', regandric);
 app.use('/api/v2/RecuperoPassword', recPsw);
+
+var limiter = RateLimit({
+    windowMs: 1*60*1000, //1 minute
+    max: 100, //Limit each IP to 10 requests per minute
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+//Apply rate limiter to all requests
+//Avoids Denial of Service attacks by limiting the number of requests per IP
+app.use(limiter);
 
 
 app.use(tokenChecker);

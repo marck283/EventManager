@@ -89,14 +89,9 @@ router.post('', async (req, res) => {
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
 
-        if(typeof req.body.durata === "number"){
-
-
-        }else{
-
+        if(typeof req.body.durata !== "number"){
             res.status(400).json({error: "Campo non del formato corretto"}).send();
             return;
-
         }
 
         if(req.body.data == "" || req.body.data == undefined ||

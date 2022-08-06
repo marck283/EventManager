@@ -1356,6 +1356,19 @@ paths:
                   error:
                     type: string
                     description: "Messaggio d'errore"
+        '429':
+          description: Troppe richieste al server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Messaggio di errore
+                  statusCode:
+                    type: number
+                    description: Il codice restituito quando le richieste sono limitate
     get:
       description: >-
         Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
