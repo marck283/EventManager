@@ -521,7 +521,7 @@ router.post('/:id/Inviti', async (req, res) => {
 
 
 
-        var utente = await Users.find({ email: req.body.email })
+        var utente = await Users.find({ email: {$eq: req.body.email} })
 
         if (utente.length == 0) {
             res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
