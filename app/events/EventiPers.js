@@ -6,56 +6,56 @@ const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
 
-router.patch('/:id', async(req, res) => {
-    
+router.patch('/:id', async (req, res) => {
+
     //var utent = req.loggedUser.id;
     var utent = req.loggedUser.id;
     var id_evento = req.params.id;
-    
-    try{
-        
+
+    try {
+
         let evento = await eventPersonal.findById(id_evento);
-        
-        if(evento == undefined){
-            res.status(404).json({error: "Non esiste alcun evento personale con l'id specificato."});
+
+        if (evento == undefined) {
+            res.status(404).json({ error: "Non esiste alcun evento personale con l'id specificato." });
             return;
         }
-        
-        if(utent != evento.organizzatoreID){
-            res.status(403).json({error: "Non sei autorizzato a modificare l'evento."});
+
+        if (utent != evento.organizzatoreID) {
+            res.status(403).json({ error: "Non sei autorizzato a modificare l'evento." });
             return;
         }
-        
-        if(req.body.nomeAtt != "" && req.body.nomeAtt != undefined){
+
+        if (req.body.nomeAtt != "" && req.body.nomeAtt != undefined) {
             evento.nomeAtt = req.body.nomeAtt;
         }
-        if(req.body.categoria != "" && req.body.categoria != undefined){
+        if (req.body.categoria != "" && req.body.categoria != undefined) {
             evento.categoria = req.body.categoria
         }
-        if(req.body.indirizzo != "" && req.body.indirizzo != undefined){
+        if (req.body.indirizzo != "" && req.body.indirizzo != undefined) {
             evento.luogoEv.indirizzo = req.body.indirizzo
         }
-        if(req.body.citta != "" && req.body.citta != undefined){
+        if (req.body.citta != "" && req.body.citta != undefined) {
             evento.luogoEv.citta = req.body.citta;
         }
-        
+
         await evento.save();
         res.location("/api/v2/EventiPersonali/" + id_evento).status(200).send();
         console.log('Evento personale modificato con successo');
-        
-    }catch(error){
+
+    } catch (error) {
         console.log(error);
-        res.status(500).json({error: "Errore lato server."}).send();
+        res.status(500).json({ error: "Errore lato server." }).send();
     }
-    
+
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', async (req, res) => {
 
-    try{
+    try {
         let eventoPersonale = await eventPersonal.findById(req.params.id);
-        if(eventoPersonale == undefined ){
-            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+        if (eventoPersonale == undefined) {
+            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
 
         }
@@ -70,9 +70,9 @@ router.get('/:id', async(req, res) => {
             luogoEv: eventoPersonale.luogoEv,
             organizzatore: organizzatore.nome
         });
-    }catch(error){
+    } catch (error) {
         console.log(error);
-        res.status(500).json({error: "Errore nel Server"}).send();
+        res.status(500).json({ error: "Errore nel Server" }).send();
     }
 
 });
@@ -81,39 +81,39 @@ router.get('/:id', async(req, res) => {
 
 router.post('', async (req, res) => {
 
-    utent= req.loggedUser.id;
-    try{
+    utent = req.loggedUser.id;
+    try {
 
 
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
 
-        if(typeof req.body.durata !== "number"){
-            res.status(400).json({error: "Campo non del formato corretto"}).send();
+        if (typeof req.body.durata !== "number") {
+            res.status(400).json({ error: "Campo non del formato corretto" }).send();
             return;
         }
 
-        if(req.body.data == "" || req.body.data == undefined ||
-         req.body.durata <= 0 || req.body.durata == undefined || 
-         req.body.ora == "" || req.body.ora == undefined ||
-         req.body.categoria == "" || req.body.categoria == undefined ||
-         req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
-         req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
-         req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined){
-            res.status(400).json({error: "Campo vuoto o indefinito"}).send();
+        if (req.body.data == "" || req.body.data == undefined ||
+            req.body.durata <= 0 || req.body.durata == undefined ||
+            req.body.ora == "" || req.body.ora == undefined ||
+            req.body.categoria == "" || req.body.categoria == undefined ||
+            req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
+            req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
+            req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined) {
+            res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
             return;
 
         }
 
-        
+
         var ElencoDate = req.body.data;
         var dateEv = ElencoDate.split(",");
 
-        for(var elem of dateEv){
+        for (var elem of dateEv) {
             //controllo che la data ha un formato corretto
             var regu;
-            switch(d.getMonth() + 1) {
+            switch (d.getMonth() + 1) {
                 case 1:
                 case 3:
                 case 5:
@@ -137,148 +137,150 @@ router.post('', async (req, res) => {
                 }
             }
             regu += /[1-12]\/[1000-9999]/;
-            if(regu.test(elem)){
-                strin=elem.split("/");
-                if(strin.length>3){
-                    res.status(400).json({error: "formato data non valido"}).send()
+            if (regu.test(elem)) {
+                strin = elem.split("/");
+                if (strin.length > 3) {
+                    res.status(400).json({ error: "formato data non valido" }).send()
                     return;
-                }else{
-                    if(strin[0].length==2 && strin[1].length==2 && strin[2].length==4) {
+                } else {
+                    if (strin[0].length == 2 && strin[1].length == 2 && strin[2].length == 4) {
                         str1 = strin[0];
                         str2 = strin[1];
                         str3 = strin[3];
-                        if(strin[0][0]==0){
-                            str1=strin[0][1];
+                        if (strin[0][0] == 0) {
+                            str1 = strin[0][1];
 
                         }
-                        if(strin[1][0]==0){
-                            str2=strin[1][1];
+                        if (strin[1][0] == 0) {
+                            str2 = strin[1][1];
                         }
-                        switch(str1){
-                            case "1":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                        res.status(400).json({error: "formato data non valido"}).send()
-                                        return;
+                        switch (str1) {
+                            case "1": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
+                                    return;
 
                                 }
                                 break;
                             }
-                            case "2":{
-                                if((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)){
-                                    if(Number(str2)>29 || Number(str2)<0){
-                                        res.status(400).json({error: "formato data non valido"}).send()
-                                        return;
-
-                                    }
-                                }else{
-                                    if(Number(str2)>28 || Number(str2)<0){
-                                        res.status(400).json({error: "formato data non valido"}).send()
+                            case "2": {
+                                if ((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) {
+                                    if (Number(str2) > 29 || Number(str2) < 0) {
+                                        res.status(400).json({ error: "formato data non valido" }).send()
                                         return;
 
                                     }
+                                } else {
+                                    if (Number(str2) > 28 || Number(str2) < 0) {
+                                        res.status(400).json({ error: "formato data non valido" }).send()
+                                        return;
+
+                                    }
 
 
                                 }
-                                
+
                                 break;
 
                             }
-                            case "3":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "3": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
 
                             }
-                            case "4":{
-                                if(Number(str2)>30 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "4": {
+                                if (Number(str2) > 30 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
 
                             }
-                            case "5":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "5": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
 
                             }
-                            case "6":{
-                                if(Number(str2)>30 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "6": {
+                                if (Number(str2) > 30 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
                             }
-                            case "7":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "8":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "9":{
-                                if(Number(str2)>30 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "7": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
 
                             }
-                            case "10":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "8": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
                             }
-                            case "11":{
-                                if(Number(str2)>30 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "9": {
+                                if (Number(str2) > 30 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
+                                    return;
+
+                                }
+                                break;
+
+                            }
+                            case "10": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
                             }
-                            case "12":{
-                                if(Number(str2)>31 || Number(str2)<0){
-                                    res.status(400).json({error: "formato data non valido"}).send()
+                            case "11": {
+                                if (Number(str2) > 30 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
                                     return;
 
                                 }
                                 break;
                             }
-                            default: {res.status(400).json({error: "formato data non valido"}).send()
-                                        return;}
+                            case "12": {
+                                if (Number(str2) > 31 || Number(str2) < 0) {
+                                    res.status(400).json({ error: "formato data non valido" }).send()
+                                    return;
+
+                                }
+                                break;
+                            }
+                            default: {
+                                res.status(400).json({ error: "formato data non valido" }).send()
+                                return;
+                            }
 
 
 
                         }
-                        
 
-                    }else{
 
-                        res.status(400).json({error: "formato data non valido"}).send()
+                    } else {
+
+                        res.status(400).json({ error: "formato data non valido" }).send()
                         return;
 
 
@@ -287,18 +289,18 @@ router.post('', async (req, res) => {
 
                 }
 
-            }else{
-                res.status(400).json({error: "formato data errato"}).send()
-                return; 
+            } else {
+                res.status(400).json({ error: "formato data errato" }).send()
+                return;
 
             }
 
             //controllo che le date non siano ripetute
             var count = 0;
-            dateEv.forEach( e => {if(e==elem){count += 1 }});
-            if(count > 1){
-                res.status(400).json({error: "date ripetute"}).send()
-                return; 
+            dateEv.forEach(e => { if (e == elem) { count += 1 } });
+            if (count > 1) {
+                res.status(400).json({ error: "date ripetute" }).send()
+                return;
 
             }
 
@@ -312,187 +314,141 @@ router.post('', async (req, res) => {
             var yy = date.getFullYear()
             dats = data.split('/');
 
-           
-            if(dats[0][0] == '0'){
 
-              mese = dats[0][1];
+            if (dats[0][0] == '0') {
 
-            }else{
+                mese = dats[0][1];
 
-              mese = dats[0];
+            } else {
+
+                mese = dats[0];
 
             }
 
 
-            if(dats[1][0] == '0'){
+            if (dats[1][0] == '0') {
 
-              giorno = dats[1][1];
+                giorno = dats[1][1];
 
-            }else{
+            } else {
 
-              giorno = dats[1];
+                giorno = dats[1];
 
             }
 
             anno = dats[2]
 
-           
-
-            if(yy > Number(anno)){
-
-              res.status(403).json({error: "giorno non disponibile"}).send()
-              return; 
-
-            }else{
-
-           
-              if(yy == Number(anno)){
-               
-
-                if(mm > Number(mese)){
-                  res.status(403).json({error: "giorno non disponibile"}).send()
-                  return; 
-                 
-                }else{
-
-                  if(mm == Number(mese)){
-                 
-
-                    if(dd > Number(giorno)){
-                      res.status(403).json({error: "giorno non disponibile"}).send()
-                      return; 
-
-                    }
-
-                  }
-               
-
-                }
-
-              }
-
-            }
 
 
+            if (yy > Number(anno)) {
 
-
-
-
-        }
-
-    
-
-        //controllo che l'ora sia del formato corretto
-        var reg= /[0-23]:[0-59]/;
-        var ora = req.body.ora;
-        if(reg.test(ora)){
-            strin=ora.split(":");
-            if(strin.length>2){
-                res.status(400).json({error: "formato ora non valido"}).send()
+                res.status(403).json({ error: "giorno non disponibile" }).send()
                 return;
-            }else{
-                if(strin[0].length==2 && strin[1].length==2) {
-                    str1 = strin[0];
-                    str2 = strin[1];
-                    if(strin[0][0]==0){
-                        str1=strin[0][1];
 
-                    }
-                    if(strin[1][0]==0){
-                        str2=strin[1][1];
-                    }
-                    if(Number(str1)<=23 && Number(str1)>=0 && Number(str2)<=59 && Number(str2)>=0){
-                        var d = new Date()
-                        //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                        if(ElencoDate != ""){
-                                var mm = d.getMonth() + 1
-                                var dd = d.getDate()
-                                var yy = d.getFullYear()
-
-                                var giorno = ""
-                                var mese = ""
-
-                                if(dd < 10){
-
-                                    giorno = "0" + dd;
-
-                                }else{
-
-                                    giorno = "" + dd;
-                                }
-
-                                if(mm < 10){
-
-                                    mese = "0" + mm;
-
-                                }else{
-
-                                    mese = "" + mm;
-                                }
-
-                                var anno = "" + yy;
-
-                                var temp_poz = mese + '/' + giorno + '/' + anno;
-
-                                if(ElencoDate.includes(temp_poz) == true){
+            } else {
 
 
-                                    if(Number(str1) >= d.getHours()){
-                            
-                         
-                            if(Number(str1) == d.getHours()){
-
-                                
-
-                                if(Number(str2) < d.getMinutes()){
-
-                                       res.status(403).json({error: "orario non permesso"}).send()
-                                        return;
+                if (yy == Number(anno)) {
 
 
-                                }
+                    if (mm > Number(mese)) {
+                        res.status(403).json({ error: "giorno non disponibile" }).send()
+                        return;
 
+                    } else {
+
+                        if (mm == Number(mese)) {
+
+
+                            if (dd > Number(giorno)) {
+                                res.status(403).json({ error: "giorno non disponibile" }).send()
+                                return;
 
                             }
 
-
-                        }else{
-                            res.status(403).json({error: "orario non permesso"}).send()
-                            return;
-
                         }
 
 
+                    }
 
-                                }
+                }
+
+            }
 
 
+
+
+
+
+        }
+
+
+
+        //controllo che l'ora sia del formato corretto
+        var reg = /[0-23]:[0-59]/;
+        var ora = req.body.ora;
+        if (reg.test(ora)) {
+            strin = ora.split(":");
+            if (strin.length > 2) {
+                res.status(400).json({ error: "formato ora non valido" }).send()
+                return;
+            } else {
+                if (strin[0].length == 2 && strin[1].length == 2) {
+                    str1 = strin[0];
+                    str2 = strin[1];
+                    if (strin[0][0] == 0) {
+                        str1 = strin[0][1];
+                    }
+                    if (strin[1][0] == 0) {
+                        str2 = strin[1][1];
+                    }
+                    if (Number(str1) <= 23 && Number(str1) >= 0 && Number(str2) <= 59 && Number(str2) >= 0) {
+                        var d = new Date();
+                        //Controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
+                        if (ElencoDate != "") {
+                            var mm = d.getMonth() + 1
+                            var dd = d.getDate()
+                            var yy = d.getFullYear()
+
+                            var giorno = ""
+                            var mese = ""
+
+                            if (dd < 10) {
+                                giorno = dd.toString().padStart(2, '0');
+                            } else {
+                                giorno = "" + dd;
+                            }
+
+                            if (mm < 10) {
+                                mese = mm.toString().padStart(2, '0');
+                            } else {
+                                mese = "" + mm;
+                            }
+
+                            var anno = "" + yy;
+
+                            var temp_poz = mese + '/' + giorno + '/' + anno;
+
+                            if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
+                                res.status(403).json({ error: "orario non permesso" }).send()
+                                return;
+                            }
                         }
-                    
-
-                    }else{
-                        res.status(400).json({error: "formato ora non valido"}).send()
+                    } else {
+                        res.status(400).json({ error: "formato ora non valido" }).send()
                         return;
                     }
-                    
-                }else{
-                    res.status(400).json({error: "formato ora non valido"}).send()
+                } else {
+                    res.status(400).json({ error: "formato ora non valido" }).send()
                     return;
                 }
             }
-            
-
-        }else{
-                res.status(400).json({error: "formato ora non valido"}).send()
-                return;
+        } else {
+            res.status(400).json({ error: "formato ora non valido" }).send()
+            return;
         }
-            
-        
-    
-        
-        
 
-        let eventP = new eventPersonal({data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt , luogoEv: {indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta}, organizzatoreID: utent});
+        let eventP = new eventPersonal({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
 
 
         //Si salva il documento personale
@@ -504,8 +460,6 @@ router.post('', async (req, res) => {
         //Si salva il modulo dell'utente
         await utente.save();
 
-
-
         let eventId = eventP.id;
 
         console.log('Evento salvato con successo');
@@ -515,12 +469,10 @@ router.post('', async (req, res) => {
          */
         res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
 
-    }catch(error){
+    } catch (error) {
         console.log(error);
-        res.status(500).json({error: "Errore nel server"}).send();
-
+        res.status(500).json({ error: "Errore nel server" }).send();
     }
-    
 });
 
 module.exports = router;
