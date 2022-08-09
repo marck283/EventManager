@@ -112,8 +112,8 @@ router.post('', async (req, res) => {
 
         for (var elem of dateEv) {
             //controllo che la data ha un formato corretto
-            var regu;
-            switch (d.getMonth() + 1) {
+            var regu, data1 = new Date(elem);
+            switch (data1.getMonth() + 1) {
                 case 1:
                 case 3:
                 case 5:
@@ -121,22 +121,21 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /[1-31]/;
+                    regu = /[1-31][01-12][1000-9999]/;
                     break;
                 }
                 case 2: {
-                    regu = /[1-28]/;
+                    regu = /[1-28][01-12][1000-9999]/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /[1-30]/;
+                    regu = /[1-30][01-12][1000-9999]/;
                     break;
                 }
             }
-            regu += /[1-12]\/[1000-9999]/;
             if (regu.test(elem)) {
                 strin = elem.split("/");
                 if (strin.length > 3) {
