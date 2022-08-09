@@ -1,6 +1,6 @@
 var requestPu = () => { //funzione che mi permette di fare i vari controlli delle info per creare un certo evento pubblico date 
     //in input nella pagina e poi mi permette di fare un richiesta ajax al server. La risposta la gestisco stampandomi il percorso per quella risorsa
-    var inviare = true
+    var inviare = true;
     if (ElencoDate == "") {
         document.getElementById("vuotoDa").innerHTML = "inserire una data";
         inviare = false;
