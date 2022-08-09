@@ -169,7 +169,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "formato data non valido"});
+        .expect(400, {error: "Formato data non valido"});
     });
 
     //Test case scritto il 3 giugno

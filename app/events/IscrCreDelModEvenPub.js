@@ -597,7 +597,7 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if ((typeof req.body.durata !== "number") || (typeof req.body.maxPers !== "number")) {
+        if (typeof req.body.durata !== "number" || typeof req.body.maxPers !== "number") {
             res.status(400).json({ error: "Campo non del formato corretto" }).send();
             return;
         }
@@ -641,6 +641,10 @@ router.post('', async (req, res) => {
                 case 11: {
                     regu = /^(04|06|09|11)\/(19|30|[0-2][1-8])\/\d{4}$/;
                     break;
+                }
+                default: {
+                    res.status(400).json({error: "Formato data non valido"}).send();
+                    return;
                 }
             }
             if (regu.test(elem)) {
@@ -755,7 +759,7 @@ router.post('', async (req, res) => {
         }
 
         //controllo che l'ora sia del formato corretto
-        var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/
+        var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
         var ora = req.body.ora;
         if (reg.test(ora)) {
             strin = ora.split(":");

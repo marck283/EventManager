@@ -256,7 +256,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "formato data non valido"});
+        .expect(400, {error: "Formato data non valido"});
     });
 
     //Test case scritto il 3 giugno
@@ -376,7 +376,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(403, {error: "orario non permesso"});
+        .expect(403, {error: "orario non permesso"}); //Perché questo test restituisce "formato data errato"?
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'nomeAtt' non compilato", () => {

@@ -456,6 +456,10 @@ router.post('', async (req, res) => {
                     regu = /[1-30][01-12][1000-9999]/;
                     break;
                 }
+                default: {
+                    res.status(400).json({error: "Formato data non valido"}).send();
+                    return;
+                }
             }
             if(regu.test(elem)){
                 strin=elem.split("/");

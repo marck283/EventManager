@@ -177,7 +177,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "formato data non valido"});
+        .expect(400, {error: "Formato data non valido"});
     });
 
     //Test case scritto il 3 giugno

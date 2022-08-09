@@ -35,6 +35,10 @@ describe("GET /api/v2/Utenti", () => {
                         nome: 'Marco Lasagna',
                         email: 'marcolasagna9@gmail.com',
                         urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
+                    },
+                    {
+                        email: 'gg.ee@gmail.com',
+                        urlUtente: '/api/v2/Utenti/62f2d9d8374c7cfeeb8f1713'
                     }
                 ]
             });

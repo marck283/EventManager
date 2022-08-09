@@ -121,177 +121,84 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /[1-31][01-12][1000-9999]/;
+                    regu = /^(01|03|05|07|08|10|12)\/(19|3[0-1]|[0-2][1-9])\/\d{4}$/;
                     break;
                 }
                 case 2: {
-                    regu = /[1-28][01-12][1000-9999]/;
+                    regu = /^02\/(19|[0-2][1-8])\/\d{4}$/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /[1-30][01-12][1000-9999]/;
+                    regu = /^(04|06|09|11)\/(19|30|[0-2][1-8])\/\d{4}$/;
                     break;
+                }
+                default: {
+                    res.status(400).json({error: "Formato data non valido"}).send();
+                    return;
                 }
             }
             if (regu.test(elem)) {
                 strin = elem.split("/");
-                if (strin.length > 3) {
-                    res.status(400).json({ error: "formato data non valido" }).send()
-                    return;
-                } else {
-                    if (strin[0].length == 2 && strin[1].length == 2 && strin[2].length == 4) {
-                        str1 = strin[0];
-                        str2 = strin[1];
-                        str3 = strin[3];
-                        if (strin[0][0] == 0) {
-                            str1 = strin[0][1];
+                str1 = strin[0];
+                str2 = strin[1];
+                str3 = strin[3];
+                if (strin[0][0] == 0) {
+                    str1 = strin[0][1];
 
+                }
+                if (strin[1][0] == 0) {
+                    str2 = strin[1][1];
+                }
+                switch (str1) {
+                    case "1":
+                    case "3":
+                    case "5":
+                    case "7":
+                    case "8":
+                    case "10":
+                    case "12": {
+                        if (Number(str2) > 31 || Number(str2) < 0) {
+                            res.status(400).json({ error: "formato data non valido" }).send()
+                            return;
                         }
-                        if (strin[1][0] == 0) {
-                            str2 = strin[1][1];
-                        }
-                        switch (str1) {
-                            case "1": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "2": {
-                                if ((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) {
-                                    if (Number(str2) > 29 || Number(str2) < 0) {
-                                        res.status(400).json({ error: "formato data non valido" }).send()
-                                        return;
-
-                                    }
-                                } else {
-                                    if (Number(str2) > 28 || Number(str2) < 0) {
-                                        res.status(400).json({ error: "formato data non valido" }).send()
-                                        return;
-
-                                    }
-
-
-                                }
-
-                                break;
-
-                            }
-                            case "3": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "4": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "5": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "6": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "7": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "8": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "9": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-
-                            }
-                            case "10": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "11": {
-                                if (Number(str2) > 30 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            case "12": {
-                                if (Number(str2) > 31 || Number(str2) < 0) {
-                                    res.status(400).json({ error: "formato data non valido" }).send()
-                                    return;
-
-                                }
-                                break;
-                            }
-                            default: {
+                        break;
+                    }
+                    case "2": {
+                        if ((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) {
+                            if (Number(str2) > 29 || Number(str2) < 0) {
                                 res.status(400).json({ error: "formato data non valido" }).send()
                                 return;
                             }
-
-
+                        } else {
+                            if (Number(str2) > 28 || Number(str2) < 0) {
+                                res.status(400).json({ error: "formato data non valido" }).send()
+                                return;
+                            }
+                        }
+                        break;
+                    }
+                    case "4":
+                    case "6":
+                    case "9":
+                    case "11": {
+                        if (Number(str2) > 30 || Number(str2) < 0) {
+                            res.status(400).json({ error: "formato data non valido" }).send()
+                            return;
 
                         }
-
-
-                    } else {
-
+                        break;
+                    }
+                    default: {
                         res.status(400).json({ error: "formato data non valido" }).send()
                         return;
-
-
                     }
-
-
                 }
-
             } else {
                 res.status(400).json({ error: "formato data errato" }).send()
                 return;
-
             }
 
             //controllo che le date non siano ripetute
@@ -384,7 +291,7 @@ router.post('', async (req, res) => {
 
 
         //controllo che l'ora sia del formato corretto
-        var reg = /[0-23]:[0-59]/;
+        var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
         var ora = req.body.ora;
         if (reg.test(ora)) {
             strin = ora.split(":");

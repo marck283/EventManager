@@ -9,7 +9,7 @@ var jwt = require('jsonwebtoken');
 router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    var obj = {}, token = req.header("x-access-token");
+    var obj = {};
     
     
     var user = req.loggedUser.id;
@@ -58,7 +58,6 @@ var isNumeric = str => parseInt(str) == str ? true : false;
 
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    var obj = {}, token = req.header("x-access-token");
     
     var user = req.loggedUser.id;
 

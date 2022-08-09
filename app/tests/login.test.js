@@ -15,7 +15,7 @@ describe('POST /api/v2/authentications', () => {
                 return {
                     exec: function(){
                         return {
-                            _id: '2222',
+                            _id: '62e1667818bfa6ca7793fdeb',
                             nome: 'Marco Villa',
                             email: 'marco.villa@gmail.com',
                             tel: '',
@@ -40,15 +40,5 @@ describe('POST /api/v2/authentications', () => {
         send({email: 'marco.villa@gmail.com', password: 'abcd'}).
         expect('Content-Type', /json/).expect(403).expect({success: false, message: 'Autenticazione fallita. Password sbagliata.'});
         
-    });
-    
-    //This test does not work any longer because CryptoJS is not defined in Node.js
-    /*test('POST /api/v2/authentications effettuata con successo dovrebbe restituire 200', async() => {
-        
-        await request(app).post('/api/v2/authentications').
-        send({email: 'marco.villa@gmail.com', password: CryptoJS.SHA3('Travel012095!', {outputLength: 512}).toString()}).
-        expect('Content-Type', /json/).expect(200);
-        
-    });*/
-    
+    });    
 });
