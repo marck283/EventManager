@@ -51,6 +51,18 @@ router.patch('/:id', async (req, res) => {
     return;
 });
 
+var spliceArr = (param1, param2) => {
+    var arr = param1, index = arr.indexOf(param2);
+    if(index > -1) {
+        return new Promise.resolve(() =>{
+            arr.splice(index, 1);
+            param1 = arr;
+        });
+    } else {
+        return new Promise.reject("L'utente non risulta iscritto all'evento.");
+    }
+}
+
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPrivat.findById(req.params.idEvento);
@@ -73,33 +85,23 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        var array1 = evento.partecipantiID;
-        var index1 = array1.indexOf(utente);
-        if (index1 > -1) {
-            array1.splice(index1, 1);
-        } else {
+        spliceArr(evento.partecipantiID, utente)
+        .then(async () => {
+            await evento.save(); //Aggiornamento partecipantiID
+            spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
+            .then(async () => {
+                utenteObj.EventiIscrtto = array2;
+                await utenteObj.save(); //Aggiornamento EventiIscritto
+                await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+                console.log('Annullamento iscrizione effettuato con successo.');
+                res.status(204).send();
+            });
+        })
+        //The error in the promise gets propagated to the catch block
+        .catch(err => {
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
-        }
-        evento.partecipantiID = array1;
-        await evento.save(); //Aggiornamento partecipantiID
-
-        var array2 = utenteObj.EventiIscrtto;
-        var index2 = array2.indexOf(req.params.idEvento);
-        if (index2 > -1) {
-            array2.splice(index2, 1);
-        } else {
-            res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-            return;
-        }
-        utenteObj.EventiIscrtto = array2;
-        await utenteObj.save(); //Aggiornamento EventiIscritto
-
-        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
-
-        console.log('Annullamento iscrizione effettuato con successo.');
-
-        res.status(204).send();
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
