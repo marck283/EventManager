@@ -10,7 +10,7 @@ const crypto = require('bcrypt');
 // ---------------------------------------------------------
 router.post('', async function (req, res) {
 	// find the user
-	let user = await Utente.findOne({ email: {$eq: req.body.email} });
+	let user = await Utente.findOne({ email: {$eq: req.body.email} }).exec();
 
 	// user not found
 	if (!user) {

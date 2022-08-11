@@ -11,7 +11,7 @@ describe('POST /api/v2/authentications', () => {
         const Utente = require('../collezioni/utenti.js');
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation((criterias) => {
             
-            if(criterias.email == 'marco.villa@gmail.com'){
+            if(criterias.email.$eq == 'marco.villa@gmail.com'){
                 return {
                     exec: function(){
                         return {
