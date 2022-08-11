@@ -22,6 +22,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.disable('x-powered-by'); //Disabling x-powered-by for security reasons
+app.enable('access-control-allow-origin'); //Enabling Access-Control-Allow-Origin for security reasons
+app.enable('origin');
+app.enable('vary');
+app.set('origin', 'https://eventmanagerzlf.herokuapp.com');
+app.set('access-control-allow-origin', 'https://eventmanagerzlf.herokuapp.com');
+app.set('vary', 'origin');
 
 /**
  * Serve front-end static files

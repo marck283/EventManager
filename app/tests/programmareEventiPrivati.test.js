@@ -286,7 +286,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: String(dateObj.getMonth() + 1).padStart(2, '0') + "/" + String(dateObj.getDate()).padStart(2, '0') + "/" + dateObj.getFullYear(),
+            data: (dateObj.getMonth() + 1).toString().padStart(2, '0') + "/" + String(dateObj.getDate()).padStart(2, '0') + "/" + dateObj.getFullYear(),
             ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
             nomeAtt: "Girare a vuoto 4",
             categoria: "svago",
@@ -297,7 +297,8 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(403, {error: "orario non permesso"});
+        .expect(403, {error: "orario non permesso"})
+        .then((res, err) => console.log(dateObj));
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'nomeAtt' non compilato", () => {
