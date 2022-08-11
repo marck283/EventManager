@@ -47,7 +47,7 @@ var limiter = RateLimit({
 });
 
 //Apply rate limiter to all requests
-//Avoids Denial of Service attacks by limiting the number of requests per IP
+//Avoids Brute Force attacks by limiting the number of requests per IP
 app.use(limiter);
 
 

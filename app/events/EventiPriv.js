@@ -88,13 +88,14 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         spliceArr(evento.partecipantiID, utente)
         .then(async () => {
             await evento.save(); //Aggiornamento partecipantiID
-            spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
+            return spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
             .then(async () => {
                 utenteObj.EventiIscrtto = array2;
                 await utenteObj.save(); //Aggiornamento EventiIscritto
                 await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
                 console.log('Annullamento iscrizione effettuato con successo.');
                 res.status(204).send();
+                return;
             });
         })
         //The error in the promise gets propagated to the catch block
