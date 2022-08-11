@@ -628,18 +628,18 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(19|3[0-1]|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/\d{4}$/;
                     break;
                 }
                 case 2: {
-                    regu = /^02\/(19|[0-2][1-8])\/\d{4}$/;
+                    regu = /^02\/(19|20|[0-2][1-8])\/\d{4}$/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /^(04|06|09|11)\/(19|30|[0-2][1-8])\/\d{4}$/;
+                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/\d{4}$/;
                     break;
                 }
                 default: {
@@ -647,60 +647,8 @@ router.post('', async (req, res) => {
                     return;
                 }
             }
-            if (regu.test(elem)) {
-                strin = elem.split("/");
-                str1 = strin[0];
-                str2 = strin[1];
-                str3 = strin[3];
-                if (strin[0][0] == 0) {
-                    str1 = strin[0][1];
-                }
-                if (strin[1][0] == 0) {
-                    str2 = strin[1][1];
-                }
-                switch (str1) {
-                    case "1":
-                    case "3":
-                    case "5":
-                    case "7":
-                    case "8":
-                    case "10":
-                    case "12": {
-                        if (Number(str2) > 31 || Number(str2) < 0) {
-                            res.status(400).json({ error: "formato data non valido" }).send()
-                            return;
-                        }
-                        break;
-                    }
-                    case "2": {
-                        if (((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) && (Number(str2) > 29 || Number(str2) < 0)) {
-                            res.status(400).json({ error: "formato data non valido" }).send()
-                            return;
-                        } else {
-                            if (Number(str2) > 28 || Number(str2) < 0) {
-                                res.status(400).json({ error: "formato data non valido" }).send()
-                                return;
-                            }
-                        }
-                        break;
-                    }
-                    case "4":
-                    case "6":
-                    case "9":
-                    case "11": {
-                        if (Number(str2) > 30 || Number(str2) < 0) {
-                            res.status(400).json({ error: "formato data non valido" }).send()
-                            return;
-                        }
-                        break;
-                    }
-                    default: {
-                        res.status(400).json({ error: "formato data non valido" }).send()
-                        return;
-                    }
-                }
-            } else {
-                res.status(400).json({ error: "formato data errato" }).send()
+            if (!regu.test(elem)) {
+                res.status(400).json({ error: "formato data non valido" }).send()
                 return;
             }
 
@@ -738,23 +686,9 @@ router.post('', async (req, res) => {
 
             anno = dats[2];
 
-            if (yy > Number(anno)) {
+            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "giorno non disponibile" }).send()
                 return;
-            } else {
-                if (yy == Number(anno)) {
-                    if (mm > Number(mese)) {
-                        res.status(403).json({ error: "giorno non disponibile" }).send()
-                        return;
-                    } else {
-                        if (mm == Number(mese)) {
-                            if (dd > Number(giorno)) {
-                                res.status(403).json({ error: "giorno non disponibile" }).send()
-                                return;
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -778,10 +712,8 @@ router.post('', async (req, res) => {
                 var dd = d.getDate()
                 var yy = d.getFullYear()
 
-                var giorno = "", mese = "";
-
-                (dd < 10) ? giorno = "0" + dd : giorno = dd.toString();
-                (mm < 10) ? mese = "0" + mm : mese = mm.toString();
+                var giorno = dd.toString().padStart(2, '0');
+                var mese = mm.toString().padStart(2, '0');
 
                 var anno = yy.toString();
 

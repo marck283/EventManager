@@ -440,7 +440,7 @@ router.post('', async (req, res) => {
                     break;
                 }
                 case 2: {
-                    regu = /^02\/(20|[0-2][1-8])\/\d{4}$/;
+                    regu = /^02\/(19|20|[0-2][1-8])\/\d{4}$/;
                     break;
                 }
                 case 4:
@@ -491,30 +491,15 @@ router.post('', async (req, res) => {
                 giorno = dats[1];
             }
             anno = dats[2];
-            if (yy > Number(anno)) {
+            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "giorno non disponibile" }).send()
                 return;
-            } else {
-                if (yy == Number(anno)) {
-                    if (mm > Number(mese)) {
-                        res.status(403).json({ error: "giorno non disponibile" }).send()
-                        return;
-                    } else {
-                        if (mm == Number(mese)) {
-                            if (dd > Number(giorno)) {
-                                res.status(403).json({ error: "giorno non disponibile" }).send()
-                                return;
-                            }
-                        }
-                    }
-                }
             }
         }
 
         //controllo che l'ora sia del formato corretto
         var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
         var ora = req.body.ora;
-        console.log(ora);
         if (reg.test(ora)) {
             strin = ora.split(":");
             str1 = strin[0];
@@ -532,20 +517,8 @@ router.post('', async (req, res) => {
                 var dd = d.getDate()
                 var yy = d.getFullYear()
 
-                var giorno = ""
-                var mese = ""
-                if (dd < 10) {
-                    giorno = dd.toString().padStart(2, '0');
-                } else {
-                    giorno = "" + dd;
-                }
-
-                if (mm < 10) {
-                    mese = mm.toString().padStart(2, '0');
-                } else {
-                    mese = "" + mm;
-                }
-
+                var giorno = dd.toString().padStart(2, '0');
+                var mese = mm.toString().padStart(2, '0');
                 var anno = "" + yy;
 
                 var temp_poz = mese + '/' + giorno + '/' + anno;
@@ -556,7 +529,6 @@ router.post('', async (req, res) => {
                 }
             }
         } else {
-            console.log("formato ora non valido");
             res.status(400).json({ error: "formato ora non valido" }).send()
             return;
         }

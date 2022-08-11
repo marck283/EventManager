@@ -3,7 +3,17 @@ const router = express.Router();
 const Utente = require('./collezioni/utenti.js'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
+const RateLimit = require('express-rate-limit');
+const { runInContext } = require('vm');
 
+var limiter = RateLimit({
+    windowMs: 1*60*1000, //1 minute
+    max: 100, //Limit each IP to 100 requests per minute
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+router.use(limiter);
 
 // ---------------------------------------------------------
 // route to authenticate and get a new token

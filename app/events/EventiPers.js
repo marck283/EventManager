@@ -83,8 +83,6 @@ router.post('', async (req, res) => {
 
     utent = req.loggedUser.id;
     try {
-
-
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
@@ -103,7 +101,6 @@ router.post('', async (req, res) => {
             req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined) {
             res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
             return;
-
         }
 
 
@@ -121,83 +118,27 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(19|3[0-1]|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/\d{4}$/;
                     break;
                 }
                 case 2: {
-                    regu = /^02\/(19|[0-2][1-8])\/\d{4}$/;
+                    regu = /^02\/(19|20|[0-2][1-8])\/\d{4}$/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /^(04|06|09|11)\/(19|30|[0-2][1-8])\/\d{4}$/;
+                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/\d{4}$/;
                     break;
                 }
                 default: {
-                    res.status(400).json({error: "Formato data non valido"}).send();
+                    res.status(400).json({ error: "Formato data non valido" }).send();
                     return;
                 }
             }
-            if (regu.test(elem)) {
-                strin = elem.split("/");
-                str1 = strin[0];
-                str2 = strin[1];
-                str3 = strin[3];
-                if (strin[0][0] == 0) {
-                    str1 = strin[0][1];
-
-                }
-                if (strin[1][0] == 0) {
-                    str2 = strin[1][1];
-                }
-                switch (str1) {
-                    case "1":
-                    case "3":
-                    case "5":
-                    case "7":
-                    case "8":
-                    case "10":
-                    case "12": {
-                        if (Number(str2) > 31 || Number(str2) < 0) {
-                            res.status(400).json({ error: "formato data non valido" }).send()
-                            return;
-                        }
-                        break;
-                    }
-                    case "2": {
-                        if ((Number(str3) % 400) == 0 || ((Number(str3) % 4) == 0 && (Number(str3) % 100) != 0)) {
-                            if (Number(str2) > 29 || Number(str2) < 0) {
-                                res.status(400).json({ error: "formato data non valido" }).send()
-                                return;
-                            }
-                        } else {
-                            if (Number(str2) > 28 || Number(str2) < 0) {
-                                res.status(400).json({ error: "formato data non valido" }).send()
-                                return;
-                            }
-                        }
-                        break;
-                    }
-                    case "4":
-                    case "6":
-                    case "9":
-                    case "11": {
-                        if (Number(str2) > 30 || Number(str2) < 0) {
-                            res.status(400).json({ error: "formato data non valido" }).send()
-                            return;
-
-                        }
-                        break;
-                    }
-                    default: {
-                        res.status(400).json({ error: "formato data non valido" }).send()
-                        return;
-                    }
-                }
-            } else {
-                res.status(400).json({ error: "formato data errato" }).send()
+            if (!regu.test(elem)) {
+                res.status(400).json({ error: "formato data non valido" }).send()
                 return;
             }
 
@@ -207,7 +148,6 @@ router.post('', async (req, res) => {
             if (count > 1) {
                 res.status(400).json({ error: "date ripetute" }).send()
                 return;
-
             }
 
 
@@ -242,110 +182,42 @@ router.post('', async (req, res) => {
 
             }
 
-            anno = dats[2]
+            anno = dats[2];
 
-
-
-            if (yy > Number(anno)) {
-
+            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "giorno non disponibile" }).send()
                 return;
-
-            } else {
-
-
-                if (yy == Number(anno)) {
-
-
-                    if (mm > Number(mese)) {
-                        res.status(403).json({ error: "giorno non disponibile" }).send()
-                        return;
-
-                    } else {
-
-                        if (mm == Number(mese)) {
-
-
-                            if (dd > Number(giorno)) {
-                                res.status(403).json({ error: "giorno non disponibile" }).send()
-                                return;
-
-                            }
-
-                        }
-
-
-                    }
-
-                }
-
             }
-
-
-
-
-
-
         }
 
-
-
         //controllo che l'ora sia del formato corretto
-        var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
+        var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
         var ora = req.body.ora;
         if (reg.test(ora)) {
             strin = ora.split(":");
-            if (strin.length > 2) {
-                res.status(400).json({ error: "formato ora non valido" }).send()
-                return;
-            } else {
-                if (strin[0].length == 2 && strin[1].length == 2) {
-                    str1 = strin[0];
-                    str2 = strin[1];
-                    if (strin[0][0] == 0) {
-                        str1 = strin[0][1];
-                    }
-                    if (strin[1][0] == 0) {
-                        str2 = strin[1][1];
-                    }
-                    if (Number(str1) <= 23 && Number(str1) >= 0 && Number(str2) <= 59 && Number(str2) >= 0) {
-                        var d = new Date();
-                        //Controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                        if (ElencoDate != "") {
-                            var mm = d.getMonth() + 1
-                            var dd = d.getDate()
-                            var yy = d.getFullYear()
+            str1 = strin[0];
+            str2 = strin[1];
+            if (strin[0][0] == 0) {
+                str1 = strin[0][1];
+            }
+            if (strin[1][0] == 0) {
+                str2 = strin[1][1];
+            }
+            var d = new Date();
+            //Controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
+            if (ElencoDate != "") {
+                var mm = d.getMonth() + 1
+                var dd = d.getDate()
+                var yy = d.getFullYear()
 
-                            var giorno = ""
-                            var mese = ""
+                var giorno = dd.toString().padStart(2, '0');
+                var mese = mm.toString().padStart(2, '0');
+                var anno = "" + yy;
 
-                            if (dd < 10) {
-                                giorno = dd.toString().padStart(2, '0');
-                            } else {
-                                giorno = "" + dd;
-                            }
+                var temp_poz = mese + '/' + giorno + '/' + anno;
 
-                            if (mm < 10) {
-                                mese = mm.toString().padStart(2, '0');
-                            } else {
-                                mese = "" + mm;
-                            }
-
-                            var anno = "" + yy;
-
-                            var temp_poz = mese + '/' + giorno + '/' + anno;
-
-                            if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
-                                res.status(403).json({ error: "orario non permesso" }).send()
-                                return;
-                            }
-                        }
-                    } else {
-                        res.status(400).json({ error: "formato ora non valido" }).send()
-                        return;
-                    }
-                } else {
-                    res.status(400).json({ error: "formato ora non valido" }).send()
+                if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
+                    res.status(403).json({ error: "orario non permesso" }).send()
                     return;
                 }
             }
