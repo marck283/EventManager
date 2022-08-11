@@ -17,11 +17,11 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }
     });
     UsersFSpy = jest.spyOn(Users, 'find').mockImplementation((criterias) => {
-      if(criterias.email == 'gg.aa@gmail.com'){
+      if(criterias.email.$eq == 'gg.aa@gmail.com'){
         return [{_id:'123',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}]
 
       }
-      if(criterias.email == 'gg.tt@gmail.com'){
+      if(criterias.email.$eq == 'gg.tt@gmail.com'){
         return [{_id:'1237676',nome: 'Carlo', email: 'gg.tt@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}]
 
       }
