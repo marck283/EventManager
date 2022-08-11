@@ -11,8 +11,7 @@ describe('POST /api/v2/Utenti', () => {
         
         const Utente = require('../collezioni/utenti.js');
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation((criterias) => {
-            
-            if(criterias.email == 'gg.ee@gmail.com'){
+            if(criterias.email.$eq == 'gg.ee@gmail.com') {
                 return {
                     _id: '2222',
                     nome: 'Mario',
@@ -26,16 +25,16 @@ describe('POST /api/v2/Utenti', () => {
                     }
                 };
             }
-            
-            userSaveSpy = jest.spyOn(Utente.prototype, 'save').mockImplementation( (criterias) => {
-                return {
-                    id: '1111',
-                    nome: 'Fabio',
-                    email: 'gg.ee@gmail.com',
-                    password: 'abcd',
-                    tel: '',
-                }
-            });
+        });
+
+        userSaveSpy = jest.spyOn(Utente.prototype, 'save').mockImplementation( (criterias) => {
+            return {
+                id: '1111',
+                nome: 'Fabio',
+                email: 'gg.ee@gmail.com',
+                password: 'abcd',
+                tel: '',
+            }
         });
     
     });

@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest",
-    "deploy": "firebase deploy --only hosting"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
