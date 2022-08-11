@@ -2,22 +2,16 @@ const express = require('express');
 const eventPrivat = require('../collezioni/eventPrivat.js');
 const invit = require('../collezioni/invit.js');
 const router = express.Router();
-const eventsMap = require('./eventsMap.js');
 const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
-var jwt = require('jsonwebtoken');
 var qrcode = require('qrcode');
 
-
-
 router.patch('/:id', async (req, res) => {
-
     //var utent = req.loggedUser.id;
     var utent = req.loggedUser.id;
     var id_evento = req.params.id;
 
     try {
-
         let evento = await eventPrivat.findById(id_evento);
 
         if (evento == undefined) {
@@ -46,18 +40,15 @@ router.patch('/:id', async (req, res) => {
         await evento.save();
         res.location("/api/v2/EventiPrivati/" + id_evento).status(200).send();
         console.log('Evento privato modificato con successo');
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore lato server." }).send();
     }
-
+    return;
 });
 
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
-
     try {
-
         var evento = await eventPrivat.findById(req.params.idEvento);
         var utente = req.loggedUser.id;
         var utenteObj = await Users.findById(utente);
@@ -73,13 +64,8 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento) {
+        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utente) {
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
-            return;
-        }
-
-        if (iscr.utenteid != utente) {
-            res.status(403).json({ error: "L'iscrizione non corrisponde all'utente specificato." }).send();
             return;
         }
 
@@ -111,18 +97,9 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 
         res.status(204).send();
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Errore nel Server" }).send();
-    }
-
-});
 
 
-router.get('/:id', async (req, res) => {
-
-    try {
-        let eventoPrivato = await eventPrivat.findById(req.params.id);
+let eventoPrivato = await eventPrivat.findById(req.params.id);
         if (eventoPrivato == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
