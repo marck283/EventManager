@@ -738,7 +738,6 @@ router.post('', async (req, res) => {
 
         //Si indica fra gli eventi creati dell'utente, l'evento appena creato
         utente.EventiCreati.push(eventP.id)
-
         utente.EventiIscrtto.push(eventP.id);
 
         //Si salva il modulo dell'utente
