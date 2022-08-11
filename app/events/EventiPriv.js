@@ -2,9 +2,13 @@ const express = require('express');
 const eventPrivat = require('../collezioni/eventPrivat.js');
 const invit = require('../collezioni/invit.js');
 const router = express.Router();
+const eventsMap = require('./eventsMap.js');
 const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
+var jwt = require('jsonwebtoken');
 var qrcode = require('qrcode');
+
+
 
 router.patch('/:id', async (req, res) => {
     //var utent = req.loggedUser.id;
@@ -96,10 +100,18 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         console.log('Annullamento iscrizione effettuato con successo.');
 
         res.status(204).send();
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Errore nel Server" }).send();
+    }
+
+});
 
 
+router.get('/:id', async (req, res) => {
 
-let eventoPrivato = await eventPrivat.findById(req.params.id);
+    try {
+        let eventoPrivato = await eventPrivat.findById(req.params.id);
         if (eventoPrivato == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;

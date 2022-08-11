@@ -51,6 +51,7 @@ router.patch('/:id', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+
     try {
         let eventoPersonale = await eventPersonal.findById(req.params.id);
         if (eventoPersonale == undefined) {
@@ -79,7 +80,8 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('', async (req, res) => {
-    var utent = req.loggedUser.id;
+
+    utent = req.loggedUser.id;
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);

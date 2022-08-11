@@ -1,18 +1,18 @@
 module.exports = {
     map: function(events, eventType) {
         return events.map(event => {
-            var apiUrl = "/api/v2/";
+            var apiUrl;
             switch(eventType) {
                 case "pers": {
-                    apiUrl += "EventiPersonali";
+                    apiUrl = "/api/v2/EventiPersonali/" + event._id;
                     break;
                 }
                 case "pub": {
-                   apiUrl += "EventiPubblici";
+                   apiUrl = "/api/v2/EventiPubblici/" + event._id;
                    break;
                 }
                 case "priv": {
-                    apiUrl += "EventiPrivati";
+                    apiUrl = "/api/v2/EventiPrivati/" + event._id;
                     break;
                 }
                 default: {
@@ -20,7 +20,6 @@ module.exports = {
                     return {};
                 }
             }
-            apiUrl += "/" + event._id;
             return {
                 id: eventType,
                 idevent: event._id,

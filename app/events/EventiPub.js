@@ -1,18 +1,24 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
+const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
+var jwt = require('jsonwebtoken');
+
+
 
 router.get('/:id', async(req, res) => {
+
     try{
         let eventoPubblico = await eventPublic.findById(req.params.id);
-        if(eventoPubblico == undefined){
+        if(eventoPubblico == undefined ){
             res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
             return;
+
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
         let partecipanti = [];
-        for (var i of eventoPubblico.partecipantiID) {
+        for (var i of eventoPubblico.partecipantiID){
             let tmp = await Users.findById(i);
             partecipanti.push(tmp.nome);
         }
@@ -27,11 +33,14 @@ router.get('/:id', async(req, res) => {
             organizzatore: organizzatore.nome,
             maxPers: eventoPubblico.maxPers,
             partecipanti: partecipanti
-        }).send();
-    } catch(error) {
+        });
+    }catch(error){
         console.log(error);
         res.status(500).json({error: "Errore nel Server"}).send();
     }
+
 });
+
+
 
 module.exports = router;
