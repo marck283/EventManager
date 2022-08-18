@@ -4,7 +4,6 @@ const Utente = require('./collezioni/utenti.js'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
 const RateLimit = require('express-rate-limit');
-const { runInContext } = require('vm');
 
 var limiter = RateLimit({
     windowMs: 1*60*1000, //1 minute

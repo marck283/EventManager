@@ -2,10 +2,8 @@ const express = require('express');
 const eventPrivat = require('../collezioni/eventPrivat.js');
 const invit = require('../collezioni/invit.js');
 const router = express.Router();
-const eventsMap = require('./eventsMap.js');
 const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
-var jwt = require('jsonwebtoken');
 var qrcode = require('qrcode');
 
 

@@ -1,14 +1,12 @@
 const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
-const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
 var jwt = require('jsonwebtoken');
 
 
 
 router.get('/:id', async(req, res) => {
-
     try{
         let eventoPubblico = await eventPublic.findById(req.params.id);
         if(eventoPubblico == undefined ){

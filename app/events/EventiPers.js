@@ -1,10 +1,7 @@
 const express = require('express');
-const eventPublic = require('../collezioni/eventPublic.js');
 const eventPersonal = require('../collezioni/eventPersonal.js');
 const router = express.Router();
-const eventsMap = require('./eventsMap.js');
 const Users = require('../collezioni/utenti.js');
-var jwt = require('jsonwebtoken');
 
 router.patch('/:id', async (req, res) => {
 
@@ -74,7 +71,6 @@ router.get('/:id', async (req, res) => {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
     }
-
 });
 
 

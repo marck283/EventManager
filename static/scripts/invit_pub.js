@@ -24,8 +24,20 @@ var invip = () => {
 		    		}
 					*/
 		    		
+					switch(resp.status) {
+						case 201: {
+							document.getElementById("invitip").innerHTML = "Invitato"
+							break;
+						}
+						case 400:
+						case 403:
+						case 404:
+						case 500: {
+
+						}
+					}
         			if(resp.status==201){
-        				document.getElementById("invitip").innerHTML = "Invitato"
+        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
         			}
         			if(resp.status==403 || resp.status == 500 || resp.status == 404 || resp.status == 400){
         				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});

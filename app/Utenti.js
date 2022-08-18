@@ -6,11 +6,6 @@ const eventPublic = require('./collezioni/eventPublic.js');
 const eventPrivat = require('./collezioni/eventPrivat.js');
 const Inviti = require('./collezioni/invit.js');
 
-
-
-
-
-
 router.get('/me', async (req, res) => {
     console.log("dammi info");
     IDexample = req.loggedUser.id;

@@ -182,104 +182,41 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
 
-            if (yy > Number(anno)) {
-
+            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "evento non disponibile" }).send()
                 return;
-
             } else {
+                if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
+                    let orario = eventP.ora.split(':');
 
-
-                if (yy == Number(anno)) {
-
-
-                    if (mm > Number(mese)) {
-                        res.status(403).json({ error: "evento non disponibile" }).send()
-                        return;
-
-                    } else {
-
-                        if (mm == Number(mese)) {
-
-
-                            if (dd > Number(giorno)) {
-                                res.status(403).json({ error: "evento non disponibile" }).send()
-                                return;
-
-                            }
-
-                            if (dd == Number(giorno)) {
-
-                                let orario = eventP.ora.split(':');
-
-                                let str1 = orario[0];
-                                let str2 = orario[1];
-                                if (orario[0][0] == 0) {
-                                    str1 = orario[0][1];
-
-                                }
-                                if (orario[1][0] == 0) {
-                                    str2 = orario[1][1];
-                                }
-
-                                if (Number(str1) >= date.getHours()) {
-
-
-                                    if (Number(str1) == date.getHours()) {
-
-
-
-                                        if (Number(str2) < date.getMinutes()) {
-                                            res.status(403).json({ error: "evento non disponibile" }).send()
-                                            return;
-
-
-                                        }
-
-
-                                    }
-
-
-                                } else {
-                                    res.status(403).json({ error: "evento non disponibile" }).send()
-                                    return;
-
-                                }
-
-
-
-
-
-                            }
-
-                        }
-
+                    let str1 = orario[0];
+                    let str2 = orario[1];
+                    if (orario[0][0] == 0) {
+                        str1 = orario[0][1];
 
                     }
+                    if (orario[1][0] == 0) {
+                        str2 = orario[1][1];
+                    }
 
+                    if (Number(str1) < date.getHours() || (Number(str1) >= date.getHours() && Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
+                        res.status(403).json({ error: "evento non disponibile" }).send()
+                        return;
+                    }
                 }
-
             }
-
-
-
-
-
         }
 
 
         if (eventP.partecipantiID.length == eventP.maxPers) {
-
             res.status(403).json({ error: "Non spazio nell'evento" }).send();
             return;
-
         }
 
 
 
         for (elem of eventP.partecipantiID) {
             if (elem == utent) {
-
                 res.status(403).json({ error: "Già iscritto" }).send();
                 return;
             }
@@ -352,18 +289,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
 router.post('/:id/Inviti', async (req, res) => {
-
-
-
     try {
-
         var utent = req.loggedUser.id;
-
         var id_evento = req.params.id;
 
 
         if (req.body.email == "" || req.body.email == undefined) {
-
             res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
             return;
         }
@@ -374,7 +305,6 @@ router.post('/:id/Inviti', async (req, res) => {
         if (eventP == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
-
         }
 
         //controllo che le date non siano di una giornata precedente a quella odierna
@@ -390,206 +320,90 @@ router.post('/:id/Inviti', async (req, res) => {
             dats = data.split('/');
 
             if (dats[0][0] == '0') {
-
                 mese = dats[0][1];
-
             } else {
-
                 mese = dats[0];
-
             }
-
 
             if (dats[1][0] == '0') {
-
                 giorno = dats[1][1];
-
             } else {
-
                 giorno = dats[1];
-
             }
-
             anno = dats[2]
 
-
-
             if (yy > Number(anno)) {
-
                 res.status(403).json({ error: "evento non disponibile" }).send()
                 return;
-
             } else {
-
-
                 if (yy == Number(anno)) {
-
-
-                    if (mm > Number(mese)) {
+                    if (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))) {
                         res.status(403).json({ error: "evento non disponibile" }).send()
                         return;
-
                     } else {
+                        if (mm == Number(mese) && dd == Number(giorno)) {
+                            let orario = eventP.ora.split(':');
 
-                        if (mm == Number(mese)) {
+                            let str1 = orario[0];
+                            let str2 = orario[1];
+                            if (orario[0][0] == 0) {
+                                str1 = orario[0][1];
+                            }
+                            if (orario[1][0] == 0) {
+                                str2 = orario[1][1];
+                            }
 
-
-                            if (dd > Number(giorno)) {
+                            if (Number(str1) < date.getHours() || (Number(str1) >= date.getHours() && Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
                                 res.status(403).json({ error: "evento non disponibile" }).send()
                                 return;
-
                             }
-
-                            if (dd == Number(giorno)) {
-
-                                let orario = eventP.ora.split(':');
-
-                                let str1 = orario[0];
-                                let str2 = orario[1];
-                                if (orario[0][0] == 0) {
-                                    str1 = orario[0][1];
-
-                                }
-                                if (orario[1][0] == 0) {
-                                    str2 = orario[1][1];
-                                }
-
-                                if (Number(str1) >= date.getHours()) {
-
-
-                                    if (Number(str1) == date.getHours()) {
-
-
-
-                                        if (Number(str2) < date.getMinutes()) {
-                                            res.status(403).json({ error: "evento non disponibile" }).send()
-                                            return;
-
-
-                                        }
-
-
-                                    }
-
-
-                                } else {
-                                    res.status(403).json({ error: "evento non disponibile" }).send()
-                                    return;
-
-                                }
-
-
-
-
-
-                            }
-
                         }
-
-
                     }
-
                 }
-
             }
-
-
-
-
-
         }
-
-
-
-
 
         if (eventP.organizzatoreID != utent) {
             res.status(403).json({ error: "L'utente non può invitare ad un evento che non è suo" }).send();
             return;
-
         }
 
         var utenteorg = await Users.findById(utent)
-
         if (utenteorg.email == req.body.email) {
             res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
             return;
-
         }
 
-
-
-
-
         var utente = await Users.find({ email: { $eq: req.body.email } })
-
         if (utente.length == 0) {
             res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
             return;
-
         }
 
-
-
         var ListaInviti = await Inviti.find({ utenteid: utente[0]._id })
-
         if (ListaInviti.length > 0) {
-
             for (var elem of ListaInviti) {
-
                 if (elem.eventoid == id_evento) {
-
                     res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
                     return;
-
-
                 }
             }
-
         }
 
         if (eventP.partecipantiID.includes(utente[0]._id)) {
-
             res.status(403).json({ error: "L'utente con quella email è già partecipante all'evento" }).send();
             return;
-
-
         }
 
-
-
-
-
-
-
-
-
         let invito = new Inviti({ utenteid: utente[0]._id, eventoid: id_evento, tipoevent: "pub" });
-
-        invitii = await invito.save();
-
+        let invitii = await invito.save();
         res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
-
-
-
-
-
     } catch (error) {
-
         console.log(error)
         res.status(500).json({ error: "Errore nel server" }).send();
         return;
-
-
     }
-
-
-
-
-
 });
-
-
 
 router.post('', async (req, res) => {
     var utent = req.loggedUser.id;
@@ -643,7 +457,7 @@ router.post('', async (req, res) => {
                     break;
                 }
                 default: {
-                    res.status(400).json({error: "Formato data non valido"}).send();
+                    res.status(400).json({ error: "Formato data non valido" }).send();
                     return;
                 }
             }
@@ -659,8 +473,6 @@ router.post('', async (req, res) => {
                 res.status(400).json({ error: "date ripetute" }).send()
                 return;
             }
-
-
 
             //controllo che le date non siano di una giornata precedente a quella odierna
             var data = elem;
@@ -757,7 +569,6 @@ router.post('', async (req, res) => {
         res.status(500).json({ error: "Errore del server" }).send();
 
     }
-
 });
 
 module.exports = router;
