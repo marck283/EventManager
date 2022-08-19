@@ -1372,12 +1372,13 @@ paths:
     get:
       description: >-
         Ritorna la lista di utenti il cui indirizzo email contiene la stringa specificata. Nel caso in cui il campo "email" sia lasciato vuoto,
-        sarà restituita una lista contenente tutti gli utenti.
+        sarà restituito un messaggio di errore.
       summary: Ritorna la lista di utenti.
       parameters:
       - name: email
         in: query
         description: L'indirizzo email (o parte di esso) cercato dall'utente
+        required: true
         schema:
           type: string
       responses:

@@ -48,21 +48,17 @@ var reg = () => {
 			email: email, pass: CryptoJS.SHA3(password, {outputLength: 512}).toString(), nome: nome, tel: telefono
 		})
 	}).then((resp) => {
-		console.log(resp)
-		/**if(resp.status==403 || resp.status==400){
-			document.getElementById("iscrizione").innerHTML = "non iscritto";
-		}
-		if(resp.status==201){
-			document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
-		}
-		*/
-
-		if (resp.status == 201) {
-			document.getElementById("iscrizione").innerHTML = "Registrato"
-
-		}
-		if (resp.status == 409 || resp.status == 500 || resp.status == 400) {
-			resp.json().then(data => { document.getElementById("iscrizione").innerHTML = data.error });
+		switch(resp.status) {
+			case 201: {
+				alert("Utente registrato con successo.");
+				break;
+			}
+			case 400:
+			case 409:
+			case 500: {
+				alert(resp.json().then(data => data.error));
+				break;
+			}
 		}
 	}).catch(error => console.error(error)) // If there is any error you will catch them here
 };

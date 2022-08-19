@@ -12,35 +12,29 @@ var login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: document.getElementById("loginEmail").value, password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString() }),
     })
-    .then((resp) => {
-
-        console.log(resp);
-        /**if(resp.status==403 || resp.status==400){
-            document.getElementById("iscrizione").innerHTML = "non iscritto";
+    .then(resp => {
+        switch(resp.status) {
+            case 200: {
+                resp.json().then(data => {
+                    alert(data.message);
+                    localStorage.setItem('token', data.token);   
+                    window.location.href="../publicCalendar.html"; 
+                });
+                break;
+            }
+            case 400: {
+                resp.json().then(data => alert(data.error));
+                break;
+            }
+            case 403:
+            case 404: {
+                resp.json().then(data => alert(data.message));
+                break;
+            }
         }
-        if(resp.status==201){
-            document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
-        }
-        */
-        
-        if(resp.status==404 || resp.status==403){
-            resp.json().then(data => {document.getElementById("usr").innerHTML = data.message});
-
-        }
-        if(resp.status==200){
-            resp.json().then(data => {
-                document.getElementById("usr").innerHTML = data.message; 
-                localStorage.setItem('token', data.token);   
-                window.location.href="../publicCalendar.html";       
-            });
-        }
-        
-
-        return;}).catch( error => console.error(error) ); // If there is any error you will catch them here
-
-
-
-	};
+        return;
+    }).catch( error => console.error(error) ); // If there is any error you will catch them here
+};
 
 
 

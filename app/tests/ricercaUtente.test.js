@@ -24,24 +24,7 @@ describe("GET /api/v2/Utenti", () => {
         return request(app)
             .get('/api/v2/Utenti')
             .set('Accept', 'application/json')
-            .expect(200, {
-                utenti: [
-                    {
-                        nome: 'Marco Villa',
-                        email: 'marco.villa@gmail.com',
-                        urlUtente: '/api/v2/Utenti/62e1667818bfa6ca7793fdeb'
-                    },
-                    {
-                        nome: 'Marco Lasagna',
-                        email: 'marcolasagna9@gmail.com',
-                        urlUtente: '/api/v2/Utenti/62e167ad18bfa6ca7793fded'
-                    },
-                    {
-                        email: 'gg.ee@gmail.com',
-                        urlUtente: '/api/v2/Utenti/62f2d9d8374c7cfeeb8f1713'
-                    }
-                ]
-            });
+            .expect(400, {error: "Indirizzo email non fornito."});
     });
 
     test("GET /api/v2/Utenti con campo email compilato con email parziale", () => {
