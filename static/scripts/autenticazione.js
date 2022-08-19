@@ -16,7 +16,6 @@ var login = () => {
         switch(resp.status) {
             case 200: {
                 resp.json().then(data => {
-                    alert(data.message);
                     localStorage.setItem('token', data.token);   
                     window.location.href="../publicCalendar.html"; 
                 });
