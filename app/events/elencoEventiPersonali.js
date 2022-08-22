@@ -4,16 +4,14 @@ const eventPersonal = require('../collezioni/eventPersonal.js');
 const eventPrivate = require('../collezioni/eventPrivat.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
-var jwt = require('jsonwebtoken');
+const { Validator } = require('node-input-validator');
 
 router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {};
     
-    
     var user = req.loggedUser.id;
-
 
     //Eseguire la funzione verify, poi cercare gli eventi nel database
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
@@ -52,9 +50,7 @@ var filterEvents = eventsArr => {
         d.setMinutes(minsDB);
         return d.getTime() < curr.getTime();
     });
-}
-
-var isNumeric = str => parseInt(str) == str ? true : false;
+};
 
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
@@ -64,7 +60,8 @@ router.get("", async (req, res) => {
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
-    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali.
+    eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
+    console.log("initial: " + eventsPers);
     eventsPub = await findPubEvents(user);
     eventsPriv = await eventPrivate.find({});
     eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
@@ -81,57 +78,66 @@ router.get("", async (req, res) => {
         eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
     }
 
-    if(durata != undefined && durata != "") {
-        if(isNumeric(durata) && parseInt(durata) >= 1) {
-            eventsPers = eventsPers.filter(e => e.durata == duration);
-            eventsPub = eventsPub.filter(e => e.durata == duration);
-            eventsPriv = eventsPriv.filter(e => e.durata == duration);
+    const v = new Validator({
+        durata: durata
+    }, {
+        durata: 'integer|min:1'
+    });
+    v.check()
+    .then(matched => {
+        if(!matched) {
+            res.status(400).json({error: "Richiesta malformata."}).send();
+            return;
         } else {
-            res.status(400).json({error: "Richiesta malformata."});
-            return;
+            //Since "durata" is not required, it can still be undefined.
+            if(durata != undefined) {
+                eventsPers = eventsPers.filter(e => e.durata == durata);
+                eventsPub = eventsPub.filter(e => e.durata == durata);
+                eventsPriv = eventsPriv.filter(e => e.durata == durata);
+            }
+            
+            if(indirizzo != undefined && indirizzo != "") {
+                eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
+                eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
+                eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
+            }
+        
+            if(citta != undefined && citta != "") {
+                eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
+                eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
+                eventsPriv = eventsPriv.filter(e => e.luogoEv.citta == citta);
+            }
+        
+            var passato = req.query.passato;
+            switch (passato) {
+                case "True": {
+                    //Filtro per date passate
+                    eventsPub = filterEvents(eventsPub);
+                    eventsPriv = filterEvents(eventsPriv);
+                    break;
+                }
+                case "False": {
+                    break;
+                }
+                default: {
+                    res.status(400).json({ error: "Richiesta malformata." }).send(); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
+                    return;
+                }
+            }
+        
+            if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
+                eventsPers = eventsMap.map(eventsPers, "pers");
+                eventsPub = eventsMap.map(eventsPub, "pub");
+                eventsPub.forEach(e => eventsPers.push(e));
+                eventsPriv = eventsMap.map(eventsPriv, "priv");
+                eventsPriv.forEach(e => eventsPers.push(e));
+        
+                res.status(200).json({eventi: eventsPers}).send();
+            } else {
+                res.status(404).json({error: "Non esiste alcun evento programmato."}).send();
+            }
         }
-    }
-
-    if(indirizzo != undefined && indirizzo != "") {
-        eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
-        eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
-        eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
-    }
-
-    if(citta != undefined && citta != "") {
-        eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
-        eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
-        eventsPriv = eventsPriv.filter(e => e.luogoEv.citta == citta);
-    }
-
-    var passato = req.query.passato;
-    switch (passato) {
-        case "True": {
-            //Filtro per date passate
-            eventsPub = filterEvents(eventsPub);
-            eventsPriv = filterEvents(eventsPriv);
-            break;
-        }
-        case "False": {
-            break;
-        }
-        default: {
-            res.status(400).json({ error: "Richiesta malformata." }); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
-            return;
-        }
-    }
-
-    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        eventsPers = eventsMap.map(eventsPers, "pers");
-        eventsPub = eventsMap.map(eventsPub, "pub");
-        eventsPub.forEach(e => eventsPers.push(e));
-        eventsPriv = eventsMap.map(eventsPriv, "priv");
-        eventsPriv.forEach(e => eventsPers.push(e));
-
-        res.status(200).json({eventi: eventsPers});
-    } else {
-        res.status(404).json({error: "Non esiste alcun evento programmato."});
-    }
+    });
 });
 
 module.exports = router;

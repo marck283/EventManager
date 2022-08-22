@@ -51,8 +51,8 @@ router.patch('/:id', async (req, res) => {
 
 var spliceArr = (param1, param2) => {
     var arr = param1, index = arr.indexOf(param2);
-    if(index > -1) {
-        return new Promise.resolve(() =>{
+    if (index > -1) {
+        return new Promise.resolve(() => {
             arr.splice(index, 1);
             param1 = arr;
         });
@@ -84,23 +84,23 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         }
 
         spliceArr(evento.partecipantiID, utente)
-        .then(async () => {
-            await evento.save(); //Aggiornamento partecipantiID
-            return spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
             .then(async () => {
-                utenteObj.EventiIscrtto = array2;
-                await utenteObj.save(); //Aggiornamento EventiIscritto
-                await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
-                console.log('Annullamento iscrizione effettuato con successo.');
-                res.status(204).send();
+                await evento.save(); //Aggiornamento partecipantiID
+                return spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
+                    .then(async () => {
+                        utenteObj.EventiIscrtto = array2;
+                        await utenteObj.save(); //Aggiornamento EventiIscritto
+                        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+                        console.log('Annullamento iscrizione effettuato con successo.');
+                        res.status(204).send();
+                        return;
+                    });
+            })
+            //The error in the promise gets propagated to the catch block
+            .catch(err => {
+                res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
                 return;
             });
-        })
-        //The error in the promise gets propagated to the catch block
-        .catch(err => {
-            res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-            return;
-        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
@@ -108,9 +108,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 
 });
 
-
 router.get('/:id', async (req, res) => {
-
     try {
         let eventoPrivato = await eventPrivat.findById(req.params.id);
         if (eventoPrivato == undefined) {
@@ -132,7 +130,6 @@ router.get('/:id', async (req, res) => {
             invitati.push(tmp.nome);
         }
 
-
         res.status(200).json({
             nomeAtt: eventoPrivato.nomeAtt,
             categoria: eventoPrivato.categoria,
@@ -148,30 +145,19 @@ router.get('/:id', async (req, res) => {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
     }
-
 });
 
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-
-
     var utent = req.loggedUser.id;
-
-
     var id_evento = req.params.id;
-
-
-
+    
     try {
-
         let eventP = await eventPrivat.findById(id_evento);
-
-
 
         if (eventP == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
-
         }
 
         var dati = eventP.data.split(",");
@@ -185,140 +171,67 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             var yy = date.getFullYear()
             dats = datta.split('/');
 
-
             if (dats[0][0] == '0') {
-
                 mese = dats[0][1];
-
             } else {
-
                 mese = dats[0];
-
             }
-
 
             if (dats[1][0] == '0') {
-
                 giorno = dats[1][1];
-
             } else {
-
                 giorno = dats[1];
-
             }
 
-            anno = dats[2]
-
-
+            anno = dats[2];
 
             if (yy > Number(anno)) {
-
                 res.status(403).json({ error: "evento non disponibile" }).send()
                 return;
-
             } else {
-
-
                 if (yy == Number(anno)) {
-
-
-                    if (mm > Number(mese)) {
+                    if (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))) {
                         res.status(403).json({ error: "evento non disponibile" }).send()
                         return;
-
                     } else {
+                        if (mm == Number(mese) && dd == Number(giorno)) {
+                            let orario = eventP.ora.split(':');
+                            let str1 = orario[0];
+                            let str2 = orario[1];
+                            if (orario[0][0] == 0) {
+                                str1 = orario[0][1];
 
-                        if (mm == Number(mese)) {
+                            }
+                            if (orario[1][0] == 0) {
+                                str2 = orario[1][1];
+                            }
 
-
-                            if (dd > Number(giorno)) {
+                            if ((Number(str1) >= date.getHours() && Number(str1) == date.getHours() && Number(str2) < date.getMinutes()) || Number(str1) < date.getHours()) {
                                 res.status(403).json({ error: "evento non disponibile" }).send()
                                 return;
-
                             }
-
-                            if (dd == Number(giorno)) {
-
-                                let orario = eventP.ora.split(':');
-
-                                let str1 = orario[0];
-                                let str2 = orario[1];
-                                if (orario[0][0] == 0) {
-                                    str1 = orario[0][1];
-
-                                }
-                                if (orario[1][0] == 0) {
-                                    str2 = orario[1][1];
-                                }
-
-                                if (Number(str1) >= date.getHours()) {
-
-
-                                    if (Number(str1) == date.getHours()) {
-
-
-
-                                        if (Number(str2) < date.getMinutes()) {
-                                            res.status(403).json({ error: "evento non disponibile" }).send()
-                                            return;
-
-
-                                        }
-
-
-                                    }
-
-
-                                } else {
-                                    res.status(403).json({ error: "evento non disponibile" }).send()
-                                    return;
-
-                                }
-
-
-
-                            }
-
                         }
-
-
                     }
-
                 }
-
             }
-
-
-
-
-
         }
 
         if (!eventP.invitatiID.includes(utent)) {
             res.status(403).json({ error: "Non sei invitato a questo evento" }).send();
             return;
-
         }
-
-
-
-
 
         for (elem of eventP.partecipantiID) {
             if (elem == utent) {
-
                 res.status(403).json({ error: "Già iscritto" }).send();
                 return;
             }
-
         }
 
         let data = {
             idUtente: utent,
             idEvento: id_evento
         };
-
-
 
         let stringdata = JSON.stringify(data);
 
@@ -334,15 +247,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "priv" });
             idBigl = bigl._id;
             return await bigl.save();
-
-
-
         });
-
-
-
-
-
 
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
@@ -353,40 +258,16 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         await eventP.save()
         await utente.save()
 
-
-
-
-
-
         res.location("/api/v2/EventiPrivati/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
-
-
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
-
-
-
-
     }
-
-
-
 });
 
-
-
-
-
-
-
 router.post('', async (req, res) => {
-
     var utent = req.loggedUser.id;
     try {
-
-
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
@@ -408,8 +289,6 @@ router.post('', async (req, res) => {
             return;
         }
 
-
-
         var ElencoDate = req.body.data;
         var dateEv = ElencoDate.split(",");
 
@@ -426,18 +305,18 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 case 2: {
-                    regu = /^02\/(19|20|[0-2][1-8])\/\d{4}$/;
+                    regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 default: {
@@ -457,8 +336,6 @@ router.post('', async (req, res) => {
                 res.status(400).json({ error: "date ripetute" }).send()
                 return;
             }
-
-
 
             //controllo che le date non siano di una giornata precedente a quella odierna
             var data = elem;

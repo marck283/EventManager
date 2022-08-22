@@ -2,7 +2,6 @@ const request = require('supertest'), mongoose = require('mongoose');
 const app = require('../app.js');
 const jwt = require('jsonwebtoken');
 const EventPersonal = require('../collezioni/eventPersonal.js');
-const utenti = require('../collezioni/utenti.js');
 
 describe("POST /api/v2/EventiPersonali", () => {
     beforeAll(async () => {
@@ -75,7 +74,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: "2 giorni"
         })
-        .expect(400, {error: "Campo non del formato corretto"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo durata compilato con valore numerico negativo", () => {
@@ -94,7 +93,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: -20
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo durata compilato con valore nullo", () => {
@@ -113,7 +112,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 0
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'data' non compilato", () => {
@@ -131,7 +130,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'data' compilato inserendo più volte la stessa data", () => {
@@ -207,7 +206,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'citta' non compilato", () => {
@@ -225,7 +224,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'indirizzo' compilato come stringa vuota", () => {
@@ -244,7 +243,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'ora' compilato in formato diverso da hh:mm", () => {
@@ -301,7 +300,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "svago",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'categoria' non compilato", () => {
@@ -319,6 +318,6 @@ describe("POST /api/v2/EventiPersonali", () => {
             nomeAtt: "Girare a vuoto 4",
             durata: 2
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 });

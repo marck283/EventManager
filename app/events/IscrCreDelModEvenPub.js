@@ -4,7 +4,8 @@ const router = express.Router();
 var qrcode = require('qrcode');
 const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
-const biglietti = require('../collezioni/biglietti.js')
+const biglietti = require('../collezioni/biglietti.js');
+const { Validator } = require('node-input-validator');
 
 router.patch('/:id', async (req, res) => {
 
@@ -13,7 +14,6 @@ router.patch('/:id', async (req, res) => {
     var id_evento = req.params.id;
 
     try {
-
         let evento = await eventPublic.findById(id_evento);
 
         if (evento == undefined) {
@@ -38,34 +38,32 @@ router.patch('/:id', async (req, res) => {
         if (req.body.citta != "" && req.body.citta != undefined) {
             evento.luogoEv.citta = req.body.citta;
         }
-        console.log(req.body.maxPers);
-        if (req.body.maxPers != "" && req.body.maxPers != undefined) {
-            if (Number.isNaN(parseInt(req.body.maxPers))) {
-                res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido." });
-                return;
-            }
-            if (req.body.maxPers < 2) {
-                res.status(400).json({ error: "Numero massimo partecipanti non valido: inferiore a 2." });
-                return;
-            }
-            evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
-        }
 
-        await evento.save();
-        res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
-        console.log('Evento pubblico modificato con successo');
-
+        const v = new Validator({
+            maxPers: req.body.maxPers
+        }, {
+            maxPers: 'required|integer|min:2'
+        });
+        v.check()
+        .then(async matched => {
+            if(!matched) {
+                res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
+                return;
+            } else {
+                evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+                await evento.save();
+                res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
+                console.log('Evento pubblico modificato con successo');
+            }
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore lato server." }).send();
     }
-
 });
 
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
-
     try {
-
         var evento = await eventPublic.findById(req.params.idEvento);
         var utente = req.loggedUser.id;
         var utenteObj = await Users.findById(utente);
@@ -81,13 +79,8 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento) {
+        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utente) {
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
-            return;
-        }
-
-        if (iscr.utenteid != utente) {
-            res.status(403).json({ error: "L'iscrizione non corrisponde all'utente specificato." }).send();
             return;
         }
 
@@ -112,43 +105,30 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         }
         utenteObj.EventiIscrtto = array2;
         await utenteObj.save(); //Aggiornamento EventiIscritto
-
         await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
 
         console.log('Annullamento iscrizione effettuato con successo.');
 
         res.status(204).send();
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
     }
-
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-
-
     var utent = req.loggedUser.id;
-
-
     var id_evento = req.params.id;
 
-
-
     try {
-
         let eventP = await eventPublic.findById(id_evento);
         if (eventP == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
-
         }
 
         var dati = eventP.data.split(",");
-
         for (var elem of dati) {
-
             var datta = elem;
             var date = new Date();
             var mm = date.getMonth() + 1
@@ -158,29 +138,18 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 
             if (dats[0][0] == '0') {
-
                 mese = dats[0][1];
-
             } else {
-
                 mese = dats[0];
-
             }
-
 
             if (dats[1][0] == '0') {
-
                 giorno = dats[1][1];
-
             } else {
-
                 giorno = dats[1];
-
             }
 
-            anno = dats[2]
-
-
+            anno = dats[2];
 
             if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "evento non disponibile" }).send()
@@ -207,20 +176,16 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             }
         }
 
-
         if (eventP.partecipantiID.length == eventP.maxPers) {
             res.status(403).json({ error: "Non spazio nell'evento" }).send();
             return;
         }
-
-
 
         for (elem of eventP.partecipantiID) {
             if (elem == utent) {
                 res.status(403).json({ error: "Già iscritto" }).send();
                 return;
             }
-
         }
 
         let data = {
@@ -228,12 +193,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             idEvento: id_evento
         };
 
-
-
         let stringdata = JSON.stringify(data);
 
         //Print QR code to file using base64 encoding
-
         var idBigl = "";
 
         qrcode.toDataURL(stringdata, async function (err, qrcode) {
@@ -245,15 +207,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
             idBigl = bigl._id;
             return await bigl.save();
-
-
-
         });
-
-
-
-
-
 
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
@@ -261,45 +215,25 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         eventP.partecipantiID.push(utent);
         utente.EventiIscrtto.push(id_evento);
 
-        await eventP.save()
-        await utente.save()
-
-
-
-
-
+        await eventP.save();
+        await utente.save();
 
         res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
-
-
-
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
-
-
-
-
     }
-
-
-
 });
-
 
 router.post('/:id/Inviti', async (req, res) => {
     try {
         var utent = req.loggedUser.id;
         var id_evento = req.params.id;
 
-
         if (req.body.email == "" || req.body.email == undefined) {
             res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
             return;
         }
-
-
 
         let eventP = await eventPublic.findById(id_evento);
         if (eventP == undefined) {
@@ -442,18 +376,18 @@ router.post('', async (req, res) => {
                 case 8:
                 case 10:
                 case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 case 2: {
-                    regu = /^02\/(19|20|[0-2][1-8])\/\d{4}$/;
+                    regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 case 4:
                 case 6:
                 case 9:
                 case 11: {
-                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/\d{4}$/;
+                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
                     break;
                 }
                 default: {

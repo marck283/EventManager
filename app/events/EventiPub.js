@@ -2,17 +2,13 @@ const express = require('express');
 const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
 const Users = require('../collezioni/utenti.js');
-var jwt = require('jsonwebtoken');
-
-
 
 router.get('/:id', async(req, res) => {
     try{
         let eventoPubblico = await eventPublic.findById(req.params.id);
-        if(eventoPubblico == undefined ){
+        if(eventoPubblico == undefined) {
             res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
             return;
-
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
         let partecipanti = [];
@@ -32,13 +28,10 @@ router.get('/:id', async(req, res) => {
             maxPers: eventoPubblico.maxPers,
             partecipanti: partecipanti
         });
-    }catch(error){
+    } catch(error) {
         console.log(error);
         res.status(500).json({error: "Errore nel Server"}).send();
     }
-
 });
-
-
 
 module.exports = router;

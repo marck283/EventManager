@@ -4,8 +4,7 @@ const eventPublic = require('../collezioni/eventPublic.js');
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
-
-var isNumeric = str => parseInt(str) == str ? true : false;
+const { Validator } = require('node-input-validator');
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -20,14 +19,11 @@ router.use(limiter);
 
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
-
-
     var autenticato = false;
     var user = "";
 
     if (token) {
-        jwt.verify(token, process.env.SUPER_SECRET, function (err, decoded) {
-
+        jwt.verify(token, process.env.SUPER_SECRET, (err, decoded) => {
             if (!err) {
                 user = decoded.id;
                 autenticato = true;
@@ -36,8 +32,8 @@ router.get("", async (req, res) => {
     }
 
     var events = await eventPublic.find({});
-    if(autenticato == true){
-        events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined); //Cambiare l'id del partecipante al momento del merge con il modulo di autenticazione.
+    if(autenticato) {
+        events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined);
     }
 
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
@@ -50,27 +46,37 @@ router.get("", async (req, res) => {
         events = events.filter(e => e.categoria == categoria);
     }
 
-    if(durata != undefined && durata != "") {
-        if(isNumeric(durata) && parseInt(durata) >= 1) {
-            events = events.filter(e => e.durata == durata);
-        } else {
+    const v1 = new Validator({
+        durata: durata,
+        indirizzo: indirizzo,
+        citta: citta
+    }, {
+        durata: 'integer|min:1',
+        indirizzo: 'string|min:1', //At least one character
+        citta: 'string|min:1' //At least one character
+    });
+    v1.check()
+    .then(matched => {
+        if(!matched) {
             res.status(400).json({error: "Richiesta malformata."});
             return;
+        } else {
+            if(durata != undefined) {
+                events = events.filter(e => e.durata == durata);
+            }
+            if(indirizzo != undefined) {
+                events = events.filter(e => e.luogoEv.indirizzo == indirizzo);
+            }
+            if(citta != undefined) {
+                events = events.filter(e => e.luogoEv.citta == citta);
+            }
+            if(events.length > 0) {
+                res.status(200).json({eventi: eventsMap.map(events, "pub")});
+            } else {
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+            }
         }
-    }
-    if(indirizzo != undefined && indirizzo != "") {
-        events = events.filter(e => e.luogoEv.indirizzo == indirizzo);
-    }
-    if(citta != undefined && citta != "") {
-        events = events.filter(e => e.luogoEv.citta == citta);
-    }
-
-    if(events.length > 0) {
-        res.status(200).json({eventi: eventsMap.map(events, "pub")});
-    } else {
-        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-    }
-
+    });
     return;
 });
 
