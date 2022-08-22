@@ -266,32 +266,24 @@ router.post('/:id/Inviti', async (req, res) => {
             }
             anno = dats[2]
 
-            if (yy > Number(anno)) {
+            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
                 res.status(403).json({ error: "evento non disponibile" }).send()
                 return;
             } else {
-                if (yy == Number(anno)) {
-                    if (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))) {
+                if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
+                    let orario = eventP.ora.split(':');
+                    let str1 = orario[0];
+                    let str2 = orario[1];
+                    if (orario[0][0] == 0) {
+                        str1 = orario[0][1];
+                    }
+                    if (orario[1][0] == 0) {
+                        str2 = orario[1][1];
+                    }
+
+                    if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
                         res.status(403).json({ error: "evento non disponibile" }).send()
                         return;
-                    } else {
-                        if (mm == Number(mese) && dd == Number(giorno)) {
-                            let orario = eventP.ora.split(':');
-
-                            let str1 = orario[0];
-                            let str2 = orario[1];
-                            if (orario[0][0] == 0) {
-                                str1 = orario[0][1];
-                            }
-                            if (orario[1][0] == 0) {
-                                str2 = orario[1][1];
-                            }
-
-                            if (Number(str1) < date.getHours() || (Number(str1) >= date.getHours() && Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                                res.status(403).json({ error: "evento non disponibile" }).send()
-                                return;
-                            }
-                        }
                     }
                 }
             }

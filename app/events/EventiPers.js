@@ -87,7 +87,7 @@ router.post('', async (req, res) => {
             indirizzo: req.body.luogoEv.indirizzo,
             citta: req.body.luogoEv.citta
         }, {
-            data: 'required|string|minLength:1',
+            data: 'required|string|minLength:9',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|minLength:1',
