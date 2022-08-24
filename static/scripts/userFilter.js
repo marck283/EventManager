@@ -55,10 +55,11 @@ var manipulateDom = resp => {
         card.className = "card";
         col.appendChild(card);
 
-        card.innerHTML = "<button class = \"btn btn-primary\" onclick = \"document.getElementById('posta').value = '" + u.email + "'\">" + u.nome + "</button>" ;
-
-
+        var button = document.createElement("button");
+        button.className = "btn btn-primary";
+        button.onclick = document.getElementById('posta').value = u.email;
+        button.textContent = u.nome;
         
+        card.appendChild(button);
     }
-
 }
