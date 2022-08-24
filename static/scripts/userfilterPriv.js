@@ -13,7 +13,11 @@ document.getElementById("input").addEventListener("keydown", (event) => {
                     case 400:
                     case 404:
                     default: {
-                        resp.json().then(resp => document.getElementById("result").innerHTML = "<p>" + resp.error + "</p>");
+                        resp.json().then(resp => {
+                            var p = document.createElement("p");
+                            p.textContent = resp.error;
+                            document.getElementById("result").appendChild(p);
+                        });
                         break;
                     }
                 }
@@ -51,9 +55,11 @@ var manipulateDom = resp => {
         card.className = "card";
         col.appendChild(card);
 
-        card.innerHTML = "<button class = \"btn btn-primary\" onclick = \"document.getElementById('invitati').value = '" + u.email + "'\">" + u.nome + "</button>" ;
+        var button = document.createElement("button");
+        button.className = "btn btn-primary";
+        button.onclick = document.getElementById("invitati").value = u.email;
+        button.textContent = u.nome;
 
-        
+        card.appendChild(button);
     }
-
 }

@@ -1,7 +1,3 @@
-
-
-
-
 //Aziona il filtro dopo il click del bottone "Enter" sulla tastiera.
 document.getElementById("input").addEventListener("keydown", (event) => {
     if (event.code === "Enter") {
@@ -17,11 +13,15 @@ document.getElementById("input").addEventListener("keydown", (event) => {
                     case 400:
                     case 404:
                     default: {
-                        resp.json().then(resp => document.getElementById("result").innerHTML = "<p>" + resp.error + "</p>");
+                        resp.json().then(resp => {
+                            var p = document.createElement("p");
+                            p.textContent = resp.error;
+                            document.getElementById("result").appendChild(p);
+                        });
                         break;
                     }
                 }
-            })
+            });
     }
 });
 
@@ -59,7 +59,7 @@ var manipulateDom = resp => {
         button.className = "btn btn-primary";
         button.onclick = document.getElementById('posta').value = u.email;
         button.textContent = u.nome;
-        
+
         card.appendChild(button);
     }
 }

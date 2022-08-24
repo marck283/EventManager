@@ -2,63 +2,53 @@ var iscr = () => {
 	fetch('../api/v2/EventiPubblici/' + id + '/Iscrizioni', {
 		method: 'POST',
 		headers: {
-            'x-access-token': token
-        }
-	}).then((resp) => {
-		console.log(resp);
-		/**if(resp.status==403 || resp.status==400){
-		    document.getElementById("iscrizione").innerHTML = "non iscritto";
+			'x-access-token': token
 		}
-		if(resp.status==201){
-		    document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
-		}
-		*/
-		    		
-        if(resp.status==201){
-        	document.getElementById("iscrizione").innerHTML = "Iscritto"
-		}
-        if(resp.status==403 || resp.status == 500 || resp.status == 404){
-        	resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.error});
-        }
-        if(resp.status==401){
-        	resp.json().then(data => {document.getElementById("iscrizione").innerHTML = data.message});
+	}).then(resp => {
+		switch (resp.status) {
+			case 201: {
+				document.getElementById("iscrizione").textContent = "Iscritto";
+				break;
+			}
+			case 401: {
+				resp.json().then(data => document.getElementById("iscrizione").textContent = data.message);
+				break;
+			}
+			case 403:
+			case 404:
+			case 500: {
+				resp.json().then(data => { document.getElementById("iscrizione").textContent = data.error });
+				break;
+			}
 		}
 		return;
-    }).catch( error => console.error(error) ); // If there is any error you will catch them here
-}
+	}).catch(error => console.error(error)); // If there is any error you will catch them here
+};
 
 var iscrInv = (id) => {
-			
-			console.log(id);
-			
-
-			fetch('../api/v2/EventiPubblici/' + id + '/Iscrizioni', {
-		        method: 'POST',
-		        headers: {
-            		'x-access-token': token
-        		}
-		    	}).then((resp) => {
-		    		console.log(resp);
-		    		/**if(resp.status==403 || resp.status==400){
-		    			document.getElementById("iscrizione").innerHTML = "non iscritto";
-		    		}
-		    		if(resp.status==201){
-		    			document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
-		    		}
-					*/
-		    		
-        			if(resp.status==201){
-        				alert("Iscritto");
-
-        			}
-        			if(resp.status==403 || resp.status == 500 || resp.status == 404){
-        				resp.json().then(data => {alert(data.error)});
-        			}
-        			if(resp.status==401){
-        				resp.json().then(data => {alert(data.message)});
-        			}
-
-        			return;
-    			}).catch( error => console.error(error) ); // If there is any error you will catch them here
-
+	fetch('../api/v2/EventiPubblici/' + id + '/Iscrizioni', {
+		method: 'POST',
+		headers: {
+			'x-access-token': token
 		}
+	}).then(resp => {
+		switch(resp.status) {
+			case 201: {
+				alert("Iscritto");
+				break;
+			}
+			case 401: {
+				resp.json().then(data => alert(data.message));
+				break;
+			}
+			case 403:
+			case 404:
+			case 500: {
+				resp.json().then(data => alert(data.error));
+				break;
+			}
+		}
+
+		return;
+	}).catch(error => console.error(error)); // If there is any error you will catch them here
+}
