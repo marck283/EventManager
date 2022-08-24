@@ -5,8 +5,7 @@ const router = express.Router();
 const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
 var qrcode = require('qrcode');
-
-
+const { Validator } = require('node-input-validator');
 
 router.patch('/:id', async (req, res) => {
     //var utent = req.loggedUser.id;
@@ -151,7 +150,7 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id;
     var id_evento = req.params.id;
-    
+
     try {
         let eventP = await eventPrivat.findById(id_evento);
 
@@ -262,190 +261,198 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
-
-        if (typeof req.body.durata !== "number") {
-            res.status(400).json({ error: "Campo non del formato corretto" }).send();
-            return;
-        }
-
-        if (req.body.data == "" || req.body.data == undefined ||
-            req.body.durata <= 0 || req.body.durata == undefined ||
-            req.body.ora == "" || req.body.ora == undefined ||
-            req.body.categoria == "" || req.body.categoria == undefined ||
-            req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
-            req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
-            req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined ||
-            req.body.ElencoEmailInviti == undefined || req.body.ElencoEmailInviti.length == 0) {
-            res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
-            return;
-        }
-
-        var ElencoDate = req.body.data;
-        var dateEv = ElencoDate.split(",");
-
-        for (var elem of dateEv) {
-            //controllo che la data ha un formato corretto
-            var data1 = new Date(elem);
-            console.log("Data: " + (data1.getMonth() + 1));
-            var regu;
-            switch (data1.getMonth() + 1) {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                case 2: {
-                    regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                case 4:
-                case 6:
-                case 9:
-                case 11: {
-                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                default: {
-                    res.status(400).json({ error: "Formato data non valido" }).send();
+        const v = new Validator({
+            data: req.body.data,
+            durata: req.body.durata,
+            ora: req.body.ora,
+            categoria: req.body.categoria,
+            nomeAtt: req.body.nomeAtt,
+            indirizzo: req.body.luogoEv.indirizzo,
+            citta: req.body.luogoEv.citta,
+            ElencoEmailInviti: req.body.ElencoEmailInviti
+        }, {
+            data: 'required|string|minLength:1',
+            durata: 'required|integer|min:1',
+            ora: 'required|string|minLength:1',
+            categoria: 'required|string|minLength:1',
+            nomeAtt: 'required|string|minLength:1',
+            indirizzo: 'required|string|minLength:1',
+            citta: 'required|string|minLength:1',
+            ElencoEmailInviti: 'required|array|minLength:1'
+        });
+        v.check()
+            .then(async matched => {
+                if (!matched) {
+                    res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
-            }
-            if (!regu.test(elem)) {
-                res.status(400).json({ error: "formato data non valido" }).send()
-                return;
-            }
+                var ElencoDate = req.body.data;
+                var dateEv = ElencoDate.split(",");
 
-            //controllo che le date non siano ripetute
-            var count = 0;
-            dateEv.forEach(e => { if (e == elem) { count += 1 } });
-            if (count > 1) {
-                res.status(400).json({ error: "date ripetute" }).send()
-                return;
-            }
+                for (var elem of dateEv) {
+                    //controllo che la data ha un formato corretto
+                    var data1 = new Date(elem);
+                    console.log("Data: " + (data1.getMonth() + 1));
+                    var regu;
+                    switch (data1.getMonth() + 1) {
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                        case 8:
+                        case 10:
+                        case 12: {
+                            regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        case 2: {
+                            regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11: {
+                            regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        default: {
+                            res.status(400).json({ error: "Formato data non valido" }).send();
+                            return;
+                        }
+                    }
+                    if (!regu.test(elem)) {
+                        res.status(400).json({ error: "formato data non valido" }).send();
+                        return;
+                    }
 
-            //controllo che le date non siano di una giornata precedente a quella odierna
-            var data = elem;
-            var date = new Date();
-            var mm = date.getMonth() + 1
-            var dd = date.getDate()
-            var yy = date.getFullYear()
-            dats = data.split('/');
+                    //controllo che le date non siano ripetute
+                    var count = 0;
+                    dateEv.forEach(e => { if (e == elem) { count += 1 } });
+                    if (count > 1) {
+                        res.status(400).json({ error: "date ripetute" }).send();
+                        return;
+                    }
+
+                    //controllo che le date non siano di una giornata precedente a quella odierna
+                    var data = elem;
+                    var date = new Date();
+                    var mm = date.getMonth() + 1
+                    var dd = date.getDate()
+                    var yy = date.getFullYear()
+                    dats = data.split('/');
 
 
-            if (dats[0][0] == '0') {
-                mese = dats[0][1];
-            } else {
-                mese = dats[0];
-            }
+                    if (dats[0][0] == '0') {
+                        mese = dats[0][1];
+                    } else {
+                        mese = dats[0];
+                    }
 
-            if (dats[1][0] == '0') {
-                giorno = dats[1][1];
-            } else {
-                giorno = dats[1];
-            }
-            anno = dats[2];
-            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
-                res.status(403).json({ error: "giorno non disponibile" }).send()
-                return;
-            }
-        }
+                    if (dats[1][0] == '0') {
+                        giorno = dats[1][1];
+                    } else {
+                        giorno = dats[1];
+                    }
+                    anno = dats[2];
+                    if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+                        res.status(403).json({ error: "giorno non disponibile" }).send();
+                        return;
+                    }
+                }
 
-        //controllo che l'ora sia del formato corretto
-        var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-        var ora = req.body.ora;
-        if (reg.test(ora)) {
-            strin = ora.split(":");
-            str1 = strin[0];
-            str2 = strin[1];
-            if (strin[0][0] == 0) {
-                str1 = strin[0][1];
-            }
-            if (strin[1][0] == 0) {
-                str2 = strin[1][1];
-            }
-            var d = new Date()
-            //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-            if (ElencoDate != "") {
-                var mm = d.getMonth() + 1
-                var dd = d.getDate()
-                var yy = d.getFullYear()
+                //controllo che l'ora sia del formato corretto
+                var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+                var ora = req.body.ora;
+                if (reg.test(ora)) {
+                    strin = ora.split(":");
+                    str1 = strin[0];
+                    str2 = strin[1];
+                    if (strin[0][0] == 0) {
+                        str1 = strin[0][1];
+                    }
+                    if (strin[1][0] == 0) {
+                        str2 = strin[1][1];
+                    }
+                    var d = new Date()
+                    //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
+                    if (ElencoDate != "") {
+                        var mm = d.getMonth() + 1
+                        var dd = d.getDate()
+                        var yy = d.getFullYear()
 
-                var giorno = dd.toString().padStart(2, '0');
-                var mese = mm.toString().padStart(2, '0');
-                var anno = "" + yy;
+                        var giorno = dd.toString().padStart(2, '0');
+                        var mese = mm.toString().padStart(2, '0');
+                        var anno = "" + yy;
 
-                var temp_poz = mese + '/' + giorno + '/' + anno;
+                        var temp_poz = mese + '/' + giorno + '/' + anno;
 
-                if (ElencoDate.includes(temp_poz) && ((Number(str1) >= d.getHours() && Number(str1) == d.getHours() && Number(str2) < d.getMinutes()) || Number(str1) < d.getHours())) {
-                    res.status(403).json({ error: "orario non permesso" }).send()
+                        if (ElencoDate.includes(temp_poz) && ((Number(str1) >= d.getHours() && Number(str1) == d.getHours() && Number(str2) < d.getMinutes()) || Number(str1) < d.getHours())) {
+                            res.status(403).json({ error: "orario non permesso" }).send()
+                            return;
+                        }
+                    }
+                } else {
+                    res.status(400).json({ error: "formato ora non valido" }).send();
                     return;
                 }
-            }
-        } else {
-            res.status(400).json({ error: "formato ora non valido" }).send()
-            return;
-        }
 
-        for (elem of req.body.ElencoEmailInviti) {
-            //controllo che le date non siano ripetute
-            var counti = 0;
-            req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
-            if (counti > 1) {
-                res.status(400).json({ error: "email ripetute" }).send()
-                return;
-            }
-        }
+                for (elem of req.body.ElencoEmailInviti) {
+                    //controllo che le date non siano ripetute
+                    var counti = 0;
+                    req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
+                    if (counti > 1) {
+                        res.status(400).json({ error: "email ripetute" }).send();
+                        return;
+                    }
+                }
 
-        //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
-        var ListaInvitati = []
+                //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
+                var ListaInvitati = []
 
-        var ut = await Users.findById(utent);
-        for (var elem of req.body.ElencoEmailInviti) {
-            u = await Users.find({ email: { $eq: elem } });
-            if (u.length == 0) {
-                res.status(404).json({ error: "un email di un utente da invitare non è corretto" });
-                return;
-            }
+                var ut = await Users.findById(utent);
+                for (var elem of req.body.ElencoEmailInviti) {
+                    u = await Users.find({ email: { $eq: elem } });
+                    if (u.length == 0) {
+                        res.status(404).json({ error: "un email di un utente da invitare non è corretto" });
+                        return;
+                    }
 
-            if (ut.email == u[0].email) {
-                res.status(403).json({ error: "non puoi invitarti al tuo stesso evento" });
-                return;
-            }
-            ListaInvitati.push(u[0].id);
-            console.log(u[0].id);
-        }
+                    if (ut.email == u[0].email) {
+                        res.status(403).json({ error: "non puoi invitarti al tuo stesso evento" });
+                        return;
+                    }
+                    ListaInvitati.push(u[0].id);
+                    console.log(u[0].id);
+                }
 
-        let eventP = new eventPrivat({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent, invitatiID: ListaInvitati });
-        eventP.partecipantiID.push(utent);
+                let eventP = new eventPrivat({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent, invitatiID: ListaInvitati });
+                eventP.partecipantiID.push(utent);
 
-        //Si salva il documento personale
-        eventP = await eventP.save();
+                //Si salva il documento personale
+                eventP = await eventP.save();
 
-        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-        utente.EventiCreati.push(eventP.id);
-        utente.EventiIscrtto.push(eventP.id);
+                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                utente.EventiCreati.push(eventP.id);
+                utente.EventiIscrtto.push(eventP.id);
 
-        //Si salva il modulo dell'utente
-        await utente.save();
+                //Si salva il modulo dell'utente
+                await utente.save();
 
-        let eventId = eventP.id;
+                let eventId = eventP.id;
 
-        //creare gli inviti a questi eventi 
-        for (var elem of ListaInvitati) {
-            let invito = new invit({ utenteid: elem, eventoid: eventId, tipoevent: "priv" });
-            await invito.save();
-        }
-        console.log('Evento salvato con successo');
+                //creare gli inviti a questi eventi 
+                for (var elem of ListaInvitati) {
+                    let invito = new invit({ utenteid: elem, eventoid: eventId, tipoevent: "priv" });
+                    await invito.save();
+                }
+                console.log('Evento salvato con successo');
 
-        /**
-         * Si posiziona il link alla risorsa appena creata nel header location della risposata
-         */
-        res.location("/api/v2/EventiPrivati/" + eventId).status(201).send();
+                /**
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 */
+                res.location("/api/v2/EventiPrivati/" + eventId).status(201).send();
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();

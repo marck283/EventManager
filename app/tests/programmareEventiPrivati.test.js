@@ -78,7 +78,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo non del formato corretto"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo durata compilato con valore numerico negativo", () => {
@@ -98,7 +98,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo durata compilato con valore nullo", () => {
@@ -118,7 +118,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'data' non compilato", () => {
@@ -137,7 +137,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'data' compilato inserendo più volte la stessa data", () => {
@@ -217,7 +217,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'citta' non compilato", () => {
@@ -236,7 +236,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'indirizzo' compilato come stringa vuota", () => {
@@ -256,7 +256,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'ora' compilato in formato diverso da hh:mm", () => {
@@ -297,8 +297,8 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(403, {error: "orario non permesso"})
-        .then((res, err) => console.log(dateObj));
+        .expect(403)
+        .expect({error: "orario non permesso"});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'nomeAtt' non compilato", () => {
@@ -317,7 +317,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'categoria' non compilato", () => {
@@ -336,6 +336,6 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Campo vuoto o indefinito"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 });

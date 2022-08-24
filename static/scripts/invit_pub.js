@@ -1,52 +1,32 @@
 var invip = () => {
-			
-			
-			
-			
+	let email = document.getElementById("posta").value;
+	console.log(email)
 
-			let email = document.getElementById("posta").value; 
-			console.log(email)
-
-			fetch('../api/v2/EventiPubblici/' + id + '/Inviti', {
-		        method: 'POST',
-		        headers:{
-            		'x-access-token': token,
-            		'Content-Type': 'application/json'
-        		},
-        		body: JSON.stringify({email: email})
-		    	}).then((resp) => {
-		    		
-		    		/**if(resp.status==403 || resp.status==400){
-		    			document.getElementById("iscrizione").innerHTML = "non iscritto";
-		    		}
-		    		if(resp.status==201){
-		    			document.getElementById("iscrizione").innerHTML = "Iscritto " + "\n" + resp.headers;
-		    		}
-					*/
-		    		
-					switch(resp.status) {
-						case 201: {
-							document.getElementById("invitip").innerHTML = "Invitato"
-							break;
-						}
-						case 400:
-						case 403:
-						case 404:
-						case 500: {
-
-						}
-					}
-        			if(resp.status==201){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-        			}
-        			if(resp.status==403 || resp.status == 500 || resp.status == 404 || resp.status == 400){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.error});
-        			}
-        			if(resp.status==401){
-        				resp.json().then(data => {document.getElementById("invitip").innerHTML = data.message});
-        			}
-
-        			return;
-    			}).catch( error => console.error(error) ); // If there is any error you will catch them here
-
+	fetch('../api/v2/EventiPubblici/' + id + '/Inviti', {
+		method: 'POST',
+		headers: {
+			'x-access-token': token,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ email: email })
+	}).then(resp => {
+		switch (resp.status) {
+			case 201: {
+				document.getElementById("invitip").textContent = "Invitato"
+				break;
+			}
+			case 401: {
+				resp.json().then(data => document.getElementById("invitip").textContent = data.message);
+				break;
+			}
+			case 400:
+			case 403:
+			case 404:
+			case 500: {
+				resp.json().then(data => document.getElementById("invitip").textContent = data.error);
+			}
 		}
+
+		return;
+	}).catch(error => console.error(error)); // If there is any error you will catch them here
+}
