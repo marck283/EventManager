@@ -54,14 +54,11 @@ var filterEvents = eventsArr => {
 
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    
     var user = req.loggedUser.id;
-
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
     eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
-    console.log("initial: " + eventsPers);
     eventsPub = await findPubEvents(user);
     eventsPriv = await eventPrivate.find({});
     eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
@@ -79,9 +76,11 @@ router.get("", async (req, res) => {
     }
 
     const v = new Validator({
-        durata: durata
+        durata: durata,
+        passato: req.query.passato
     }, {
-        durata: 'integer|min:1'
+        durata: 'integer|min:1',
+        passato: 'required|string|in:True,False'
     });
     v.check()
     .then(matched => {
@@ -118,10 +117,6 @@ router.get("", async (req, res) => {
                 }
                 case "False": {
                     break;
-                }
-                default: {
-                    res.status(400).json({ error: "Richiesta malformata." }).send(); //Invia un errore 400 quando la richiesta comprende un valore non corretto per il parametro "passato".
-                    return;
                 }
             }
         

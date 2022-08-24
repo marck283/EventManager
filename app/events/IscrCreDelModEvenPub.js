@@ -45,17 +45,17 @@ router.patch('/:id', async (req, res) => {
             maxPers: 'required|integer|min:2'
         });
         v.check()
-        .then(async matched => {
-            if(!matched) {
-                res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
-                return;
-            } else {
-                evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
-                await evento.save();
-                res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
-                console.log('Evento pubblico modificato con successo');
-            }
-        });
+            .then(async matched => {
+                if (!matched) {
+                    res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
+                    return;
+                } else {
+                    evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+                    await evento.save();
+                    res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
+                    console.log('Evento pubblico modificato con successo');
+                }
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore lato server." }).send();
@@ -337,163 +337,171 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        if (typeof req.body.durata !== "number" || typeof req.body.maxPers !== "number") {
-            res.status(400).json({ error: "Campo non del formato corretto" }).send();
-            return;
-        }
-
-        if (req.body.data == "" || req.body.data == undefined ||
-            req.body.durata <= 0 || req.body.durata == undefined ||
-            req.body.ora == "" || req.body.ora == undefined ||
-            req.body.maxPers <= 1 || req.body.maxPers == undefined ||
-            req.body.categoria == "" || req.body.categoria == undefined ||
-            req.body.nomeAtt == "" || req.body.nomeAtt == undefined ||
-            req.body.luogoEv.indirizzo == "" || req.body.luogoEv.indirizzo == undefined ||
-            req.body.luogoEv.citta == "" || req.body.luogoEv.citta == undefined) {
-            res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
-            return;
-        }
-
-        var ElencoDate = req.body.data;
-        var dateEv = ElencoDate.split(",");
-
-        for (var elem of dateEv) {
-            //controllo che la data ha un formato corretto
-            var regu, data1 = new Date(elem);
-            switch (data1.getMonth() + 1) {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12: {
-                    regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                case 2: {
-                    regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                case 4:
-                case 6:
-                case 9:
-                case 11: {
-                    regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                    break;
-                }
-                default: {
-                    res.status(400).json({ error: "Formato data non valido" }).send();
+        const v = new Validator({
+            data: req.body.data,
+            durata: req.body.durata,
+            ora: req.body.ora,
+            maxPers: req.body.maxPers,
+            categoria: req.body.categoria,
+            nomeAtt: req.body.nomeAtt,
+            indirizzo: req.body.luogoEv.indirizzo,
+            citta: req.body.luogoEv.citta
+        }, {
+            data: 'required|string|minLength:1',
+            durata: 'required|integer|min:1',
+            ora: 'required|string|minLength:5|maxLength:5',
+            maxPers: 'required|integer|min:2',
+            categoria: 'required|string|minLength:1',
+            nomeAtt: 'required|string|minLength:1',
+            indirizzo: 'required|string|minLength:1',
+            citta: 'required|string|minLength:1'
+        });
+        v.check()
+            .then(async matched => {
+                if (!matched) {
+                    res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
-            }
-            if (!regu.test(elem)) {
-                res.status(400).json({ error: "formato data non valido" }).send()
-                return;
-            }
+                var ElencoDate = req.body.data;
+                var dateEv = ElencoDate.split(",");
 
-            //controllo che le date non siano ripetute
-            var count = 0;
-            dateEv.forEach(e => { if (e == elem) { count += 1 } });
-            if (count > 1) {
-                res.status(400).json({ error: "date ripetute" }).send()
-                return;
-            }
+                for (var elem of dateEv) {
+                    //controllo che la data ha un formato corretto
+                    var regu, data1 = new Date(elem);
+                    switch (data1.getMonth() + 1) {
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                        case 8:
+                        case 10:
+                        case 12: {
+                            regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        case 2: {
+                            regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11: {
+                            regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
+                            break;
+                        }
+                        default: {
+                            res.status(400).json({ error: "Formato data non valido" }).send();
+                            return;
+                        }
+                    }
+                    if (!regu.test(elem)) {
+                        res.status(400).json({ error: "formato data non valido" }).send()
+                        return;
+                    }
 
-            //controllo che le date non siano di una giornata precedente a quella odierna
-            var data = elem;
-            var date = new Date();
-            var mm = date.getMonth() + 1
-            var dd = date.getDate()
-            var yy = date.getFullYear()
-            dats = data.split('/');
+                    //controllo che le date non siano ripetute
+                    var count = 0;
+                    dateEv.forEach(e => { if (e == elem) { count += 1 } });
+                    if (count > 1) {
+                        res.status(400).json({ error: "date ripetute" }).send()
+                        return;
+                    }
+
+                    //controllo che le date non siano di una giornata precedente a quella odierna
+                    var data = elem;
+                    var date = new Date();
+                    var mm = date.getMonth() + 1
+                    var dd = date.getDate()
+                    var yy = date.getFullYear()
+                    dats = data.split('/');
 
 
-            if (dats[0][0] == '0') {
-                mese = dats[0][1];
-            } else {
-                mese = dats[0];
-            }
+                    if (dats[0][0] == '0') {
+                        mese = dats[0][1];
+                    } else {
+                        mese = dats[0];
+                    }
 
 
-            if (dats[1][0] == '0') {
-                giorno = dats[1][1];
-            } else {
-                giorno = dats[1];
-            }
+                    if (dats[1][0] == '0') {
+                        giorno = dats[1][1];
+                    } else {
+                        giorno = dats[1];
+                    }
 
-            anno = dats[2];
+                    anno = dats[2];
 
-            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
-                res.status(403).json({ error: "giorno non disponibile" }).send()
-                return;
-            }
-        }
+                    if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+                        res.status(403).json({ error: "giorno non disponibile" }).send()
+                        return;
+                    }
+                }
 
-        //controllo che l'ora sia del formato corretto
-        var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
-        var ora = req.body.ora;
-        if (reg.test(ora)) {
-            strin = ora.split(":");
-            str1 = strin[0];
-            str2 = strin[1];
-            if (strin[0][0] == 0) {
-                str1 = strin[0][1];
-            }
-            if (strin[1][0] == 0) {
-                str2 = strin[1][1];
-            }
-            var d = new Date()
-            //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-            if (ElencoDate != "") {
-                var mm = d.getMonth() + 1
-                var dd = d.getDate()
-                var yy = d.getFullYear()
+                //controllo che l'ora sia del formato corretto
+                var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
+                var ora = req.body.ora;
+                if (reg.test(ora)) {
+                    strin = ora.split(":");
+                    str1 = strin[0];
+                    str2 = strin[1];
+                    if (strin[0][0] == 0) {
+                        str1 = strin[0][1];
+                    }
+                    if (strin[1][0] == 0) {
+                        str2 = strin[1][1];
+                    }
+                    var d = new Date()
+                    //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
+                    if (ElencoDate != "") {
+                        var mm = d.getMonth() + 1
+                        var dd = d.getDate()
+                        var yy = d.getFullYear()
 
-                var giorno = dd.toString().padStart(2, '0');
-                var mese = mm.toString().padStart(2, '0');
+                        var giorno = dd.toString().padStart(2, '0');
+                        var mese = mm.toString().padStart(2, '0');
 
-                var anno = yy.toString();
+                        var anno = yy.toString();
 
-                var temp_poz = mese + '/' + giorno + '/' + anno;
+                        var temp_poz = mese + '/' + giorno + '/' + anno;
 
-                if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
-                    res.status(403).json({ error: "orario non permesso" }).send()
+                        if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
+                            res.status(403).json({ error: "orario non permesso" }).send()
+                            return;
+                        }
+                    }
+                } else {
+                    res.status(400).json({ error: "formato ora non valido" }).send()
                     return;
                 }
-            }
-        } else {
-            res.status(400).json({ error: "formato ora non valido" }).send()
-            return;
-        }
-        //Si crea un documento evento pubblico
-        let eventP = new eventPublic({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, maxPers: req.body.maxPers, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
-        eventP.partecipantiID.push(utent);
+                //Si crea un documento evento pubblico
+                let eventP = new eventPublic({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, maxPers: req.body.maxPers, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+                eventP.partecipantiID.push(utent);
 
 
-        //Si salva il documento pubblico
-        eventP = await eventP.save();
+                //Si salva il documento pubblico
+                eventP = await eventP.save();
 
-        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-        utente.EventiCreati.push(eventP.id)
-        utente.EventiIscrtto.push(eventP.id);
+                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                utente.EventiCreati.push(eventP.id)
+                utente.EventiIscrtto.push(eventP.id);
 
-        //Si salva il modulo dell'utente
-        await utente.save();
+                //Si salva il modulo dell'utente
+                await utente.save();
 
 
-        let eventId = eventP.id;
+                let eventId = eventP.id;
 
-        console.log('Evento salvato con successo');
+                console.log('Evento salvato con successo');
 
-        /**
-         * Si posiziona il link alla risorsa appena creata nel header location della risposata
-         */
-        res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
+                /**
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 */
+                res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore del server" }).send();
-
     }
 });
 

@@ -47,13 +47,9 @@ router.get("", async (req, res) => {
     }
 
     const v1 = new Validator({
-        durata: durata,
-        indirizzo: indirizzo,
-        citta: citta
+        durata: durata
     }, {
         durata: 'integer|min:1',
-        indirizzo: 'string|min:1', //At least one character
-        citta: 'string|min:1' //At least one character
     });
     v1.check()
     .then(matched => {
@@ -64,10 +60,10 @@ router.get("", async (req, res) => {
             if(durata != undefined) {
                 events = events.filter(e => e.durata == durata);
             }
-            if(indirizzo != undefined) {
+            if(indirizzo != undefined && indirizzo != "") {
                 events = events.filter(e => e.luogoEv.indirizzo == indirizzo);
             }
-            if(citta != undefined) {
+            if(citta != undefined && citta != "") {
                 events = events.filter(e => e.luogoEv.citta == citta);
             }
             if(events.length > 0) {
@@ -84,27 +80,17 @@ router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
     var events;
     var obj = {}, token = req.header("x-access-token");
-
-
-
     var autenticato = false;
     var user = "";
 
     if (token) {
-
-
         jwt.verify(token, process.env.SUPER_SECRET, function (err, decoded) {
-
             if (!err) {
                 user = decoded.id;
                 autenticato = true;
             }
-
         });
-
-
     }
-
 
     events = await eventPublic.find({});
     events = events.filter(e => e.data.includes(str));
