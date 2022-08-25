@@ -110,8 +110,8 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     
   });
 
-  /*test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo durata non è del formato corretto", async () => {
-      // create a valid token
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo durata non è del formato corretto", async () => {
+    // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
       id: "1234"
@@ -124,11 +124,11 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     await request(app)
     .post('/api/v2/EventiPrivati')
     .set('x-access-token', token)
-      .send({data: "11/11/2050,11/12/2050", ora: "11:33", durata: "3",categoria: "svago", nomeAtt: "Evento", luogoEv: {indirizzo: "via panini", citta: "Bologna"}, ElencoEmailInviti: ['gg.tt@gmail.com']})
+      .send({data: "11/11/2050,11/12/2050", ora: "11:33", durata: "tre",categoria: "svago", nomeAtt: "Evento", luogoEv: {indirizzo: "via panini", citta: "Bologna"}, ElencoEmailInviti: ['gg.tt@gmail.com']})
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({error: "Campo vuoto o indefinito o non del formato corretto."});
-  });*/
+  });
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
       // create a valid token
