@@ -27,7 +27,9 @@ var login = () => {
     fetch('../api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: document.getElementById("loginEmail").value, password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString() }),
+        body: JSON.stringify({ email: document.getElementById("loginEmail").value,
+        password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString(),
+        csrfToken: document.getElementById("csrfField").value }),
     })
     .then(resp => {
         switch(resp.status) {

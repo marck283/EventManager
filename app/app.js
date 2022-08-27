@@ -35,6 +35,7 @@ app.set('vary', 'origin');
 /**
  * Serve front-end static files
  */
+//I have to find a way to redirect the client to the csrf token endpoint and push the returned token into the web page.
 app.use('/', express.static('static'));
 app.use('/api/v2/authentications', autenticato);
 app.use('/api/v2/EventiPubblici', EventoPubblico);

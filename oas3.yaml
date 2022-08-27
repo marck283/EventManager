@@ -60,12 +60,18 @@ paths:
             schema:
               type: object
               properties:
+                csrfToken:
+                  type: string
+                  description: Token anti-CSRF
+                  required: true
                 email:
                   type: string
                   description: email dell'utente
+                  required: true
                 password:
                   type: string
                   description: password dell'utente
+                  required: true
       responses:
         '200':
           description: Avvenuta autetnticazione
@@ -76,7 +82,7 @@ paths:
                 properties:
                   success: 
                     type: boolean
-                    description: variabile che indica il successo o meno dell'operazione
+                    description: Variabile che indica il successo o meno dell'operazione
                   message: 
                     type: string
                     description: messaggio del risultato dell'operazione eseguita 
@@ -92,8 +98,19 @@ paths:
                   self:
                     type: string 
                     description: link dell'utente autenticato
-              
-              
+        '400':
+          description: Autenticazione fallita.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                    description: Variabile che indica il successo o meno dell'operazione
+                  error:
+                    type: string
+                    description: Messaggio di errore.              
         '403':
           description: "Autenticazione fallita. Password non trovata"
           content:
@@ -101,6 +118,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  success: 
+                    type: boolean
+                    description: Variabile che indica il successo o meno dell'operazione
                   error:
                     type: string
                     description: "Messaggio d'errore"
@@ -111,6 +131,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  success: 
+                    type: boolean
+                    description: Variabile che indica il successo o meno dell'operazione
                   error:
                     type: string
                     description: "Messaggio d'errore"
