@@ -13,6 +13,8 @@ const tokenChecker = require('./tokenChecker.js');
 const Utente = require('./Utenti.js');
 const regandric = require('./regAndRicerca.js');
 const recPsw = require('./pswRecovery.js');
+const cookieParser = require('cookie-parser');
+const csrfCreation = require('./csrfTokenCreation.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -20,6 +22,7 @@ const recPsw = require('./pswRecovery.js');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cookieParser());
 app.use(cors());
 app.disable('x-powered-by'); //Disabling x-powered-by for security reasons
 app.enable('access-control-allow-origin'); //Enabling Access-Control-Allow-Origin for security reasons
@@ -38,6 +41,7 @@ app.use('/api/v2/EventiPubblici', EventoPubblico);
 app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
 app.use('/api/v2/Utenti', regandric);
 app.use('/api/v2/RecuperoPassword', recPsw);
+app.use('/api/v2/CsrfToken', csrfCreation);
 
 var limiter = RateLimit({
     windowMs: 1*60*1000, //1 minute
@@ -50,9 +54,7 @@ var limiter = RateLimit({
 //Avoids Brute Force attacks by limiting the number of requests per IP
 app.use(limiter);
 
-
 app.use(tokenChecker);
-
 
 app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
 app.use('/api/v2/EventiPersonali', EventoPersonale);

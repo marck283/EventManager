@@ -1306,7 +1306,31 @@ paths:
                     type: string
                     description: "Messaggio d'errore"
          
-
+  /CsrfToken:
+    get:
+      description: Permette di ottenere un token anti-CSRF.
+      summary: Permette di ottenere un token anti-CSRF.
+      responses:
+        '200':
+          description: Token anti-CSRF ritornato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Il token anti-CSRF.
+        '500':
+          description: Errore interno al server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Messaggio d'errore.
 
   /Utenti:
     post:

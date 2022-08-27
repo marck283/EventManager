@@ -66,6 +66,7 @@
     <span id="title-card"></span>
     <span id="second-title-card"></span><br><br>
     <form name="loginform" id="loginform">
+      <input type="hidden" name="csrfToken" id="csrfField" />
       <label for="loginEmail">Email:</label>
       <input name="email" required type="email" id="loginEmail" /><br /><br />
       <label for="loginPassword">Password:</label>
@@ -78,6 +79,9 @@
     <br />
     <button type="button" class="btn btn-secondary" onclick="window.location = 'registrazione.html'">Registrati</button>
     <h1 id="usr"></h1>
+    <script>
+      getCsrfToken();
+    </script>
     <script src="scripts/alerts/indexAlerts.js"></script>
   </div>
 </body>
