@@ -96,7 +96,6 @@ router.post('', async (req, res) => {
     v.check()
         .then(matched1 => {
             if (!matched1) {
-                console.log("no match");
                 res.status(400).json({ error: "Errore in autenticazione." }).send();
                 return;
             }
