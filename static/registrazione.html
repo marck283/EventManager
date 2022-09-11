@@ -52,14 +52,16 @@
 
 		<form action="/api/v2/Utenti" method='post' name="RegistFrom" id="RegistForm">
 			<span>Logged User:</span><br>
-			<label for="RealName">Nome:</label>
+			<label for="RealName">Nome: *</label>
 			<input name="nome" required type="text" id="RealName" /><span id="n"></span><br>
-			<label for="loginEmail">Email:</label>
+			<label for="loginEmail">Email: *</label>
 			<input name="email" required type="email" id="loginEmail" /><span id="e"></span><br>
-			<label for="loginPassword">Password:</label>
+			<label for="loginPassword">Password: *</label>
 			<input name="pass" required type="password" id="loginPassword" /><span id="p"></span><br>
 			<label for="Telefono">Cellulare:</label>
 			<input name="tel" required type="text" id="Telefono" /><br><br>
+			<label for="picture">Immagine profilo: </label>
+			<input name="img" type="file" id="picture" /><br><br>
 			<button class="btn btn-primary" type="button" onclick="reg()">Registrati</button>
 		</form>
 

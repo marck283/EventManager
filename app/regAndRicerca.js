@@ -3,7 +3,6 @@ const RateLimit = require('express-rate-limit');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
 const crypto = require('bcrypt');
-const utenti = require('./collezioni/utenti.js');
 const { Validator } = require('node-input-validator');
 
 const saltRounds = 10;
@@ -67,7 +66,7 @@ router.patch('', async (req, res) => {
             if (!matched) {
                 res.status(400).json({ error: "Campo vuoto o indefinito." }).send();
             } else {
-                var utente = await utenti.findOne({ email: { $eq: req.body.email } }).exec();
+                var utente = await Utente.findOne({ email: { $eq: req.body.email } }).exec();
                 if (utente == undefined) {
                     res.status(404).json({ error: "Utente non trovato." }).send();
                     return;
@@ -102,11 +101,15 @@ router.post('', async (req, res) => {
             const v1 = new Validator({
                 nome: req.body.nome,
                 email: req.body.email,
-                pass: req.body.pass
+                pass: req.body.pass,
+                tel: req.body.tel,
+                picture: req.body.picture
             }, {
                 nome: 'required|string',
                 email: 'required|email',
-                pass: 'required|string'
+                pass: 'required|string',
+                tel: 'string|minLength: 8',
+                picture: 'base64url'
             });
             v1.check()
                 .then(async matched => {
@@ -131,7 +134,8 @@ router.post('', async (req, res) => {
                                             email: email1,
                                             password: hash,
                                             salt: salt,
-                                            tel: req.body.tel
+                                            tel: req.body.tel,
+                                            picture: req.body.picture
                                         });
 
                                         let Utentes = await Utent.save(), utenteId = Utentes.id;

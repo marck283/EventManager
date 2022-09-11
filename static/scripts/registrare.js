@@ -35,7 +35,7 @@ var reg = () => {
 
 	}
 
-	if (vuoto == true) {
+	if (vuoto) {
 
 		return;
 
@@ -45,7 +45,7 @@ var reg = () => {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			email: email, pass: CryptoJS.SHA3(password, {outputLength: 512}).toString(), nome: nome, tel: telefono
+			email: email, pass: CryptoJS.SHA3(password, {outputLength: 512}).toString(), nome: nome, tel: telefono, picture: document.getElementById("picture").files[0].toString("base64url")
 		})
 	}).then(resp => {
 		switch(resp.status) {
