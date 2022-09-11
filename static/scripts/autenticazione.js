@@ -3,6 +3,7 @@
 document.addEventListener("keydown", event => {
     if(event.code === "Enter") {
         login();
+        console.log("Login started");
     }
 });
 
@@ -48,6 +49,9 @@ var login = () => {
             case 404: {
                 resp.json().then(data => alert(data.message));
                 break;
+            }
+            default: {
+                console.log("error");
             }
         }
         return;

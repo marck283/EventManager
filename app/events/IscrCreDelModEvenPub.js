@@ -6,6 +6,7 @@ const Inviti = require('../collezioni/invit.js');
 const Users = require('../collezioni/utenti.js');
 const biglietti = require('../collezioni/biglietti.js');
 const { Validator } = require('node-input-validator');
+const dateTest = require('../dateRegexTest.js');
 
 router.patch('/:id', async (req, res) => {
 
@@ -367,36 +368,9 @@ router.post('', async (req, res) => {
 
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
-                    var regu, data1 = new Date(elem);
-                    switch (data1.getMonth() + 1) {
-                        case 1:
-                        case 3:
-                        case 5:
-                        case 7:
-                        case 8:
-                        case 10:
-                        case 12: {
-                            regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        case 2: {
-                            regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11: {
-                            regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        default: {
-                            res.status(400).json({ error: "Formato data non valido" }).send();
-                            return;
-                        }
-                    }
-                    if (!regu.test(elem)) {
-                        res.status(400).json({ error: "formato data non valido" }).send()
+                    var data1 = new Date(elem);
+                    if (!dateTest.test(data1, elem)) {
+                        res.status(400).json({ error: "Formato data non valido" }).send()
                         return;
                     }
 

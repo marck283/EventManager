@@ -287,18 +287,17 @@ describe("POST /api/v2/EventiPrivati", () => {
         .set('Accept', 'application/json')
         .send({
             data: (dateObj.getMonth() + 1).toString().padStart(2, '0') + "/" + String(dateObj.getDate()).padStart(2, '0') + "/" + dateObj.getFullYear(),
-            ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
-            nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
             durata: 2,
+            ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
+            categoria: "svago",
+            nomeAtt: "Girare a vuoto 4",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(403)
-        .expect({error: "orario non permesso"});
+        .expect(403, {error: "orario non permesso"});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'nomeAtt' non compilato", () => {

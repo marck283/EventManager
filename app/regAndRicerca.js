@@ -86,59 +86,71 @@ router.patch('', async (req, res) => {
     return;
 });
 
-
 router.post('', async (req, res) => {
     let email1 = req.body.email;
     const v = new Validator({
-        nome: req.body.nome,
-        email: req.body.email,
-        pass: req.body.pass
+        csrfToken: req.body.csrfToken
     }, {
-        nome: 'required|string',
-        email: 'required|email',
-        pass: 'required|string'
+        csrfToken: 'required|string'
     });
     v.check()
-        .then(async matched => {
-            if (!matched) {
-                res.status(400).json({ error: "Campo vuoto o indefinito o indirizzo email errato." }).send();
-            } else {
-                let ut = await Utente.findOne({ email: { $eq: req.body.email } });
-
-                if (ut) {
-                    res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
-                    return;
-                }
-                //Hashing + salting to mitigate digest clashes and pre-computation
-                await crypto.genSalt(saltRounds)
-                    .then(salt => {
-                        crypto.hash(req.body.pass, salt, async (err, hash) => {
-                            if (err) {
-                                throw err;
-                            } else {
-                                let Utent = new Utente({
-                                    nome: req.body.nome,
-                                    email: email1,
-                                    password: hash,
-                                    salt: salt,
-                                    tel: req.body.tel
-                                });
-
-                                let Utentes = await Utent.save(), utenteId = Utentes.id;
-
-                                /**
-                                 * Link to the newly created resource is returned in the Location header
-                                 * https://www.restapitutorial.com/lessons/httpmethods.html
-                                 */
-                                res.location("/api/v2/Utenti/" + utenteId).status(201).send();
-                            }
-                        });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        res.status(500).json({ error: 'Errore Server' }).send();
-                    });
+        .then(matched1 => {
+            if (!matched1) {
+                console.log("no match");
+                res.status(400).json({ error: "Errore in autenticazione." }).send();
+                return;
             }
+            const v1 = new Validator({
+                nome: req.body.nome,
+                email: req.body.email,
+                pass: req.body.pass
+            }, {
+                nome: 'required|string',
+                email: 'required|email',
+                pass: 'required|string'
+            });
+            v1.check()
+                .then(async matched => {
+                    if (!matched) {
+                        res.status(400).json({ error: "Campo vuoto o indefinito o indirizzo email errato." }).send();
+                    } else {
+                        let ut = await Utente.findOne({ email: { $eq: req.body.email } });
+
+                        if (ut) {
+                            res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
+                            return;
+                        }
+                        //Hashing + salting to mitigate digest clashes and pre-computation
+                        await crypto.genSalt(saltRounds)
+                            .then(salt => {
+                                crypto.hash(req.body.pass, salt, async (err, hash) => {
+                                    if (err) {
+                                        throw err;
+                                    } else {
+                                        let Utent = new Utente({
+                                            nome: req.body.nome,
+                                            email: email1,
+                                            password: hash,
+                                            salt: salt,
+                                            tel: req.body.tel
+                                        });
+
+                                        let Utentes = await Utent.save(), utenteId = Utentes.id;
+
+                                        /**
+                                         * Link to the newly created resource is returned in the Location header
+                                         * https://www.restapitutorial.com/lessons/httpmethods.html
+                                         */
+                                        res.location("/api/v2/Utenti/" + utenteId).status(201).send();
+                                    }
+                                });
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                res.status(500).json({ error: 'Errore Server' }).send();
+                            });
+                    }
+                });
         });
     return;
 });

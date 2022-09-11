@@ -3,6 +3,7 @@ const eventPersonal = require('../collezioni/eventPersonal.js');
 const router = express.Router();
 const Users = require('../collezioni/utenti.js');
 const { Validator } = require('node-input-validator');
+const dateTest = require('../dateRegexTest.js');
 
 router.patch('/:id', async (req, res) => {
 
@@ -106,8 +107,9 @@ router.post('', async (req, res) => {
 
                     for (var elem of dateEv) {
                         //Controllo che la data abbia un formato corretto
-                        var regu = /^(((01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9]))|(02\/(19|20|[0-2][1-8]))|((04|06|09|11)\/(20|30|[0-2][1-9])))\/[1-9]([0-9]{3})$/, data1 = new Date(elem);
-                        if (!regu.test(elem)) {
+                        var data1 = new Date(elem);
+                        if (!dateTest.test(data1, elem)) {
+                            console.log("no test");
                             res.status(400).json({ error: "Formato data non valido" }).send();
                             return;
                         } else {

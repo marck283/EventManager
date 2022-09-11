@@ -47,15 +47,15 @@ describe('POST /api/v2/Utenti', () => {
     test('POST /api/v2/Utenti con email già registrata dovrebbe restituire 409', async() => {
         
         await request(app).post('/api/v2/Utenti').
-        send({nome: 'Mario', email: 'gg.ee@gmail.com', pass: 'abcd', tel: ''}).
-        expect(409).expect({error: "L'email inserita corrisponde ad un profilo già creato."});
+        send({nome: 'Mario', email: 'gg.ee@gmail.com', pass: 'abcd', tel: '', csrfToken: 'i0sPzta9-9U1pYkEY2iVQd6krhh9vc6SQzKc'}).
+        expect(409, {error: "L'email inserita corrisponde ad un profilo già creato."});
         
     });
     
     test('POST /api/v2/Utenti ', async() => {
         
         const response = await request(app).post('/api/v2/Utenti').
-        send({nome: 'Fabio', email: 'aa.bb@gmail.com', pass: 'abcd', tel: ''});
+        send({nome: 'Fabio', email: 'aa.bb@gmail.com', pass: 'abcd', tel: '', csrfToken: 'i0sPzta9-9U1pYkEY2iVQd6krhh9vc6SQzKc'});
         expect(response.statusCode).toBe(201);
         expect(response.header.location).toBe('/api/v2/Utenti/1111');
         

@@ -6,6 +6,7 @@ const biglietti = require('../collezioni/biglietti.js');
 const Users = require('../collezioni/utenti.js');
 var qrcode = require('qrcode');
 const { Validator } = require('node-input-validator');
+const dateTest = require('../dateRegexTest.js');
 
 router.patch('/:id', async (req, res) => {
     //var utent = req.loggedUser.id;
@@ -261,16 +262,17 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
         //Si crea un documento evento personale
-        const v = new Validator({
+        var options = {
             data: req.body.data,
             durata: req.body.durata,
             ora: req.body.ora,
             categoria: req.body.categoria,
             nomeAtt: req.body.nomeAtt,
             indirizzo: req.body.luogoEv.indirizzo,
-            citta: req.body.luogoEv.citta,
+            citta: req.body.luogoEv.citta,            
             ElencoEmailInviti: req.body.ElencoEmailInviti
-        }, {
+        };
+        const v = new Validator(options, {
             data: 'required|string|minLength:1',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
@@ -292,37 +294,10 @@ router.post('', async (req, res) => {
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
                     var data1 = new Date(elem);
-                    console.log("Data: " + (data1.getMonth() + 1));
-                    var regu;
-                    switch (data1.getMonth() + 1) {
-                        case 1:
-                        case 3:
-                        case 5:
-                        case 7:
-                        case 8:
-                        case 10:
-                        case 12: {
-                            regu = /^(01|03|05|07|08|10|12)\/(20|3[0-1]|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        case 2: {
-                            regu = /^02\/(19|20|[0-2][1-8])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11: {
-                            regu = /^(04|06|09|11)\/(20|30|[0-2][1-9])\/[1-9]([0-9]{3})$/;
-                            break;
-                        }
-                        default: {
-                            res.status(400).json({ error: "Formato data non valido" }).send();
-                            return;
-                        }
-                    }
-                    if (!regu.test(elem)) {
-                        res.status(400).json({ error: "formato data non valido" }).send();
+                    console.log("Data: " + data1.getDate() + " " + String(data1.getMonth() + 1).padStart(2, '0') + " " + data1.getFullYear()); //Temporary console.log. Reinstate all eliminated tests after correcting this error.
+                    if (!dateTest.test(data1, elem)) {
+                        console.log("Formato data non valido.");
+                        res.status(400).json({ error: "Formato data non valido" }).send();
                         return;
                     }
 

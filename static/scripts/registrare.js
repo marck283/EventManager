@@ -47,7 +47,7 @@ var reg = () => {
 		body: JSON.stringify({
 			email: email, pass: CryptoJS.SHA3(password, {outputLength: 512}).toString(), nome: nome, tel: telefono
 		})
-	}).then((resp) => {
+	}).then(resp => {
 		switch(resp.status) {
 			case 201: {
 				alert("Utente registrato con successo.");
