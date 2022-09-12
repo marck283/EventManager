@@ -1829,6 +1829,9 @@ components:
         telefono:
           type: string
           description: numero di telefono dell'utente
+        picture:
+          type: string
+          description: Un'immagine scelta dall'utente codificata come stringa Base64
 
 
 
