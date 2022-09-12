@@ -27,6 +27,13 @@ fetch('../api/v2/Utenti/me', {method: 'GET', headers: {'x-access-token': token}}
 
                     let password = document.getElementById("password");
                     password.textContent = resp.password;
+
+                    var img = new Image();
+                    console.log(resp.picture);
+                    img.src = "data:image/png;base64," + resp.picture;
+                    img.alt = "Immagine profilo utente";
+                    img.style.borderRadius = "60mm";
+                    document.getElementById("profilePic").appendChild(img);
                 });
                 break;
             }
