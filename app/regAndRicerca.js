@@ -18,6 +18,8 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
+router.use(express.json({limit: '25mb'}));
+
 router.get("", async (req, res) => {
     var email = req.query.email;
 
@@ -108,8 +110,8 @@ router.post('', async (req, res) => {
                 nome: 'required|string',
                 email: 'required|email',
                 pass: 'required|string',
-                tel: 'string|minLength: 8',
-                picture: 'base64url'
+                tel: 'string|minLength:8',
+                picture: 'base64'
             });
             v1.check()
                 .then(async matched => {
@@ -122,6 +124,7 @@ router.post('', async (req, res) => {
                             res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
                             return;
                         }
+                        
                         //Hashing + salting to mitigate digest clashes and pre-computation
                         await crypto.genSalt(saltRounds)
                             .then(salt => {

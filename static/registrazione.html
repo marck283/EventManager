@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="/styles/common.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" integrity="sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="/scripts/registrare.js"></script>
-
+	<script src="/scripts/getCsrfToken.js"></script>
 </head>
 
 <body>
@@ -52,6 +52,7 @@
 
 		<form action="/api/v2/Utenti" method='post' name="RegistFrom" id="RegistForm">
 			<span>Logged User:</span><br>
+			<input type="hidden" name="csrfField" id="csrfField" />
 			<label for="RealName">Nome: *</label>
 			<input name="nome" required type="text" id="RealName" /><span id="n"></span><br>
 			<label for="loginEmail">Email: *</label>
@@ -66,6 +67,9 @@
 		</form>
 
 		<h2 id="iscrizione"></h2>
+		<script>
+			getCsrfToken();
+		</script>
 	</div>
 </body>
 </html>
