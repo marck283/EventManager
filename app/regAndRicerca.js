@@ -124,7 +124,7 @@ router.post('', async (req, res) => {
                             res.status(409).json({ error: 'L\'email inserita corrisponde ad un profilo già creato.' }).send();
                             return;
                         }
-                        
+
                         //Hashing + salting to mitigate digest clashes and pre-computation
                         await crypto.genSalt(saltRounds)
                             .then(salt => {
@@ -138,7 +138,7 @@ router.post('', async (req, res) => {
                                             password: hash,
                                             salt: salt,
                                             tel: req.body.tel,
-                                            picture: req.body.picture
+                                            profilePic: req.body.picture
                                         });
 
                                         let Utentes = await Utent.save(), utenteId = Utentes.id;

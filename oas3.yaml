@@ -1833,9 +1833,6 @@ components:
           type: string
           description: Un'immagine scelta dall'utente codificata come stringa Base64
 
-
-
-
     Utente:
       type: object
       description: Oggetto che descrive un certo utente per la visualizzazione dei suoi dati 
@@ -1861,6 +1858,9 @@ components:
         telefono:
           type: string
           description: numero di telefono dell'utente
+        picture:
+          type: string
+          description: L'immagine scelta dall'utente come immagine del profilo codificata come stringa Base64. L'immagine codificata può essere espressa al massimo in formato PNG.
 
     Evento:
       description: Oggetto che descrive un certo evento per il calendario

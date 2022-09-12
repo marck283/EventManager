@@ -51,18 +51,21 @@
 		<h1>Registrati</h1>
 
 		<form action="/api/v2/Utenti" method='post' name="RegistFrom" id="RegistForm">
-			<span>Logged User:</span><br>
+			<h3>Informazioni</h3>
 			<input type="hidden" name="csrfField" id="csrfField" />
-			<label for="RealName">Nome: *</label>
-			<input name="nome" required type="text" id="RealName" /><span id="n"></span><br>
-			<label for="loginEmail">Email: *</label>
-			<input name="email" required type="email" id="loginEmail" /><span id="e"></span><br>
-			<label for="loginPassword">Password: *</label>
-			<input name="pass" required type="password" id="loginPassword" /><span id="p"></span><br>
-			<label for="Telefono">Cellulare:</label>
+			<label for="RealName">*Nome: </label>
+			<input name="nome" required type="text" id="RealName" /><span id="n"></span><br><br>
+			<label for="loginEmail">*Email: </label>
+			<input name="email" required type="email" id="loginEmail" /><span id="e"></span><br><br>
+			<label for="loginPassword">*Password: </label>
+			<input name="pass" required type="password" id="loginPassword" /><span id="p"></span><br><br>
+			<label for="Telefono">Cellulare: </label>
 			<input name="tel" required type="text" id="Telefono" /><br><br>
 			<label for="picture">Immagine profilo: </label>
-			<input name="img" type="file" id="picture" /><br><br>
+			<input name="img" type="file" id="picture" accept=".jpg,.png" /><br><br>
+			<div id="footer">
+				<p>NOTA: i campi etichettati con * sono obbligatori.</p>
+			</div>
 			<button class="btn btn-primary" type="button" onclick="reg()">Registrati</button>
 		</form>
 

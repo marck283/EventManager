@@ -7,7 +7,6 @@ const eventPrivat = require('./collezioni/eventPrivat.js');
 const Inviti = require('./collezioni/invit.js');
 
 router.get('/me', async (req, res) => {
-    console.log("dammi info");
     IDexample = req.loggedUser.id;
     
     try{
@@ -18,7 +17,8 @@ router.get('/me', async (req, res) => {
             email: utente.email,
             tel: utente.tel,
             url: "/api/v2/Utenti/" + IDexample,
-            password: utente.password
+            password: utente.password,
+            picture: utente.profilePic
         });
     }catch(error){
         console.log(error);
