@@ -49,14 +49,14 @@ var modificaPub = () => {
                 break;
             }
             case 401: {
-                resp.json().then(data => {getID("error").textContent = data.message});
+                resp.json().then(data => getID("error").textContent = data.message);
                 break;
             }
             case 400:
             case 403:
             case 404:
             case 500: {
-                resp.json().then(data => {getID("error").textContent = data.error});
+                resp.json().then(data => getID("error").textContent = data.error);
                 break;
             }
             default: {
@@ -64,8 +64,7 @@ var modificaPub = () => {
             }
         }
     })
-    .catch( error => console.error(error) );
-    
+    .catch(error => console.error(error));
 }
 
 //Metodo per il patching di eventi Personali

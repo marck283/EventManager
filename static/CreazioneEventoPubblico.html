@@ -23,31 +23,17 @@
   <link rel="stylesheet" href="/styles/common.css" />
   <link rel="stylesheet" href="/styles/bootstrapIso.css" />
   <link rel="stylesheet" href="/styles/cardsLayout.css" />
+  
   <script src="./scripts/alerts/tutorialAlert.js"></script>
-
   <script>
-
     var token = "";
-
     if (localStorage.getItem('token') != null) {
-
       token = localStorage.getItem('token');
     }
-
-
-
   </script>
-
-
   <script src="scripts/aggiungi_elimina_date.js"></script>
-
   <script src="scripts/richiesta_creazioneEvento.js"></script>
-
-
-
 </head>
-
-
 <body>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -121,10 +107,11 @@
     <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
     <label for="categoria">Categoria:</label>
     <select class="form-select" id="categoria" name="categoria">
-      <option value="lavoro">lavoro</option>
-      <option value="scuola">scuola</option>
-      <option value="operazione">operazione</option>
-      <option value="svago" selected>svago</option>
+      <option value="sport" selected>Sport</option>
+      <option value="spettacolo">Spettacolo</option>
+      <option value="manifestazione">Manifestazione</option>
+      <option value="viaggio">Viaggio</option>
+      <option value="altro">Altro</option>
     </select><span id="vuotoCa"></span><br>
     <div class="form-group ">
       <label class="control-label col-sm-2 requiredField" for="date">
@@ -148,16 +135,9 @@
     <input type="ora" name="ora" id="ora" /><span id="vuotoO"></span><br>
     <label for="durata">Durata in ore:</label>
     <input type="number" min="1" name="durata" value="1" id="durata" /><span id="vuotoDu"></span><br>
-    <label for="maxPers">Massimo di partecipanti:</label>
+    <label for="maxPers">Numero massimo partecipanti:</label>
     <input type="number" min="2" name="maxPers" value="2" id="maxPers" /><span id="vuotoM"></span><br><br>
-
-
-
-
-
     <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
-
-    <h2 id="loc"></h2>
   </div>
 
   <!-- Extra JavaScript/CSS added manually in "Settings" tab -->

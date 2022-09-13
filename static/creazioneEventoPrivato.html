@@ -119,10 +119,11 @@
     <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
     <label for="categoria">Categoria:</label>
     <select class="form-select" aria-label="Selezione categoria evento" id="categoria" name="categoria">
-      <option value="lavoro">lavoro</option>
-      <option value="scuola">scuola</option>
-      <option value="operazione">operazione</option>
-      <option value="svago" selected>svago</option>
+      <option value="sport" selected>Sport</option>
+      <option value="spettacolo">Spettacolo</option>
+      <option value="manifestazione">Manifestazione</option>
+      <option value="viaggio">Viaggio</option>
+      <option value="altro">Altro</option>
     </select><span id="vuotoCa"></span><br>
     <div class="form-group ">
       <label class="control-label col-sm-2 requiredField" for="date">
@@ -160,8 +161,6 @@
 
 
     <button class="btn btn-primary" onclick="requestPr()">Crea Evento</button>
-
-    <h2 id="loc"></h2>
 
     <h3>Ricerca utenti</h3>
     <span id="ricUtenti"></span>
