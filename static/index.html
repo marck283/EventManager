@@ -10,6 +10,7 @@
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="/styles/common.css" />
   <link rel="stylesheet" href="/styles/cardsLayout.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="./scripts/alerts/tutorialAlert.js"></script>
   <script src="https://www.google.com/recaptcha/api.js?render=6LcFNDshAAAAACVBq4EVAPCurLB4xFbBeKaqey1V"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" integrity="sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -76,7 +77,22 @@
       <a href="sendPswRecoveryEmail.html" target="_blank" id="pswreset">Password dimenticata?</a><br /><br />
       <button type="button" onclick="login()" class="g-recaptcha btn btn-primary"data-sitekey="6LcFNDshAAAAACVBq4EVAPCurLB4xFbBeKaqey1V" 
       data-callback='onSubmit' data-action='submit'>Login</button>
-      <input type="reset" value="Reimposta" class="btn btn-secondary" />
+      <input type="reset" value="Reimposta" class="btn btn-secondary" /><br><br>
+      <div id="googleSignIn">
+        <div id="g_id_onload"
+          data-client_id="22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com"
+          data-callback="login"
+          data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left">
+        </div>
+      </div>
     </form>
     <br />
     <button type="button" class="btn btn-secondary" onclick="window.location = 'registrazione.html'">Registrati</button>

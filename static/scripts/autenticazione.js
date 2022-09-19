@@ -7,13 +7,15 @@ document.addEventListener("keydown", event => {
     }
 });
 
-var login = () => {
+var login = (gresponse = null) => {
     fetch('../api/v2/authentications', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: document.getElementById("loginEmail").value,
-        password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString(),
-        csrfToken: document.getElementById("csrfField").value }),
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: document.getElementById("loginEmail").value,
+            password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString(),
+            csrfToken: document.getElementById("csrfField").value,
+            googleJwt: gresponse
+        })
     })
     .then(resp => {
         switch(resp.status) {
@@ -40,7 +42,3 @@ var login = () => {
         return;
     }).catch( error => console.error(error) ); // If there is any error you will catch them here
 };
-
-
-
-
