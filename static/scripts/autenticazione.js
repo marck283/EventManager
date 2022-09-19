@@ -7,6 +7,45 @@ document.addEventListener("keydown", event => {
     }
 });
 
+window.fbAsyncInit = function() {
+    FB.init({
+        appId: '1143189906271722',
+        cookie: true,
+        xfbml: true,
+        version: '2'
+    });
+      
+    FB.AppEvents.logPageView(); 
+};
+
+(function(d, s, id) {
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+} (document, 'script', 'facebook-jssdk'));
+
+var fbLogin = () => {
+    FB.getLoginStatus(function(response) {
+        switch(response.status) {
+            case "connected": {
+                window.open("../publicCalendar.html", "_self", "noopener, noreferrer");
+                break;
+            }
+            case "not_authorized": {
+                //Qualcosa
+                break;
+            }
+            case "unknown": {
+                FB.login();
+            }
+        }
+    });
+};
+
 var login = (gresponse = null) => {
     fetch('../api/v2/authentications', {
             method: 'POST',

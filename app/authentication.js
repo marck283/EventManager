@@ -95,7 +95,7 @@ router.post('', async (req, res) => {
 				}).send();
 				console.log(err);
 			});
-			return;
+			return; //Next step: associate the token with an actual user account on this server
 		}
 
 		//No authentication with identity providers, so use email and password

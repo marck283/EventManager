@@ -31,6 +31,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script>
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v15.0&appId=1143189906271722&autoLogAppEvents=1" nonce="UsQ80wZd"></script>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Scegli azione</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -92,13 +94,15 @@
           data-shape="rectangular"
           data-logo_alignment="left">
         </div>
-      </div>
+      </div><br>
+      <div class="fb-login-button" data-width="" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" onlogin="fbLogin();"></div>
     </form>
     <br />
     <button type="button" class="btn btn-secondary" onclick="window.location = 'registrazione.html'">Registrati</button>
     <h1 id="usr"></h1>
     <script>
       getCsrfToken();
+      window.fbAsyncInit();
     </script>
     <script src="scripts/alerts/indexAlerts.js"></script>
   </div>
