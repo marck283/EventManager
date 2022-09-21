@@ -87,6 +87,9 @@ router.post('', async (req, res) => {
 			await verify(req.body.googleJwt)
 			.then(ticket => {
 				var payload = ticket.getPayload();
+
+				//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
+
 				res.status(200).json(result(ticket, payload.email, payload.sub)).send();
 			})
 			.catch(err => {
