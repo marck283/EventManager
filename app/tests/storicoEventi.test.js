@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
     });
 
     afterAll(async () => {

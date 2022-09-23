@@ -36,7 +36,7 @@ router.get('/me/Inviti', async (req, res) => {
         }
         
         var ListInvit = [];
-        let utente = await Utente.findById(IDexample);
+        await Utente.findById(IDexample);
         var accettato = false;
         for(var elem of ListaInviti) {
             accettato = false;

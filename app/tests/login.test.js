@@ -11,7 +11,7 @@ describe('POST /api/v2/authentications', () => {
         jest.setTimeout(8000);
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation(criterias => {
             
-            if(criterias.email.$eq == 'marco.villa@gmail.com'){
+            if(criterias.email.$eq == 'marco.villa@gmail.com') {
                 return {
                     _id: '62e1667818bfa6ca7793fdeb',
                     nome: 'Marco Villa',

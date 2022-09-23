@@ -8,7 +8,7 @@ describe('GET /api/v2/Utenti/me', () => {
 
   beforeAll( () => {
     const Utente = require('../collezioni/utenti.js');
-    UtenteSpy = jest.spyOn(Utente, 'findById').mockImplementation((criterias) => {
+    UtenteSpy = jest.spyOn(Utente, 'findById').mockImplementation(criterias => {
       if(criterias == "2222"){
         return {_id:'2222',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}  
       }
@@ -31,7 +31,7 @@ describe('GET /api/v2/Utenti/me', () => {
       expiresIn: 3600 // expires in 24 hours
     }
     var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-      const response = await request(app).get('/api/v2/Utenti/me').
+      await request(app).get('/api/v2/Utenti/me').
       set('x-access-token', token).
       expect('Content-Type', /json/).
       expect(200).expect({nome: 'Carlo',
@@ -43,12 +43,10 @@ describe('GET /api/v2/Utenti/me', () => {
 
   test('GET /api/v2/Utenti/me da non autenticati, quindi con un token non valido', async () => {
     var token = '345678';
-    const response = await request(app).get('/api/v2/Utenti/me').
+    await request(app).get('/api/v2/Utenti/me').
     set('x-access-token', token).
     expect('Content-Type', /json/).
     expect(401).expect({success: false,
         message: 'fallita autenticazione'});
   });
-
 });
-

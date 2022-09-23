@@ -1,12 +1,10 @@
 const request = require('supertest'), mongoose = require('mongoose');
 const app = require('../app.js');
-const jwt = require('jsonwebtoken');
-const utenti = require('../collezioni/utenti.js');
 
 describe("GET /api/v2/Utenti", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
     });
 
     afterAll(async () => {

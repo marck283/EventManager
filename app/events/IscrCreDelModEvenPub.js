@@ -340,7 +340,7 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
 
-        const v = new Validator({
+        var options = {
             data: req.body.data,
             durata: req.body.durata,
             ora: req.body.ora,
@@ -350,7 +350,8 @@ router.post('', async (req, res) => {
             indirizzo: req.body.luogoEv.indirizzo,
             citta: req.body.luogoEv.citta,
             picture: req.body.eventPic
-        }, {
+        };
+        const v = new Validator(options, {
             data: 'required|string|minLength:1',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:5|maxLength:5',
@@ -374,7 +375,7 @@ router.post('', async (req, res) => {
                     //controllo che la data ha un formato corretto
                     var data1 = new Date(elem);
                     if (!dateTest.test(data1, elem)) {
-                        res.status(400).json({ error: "Formato data non valido" }).send()
+                        res.status(400).json({ error: "Formato data non valido" }).send();
                         return;
                     }
 
@@ -382,71 +383,38 @@ router.post('', async (req, res) => {
                     var count = 0;
                     dateEv.forEach(e => { if (e == elem) { count += 1 } });
                     if (count > 1) {
-                        res.status(400).json({ error: "date ripetute" }).send()
+                        res.status(400).json({ error: "date ripetute" }).send();
                         return;
                     }
 
                     //controllo che le date non siano di una giornata precedente a quella odierna
                     var data = elem;
                     var date = new Date();
-                    var mm = date.getMonth() + 1
-                    var dd = date.getDate()
-                    var yy = date.getFullYear()
                     dats = data.split('/');
-
-
-                    if (dats[0][0] == '0') {
-                        mese = dats[0][1];
-                    } else {
-                        mese = dats[0];
+                    for(let i = 0; i < 2; i++) {
+                        dats[i].padStart(2, '0');
                     }
 
-
-                    if (dats[1][0] == '0') {
-                        giorno = dats[1][1];
-                    } else {
-                        giorno = dats[1];
-                    }
-
-                    anno = dats[2];
-
-                    if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+                    let d1 = new Date(dats[1] + "/" + dats[0] + "/" + dats[2]);
+                    if (d1 < date) {
                         res.status(403).json({ error: "giorno non disponibile" }).send()
                         return;
                     }
                 }
 
                 //controllo che l'ora sia del formato corretto
-                var reg = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/;
+                var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
                 var ora = req.body.ora;
                 if (reg.test(ora)) {
-                    strin = ora.split(":");
-                    str1 = strin[0];
-                    str2 = strin[1];
-                    if (strin[0][0] == 0) {
-                        str1 = strin[0][1];
-                    }
-                    if (strin[1][0] == 0) {
-                        str2 = strin[1][1];
-                    }
-                    var d = new Date()
+                    let strin = ora.split(":");
+                    let d = new Date();
                     //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                    if (ElencoDate != "") {
-                        var mm = d.getMonth() + 1
-                        var dd = d.getDate()
-                        var yy = d.getFullYear()
+                    var temp_poz = (d.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                    d.getDate().toString().padStart(2, '0') + '/' + d.getFullYear();
 
-                        var giorno = dd.toString().padStart(2, '0');
-                        var mese = mm.toString().padStart(2, '0');
-
-                        var anno = yy.toString();
-
-                        var temp_poz = mese + '/' + giorno + '/' + anno;
-
-                        if (ElencoDate.includes(temp_poz) && (Number(str1) < d.getHours() || (Number(str1) == d.getHours() && Number(str2) < d.getMinutes()))) {
-                            res.status(403).json({ error: "orario non permesso" }).send()
-                            return;
-                        }
+                    if (ElencoDate.includes(temp_poz) && (Number(strin[0]) < d.getHours() || (Number(strin[0]) == d.getHours() && Number(strin[1]) < d.getMinutes()))) {
+                        res.status(403).json({ error: "orario non permesso" }).send()
+                        return;
                     }
                 } else {
                     res.status(400).json({ error: "formato ora non valido" }).send()

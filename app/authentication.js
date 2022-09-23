@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
 const RateLimit = require('express-rate-limit');
 const { Validator } = require('node-input-validator');
-const {google} = require('googleapis');
 
 //Check for the correctness of the client-id
 const {OAuth2Client} = require('google-auth-library');

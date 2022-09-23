@@ -11,7 +11,7 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
   beforeAll( () => {
     const Biglietto = require('../collezioni/biglietti.js');
-    eventsBigliettSpy = jest.spyOn(Biglietto, 'find').mockImplementation((criterias) => {
+    eventsBigliettSpy = jest.spyOn(Biglietto, 'find').mockImplementation(criterias => {
       if(criterias.utenteid == "2222"){
         return [
           {_id: "76767676",eventoid: "0987654", utenteid: "2222", qr: "gy89yv9tw4yt989hhwhw589wy8ytv", tipoevento: "pub"},
@@ -21,7 +21,7 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       return [];
     });
     const Utente = require('../collezioni/utenti.js');
-    UsersSpy = jest.spyOn(Utente, 'findById').mockImplementation((criterias) => {
+    UsersSpy = jest.spyOn(Utente, 'findById').mockImplementation(criterias => {
       if(criterias == '1234'){
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['0987654','09887754'] , EventiIscrtto: ['9876543']}
       }
@@ -31,14 +31,14 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
     });
     const eventPublic = require('../collezioni/eventPublic.js');
-    eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation((criterias) => {
+    eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '0987654'){
         return {_id:'0987654', data: '05/11/2050',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
       }
       
     });
     const eventPrivat = require('../collezioni/eventPrivat.js');
-    eventsPrivSpy = jest.spyOn(eventPrivat, 'findById').mockImplementation((criterias) => {
+    eventsPrivSpy = jest.spyOn(eventPrivat, 'findById').mockImplementation(criterias => {
      if(criterias == '09887754'){
         return {_id:'09887754', data: '05/11/2050',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
       }
@@ -53,9 +53,6 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
     UsersSpy.mockRestore();
   });
 
- 
-  
-
   test("GET /api/v2/Utenti//me/Iscrizioni da autenticati, quindi con token valido, nel caso l'utente ha delle iscrizioni valide associate", async () => {
       // create a valid token
     var payload = {
@@ -67,7 +64,7 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       expiresIn: 3600 // expires in 24 hours
     }
     var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-    const response = await request(app).get('/api/v2/Utenti//me/Iscrizioni').
+    await request(app).get('/api/v2/Utenti//me/Iscrizioni').
     set('x-access-token', token).
     expect('Content-Type', /json/).
     expect(200).expect([{ eventoUrl: "/api/v2/EventiPubblici/0987654",eventoid: "0987654",utenteUrl: "/api/v2/Utenti/2222",utenteid: "2222",
@@ -101,10 +98,9 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       expiresIn: 3600 // expires in 24 hours
     }
     var token = jwt.sign(payload2, process.env.SUPER_SECRET, options2);
-    const response = await request(app).get('/api/v2/Utenti//me/Iscrizioni').
+    await request(app).get('/api/v2/Utenti//me/Iscrizioni').
     set('x-access-token', token).
     expect('Content-Type', /json/).
     expect(404).expect({ error: "Non ci sono biglietti per questo utente"});
   });
-
 });

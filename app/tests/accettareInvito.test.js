@@ -13,7 +13,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     beforeAll( () => {
         jest.useFakeTimers();
         const EventPrivat = require('../collezioni/eventPrivat.js');
-        eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation((criterias) => {
+        eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
             if(criterias == '6543'){
                 return {
                     _id: '6543',
@@ -34,7 +34,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         });
         
         const User = require('../collezioni/utenti.js');
-        userSpy = jest.spyOn(User, 'findById').mockImplementation((criterias) => {
+        userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
             if(criterias == '2222'){
                 return {
                     _id: '2222',
@@ -53,19 +53,19 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         
         const Biglietti = require('../collezioni/biglietti.js');
         
-        eventSaveSpy = jest.spyOn(EventPrivat.prototype, 'save').mockImplementation( (criterias) => {
+        eventSaveSpy = jest.spyOn(EventPrivat.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
         });
         
-        userSaveSpy = jest.spyOn(User.prototype, 'save').mockImplementation( (criterias) => {
+        userSaveSpy = jest.spyOn(User.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
         });
         
-        bigliettoSaveSpy = jest.spyOn(Biglietti.prototype, 'save').mockImplementation( (criterias) => {
+        bigliettoSaveSpy = jest.spyOn(Biglietti.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
@@ -92,7 +92,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
-        const response = await request(app).post('/api/v2/EventiPrivati/'+'6543'+'/Iscrizioni').
+        await request(app).post('/api/v2/EventiPrivati/'+'6543'+'/Iscrizioni').
         set('x-access-token', jwt.sign({email: "aa.bb@gmail.com", id: "5555"}, process.env.SUPER_SECRET, {expiresIn: 3600})).expect('Content-Type', /json/).expect(403).expect({error: "Non sei invitato a questo evento"});
         
     });

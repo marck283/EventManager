@@ -1,5 +1,4 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const app = require('../app.js');
 
 describe('POST /api/v2/Utenti', () => {
@@ -10,7 +9,7 @@ describe('POST /api/v2/Utenti', () => {
     beforeAll( () => {
         
         const Utente = require('../collezioni/utenti.js');
-        userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation((criterias) => {
+        userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation(criterias => {
             if(criterias.email.$eq == 'gg.ee@gmail.com') {
                 return {
                     _id: '2222',
@@ -27,7 +26,7 @@ describe('POST /api/v2/Utenti', () => {
             }
         });
 
-        userSaveSpy = jest.spyOn(Utente.prototype, 'save').mockImplementation( (criterias) => {
+        userSaveSpy = jest.spyOn(Utente.prototype, 'save').mockImplementation(criterias => {
             return {
                 id: '1111',
                 nome: 'Fabio',

@@ -76,7 +76,7 @@ router.patch('', async (req, res) => {
                 crypto.hash(req.body.psw, saltRounds, (err, hash) => {
                     utente.password = hash;
                 });
-                let user = await utente.save();
+                await utente.save();
                 res.status(200).json({ message: "Password modificata con successo." }).send();
             }
         })

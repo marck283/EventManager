@@ -48,7 +48,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
   
 
   test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
-      // create a valid token
+    // create a valid token
     var payload = {
       email: "gg.ee@gmail.com",
       id: "2222"
@@ -58,7 +58,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
       expiresIn: 3600 // expires in 24 hours
     }
     var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-    const response = await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
+    await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', token).
     expect('Content-Type', /json/).
     expect(200).expect({eventi: [
@@ -95,20 +95,9 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
       expiresIn: 3600 // expires in 24 hours
     }
     var token2 = jwt.sign(payload2, process.env.SUPER_SECRET, options2);
-    const response = await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
+    await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', token2).
     expect('Content-Type', /json/).
     expect(404).expect({error:"Non esiste alcun evento programmato."});
   });
-
-
-
-
-
-
-  
-
-  
-  
-
-  });
+});

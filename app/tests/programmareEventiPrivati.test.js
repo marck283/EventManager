@@ -6,7 +6,7 @@ const EventPriv = require('../collezioni/eventPrivat.js'), inviti = require('../
 describe("POST /api/v2/EventiPrivati", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
         await EventPriv.deleteMany({});

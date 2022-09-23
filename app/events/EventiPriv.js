@@ -312,25 +312,9 @@ router.post('', async (req, res) => {
                     //controllo che le date non siano di una giornata precedente a quella odierna
                     var data = elem;
                     var date = new Date();
-                    var mm = date.getMonth() + 1
-                    var dd = date.getDate()
-                    var yy = date.getFullYear()
                     dats = data.split('/');
-
-
-                    if (dats[0][0] == '0') {
-                        mese = dats[0][1];
-                    } else {
-                        mese = dats[0];
-                    }
-
-                    if (dats[1][0] == '0') {
-                        giorno = dats[1][1];
-                    } else {
-                        giorno = dats[1];
-                    }
-                    anno = dats[2];
-                    if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+                    let d1 = new Date(dats[1] + "/" + dats[0] + "/" + dats[2]);
+                    if (d1 < date) {
                         res.status(403).json({ error: "giorno non disponibile" }).send();
                         return;
                     }
@@ -352,13 +336,9 @@ router.post('', async (req, res) => {
                     var d = new Date()
                     //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
                     if (ElencoDate != "") {
-                        var mm = d.getMonth() + 1
-                        var dd = d.getDate()
-                        var yy = d.getFullYear()
-
-                        var giorno = dd.toString().padStart(2, '0');
-                        var mese = mm.toString().padStart(2, '0');
-                        var anno = "" + yy;
+                        var giorno = d.getDate().toString().padStart(2, '0');
+                        var mese = (d.getMonth() + 1).toString().padStart(2, '0');
+                        var anno = d.getFullYear().toString();
 
                         var temp_poz = mese + '/' + giorno + '/' + anno;
 

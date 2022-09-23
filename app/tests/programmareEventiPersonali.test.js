@@ -6,7 +6,7 @@ const EventPersonal = require('../collezioni/eventPersonal.js');
 describe("POST /api/v2/EventiPersonali", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
         await EventPersonal.deleteMany({});

@@ -14,7 +14,7 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
     beforeAll( () => {
         
         const eventPublic = require('../collezioni/eventPublic.js');
-        eventPublicSpy = jest.spyOn(eventPublic, 'findById').mockImplementation((criterias) => {
+        eventPublicSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '6543'){
                 return {
                     _id: '6543',
@@ -35,7 +35,7 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
         });
         
         const Users = require('../collezioni/utenti.js');
-        userSpy = jest.spyOn(Users, 'findById').mockImplementation((criterias) => {
+        userSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
             if(criterias == '2222'){
                 return {
                     _id: '2222',
@@ -53,7 +53,7 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
         });
         
         const biglietti = require('../collezioni/biglietti.js');
-        bigliettoSpy = jest.spyOn(biglietti, 'findById').mockImplementation((criterias) => {
+        bigliettoSpy = jest.spyOn(biglietti, 'findById').mockImplementation(criterias => {
             if(criterias == '1111'){
                 return {
                     _id: '1111',
@@ -68,19 +68,19 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
             }
         });
         
-        eventSaveSpy = jest.spyOn(eventPublic.prototype, 'save').mockImplementation( (criterias) => {
+        eventSaveSpy = jest.spyOn(eventPublic.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
         });
         
-        userSaveSpy = jest.spyOn(Users.prototype, 'save').mockImplementation( (criterias) => {
+        userSaveSpy = jest.spyOn(Users.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
         });
         
-        bigliettoDeleteOneSpy = jest.spyOn(biglietti, 'deleteOne').mockImplementation( (criterias) => {
+        bigliettoDeleteOneSpy = jest.spyOn(biglietti, 'deleteOne').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
@@ -119,5 +119,4 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
         set('x-access-token', token).expect(204);
         
     });
-    
 });

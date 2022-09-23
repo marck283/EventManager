@@ -9,7 +9,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     
     beforeAll( () => {
         const EventPublic = require('../collezioni/eventPublic.js');
-        eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation((criterias) => {
+        eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '67890'){
                 return {
                     _id: '67890',
@@ -29,7 +29,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
             }
         });
         
-        eventSaveSpy = jest.spyOn(EventPublic.prototype, 'save').mockImplementation( (criterias) => {
+        eventSaveSpy = jest.spyOn(EventPublic.prototype, 'save').mockImplementation(criterias => {
             return {
                 //Vuoto perché inutilizzato
             }
@@ -68,5 +68,4 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         expect(response.header.location).toBe('/api/v2/EventiPubblici/'+'67890');
         
     });
-    
 });

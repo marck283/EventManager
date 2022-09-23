@@ -1,6 +1,5 @@
 const request = require('supertest');
 const app = require('../app.js');
-const jwt = require('jsonwebtoken');
 
 describe("GET /api/v2/eventiCalendarioPubblico", () => {
     let mockFind;
