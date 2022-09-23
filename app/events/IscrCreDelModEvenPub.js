@@ -352,7 +352,7 @@ router.post('', async (req, res) => {
             picture: req.body.eventPic
         };
         const v = new Validator(options, {
-            data: 'required|string|minLength:1',
+            data: 'required|string|minLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:5|maxLength:5',
             maxPers: 'required|integer|min:2',
@@ -370,12 +370,17 @@ router.post('', async (req, res) => {
                 }
                 var ElencoDate = req.body.data;
                 var dateEv = ElencoDate.split(",");
+                var ora = req.body.ora;
 
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
-                    var data1 = new Date(elem);
-                    if (!dateTest.test(data1, elem)) {
-                        res.status(400).json({ error: "Formato data non valido" }).send();
+                    var data = elem;
+                    var date = new Date();
+                    dats = data.split('-');
+                    elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
+                    let d1 = new Date(elem);
+                    if (!dateTest.test(d1, elem + "T" + ora)) {
+                        res.status(400).json({ error: "Formato data o ora non valido" }).send();
                         return;
                     }
 
@@ -388,23 +393,15 @@ router.post('', async (req, res) => {
                     }
 
                     //controllo che le date non siano di una giornata precedente a quella odierna
-                    var data = elem;
-                    var date = new Date();
-                    dats = data.split('/');
-                    for(let i = 0; i < 2; i++) {
-                        dats[i].padStart(2, '0');
-                    }
-
-                    let d1 = new Date(dats[1] + "/" + dats[0] + "/" + dats[2]);
                     if (d1 < date) {
-                        res.status(403).json({ error: "giorno non disponibile" }).send()
+                        res.status(403).json({ error: "giorno o ora non disponibile" }).send()
                         return;
                     }
                 }
 
-                //controllo che l'ora sia del formato corretto
+                /*//controllo che l'ora sia del formato corretto
                 var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-                var ora = req.body.ora;
+                
                 if (reg.test(ora)) {
                     let strin = ora.split(":");
                     let d = new Date();
@@ -419,7 +416,7 @@ router.post('', async (req, res) => {
                 } else {
                     res.status(400).json({ error: "formato ora non valido" }).send()
                     return;
-                }
+                }*/
                 //Si crea un documento evento pubblico
                 let eventP = new eventPublic({
                     data: req.body.data,

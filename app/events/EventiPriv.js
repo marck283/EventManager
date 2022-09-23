@@ -273,7 +273,7 @@ router.post('', async (req, res) => {
             ElencoEmailInviti: req.body.ElencoEmailInviti
         };
         const v = new Validator(options, {
-            data: 'required|string|minLength:1',
+            data: 'required|string|minLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|minLength:1',
@@ -285,6 +285,7 @@ router.post('', async (req, res) => {
         v.check()
             .then(async matched => {
                 if (!matched) {
+                    console.log("DATA0");
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
@@ -297,8 +298,9 @@ router.post('', async (req, res) => {
                     var data = elem;
                     var date = new Date();
                     let dats = data.split('-');
-                    elem = dats[1] + "-" + dats[0] + "-" + dats[2];
+                    elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
                     let d1 = new Date(elem);
+                    console.log(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
                         res.status(400).json({ error: "Data o ora non valida." }).send();
                         return;
@@ -309,6 +311,7 @@ router.post('', async (req, res) => {
                     let d2 = elem.split("T")[0];
                     dateEv.forEach(e => { if (e == d2) { count += 1 } });
                     if (count > 1) {
+                        console.log("DATA2");
                         res.status(400).json({ error: "date ripetute" }).send();
                         return;
                     }
@@ -319,37 +322,19 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                /*//controllo che l'ora sia del formato corretto
-                var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-                if (reg.test(ora)) {
-                    strin = ora.split(":");
-                    var d = new Date();
-                    //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                    var temp_poz = (d.getMonth() + 1).toString().padStart(2, '0') + '/' +
-                    d.getDate().toString().padStart(2, '0') + '/' + d.getFullYear().toString();
-
-                    if (ElencoDate.includes(temp_poz) && (Number(strin[0]) < d.getHours() || (Number(strin[0]) == d.getHours() && Number(strin[1]) < d.getMinutes()))) {
-                        res.status(403).json({ error: "orario non permesso" }).send();
-                        return;
-                    }
-                } else {
-                    res.status(400).json({ error: "formato ora non valido" }).send();
-                    return;
-                }*/
                 for (elem of req.body.ElencoEmailInviti) {
                     //controllo che le date non siano ripetute
                     var counti = 0;
                     req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
                     if (counti > 1) {
+                        console.log("DATA1");
                         res.status(400).json({ error: "email ripetute" }).send();
                         return;
                     }
                 }
 
                 //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
-                var ListaInvitati = []
-
-                var ut = await Users.findById(utent);
+                var ListaInvitati = [], ut = await Users.findById(utent);
                 for (var elem of req.body.ElencoEmailInviti) {
                     u = await Users.find({ email: { $eq: elem } });
                     if (u.length == 0) {
@@ -390,7 +375,7 @@ router.post('', async (req, res) => {
                 /**
                  * Si posiziona il link alla risorsa appena creata nel header location della risposata
                  */
-                res.location("/api/v2/EventiPrivati/" + eventId).status(201).send();
+                res.status(201).location("/api/v2/EventiPrivati/" + eventId).send();
             });
     } catch (error) {
         console.log(error);

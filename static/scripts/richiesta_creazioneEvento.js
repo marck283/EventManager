@@ -47,7 +47,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
             if (ElencoDate != "") {
                 var mm = d.getMonth() + 1, dd = d.getDate(), yy = d.getFullYear();
                 var giorno = String(dd).padStart(2, '0'), mese = String(mm).padStart(2, '0'), anno = "" + yy;
-                var temp_poz = mese + '/' + giorno + '/' + anno;
+                var temp_poz = mese + '-' + giorno + '-' + anno;
 
                 (checkDateArr(ElencoDate, temp_poz, d, str1, str2)) ? inviare = false : inviare = true;
             }
@@ -152,7 +152,7 @@ var requestPe = () => {
 
                 var giorno = String(dd).padStart(2, '0'), mese = String(mm).padStart(2, '0'), anno = "" + yy;
 
-                var temp_poz = mese + '/' + giorno + '/' + anno;
+                var temp_poz = mese + '-' + giorno + '-' + anno;
 
                 (checkDateArr(ElencoDate, temp_poz, d, str1, str2)) ? inviare = false : inviare = true;
             }
@@ -272,7 +272,7 @@ var requestPr = () => {
 
                 var giorno = String(dd).padStart(2, '0'), mese = String(mm).padStart(2, '0'), anno = yy;
 
-                var temp_poz = mese + '/' + giorno + '/' + anno;
+                var temp_poz = mese + '-' + giorno + '-' + anno;
 
                 (checkDateArr(ElencoDate, temp_poz, d, str1, str2)) ? inviare = false : inviare = true;
             }
