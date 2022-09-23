@@ -290,68 +290,52 @@ router.post('', async (req, res) => {
                 }
                 var ElencoDate = req.body.data;
                 var dateEv = ElencoDate.split(",");
+                var ora = req.body.ora;
 
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
-                    var data1 = new Date(elem);
-                    console.log("Data: " + data1.getDate() + " " + String(data1.getMonth() + 1).padStart(2, '0') + " " + data1.getFullYear()); //Temporary console.log. Reinstate all eliminated tests after correcting this error.
-                    if (!dateTest.test(data1, elem)) {
-                        console.log("Formato data non valido.");
-                        res.status(400).json({ error: "Formato data non valido" }).send();
+                    var data = elem;
+                    var date = new Date();
+                    let dats = data.split('-');
+                    elem = dats[1] + "-" + dats[0] + "-" + dats[2];
+                    let d1 = new Date(elem);
+                    if (!dateTest.test(d1, elem + "T" + ora)) {
+                        res.status(400).json({ error: "Data o ora non valida." }).send();
                         return;
                     }
 
                     //controllo che le date non siano ripetute
                     var count = 0;
-                    dateEv.forEach(e => { if (e == elem) { count += 1 } });
+                    let d2 = elem.split("T")[0];
+                    dateEv.forEach(e => { if (e == d2) { count += 1 } });
                     if (count > 1) {
                         res.status(400).json({ error: "date ripetute" }).send();
                         return;
                     }
-
                     //controllo che le date non siano di una giornata precedente a quella odierna
-                    var data = elem;
-                    var date = new Date();
-                    dats = data.split('/');
-                    let d1 = new Date(dats[1] + "/" + dats[0] + "/" + dats[2]);
                     if (d1 < date) {
-                        res.status(403).json({ error: "giorno non disponibile" }).send();
+                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
                         return;
                     }
                 }
 
-                //controllo che l'ora sia del formato corretto
+                /*//controllo che l'ora sia del formato corretto
                 var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-                var ora = req.body.ora;
                 if (reg.test(ora)) {
                     strin = ora.split(":");
-                    str1 = strin[0];
-                    str2 = strin[1];
-                    if (strin[0][0] == 0) {
-                        str1 = strin[0][1];
-                    }
-                    if (strin[1][0] == 0) {
-                        str2 = strin[1][1];
-                    }
-                    var d = new Date()
+                    var d = new Date();
                     //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                    if (ElencoDate != "") {
-                        var giorno = d.getDate().toString().padStart(2, '0');
-                        var mese = (d.getMonth() + 1).toString().padStart(2, '0');
-                        var anno = d.getFullYear().toString();
+                    var temp_poz = (d.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                    d.getDate().toString().padStart(2, '0') + '/' + d.getFullYear().toString();
 
-                        var temp_poz = mese + '/' + giorno + '/' + anno;
-
-                        if (ElencoDate.includes(temp_poz) && ((Number(str1) >= d.getHours() && Number(str1) == d.getHours() && Number(str2) < d.getMinutes()) || Number(str1) < d.getHours())) {
-                            res.status(403).json({ error: "orario non permesso" }).send()
-                            return;
-                        }
+                    if (ElencoDate.includes(temp_poz) && (Number(strin[0]) < d.getHours() || (Number(strin[0]) == d.getHours() && Number(strin[1]) < d.getMinutes()))) {
+                        res.status(403).json({ error: "orario non permesso" }).send();
+                        return;
                     }
                 } else {
                     res.status(400).json({ error: "formato ora non valido" }).send();
                     return;
-                }
-
+                }*/
                 for (elem of req.body.ElencoEmailInviti) {
                     //controllo che le date non siano ripetute
                     var counti = 0;

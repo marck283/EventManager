@@ -104,12 +104,17 @@ router.post('', async (req, res) => {
                 } else {
                     var ElencoDate = req.body.data;
                     var dateEv = ElencoDate.split(",");
+                    var ora = req.body.ora;
 
                     for (var elem of dateEv) {
                         //Controllo che la data abbia un formato corretto
                         var data1 = new Date(elem);
+                        var data = elem;
+                        var date = new Date();
+                        dats = data.split('/');
+                        elem = dats[1] + "-" + dats[0] + "-" + dats[2] + "T" + ora;
+                        let d1 = new Date(elem);
                         if (!dateTest.test(data1, elem)) {
-                            console.log("no test");
                             res.status(400).json({ error: "Formato data non valido" }).send();
                             return;
                         } else {
@@ -122,19 +127,34 @@ router.post('', async (req, res) => {
                             }
 
                             //controllo che le date non siano di una giornata precedente a quella odierna
-                            var data = elem;
-                            var date = new Date();
-                            dats = data.split('/');
-
-                            let d1 = new Date(dats[1] + "/" + dats[0] + "/" + dats[2]);
                             if (d1 < date) {
-                                res.status(403).json({ error: "giorno non disponibile" }).send()
+                                res.status(403).json({ error: "giorno o ora non disponibile" }).send()
                                 return;
                             }
 
-                            //Controllo che l'ora sia del formato corretto
+                            let eventP = new eventPersonal({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+
+                            //Si salva il documento personale
+                            eventP = await eventP.save();
+
+                            //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                            utente.EventiCreati.push(eventP.id)
+
+                            //Si salva il modulo dell'utente
+                            await utente.save();
+
+                            let eventId = eventP.id;
+
+                            console.log('Evento salvato con successo');
+
+                            /**
+                             * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                             */
+                            res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
+
+                            /*//Controllo che l'ora sia del formato corretto
                             var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-                            var ora = req.body.ora;
+                            
                             if (!reg.test(ora)) {
                                 res.status(400).json({ error: "formato ora non valido" }).send();
                             } else {
@@ -152,27 +172,8 @@ router.post('', async (req, res) => {
                                         res.status(403).json({ error: "orario non permesso" }).send()
                                         return;
                                     }
-                                    let eventP = new eventPersonal({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
-
-                                    //Si salva il documento personale
-                                    eventP = await eventP.save();
-
-                                    //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                                    utente.EventiCreati.push(eventP.id)
-
-                                    //Si salva il modulo dell'utente
-                                    await utente.save();
-
-                                    let eventId = eventP.id;
-
-                                    console.log('Evento salvato con successo');
-
-                                    /**
-                                     * Si posiziona il link alla risorsa appena creata nel header location della risposata
-                                     */
-                                    res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
