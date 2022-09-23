@@ -19,7 +19,7 @@ const csrfCreation = require('./csrfTokenCreation.js');
 /**
  * Configure Express.js parsing middleware
  */
-app.use(express.json({limit: '25mb'}));
+app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
@@ -38,7 +38,7 @@ app.set('vary', 'origin');
 app.use('/', express.static('static'));
 app.use('/api/v2/authentications', autenticato);
 app.use('/api/v2/EventiPubblici', EventoPubblico);
-app.use("/api/v2/eventiCalendarioPubblico", calendarEventsPub);
+app.use('/api/v2/eventiCalendarioPubblico', calendarEventsPub);
 app.use('/api/v2/Utenti', regandric);
 app.use('/api/v2/RecuperoPassword', recPsw);
 app.use('/api/v2/CsrfToken', csrfCreation);

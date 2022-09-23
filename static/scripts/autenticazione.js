@@ -47,10 +47,16 @@ var fbLogin = () => {
 };
 
 var login = (gresponse = null) => {
+    if(gresponse != null) {
+        //Set the token as the Google OAuth2 token. Now the problem shifts to decrypting the token whenever we need to by using the
+        //tokenChecker module.
+        localStorage.setItem('token', gresponse);
+    }
     fetch('../api/v2/authentications', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: document.getElementById("loginEmail").value,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: document.getElementById("loginEmail").value,
             password: CryptoJS.SHA3(document.getElementById("loginPassword").value, {outputLength: 512}).toString(),
             csrfToken: document.getElementById("csrfField").value,
             googleJwt: gresponse

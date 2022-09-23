@@ -96,6 +96,7 @@
     <h1>Creazione evento pubblico</h1>
     <input type="submit" id="guida" class="btn btn-primary" value="Guida" /><br><br>
     <span id="title-card"></span><br><br>
+    <p>I seguenti campi sono obbligatori:</p>
 
     <!-- indicazione di tutti i campi di input per creare un certo evento pubblico-->
     <label for="nomeAtt">Nome attivit&agrave;:</label>
@@ -114,13 +115,10 @@
       <option value="altro">Altro</option>
     </select><span id="vuotoCa"></span><br><br>
     <div class="form-group ">
-      <label class="control-label col-sm-2 requiredField" for="date">
-        Date
-      </label>
       <div class="col-sm-10">
         <div class="input-group">
-          <div class="input-group-addon">
-          </div>
+          <div class="input-group-addon"></div>
+          <label class="control-label col-sm-2 requiredField" for="date">Date: </label>
           <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" />
           <button class="btn btn-primary" onclick="aggiungi()">Aggiungi data</button>
           <button class="btn btn-secondary" onclick="reset()">Reset date</button>
@@ -130,12 +128,14 @@
       </div>
     </div>
     <br>
-    <label for="ora">Ora d'inizio:</label>
+    <label for="ora">Ora d'inizio: </label>
     <input type="ora" name="ora" id="ora" /><br><br>
-    <label for="durata">Durata in ore:</label>
+    <label for="durata">Durata in ore: </label>
     <input type="number" min="1" name="durata" value="1" id="durata" /><br><br>
-    <label for="maxPers">Numero massimo partecipanti:</label>
+    <label for="maxPers">Numero massimo partecipanti: </label>
     <input type="number" min="2" name="maxPers" value="2" id="maxPers" /><br><br>
+    <label for="picture">Immagine profilo: </label>
+		<input name="img" type="file" id="picture" accept=".jpg" /><br><br>
     <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
   </div>
 

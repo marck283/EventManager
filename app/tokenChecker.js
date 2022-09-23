@@ -9,7 +9,7 @@ const tokenChecker = function(req, res, next) {
 			message: 'fallita autenticazione'
 		});
 	}
-
+	//console.log(token === {});
 	jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded) {			
 		if (err) {
 			console.log("ho il token errato");

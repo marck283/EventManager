@@ -14,6 +14,26 @@ var checkSendCondition = (condition, errorText) => {
     return true;
 }
 
+var getFileExtension = fileName => {
+    var ext = fileName.split('.').pop();
+    return (ext == fileName) ? "" : ext;
+}
+
+var checkFormatCompatibility = format => {
+    var formatSpecIndex = 0;
+    switch (format) {
+        case "jpg": {
+            formatSpecIndex = 23;
+            break;
+        }
+        default: {
+            alert("Formato file non supportato.");
+            break;
+        }
+    }
+    return formatSpecIndex;
+}
+
 var requestPu = () => { //funzione che mi permette di fare i vari controlli delle info per creare un certo evento pubblico date 
     //in input nella pagina e poi mi permette di fare un richiesta al server. La risposta la gestisco stampandomi il percorso per quella risorsa
     var inviare = checkSendCondition(ElencoDate == "", "Inserire una data"), reg = /^(((0|1)[0-9])|2[0-3]):[0-5][0-9]$/;
@@ -40,63 +60,71 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
         checkSendCondition(getId("durata").value == "" || Number.isNaN(parseInt(getId("durata").value)) || Number(getId("durata").value) <= 0, "Inserire durata corretta") ||
         checkSendCondition(getId("maxPers").value == "" || Number.isNaN(parseInt(getId("maxPers").value)) || Number(getId("maxPers").value) < 2, "Inserire numero massimo persone corretto");
 
-    if (inviare) {
-        var Token = token, eventJSONList;
-        fetch("/api/v2/EventiPubblici", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': Token
-            },
-            body: JSON.stringify({
-                data: ElencoDate,
-                ora: getId("ora").value,
-                durata: Number(getId("durata").value),
-                maxPers: Number(getId("maxPers").value),
-                categoria: getId("categoria").value,
-                nomeAtt: getId("nomeAtt").value,
-                luogoEv: {
-                    indirizzo: getId("indirizzo").value,
-                    citta: getId("Citta").value
-                }
+    var file = new FileReader(), realFile = document.querySelector("input[type=file]").files[0],
+        format = getFileExtension(realFile.name);
+    file.onloadend = () => {
+        if (format != 0 && inviare) {
+            var eventJSONList, formatSpecIndex = checkFormatCompatibility(format);
+            fetch("/api/v2/EventiPubblici", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                },
+                body: JSON.stringify({
+                    data: ElencoDate,
+                    ora: getId("ora").value,
+                    durata: Number(getId("durata").value),
+                    maxPers: Number(getId("maxPers").value),
+                    categoria: getId("categoria").value,
+                    nomeAtt: getId("nomeAtt").value,
+                    luogoEv: {
+                        indirizzo: getId("indirizzo").value,
+                        citta: getId("Citta").value
+                    },
+                    eventPic: file.result.substring(formatSpecIndex)
+                })
             })
-        })
-            .then(resp => {
-                switch (resp.status) {
-                    case 201: {
-                        eventJSONList = resp;
-                        locazione = resp.headers.get("Location");
-                        alert("Evento pubblico creato con successo.");
-                        break;
-                    }
-                    case 500: {
-                        resp.json().then(data => {
-                            eventJSONList = data;
+                .then(resp => {
+                    switch (resp.status) {
+                        case 201: {
+                            eventJSONList = resp;
                             locazione = resp.headers.get("Location");
-                            alert(eventJSONList.error);
-                        });
-                        break;
+                            alert("Evento pubblico creato con successo.");
+                            break;
+                        }
+                        case 500: {
+                            resp.json().then(data => {
+                                eventJSONList = data;
+                                locazione = resp.headers.get("Location");
+                                alert(eventJSONList.error);
+                            });
+                            break;
+                        }
+                        case 404:
+                        case 403:
+                        case 400: {
+                            //Popola la pagina con i dati ricevuti
+                            resp.json().then(data => {
+                                eventJSONList = data;
+                                alert(eventJSONList.error);
+                            }); //Cattura la risposta in formato JSON
+                            break;
+                        }
+                        case 401: {
+                            //Popola la pagina con i dati ricevuti
+                            resp.json().then(data => {
+                                eventJSONList = data;
+                                alert(eventJSONList.message);
+                            }); //Cattura la risposta in formato JSON
+                            break;
+                        }
                     }
-                    case 404:
-                    case 403:
-                    case 400: {
-                        //Popola la pagina con i dati ricevuti
-                        resp.json().then(data => {
-                            eventJSONList = data;
-                            alert(eventJSONList.error);
-                        }); //Cattura la risposta in formato JSON
-                        break;
-                    }
-                    case 401: {
-                        //Popola la pagina con i dati ricevuti
-                        resp.json().then(data => {
-                            eventJSONList = data;
-                            alert(eventJSONList.message);
-                        }); //Cattura la risposta in formato JSON
-                        break;
-                    }
-                }
-            });
+                });
+        }
+    }
+    if (realFile) {
+        file.readAsDataURL(realFile);
     }
 };
 

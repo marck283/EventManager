@@ -2,21 +2,20 @@ let url = window.location.href;
 var id = '';
 var token = '';
 
-if(localStorage.getItem('token') != null){
-
+if (localStorage.getItem('token') != null) {
     token = localStorage.getItem('token');
 }
 
-try{
-    url=url.split('=');
-    id=url[1];
-}catch(error){
+try {
+    url = url.split('=');
+    id = url[1];
+} catch (error) {
     console.log(error);
 }
 
-fetch('../api/v2/EventiPubblici/'+id)
+fetch('../api/v2/EventiPubblici/' + id)
     .then(resp => {
-        switch(resp.status){
+        switch (resp.status) {
             case 200: {
                 resp.json().then(resp => {
                     let nomeAtt = document.getElementsByTagName("h1");
@@ -47,12 +46,17 @@ fetch('../api/v2/EventiPubblici/'+id)
 
                     let partecipanti = document.getElementById("partecipanti");
                     partecipanti.textContent = resp.partecipanti;
+
+                    let img = document.createElement("img");
+                    img.src = resp.eventPic;
+                    img.alt = "Immagine evento";
+                    document.getElementById("img").appendChild(img);
                 });
                 break;
             }
             case 404:
             case 500: {
-                resp.json().then(data => {document.getElementById("error").textContent = data.error});
+                resp.json().then(data => { document.getElementById("error").textContent = data.error });
                 break;
             }
             default: {
@@ -60,4 +64,4 @@ fetch('../api/v2/EventiPubblici/'+id)
             }
         }
     })
-    .catch( error => console.error(error) );
+    .catch(error => console.error(error));

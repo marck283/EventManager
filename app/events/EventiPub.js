@@ -26,7 +26,8 @@ router.get('/:id', async(req, res) => {
             luogoEv: eventoPubblico.luogoEv,
             organizzatore: organizzatore.nome,
             maxPers: eventoPubblico.maxPers,
-            partecipanti: partecipanti
+            partecipanti: partecipanti,
+            eventPic: eventoPubblico.eventPic
         });
     } catch(error) {
         console.log(error);

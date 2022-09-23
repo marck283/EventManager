@@ -29,6 +29,7 @@
     "express-rate-limit": "^6.5.1",
     "formidable": "^2.0.1",
     "google-auth-library": "^8.5.1",
+    "googleapis": "^108.0.0",
     "jest": "^29.0.3",
     "jose": "^4.9.3",
     "jsonwebtoken": "^8.5.1",

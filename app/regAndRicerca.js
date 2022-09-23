@@ -138,7 +138,7 @@ router.post('', async (req, res) => {
                                             password: hash,
                                             salt: salt,
                                             tel: req.body.tel,
-                                            profilePic: req.body.picture
+                                            profilePic: "data:image/png;base64," + req.body.picture
                                         });
 
                                         let Utentes = await Utent.save(), utenteId = Utentes.id;

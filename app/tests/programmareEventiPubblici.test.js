@@ -6,7 +6,7 @@ const EventPublic = require('../collezioni/eventPublic.js');
 describe("POST /api/v2/EventiPubblici", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL_TEST);
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
         await EventPublic.deleteMany({});
@@ -27,15 +27,16 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('Accept', 'application/json')
         .send({
             data: "11/11/2024",
+            durata: 2,
             ora: "11:00",
+            maxPers: 200,
+            categoria: "svago",
+            nomeAtt: "Girare a vuoto",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
-            nomeAtt: "Girare a vuoto",
-            maxPers: 200,
-            categoria: "svago",
-            durata: 2
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(201);
     });
@@ -55,7 +56,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 1",
             maxPers: 200,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(401, {success: false, message: 'fallita autenticazione'});
     });
@@ -75,7 +77,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
             categoria: "svago",
-            durata: "2 giorni"
+            durata: "2 giorni",
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -95,7 +98,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
             categoria: "svago",
-            durata: -20
+            durata: -20,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -115,7 +119,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
             categoria: "svago",
-            durata: 0
+            durata: 0,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -135,7 +140,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 3",
             maxPers: "200 persone",
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -155,7 +161,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 3",
             maxPers: -200,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -175,7 +182,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 3",
             maxPers: 0,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -195,7 +203,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 3",
             maxPers: 1,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -214,7 +223,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -234,7 +244,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "date ripetute"});
     });
@@ -254,7 +265,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Formato data non valido"});
     });
@@ -275,7 +287,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(403, {error: "giorno non disponibile"});
     });
@@ -294,7 +307,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -313,7 +327,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -333,7 +348,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -353,7 +369,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "formato ora non valido"});
     });
@@ -374,7 +391,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(403, {error: "orario non permesso"}); //Perché questo test restituisce "formato data errato"?
     });
@@ -393,7 +411,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             maxPers: 20,
             categoria: "svago",
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
@@ -412,7 +431,8 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            durata: 2
+            durata: 2,
+            picture: "eeeeeeeeeeeeeeeeeeeeee"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });

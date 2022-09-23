@@ -8,6 +8,8 @@ const biglietti = require('../collezioni/biglietti.js');
 const { Validator } = require('node-input-validator');
 const dateTest = require('../dateRegexTest.js');
 
+router.use(express.json({limit: "50mb"})); //Limiting the size of the request should avoid "Payload too large" errors
+
 router.patch('/:id', async (req, res) => {
 
     //var utent = req.loggedUser.id;
@@ -346,7 +348,8 @@ router.post('', async (req, res) => {
             categoria: req.body.categoria,
             nomeAtt: req.body.nomeAtt,
             indirizzo: req.body.luogoEv.indirizzo,
-            citta: req.body.luogoEv.citta
+            citta: req.body.luogoEv.citta,
+            picture: req.body.eventPic
         }, {
             data: 'required|string|minLength:1',
             durata: 'required|integer|min:1',
@@ -355,7 +358,8 @@ router.post('', async (req, res) => {
             categoria: 'required|string|minLength:1',
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
-            citta: 'required|string|minLength:1'
+            citta: 'required|string|minLength:1',
+            picture: 'required|string|minLength:22'
         });
         v.check()
             .then(async matched => {
@@ -449,20 +453,31 @@ router.post('', async (req, res) => {
                     return;
                 }
                 //Si crea un documento evento pubblico
-                let eventP = new eventPublic({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, maxPers: req.body.maxPers, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+                let eventP = new eventPublic({
+                    data: req.body.data,
+                    durata: req.body.durata,
+                    ora: req.body.ora,
+                    maxPers: req.body.maxPers,
+                    categoria: req.body.categoria,
+                    nomeAtt: req.body.nomeAtt,
+                    luogoEv: {
+                        indirizzo: req.body.luogoEv.indirizzo,
+                        citta: req.body.luogoEv.citta
+                    },
+                    organizzatoreID: utent,
+                    eventPic: "data:image/png;base64," + req.body.eventPic
+                });
                 eventP.partecipantiID.push(utent);
-
 
                 //Si salva il documento pubblico
                 eventP = await eventP.save();
 
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                utente.EventiCreati.push(eventP.id)
-                utente.EventiIscrtto.push(eventP.id);
+                utente.EventiCreati.push(eventP._id)
+                utente.EventiIscrtto.push(eventP._id);
 
                 //Si salva il modulo dell'utente
                 await utente.save();
-
 
                 let eventId = eventP.id;
 

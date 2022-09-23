@@ -37,7 +37,7 @@ var reg = () => {
 var checkFormatCompatibility = format => {
 	var formatSpecIndex = 0;
 	switch(format) {
-		case "jpeg": {
+		case "jpg": {
 			formatSpecIndex = 23;
 			break;
 		}

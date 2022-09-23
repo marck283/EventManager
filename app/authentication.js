@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
 const RateLimit = require('express-rate-limit');
 const { Validator } = require('node-input-validator');
+const {google} = require('googleapis');
 
 //Check for the correctness of the client-id
 const {OAuth2Client} = require('google-auth-library');
@@ -21,7 +22,7 @@ router.use(limiter);
 
 async function verify(token) {
 	return await client.verifyIdToken({
-		idToken: token.credential,
+		idToken: token,
 		audience: "22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",  // Specify the CLIENT_ID of the app that accesses the backend
 		// Or, if multiple clients access the backend:
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
@@ -65,10 +66,14 @@ var result = (token, email, id, error = false, message = "") => {
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 router.post('', async (req, res) => {
-	const v = new Validator({
-		csrfToken: req.body.csrfToken
-	}, {
-		csrfToken: 'required|string|length:36'
+	var voptions = {};
+	if(req.params.g_csrf_token) {
+		voptions.csrfToken = g_csrf_token;
+	} else {
+		voptions.csrfToken = req.body.csrfToken;
+	}
+	const v = new Validator(voptions, {
+		csrfToken: 'required|string'
 	});
 	v.check()
 	.then(async matched1 => {
@@ -84,12 +89,19 @@ router.post('', async (req, res) => {
 			//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 			//check the keys' expiry date in the header of the response of the above link.)
 			//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-			await verify(req.body.googleJwt)
-			.then(ticket => {
+			await verify(req.body.googleJwt.credential)
+			.then(async ticket => {
 				var payload = ticket.getPayload();
-
 				//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
-
+				let user = new Utente({
+					nome: payload.given_name,
+					email: payload.email,
+					password: "",
+					salt: "",
+					tel: "",
+					profilePic: payload.picture
+				});
+				await user.save();
 				res.status(200).json(result(ticket, payload.email, payload.sub)).send();
 			})
 			.catch(err => {
