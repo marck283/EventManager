@@ -4,7 +4,7 @@ const router = express.Router();
 const Users = require('../collezioni/utenti.js');
 
 router.get('/:id', async(req, res) => {
-    try{
+    try {
         let eventoPubblico = await eventPublic.findById(req.params.id);
         if(eventoPubblico == undefined) {
             res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();

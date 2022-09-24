@@ -29,7 +29,7 @@ async function verify(token) {
 	.catch(err => {
 		throw err;
 	});
-}
+};
 
 var createToken = (email, id) => {
 	// if user is found and password is right create a token
@@ -42,7 +42,7 @@ var createToken = (email, id) => {
 		expiresIn: 3600 // expires in 1 hour
 	}
 	return jwt.sign(payload, process.env.SUPER_SECRET, options);
-}
+};
 
 var result = (token, email, id, error = false, message = "") => {
 	if(error) {
@@ -92,15 +92,18 @@ router.post('', async (req, res) => {
 			.then(async ticket => {
 				var payload = ticket.getPayload();
 				//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
-				let user = new Utente({
-					nome: payload.given_name,
-					email: payload.email,
-					password: "",
-					salt: "",
-					tel: "",
-					profilePic: payload.picture
-				});
-				await user.save();
+				if(await Utente.exists({email: {$eq: payload.email}}) == null) {
+					//Create a new user
+					let user = new Utente({
+						nome: payload.given_name,
+						email: payload.email,
+						password: "",
+						salt: "",
+						tel: "",
+						profilePic: payload.picture
+					});
+					await user.save();
+				}
 				res.status(200).json(result(ticket, payload.email, payload.sub)).send();
 			})
 			.catch(err => {

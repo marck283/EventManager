@@ -107,9 +107,8 @@ router.post('', async (req, res) => {
 
                 for (var elem of dateEv) {
                     //Controllo che la data abbia un formato corretto
-                    var data = elem;
                     var date = new Date();
-                    let dats = data.split('-');
+                    let dats = elem.split('-');
                     elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
@@ -155,6 +154,7 @@ router.post('', async (req, res) => {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
     }
+    return;
 });
 
 module.exports = router;

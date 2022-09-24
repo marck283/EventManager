@@ -295,9 +295,8 @@ router.post('', async (req, res) => {
 
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
-                    var data = elem;
                     var date = new Date();
-                    let dats = data.split('-');
+                    let dats = elem.split('-');
                     elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
                     let d1 = new Date(elem);
                     console.log(elem);

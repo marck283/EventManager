@@ -374,9 +374,8 @@ router.post('', async (req, res) => {
 
                 for (var elem of dateEv) {
                     //controllo che la data ha un formato corretto
-                    var data = elem;
                     var date = new Date();
-                    dats = data.split('-');
+                    dats = elem.split('-');
                     elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
@@ -398,25 +397,7 @@ router.post('', async (req, res) => {
                         return;
                     }
                 }
-
-                /*//controllo che l'ora sia del formato corretto
-                var reg = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
                 
-                if (reg.test(ora)) {
-                    let strin = ora.split(":");
-                    let d = new Date();
-                    //controllo che l'orario non sia precedente all'orario attuale nel caso nell'elenco delle date appare quella attuale
-                    var temp_poz = (d.getMonth() + 1).toString().padStart(2, '0') + '/' +
-                    d.getDate().toString().padStart(2, '0') + '/' + d.getFullYear();
-
-                    if (ElencoDate.includes(temp_poz) && (Number(strin[0]) < d.getHours() || (Number(strin[0]) == d.getHours() && Number(strin[1]) < d.getMinutes()))) {
-                        res.status(403).json({ error: "orario non permesso" }).send()
-                        return;
-                    }
-                } else {
-                    res.status(400).json({ error: "formato ora non valido" }).send()
-                    return;
-                }*/
                 //Si crea un documento evento pubblico
                 let eventP = new eventPublic({
                     data: req.body.data,
