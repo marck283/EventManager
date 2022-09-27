@@ -12,11 +12,7 @@ var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l
       return;
     }
 
-    for(let c in data) {
-      if(c === '/') {
-        c = '-';
-      }
-    }
+    data.split('/').join('-');
     if(!dateEv.includes(data)) {
       dateEv.push(data);
     }
