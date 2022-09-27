@@ -18,6 +18,7 @@ const tokenChecker = (req, res, next) => {
 			});
 		} else {
 			console.log("ho il token");
+			console.log(decoded.id);
 			req.loggedUser = decoded;
 			next();
 		}

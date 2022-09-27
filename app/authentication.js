@@ -92,8 +92,8 @@ router.post('', async (req, res) => {
 			.then(async ticket => {
 				var payload = ticket.getPayload();
 				//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
-				let user, token;
-				if(await Utente.exists({email: {$eq: payload.email}}) == null) {
+				let user = await Utente.exists({email: {$eq: payload.email}});
+				if(user == null) {
 					//Create a new user
 					user = new Utente({
 						nome: payload.given_name,
@@ -103,13 +103,9 @@ router.post('', async (req, res) => {
 						tel: "",
 						profilePic: payload.picture
 					});
-					token = createToken(payload.email, payload.sub);
 					await user.save();
-				} else {
-					user = await Utente.findOne({email: {$eq: payload.email}});
-					token = createToken(payload.email, user._id);
 				}
-				res.status(200).json(result(token, payload.email, payload.sub)).send();
+				res.status(200).json(result(createToken(payload.email, user._id), payload.email, user._id)).send();
 			})
 			.catch(err => {
 				res.status(500).json({

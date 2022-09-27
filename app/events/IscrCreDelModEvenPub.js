@@ -336,10 +336,9 @@ router.post('/:id/Inviti', async (req, res) => {
 
 router.post('', async (req, res) => {
     var utent = req.loggedUser.id;
-    console.log(utent);
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(Number(utent));
+        let utente = await Users.findById(utent); //BSONTypeError?
 
         var options = {
             data: req.body.data,
@@ -396,7 +395,6 @@ router.post('', async (req, res) => {
                         return;
                     }
                 }
-                console.log("OK");
                 
                 //Si crea un documento evento pubblico
                 let eventP = new eventPublic({
