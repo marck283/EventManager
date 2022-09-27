@@ -286,7 +286,6 @@ router.post('', async (req, res) => {
         v.check()
             .then(async matched => {
                 if (!matched) {
-                    console.log("DATA0");
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
@@ -296,10 +295,8 @@ router.post('', async (req, res) => {
                 for (var elem of ElencoDate) {
                     //controllo che la data ha un formato corretto
                     var date = new Date();
-                    let dats = elem.split('-');
-                    elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
+                    elem = elem.split('/').join('-');
                     let d1 = new Date(elem);
-                    console.log(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
                         res.status(400).json({ error: "Data o ora non valida." }).send();
                         return;
@@ -310,7 +307,6 @@ router.post('', async (req, res) => {
                     let d2 = elem.split("T")[0];
                     ElencoDate.forEach(e => { if (e == d2) { count += 1 } });
                     if (count > 1) {
-                        console.log("DATA2");
                         res.status(400).json({ error: "date ripetute" }).send();
                         return;
                     }
@@ -326,7 +322,6 @@ router.post('', async (req, res) => {
                     var counti = 0;
                     req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
                     if (counti > 1) {
-                        console.log("DATA1");
                         res.status(400).json({ error: "email ripetute" }).send();
                         return;
                     }
@@ -346,7 +341,6 @@ router.post('', async (req, res) => {
                         return;
                     }
                     ListaInvitati.push(u[0].id);
-                    console.log(u[0].id);
                 }
 
                 let eventP = new eventPrivat({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent, invitatiID: ListaInvitati });

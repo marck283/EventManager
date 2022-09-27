@@ -167,7 +167,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2024",
+            data: ["11-11-2024"],
             durata: 2,
             ora: "11:00",
             maxPers: 200,
@@ -188,7 +188,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', '')
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -209,7 +209,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -230,7 +230,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -251,7 +251,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -272,7 +272,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -293,7 +293,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -314,7 +314,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -335,7 +335,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -376,7 +376,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022,07-08-2024,07-09-2023,11-11-2022,12-12-2022",
+            data: ["11-11-2022","07-08-2024","07-09-2023","11-11-2022","12-12-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -397,7 +397,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "06-13-2022",
+            data: ["13-06-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -418,7 +418,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "02-06-2022",
+            data: ["02-06-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -439,7 +439,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 citta: "Mortara"
@@ -459,7 +459,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -479,7 +479,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "",
@@ -500,7 +500,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11|00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -522,7 +522,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: String(dateObj.getDate()).padStart(2, '0') + "-" + String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + dateObj.getFullYear(),
+            data: [String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dateObj.getDate()).padStart(2, '0') + "-" + dateObj.getFullYear()],
             ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -543,7 +543,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -563,7 +563,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: "11-11-2022",
+            data: ["11-11-2022"],
             ora: "11:00",
             luogoEv: {
                 indirizzo: "Via del campo",

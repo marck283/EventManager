@@ -109,7 +109,7 @@ router.post('', async (req, res) => {
                     //Controllo che la data abbia un formato corretto
                     var date = new Date();
                     let dats = elem.split('-');
-                    elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
+                    elem = elem.split('/').join('-');
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
                         res.status(400).json({ error: "Formato data o ora non valido" }).send();

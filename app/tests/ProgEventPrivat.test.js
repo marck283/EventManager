@@ -1,6 +1,6 @@
 const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('../app');
+const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const app = require('../app.js');
 
 describe('POST /api/v2//api/v2/EventiPrivati', () => {
 
@@ -57,7 +57,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata ad nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -72,9 +72,9 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
 
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
-    await request(app).post('/api/v2/EventiPrivati').
-      set('x-access-token', token).send({
-        data: "11-11-2050,12-13-2050",
+    await request(app).post('/api/v2/EventiPrivati')
+      .set('x-access-token', token).send({
+        data: ["11-11-2050","13-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -84,13 +84,15 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
           citta: "Bologna"
         },
         ElencoEmailInviti: ['gg.tt@gmail.com']
-      }).expect('Content-Type', /json/).expect(400, {error: "Data o ora non valida."});
+      })
+      .expect('Content-Type', /json/)
+      .expect(400, {error: "Data o ora non valida."});
   });
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un giorno non disponibile", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2010,11-12-2050",
+        data: ["11-11-2010","11-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -106,7 +108,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica giornate ripetute", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050,11-11-2050",
+        data: ["11-11-2050","11-11-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -124,7 +126,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     .post('/api/v2/EventiPrivati')
     .set('x-access-token', token)
       .send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: "tre",
         categoria: "svago",
@@ -142,7 +144,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -158,7 +160,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo dell'elenco degli invitati non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -173,7 +175,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
@@ -189,7 +191,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050,11-12-2050",
+        data: ["11-11-2050","11-12-2050"],
         ora: "11-33",
         durata: 3,
         categoria: "svago",
@@ -206,7 +208,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     expect.assertions(2);
     const response = await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        data: "11-11-2050",
+        data: ["11-11-2050"],
         ora: "11:33",
         durata: 3,
         categoria: "svago",
