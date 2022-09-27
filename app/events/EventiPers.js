@@ -87,7 +87,8 @@ router.post('', async (req, res) => {
             indirizzo: req.body.luogoEv.indirizzo,
             citta: req.body.luogoEv.citta
         }, {
-            data: 'required|string|minLength:10',
+            'data': 'required|array|minLength:10',
+            'data.*': 'required|string|minLength:10|maxLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|minLength:1',
@@ -102,10 +103,9 @@ router.post('', async (req, res) => {
                     return;
                 }
                 var ElencoDate = req.body.data;
-                var dateEv = ElencoDate.split(",");
                 var ora = req.body.ora;
 
-                for (var elem of dateEv) {
+                for (var elem of ElencoDate) {
                     //Controllo che la data abbia un formato corretto
                     var date = new Date();
                     let dats = elem.split('-');
@@ -117,7 +117,7 @@ router.post('', async (req, res) => {
                     }
                     //controllo che le date non siano ripetute
                     var count = 0;
-                    dateEv.forEach(e => { if (e == elem) { count += 1 } });
+                    ElencoDate.forEach(e => { if (e == elem) { count += 1 } });
                     if (count > 1) {
                         res.status(400).json({ error: "date ripetute" }).send();
                         return;

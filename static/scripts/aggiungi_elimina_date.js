@@ -1,109 +1,29 @@
-dateEv = []; //array delle  date possiibli dell'evento
-ElencoDate = ""; //L'elenco delle date a cui un evento si è programmato
-var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l'evento all'elenco "ElencoDate" e all'array "dataEv"
-  
+var dateEv = []; //array delle  date possiibli dell'evento
 
+var aggiungi = () =>  { // funzione che mi permette di aggiungere una data per l'evento all'array "dataEv"
+  var data = document.getElementById("date").value;
+  if(data != "") {
+    var date = new Date(), mm = date.getMonth() + 1, dd = date.getDate(), yy = date.getFullYear();
+    let dats = data.split('/');
 
-    
-  if(document.getElementById("date").value !=""){
-    var data = document.getElementById("date").value;
-    var date = new Date();
-    var mm = date.getMonth() + 1
-    var dd = date.getDate()
-    var yy = date.getFullYear()
-    dats = data.split('/');
+    var giorno = dats[1].toString().padStart(2, '0'), mese = dats[0].toString().padStart(2, '0'), anno = dats[2];
 
-   
-    if(dats[0][0] == '0'){
-
-      mese = dats[0][1];
-
-    }else{
-
-      mese = dats[0];
-
-    }
-
-
-    if(dats[1][0] == '0'){
-
-      giorno = dats[1][1];
-
-    }else{
-
-      giorno = dats[1];
-
-    }
-
-    anno = dats[2]
-
-   
-
-    if(yy > Number(anno)){
-
+    if(yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
       return;
-
-    }else{
-
-   
-      if(yy == Number(anno)){
-       
-
-        if(mm > Number(mese)){
-          return;
-         
-        }else{
-
-          if(mm == Number(mese)){
-         
-
-            if(dd > Number(giorno)){
-              return;
-
-            }
-
-          }
-       
-
-        }
-
-      }
-
     }
 
-    
-    if(ElencoDate.includes(document.getElementById("date").value) == false){
-    
-      dateEv.push(document.getElementById("date").value);
-      ElencoDate = "";
-      for(elem of dateEv){
-        if(ElencoDate==""){
-          ElencoDate = elem;
-        }else{
-          ElencoDate = ElencoDate + "," + elem;
-        }
-      
-          
+    for(let c in data) {
+      if(c === '/') {
+        c = '-';
       }
-
-
-
-      
-      document.getElementById("dates").innerHTML="[Date: " + ElencoDate + "]"; //Mostro l'elenco sulla pagina
+    }
+    if(!dateEv.includes(data)) {
+      dateEv.push(data);
+    }
   }
+};
 
-  }
-
-}
-
-var reset = () => { //funzione che mi permette di resettare le date elencates
-
+//funzione che mi permette di resettare le date elencate
+var reset = () => {
   dateEv = [];
-  ElencoDate = "";
-  document.getElementById("dates").innerHTML="";
-
-
-}
-
-
-
+};

@@ -336,9 +336,10 @@ router.post('/:id/Inviti', async (req, res) => {
 
 router.post('', async (req, res) => {
     var utent = req.loggedUser.id;
+    console.log(utent);
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent);
+        let utente = await Users.findById(Number(utent));
 
         var options = {
             data: req.body.data,
@@ -352,7 +353,8 @@ router.post('', async (req, res) => {
             picture: req.body.eventPic
         };
         const v = new Validator(options, {
-            data: 'required|string|minLength:10',
+            'data': 'required|array|minLength:1',
+            'data.*': 'required|string|minLength:10|maxLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:5|maxLength:5',
             maxPers: 'required|integer|min:2',
@@ -368,15 +370,12 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
-                var ElencoDate = req.body.data;
-                var dateEv = ElencoDate.split(",");
-                var ora = req.body.ora;
+                var ElencoDate = req.body.data, ora = req.body.ora;
 
-                for (var elem of dateEv) {
+                for (var elem of ElencoDate) {
                     //controllo che la data ha un formato corretto
                     var date = new Date();
-                    dats = elem.split('-');
-                    elem = dats[1].padStart(2, '0') + "-" + dats[0].padStart(2, '0') + "-" + dats[2];
+                    elem = elem.split('/').join('-');
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
                         res.status(400).json({ error: "Formato data o ora non valido" }).send();
@@ -385,7 +384,7 @@ router.post('', async (req, res) => {
 
                     //controllo che le date non siano ripetute
                     var count = 0;
-                    dateEv.forEach(e => { if (e == elem) { count += 1 } });
+                    ElencoDate.forEach(e => { if (e == elem) { count += 1 } });
                     if (count > 1) {
                         res.status(400).json({ error: "date ripetute" }).send();
                         return;
@@ -397,6 +396,7 @@ router.post('', async (req, res) => {
                         return;
                     }
                 }
+                console.log("OK");
                 
                 //Si crea un documento evento pubblico
                 let eventP = new eventPublic({
@@ -419,7 +419,7 @@ router.post('', async (req, res) => {
                 eventP = await eventP.save();
 
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                utente.EventiCreati.push(eventP._id)
+                utente.EventiCreati.push(eventP._id);
                 utente.EventiIscrtto.push(eventP._id);
 
                 //Si salva il modulo dell'utente

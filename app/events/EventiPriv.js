@@ -273,7 +273,8 @@ router.post('', async (req, res) => {
             ElencoEmailInviti: req.body.ElencoEmailInviti
         };
         const v = new Validator(options, {
-            data: 'required|string|minLength:10',
+            'data': 'required|array|minLength:10',
+            'data.*': 'required|string|minLength:10|maxLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|minLength:1',
@@ -290,10 +291,9 @@ router.post('', async (req, res) => {
                     return;
                 }
                 var ElencoDate = req.body.data;
-                var dateEv = ElencoDate.split(",");
                 var ora = req.body.ora;
 
-                for (var elem of dateEv) {
+                for (var elem of ElencoDate) {
                     //controllo che la data ha un formato corretto
                     var date = new Date();
                     let dats = elem.split('-');
@@ -308,7 +308,7 @@ router.post('', async (req, res) => {
                     //controllo che le date non siano ripetute
                     var count = 0;
                     let d2 = elem.split("T")[0];
-                    dateEv.forEach(e => { if (e == d2) { count += 1 } });
+                    ElencoDate.forEach(e => { if (e == d2) { count += 1 } });
                     if (count > 1) {
                         console.log("DATA2");
                         res.status(400).json({ error: "date ripetute" }).send();
