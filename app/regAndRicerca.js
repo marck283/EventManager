@@ -110,7 +110,7 @@ router.post('', async (req, res) => {
                 nome: 'required|string',
                 email: 'required|email',
                 pass: 'required|string',
-                tel: 'string|minLength:8',
+                tel: 'phoneNumber|minLength:8',
                 picture: 'base64'
             });
             v1.check()

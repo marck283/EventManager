@@ -70,28 +70,6 @@
       </ul>
     </div>
   </nav>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Scegli evento</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="/CreazioneEventoPubblico.html" id="Pub">Evento pubblico <span
-              class="sr-only">(corrente)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/CreazioneEventoPersonale.html" id="Pers">Evento personale</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/creazioneEventoPrivato.html" id="Priv">Evento privato</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
   <div class="container">
     <h1>Creazione evento pubblico</h1>
     <input type="submit" id="guida" class="btn btn-primary" value="Guida" /><br><br>
@@ -137,6 +115,7 @@
 		<input name="img" type="file" id="picture" accept=".jpg" /><br><br>
     <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
   </div>
+  <br>
 
   <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
   <!-- Include jQuery -->
@@ -158,12 +137,9 @@
         todayHighlight: true,
         autoclose: true,
       })
-    })
-
-
+    });
   </script>
   <script src="/scripts/alerts/CreazioneEventoPubblicoAlerts.js"></script>
-
 </body>
 
 </html>
