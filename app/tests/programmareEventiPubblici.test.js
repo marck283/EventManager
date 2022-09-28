@@ -171,7 +171,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             ora: "11:00",
             maxPers: 200,
-            categoria: "svago",
+            categoria: "Sport",
             nomeAtt: "Girare a vuoto",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -196,7 +196,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 1",
             maxPers: 200,
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             eventPic: picPayload
         })
@@ -217,7 +217,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: "2 giorni",
             eventPic: picPayload
         })
@@ -238,7 +238,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: -20,
             eventPic: picPayload
         })
@@ -259,7 +259,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 2",
             maxPers: 200,
-            categoria: "svago",
+            categoria: "Altro",
             durata: 0,
             eventPic: picPayload
         })
@@ -280,7 +280,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 3",
             maxPers: "200 persone",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             eventPic: picPayload
         })
@@ -301,7 +301,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 3",
             maxPers: -200,
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             eventPic: picPayload
         })
@@ -322,7 +322,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 3",
             maxPers: 0,
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2,
             eventPic: picPayload
         })
@@ -343,7 +343,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 3",
             maxPers: 1,
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2,
             eventPic: picPayload
         })
@@ -363,7 +363,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2,
             eventPic: picPayload
         })
@@ -384,7 +384,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             eventPic: picPayload
         })
@@ -405,7 +405,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             eventPic: picPayload
         })
@@ -426,7 +426,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2,
             eventPic: picPayload
         })
@@ -446,7 +446,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2,
             eventPic: picPayload
         })
@@ -466,7 +466,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2,
             eventPic: picPayload
         })
@@ -487,7 +487,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             eventPic: picPayload
         })
@@ -508,7 +508,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             eventPic: picPayload
         })
@@ -530,7 +530,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             },
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2,
             eventPic: picPayload
         })
@@ -550,7 +550,7 @@ describe("POST /api/v2/EventiPubblici", () => {
                 citta: "Mortara"
             },
             maxPers: 20,
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2,
             eventPic: picPayload
         })

@@ -60,7 +60,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Altro",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -77,7 +77,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","13-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Viaggio",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -95,7 +95,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2010","11-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Manifestazione",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -111,7 +111,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-11-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Spettacolo",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -129,7 +129,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: "tre",
-        categoria: "svago",
+        categoria: "Spettacolo",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -147,7 +147,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Spettacolo",
         luogoEv: {
           indirizzo: "via panini",
           citta: "Bologna"
@@ -163,7 +163,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -178,7 +178,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -194,7 +194,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050","11-12-2050"],
         ora: "11-33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",
@@ -211,7 +211,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         data: ["11-11-2050"],
         ora: "11:33",
         durata: 3,
-        categoria: "svago",
+        categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: {
           indirizzo: "via panini",

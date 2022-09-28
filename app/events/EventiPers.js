@@ -91,7 +91,7 @@ router.post('', async (req, res) => {
             'data.*': 'required|string|minLength:10|maxLength:10',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
-            categoria: 'required|string|minLength:1',
+            categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
             citta: 'required|string|minLength:1'

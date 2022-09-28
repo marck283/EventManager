@@ -33,7 +33,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 5",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2
         })
         .expect(201);
@@ -52,7 +52,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 1",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2
         })
         .expect(401, {success: false, message: 'fallita autenticazione'});
@@ -71,7 +71,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 2",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: "2 giorni"
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -90,7 +90,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 2",
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: -20
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -109,7 +109,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 2",
-            categoria: "svago",
+            categoria: "Altro",
             durata: 0
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -127,7 +127,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -146,7 +146,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2
         })
         .expect(400, {error: "date ripetute"});
@@ -165,7 +165,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2
         })
         .expect(400, {error: "Formato data o ora non valido"});
@@ -185,7 +185,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2
         })
         .expect(403, {error: "giorno o ora non disponibile"});
@@ -203,7 +203,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -221,7 +221,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 indirizzo: "Via del campo",
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -240,7 +240,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
@@ -259,7 +259,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2
         })
         .expect(400, {error: "Formato data o ora non valido"});
@@ -279,7 +279,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 citta: "Mortara"
             },
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2
         })
         .expect(403, {error: "giorno o ora non disponibile"});
@@ -297,7 +297,7 @@ describe("POST /api/v2/EventiPersonali", () => {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});

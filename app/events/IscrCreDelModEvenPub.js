@@ -134,47 +134,26 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         for (var elem of dati) {
             var datta = elem;
             var date = new Date();
-            var mm = date.getMonth() + 1
-            var dd = date.getDate()
-            var yy = date.getFullYear()
+            var mm = date.getMonth() + 1;
+            var dd = date.getDate();
+            var yy = date.getFullYear();
             dats = datta.split('/');
 
-
-            if (dats[0][0] == '0') {
-                mese = dats[0][1];
-            } else {
-                mese = dats[0];
-            }
-
-            if (dats[1][0] == '0') {
-                giorno = dats[1][1];
-            } else {
-                giorno = dats[1];
-            }
-
-            anno = dats[2];
+            let mese = dats[0].toString().padStart(2, '0');
+            let giorno = dats[1].toString().padStart(2, '0');
+            let anno = dats[2];
 
             if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
-                res.status(403).json({ error: "evento non disponibile" }).send()
+                res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
-            } else {
-                if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
-                    let orario = eventP.ora.split(':');
+            }
+            if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
+                let orario = eventP.ora.split(':');
+                let str1 = orario[0].padStart(2, '0'), str2 = orario[1].padStart(2, '0');
 
-                    let str1 = orario[0];
-                    let str2 = orario[1];
-                    if (orario[0][0] == 0) {
-                        str1 = orario[0][1];
-
-                    }
-                    if (orario[1][0] == 0) {
-                        str2 = orario[1][1];
-                    }
-
-                    if (Number(str1) < date.getHours() || (Number(str1) >= date.getHours() && Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                        res.status(403).json({ error: "evento non disponibile" }).send()
-                        return;
-                    }
+                if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
+                    res.status(403).json({ error: "evento non disponibile" }).send();
+                    return;
                 }
             }
         }
@@ -184,11 +163,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        for (elem of eventP.partecipantiID) {
-            if (elem == utent) {
-                res.status(403).json({ error: "Già iscritto" }).send();
-                return;
-            }
+        if(eventP.partecipantiID.includes(utent)) {
+            res.status(403).json({ error: "Già iscritto" }).send();
+            return;
         }
 
         let data = {
@@ -203,7 +180,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         qrcode.toDataURL(stringdata, async function (err, qrcode) {
             if (err) {
-                throw Error("errore creazione biglietto")
+                throw Error("errore creazione biglietto");
             }
 
             bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub" });
@@ -254,40 +231,24 @@ router.post('/:id/Inviti', async (req, res) => {
             var mm = date.getMonth() + 1
             var dd = date.getDate()
             var yy = date.getFullYear()
-            dats = data.split('/');
+            let dats = data.split('/');
 
-            if (dats[0][0] == '0') {
-                mese = dats[0][1];
-            } else {
-                mese = dats[0];
-            }
-
-            if (dats[1][0] == '0') {
-                giorno = dats[1][1];
-            } else {
-                giorno = dats[1];
-            }
-            anno = dats[2]
+            let mese = dats[0].toString().padStart(2, '0');
+            let giorno = dats[1].toString().padStart(2, '0');
+            let anno = dats[2];
 
             if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
-                res.status(403).json({ error: "evento non disponibile" }).send()
+                res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
-            } else {
-                if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
-                    let orario = eventP.ora.split(':');
-                    let str1 = orario[0];
-                    let str2 = orario[1];
-                    if (orario[0][0] == 0) {
-                        str1 = orario[0][1];
-                    }
-                    if (orario[1][0] == 0) {
-                        str2 = orario[1][1];
-                    }
+            }
+            if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
+                let orario = eventP.ora.split(':');
+                let str1 = orario[0].padStart(2, '0');
+                let str2 = orario[1].padStart(2, '0');
 
-                    if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                        res.status(403).json({ error: "evento non disponibile" }).send()
-                        return;
-                    }
+                if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
+                    res.status(403).json({ error: "evento non disponibile" }).send()
+                    return;
                 }
             }
         }
@@ -328,7 +289,7 @@ router.post('/:id/Inviti', async (req, res) => {
         let invitii = await invito.save();
         res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
         return;
     }
@@ -357,7 +318,7 @@ router.post('', async (req, res) => {
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:5|maxLength:5',
             maxPers: 'required|integer|min:2',
-            categoria: 'required|string|minLength:1',
+            categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
             citta: 'required|string|minLength:1',

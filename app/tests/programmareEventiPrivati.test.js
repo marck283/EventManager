@@ -30,7 +30,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -50,7 +50,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 1",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -70,7 +70,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 6",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: "2 giorni",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -90,7 +90,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 2",
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: -20,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -110,7 +110,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 2",
-            categoria: "svago",
+            categoria: "Altro",
             durata: 0,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -129,7 +129,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .send({
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -149,7 +149,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022","07-08-2024","07-09-2023","11-11-2022","11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -169,7 +169,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["13-06-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -190,7 +190,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["02-06-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Viaggio",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -210,7 +210,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2,
             luogoEv: {
                 citta: "Mortara"
@@ -229,7 +229,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Sport",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -248,7 +248,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11:00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Spettacolo",
             durata: 2,
             luogoEv: {
                 indirizzo: "",
@@ -268,7 +268,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: ["11-11-2022"],
             ora: "11|00",
             nomeAtt: "Girare a vuoto 4",
-            categoria: "svago",
+            categoria: "Manifestazione",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -289,7 +289,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             data: [(dateObj.getMonth() + 1).toString().padStart(2, '0') + "-" + dateObj.getDate().toString().padStart(2, '0') + "-" + dateObj.getFullYear()],
             durata: 2,
             ora: dateObj.getHours().toString().padStart(2, '0') + ":" + (dateObj.getMinutes() - 1).toString().padStart(2, '0'),
-            categoria: "svago",
+            categoria: "Viaggio",
             nomeAtt: "Girare a vuoto 4",
             luogoEv: {
                 indirizzo: "Via del campo",
@@ -308,7 +308,7 @@ describe("POST /api/v2/EventiPrivati", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
-            categoria: "svago",
+            categoria: "Altro",
             durata: 2,
             luogoEv: {
                 indirizzo: "Via del campo",
