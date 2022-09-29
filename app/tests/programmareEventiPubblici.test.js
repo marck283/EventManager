@@ -522,7 +522,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .send({
-            data: [String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dateObj.getDate()).padStart(2, '0') + "-" + dateObj.getFullYear()],
+            data: [String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dateObj.getDate() - 1).padStart(2, '0') + "-" + dateObj.getFullYear()],
             ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
             luogoEv: {
                 indirizzo: "Via del campo",

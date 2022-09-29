@@ -46,7 +46,6 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
 
             if (dateEv.length === 0) {
                 var mm = d.getMonth() + 1, dd = d.getDate(), yy = d.getFullYear();
-                console.log(dd);
                 var temp_poz = String(mm).padStart(2, '0') + '-' + String(dd).padStart(2, '0') + '-' + yy;
 
                 (checkDateArr(dateEv, temp_poz, d, str[0], str[1])) ? inviare = false : inviare = true;
@@ -65,7 +64,6 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
     file.onloadend = () => {
         if (format != 0 && inviare) {
             var eventJSONList, formatSpecIndex = checkFormatCompatibility(format);
-            console.log(getId("ora").value);
             fetch("/api/v2/EventiPubblici", {
                 method: 'POST',
                 headers: {

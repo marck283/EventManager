@@ -114,12 +114,13 @@ router.post('', async (req, res) => {
                         return;
                     }
 
+                    d1.setDate(d1.getDate() + 1);
+
                     //controllo che le date non siano di una giornata precedente a quella odierna
                     if (d1 < date) {
                         res.status(403).json({ error: "giorno o ora non disponibile" }).send();
                         return;
                     }
-                    d1.setDate(d1.getDate() + 1);
 
                     //controllo che le date non siano ripetute
                     var count = 0;
@@ -129,7 +130,7 @@ router.post('', async (req, res) => {
                         return;
                     }
 
-                    let eventP = new eventPersonal({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+                    let eventP = new eventPersonal({ data: ElencoDate, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
 
                     //Si salva il documento personale
                     eventP = await eventP.save();
