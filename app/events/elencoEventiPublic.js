@@ -67,9 +67,9 @@ router.get("", async (req, res) => {
                 events = events.filter(e => e.luogoEv.citta == citta);
             }
             if(events.length > 0) {
-                res.status(200).json({eventi: eventsMap.map(events, "pub")});
+                res.status(200).json({eventi: eventsMap.map(events, "pub")}).send();
             } else {
-                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
             }
         }
     });
@@ -102,9 +102,9 @@ router.get("/:data", async (req, res) => {
     if (events.length > 0) {
         obj.eventi = eventsMap.map(events, "pub");
         obj.data = str;
-        res.status(200).json(obj);
+        res.status(200).json(obj).send();
     } else {
-        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
+        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." }).send();
     }
 });
 
