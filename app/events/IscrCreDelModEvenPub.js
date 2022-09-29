@@ -330,14 +330,12 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
-                var ElencoDate = req.body.data, ora = req.body.ora;
+                var ElencoDate = req.body.data, ora = req.body.ora, date = new Date();
 
                 for (var elem of ElencoDate) {
                     //controllo che la data ha un formato corretto
-                    var date = new Date();
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
-                        console.log(elem + "T" + ora);
                         res.status(400).json({ error: "Formato data o ora non valido" }).send();
                         return;
                     }
@@ -352,9 +350,10 @@ router.post('', async (req, res) => {
 
                     //controllo che le date non siano di una giornata precedente a quella odierna
                     if (d1 < date) {
-                        res.status(403).json({ error: "giorno o ora non disponibile" }).send()
+                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
                         return;
                     }
+                    d1.setDate(d1.getDate() + 1); //Dates are expressed in UTC, so we need to add 1 day to the date to get the correct date.
                 }
                 
                 //Si crea un documento evento pubblico
