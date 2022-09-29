@@ -113,17 +113,19 @@ router.post('', async (req, res) => {
                         res.status(400).json({ error: "Formato data o ora non valido" }).send();
                         return;
                     }
+
+                    //controllo che le date non siano di una giornata precedente a quella odierna
+                    if (d1 < date) {
+                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
+                        return;
+                    }
+                    d1.setDate(d1.getDate() + 1);
+
                     //controllo che le date non siano ripetute
                     var count = 0;
                     ElencoDate.forEach(e => { if (e == elem) { count += 1 } });
                     if (count > 1) {
                         res.status(400).json({ error: "date ripetute" }).send();
-                        return;
-                    }
-
-                    //controllo che le date non siano di una giornata precedente a quella odierna
-                    if (d1 < date) {
-                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
                         return;
                     }
 
