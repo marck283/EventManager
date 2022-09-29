@@ -147,7 +147,7 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v2/eventiCalendarioPersonale/" + day.join("-"), {
+    fetch("/api/v2/eventiCalendarioPersonale/" + day.join("-") + "?passato=False", {
         method: 'GET',
         headers: {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.

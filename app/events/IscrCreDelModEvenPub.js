@@ -337,6 +337,7 @@ router.post('', async (req, res) => {
                     var date = new Date();
                     let d1 = new Date(elem);
                     if (!dateTest.test(d1, elem + "T" + ora)) {
+                        console.log(elem + "T" + ora);
                         res.status(400).json({ error: "Formato data o ora non valido" }).send();
                         return;
                     }

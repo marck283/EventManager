@@ -1,6 +1,6 @@
 var getId = id => document.getElementById(id);
 
-var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {  
+var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {
     var api = "";
     if(listType === "pers") {
         api = "/api/v2/eventiCalendarioPersonale/?passato=" + passato;
