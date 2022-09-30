@@ -9,10 +9,10 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     beforeAll(() => {
         const EventPublic = require('../collezioni/eventPublic.js');
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
-            if(criterias == '67890'){
+            if(criterias == '67890') {
                 return {
                     _id: '67890',
-                    data: '12/12/2023',
+                    data: '12-12-2023',
                     ora: '06:37',
                     durata: 1,
                     maxPers: 2,

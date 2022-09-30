@@ -130,31 +130,15 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        var dati = eventP.data.split(",");
-        for (var elem of dati) {
-            var datta = elem;
-            var date = new Date();
-            var mm = date.getMonth() + 1;
-            var dd = date.getDate();
-            var yy = date.getFullYear();
-            dats = datta.split('/');
+        for (var elem of eventP.data) {
+            var date = new Date(), d1 = new Date(elem);
+            let orario = eventP.ora.split(':');
+            d1.setDate(d1.getDate() + 1);
+            d1.setHours(orario[0].padStart(2, '0'), orario[1].padStart(2, '0'));
 
-            let mese = dats[0].toString().padStart(2, '0');
-            let giorno = dats[1].toString().padStart(2, '0');
-            let anno = dats[2];
-
-            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+            if (date < d1) {
                 res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
-            }
-            if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
-                let orario = eventP.ora.split(':');
-                let str1 = orario[0].padStart(2, '0'), str2 = orario[1].padStart(2, '0');
-
-                if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                    res.status(403).json({ error: "evento non disponibile" }).send();
-                    return;
-                }
             }
         }
 
