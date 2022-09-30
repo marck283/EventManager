@@ -14,7 +14,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         jest.useFakeTimers();
         const EventPrivat = require('../collezioni/eventPrivat.js');
         eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
-            if(criterias == '6543'){
+            if(criterias == '6543') {
                 return {
                     _id: '6543',
                     data: ['12-12-2023'],
@@ -92,16 +92,16 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
-        await request(app).post('/api/v2/EventiPrivati/'+'6543'+'/Iscrizioni').
+        await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').
         set('x-access-token', jwt.sign({email: "aa.bb@gmail.com", id: "5555"}, process.env.SUPER_SECRET, {expiresIn: 3600})).expect('Content-Type', /json/).expect(403).expect({error: "Non sei invitato a questo evento"});
         
     });
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni effettuata con successo dovrebbe restituire 201', async() => {
         
-        const response = await request(app).post('/api/v2/EventiPrivati/'+'6543'+'/Iscrizioni').set('x-access-token', token);
+        const response = await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').set('x-access-token', token);
         expect(response.statusCode).toBe(201);
-        expect(response.header.location).toBe('/api/v2/EventiPrivati/'+'6543'+'/Iscrizioni/'+'');
+        expect(response.header.location).toBe('/api/v2/EventiPrivati/6543/Iscrizioni/'+'');
         
     });
     

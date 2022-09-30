@@ -163,7 +163,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         for (var elem of eventP.data) {
             var date = new Date(), d1 = new Date(elem);
             let orario = eventP.ora.split(':');
-            
+
             d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
             d1.setDate(d1.getDate() + 1);
 
@@ -316,6 +316,7 @@ router.post('', async (req, res) => {
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
                 utente.EventiCreati.push(eventP.id);
                 utente.EventiIscrtto.push(eventP.id);
+                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
 
                 //Si salva il modulo dell'utente
                 await utente.save();

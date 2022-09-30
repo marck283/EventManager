@@ -101,7 +101,9 @@ router.post('', (req, res) => {
 								password: "",
 								salt: "",
 								tel: "",
-								profilePic: payload.picture
+								profilePic: payload.picture,
+								numEvOrg: 0,
+								valutazioneMedia: 0.0
 							});
 							await user.save();
 						}

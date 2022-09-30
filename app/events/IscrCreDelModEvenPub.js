@@ -265,7 +265,7 @@ router.post('', async (req, res) => {
     var utent = req.loggedUser.id;
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent); //BSONTypeError?
+        let utente = await Users.findById(utent);
 
         var options = {
             data: req.body.data,
@@ -290,7 +290,7 @@ router.post('', async (req, res) => {
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
             citta: 'required|string|minLength:1',
-            picture: 'required|string|minLength:22'
+            picture: 'required|string|minLength:22' //base64?
         });
         v.check()
             .then(async matched => {
@@ -348,6 +348,7 @@ router.post('', async (req, res) => {
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
                 utente.EventiCreati.push(eventP._id);
                 utente.EventiIscrtto.push(eventP._id);
+                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
 
                 //Si salva il modulo dell'utente
                 await utente.save();

@@ -178,7 +178,7 @@ describe("POST /api/v2/EventiPubblici", () => {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
-            eventPic: picPayload
+            eventPic: picPayload,
         })
         .expect(201);
     });
