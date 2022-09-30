@@ -117,6 +117,27 @@
     <input type="number" min="2" name="maxPers" value="2" id="maxPers" /><br><br>
     <label for="picture">Immagine evento: </label>
 		<input name="img" type="file" id="picture" accept=".jpg" /><br><br>
+    <div id="restrictions">
+      <h3>Restrizioni alle iscrizioni</h3>
+      <div class="form-check">
+        <label class="form-check-label" for="flexCheckDefault">Et&agrave; minima</label>
+        <input class="form-check-input" type="checkbox" id="flexCheckEtaMin" />
+      </div>
+      <div class="form-check">
+        <label class="form-check-label" for="flexCheckDefault">Et&agrave; massima</label>
+        <input class="form-check-input" type="checkbox" id="flexCheckEtaMax" />
+      </div>
+      <br>
+      <div class="etaMin" id="etaMinGroup">
+        <label for="etaMin">Et&agrave; minima: </label>
+        <input type="number" min="0" id="etaMin" /><br><br>
+      </div>
+      <div class="etaMax" id="etaMaxGroup">
+        <label for="etaMax">Et&agrave; massima: </label>
+        <input type="number" min="0" id="etaMax" /><br><br>
+      </div>
+    </div>
+    <br>
     <button class="btn btn-primary" onclick="requestPu()">Crea Evento</button>
   </div>
   <br>
@@ -129,20 +150,8 @@
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js" integrity="sha384-aHFhM5aT8aFA9xA6PAeaB8dav8Bc3nF2gDv/DnBl7E6Qhutr42h9VSmf7BXTdugy" crossorigin="anonymous"></script>
 
-
-
-  <script>
-    $(document).ready(function () {
-      var date_input = $('input[name="date"]'); //our date input has the name "date"
-      var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
-      date_input.datepicker({
-        format: 'mm/dd/yyyy',
-        container: container,
-        todayHighlight: true,
-        autoclose: true,
-      })
-    });
-  </script>
+  <script src="./scripts/dateInput.js"></script>
+  <script src="./scripts/showFlexCheckBoxes.js"></script>
   <script src="/scripts/alerts/CreazioneEventoPubblicoAlerts.js"></script>
 </body>
 

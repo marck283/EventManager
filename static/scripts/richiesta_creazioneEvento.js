@@ -64,7 +64,13 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
         format = getFileExtension(realFile.name);
     file.onloadend = () => {
         if (format != 0 && inviare) {
-            var eventJSONList, formatSpecIndex = checkFormatCompatibility(format);
+            var eventJSONList, formatSpecIndex = checkFormatCompatibility(format), etaMax = "", etaMin = "";
+            if(getId("flexCheckEtaMax").checked) {
+                etaMax = Number(getId("etaMax").value);
+            }
+            if(getId("flexCheckEtaMin").checked) {
+                etaMin = Number(getId("etaMin").value);
+            }
             fetch("/api/v2/EventiPubblici", {
                 method: 'POST',
                 headers: {
@@ -83,7 +89,9 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                         indirizzo: getId("indirizzo").value,
                         citta: getId("Citta").value
                     },
-                    eventPic: file.result.substring(formatSpecIndex)
+                    eventPic: file.result.substring(formatSpecIndex),
+                    etaMin: etaMin,
+                    etaMax: etaMax
                 })
             })
                 .then(resp => {

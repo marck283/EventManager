@@ -8,7 +8,7 @@ const biglietti = require('../collezioni/biglietti.js');
 const { Validator } = require('node-input-validator');
 const dateTest = require('../dateRegexTest.js');
 
-router.use(express.json({limit: "50mb"})); //Limiting the size of the request should avoid "Payload too large" errors
+router.use(express.json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
 router.patch('/:id', async (req, res) => {
 
@@ -147,7 +147,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        if(eventP.partecipantiID.includes(utent)) {
+        if (eventP.partecipantiID.includes(utent)) {
             res.status(403).json({ error: "Già iscritto" }).send();
             return;
         }
@@ -212,7 +212,7 @@ router.post('/:id/Inviti', async (req, res) => {
 
             d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
             d1.setDate(d1.getDate() + 1);
-            
+
             if (d1 < date) {
                 res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
@@ -266,101 +266,119 @@ router.post('', async (req, res) => {
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);
-
-        var options = {
-            data: req.body.data,
-            durata: req.body.durata,
-            descrizione: req.body.descrizione,
-            ora: req.body.ora,
-            maxPers: req.body.maxPers,
-            categoria: req.body.categoria,
-            nomeAtt: req.body.nomeAtt,
-            indirizzo: req.body.luogoEv.indirizzo,
-            citta: req.body.luogoEv.citta,
-            picture: req.body.eventPic
-        };
-        const v = new Validator(options, {
-            'data': 'required|array|minLength:1',
-            'data.*': 'required|string|minLength:10|maxLength:10',
-            durata: 'required|integer|min:1',
-            descrizione: 'required|string|minLength:1|maxLength:140',
-            ora: 'required|string|minLength:5|maxLength:5',
-            maxPers: 'required|integer|min:2',
-            categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
-            nomeAtt: 'required|string|minLength:1',
-            indirizzo: 'required|string|minLength:1',
-            citta: 'required|string|minLength:1',
-            picture: 'required|string|minLength:22' //base64?
+        const v = new Validator({
+            data: req.body.data
+        }, {
+            'data': 'required|arrayUnique|minLength:1',
+            'data.*': 'required|string|minLength:10|maxLength:10'
         });
         v.check()
-            .then(async matched => {
+            .then(matched => {
                 if (!matched) {
-                    res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
+                    res.status(400).json({ error: "Date ripetute o nessuna data inserita." }).send();
                     return;
                 }
-                var ElencoDate = req.body.data, ora = req.body.ora, date = new Date();
-
-                for (var elem of ElencoDate) {
-                    //controllo che la data ha un formato corretto
-                    let d1 = new Date(elem);
-                    if (!dateTest.test(d1, elem + "T" + ora)) {
-                        res.status(400).json({ error: "Formato data o ora non valido" }).send();
-                        return;
-                    }
-
-                    d1.setDate(d1.getDate() + 1); //Dates are expressed in UTC, so we need to add 1 day to the date to get the correct date.
-
-                    //controllo che le date non siano di una giornata precedente a quella odierna
-                    if (d1 < date) {
-                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
-                        return;
-                    }
-
-                    //controllo che le date non siano ripetute
-                    var count = 0;
-                    ElencoDate.forEach(e => { if (e == elem) { count += 1 } });
-                    if (count > 1) {
-                        res.status(400).json({ error: "date ripetute" }).send();
-                        return;
-                    }
-                }
-                
-                //Si crea un documento evento pubblico
-                let eventP = new eventPublic({
-                    data: ElencoDate,
+                var options = {
                     durata: req.body.durata,
+                    descrizione: req.body.descrizione,
                     ora: req.body.ora,
                     maxPers: req.body.maxPers,
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
-                    luogoEv: {
-                        indirizzo: req.body.luogoEv.indirizzo,
-                        citta: req.body.luogoEv.citta
-                    },
-                    organizzatoreID: utent,
-                    eventPic: "data:image/png;base64," + req.body.eventPic
+                    indirizzo: req.body.luogoEv.indirizzo,
+                    citta: req.body.luogoEv.citta,
+                    picture: req.body.eventPic,
+                    etaMin: req.body.etaMin,
+                    etaMax: req.body.etaMax
+                };
+                const v1 = new Validator(options, {
+                    durata: 'required|integer|min:1',
+                    descrizione: 'required|string|minLength:1|maxLength:140',
+                    ora: 'required|string|minLength:5|maxLength:5',
+                    maxPers: 'required|integer|min:2',
+                    categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+                    nomeAtt: 'required|string|minLength:1',
+                    indirizzo: 'required|string|minLength:1',
+                    citta: 'required|string|minLength:1',
+                    picture: 'required|base64',
+                    etaMin: 'integer|min:0',
+                    etaMax: 'integer|gte:etaMin'
                 });
-                eventP.partecipantiID.push(utent);
+                v1.check()
+                    .then(async matched => {
+                        if (!matched) {
+                            res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
+                            return;
+                        }
+                        var ElencoDate = req.body.data, ora = req.body.ora, date = new Date();
 
-                //Si salva il documento pubblico
-                eventP = await eventP.save();
+                        for (var elem of ElencoDate) {
+                            //controllo che la data ha un formato corretto
+                            let d1 = new Date(elem);
+                            if (!dateTest.test(d1, elem + "T" + ora)) {
+                                res.status(400).json({ error: "Formato data o ora non valido" }).send();
+                                return;
+                            }
 
-                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                utente.EventiCreati.push(eventP._id);
-                utente.EventiIscrtto.push(eventP._id);
-                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
+                            d1.setDate(d1.getDate() + 1); //Dates are expressed in UTC, so we need to add 1 day to the date to get the correct date.
 
-                //Si salva il modulo dell'utente
-                await utente.save();
+                            //controllo che le date non siano di una giornata precedente a quella odierna
+                            if (d1 < date) {
+                                res.status(403).json({ error: "giorno o ora non disponibile" }).send();
+                                return;
+                            }
+                        }
 
-                let eventId = eventP.id;
+                        let etaMin = null, etaMax = null;
+                        if(req.body.etaMin != undefined) {
+                            etaMin = Number(req.body.etaMin);
+                        }
+                        if(req.body.etaMax != undefined) {
+                            etaMax = Number(req.body.etaMax);
+                        }
 
-                console.log('Evento salvato con successo');
+                        //Si crea un documento evento pubblico
+                        let eventP = new eventPublic({
+                            data: ElencoDate,
+                            durata: req.body.durata,
+                            ora: req.body.ora,
+                            maxPers: req.body.maxPers,
+                            categoria: req.body.categoria,
+                            nomeAtt: req.body.nomeAtt,
+                            luogoEv: {
+                                indirizzo: req.body.luogoEv.indirizzo,
+                                citta: req.body.luogoEv.citta
+                            },
+                            organizzatoreID: utent,
+                            eventPic: "data:image/png;base64," + req.body.eventPic,
+                            etaMin: etaMin,
+                            etaMax: etaMax
+                        });
+                        eventP.partecipantiID.push(utent);
 
-                /**
-                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
-                 */
-                res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
+                        //Si salva il documento pubblico
+                        eventP = await eventP.save();
+
+                        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                        utente.EventiCreati.push(eventP._id);
+                        utente.EventiIscrtto.push(eventP._id);
+                        utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
+
+                        //Si salva il modulo dell'utente
+                        await utente.save();
+
+                        let eventId = eventP.id;
+
+                        console.log('Evento salvato con successo');
+
+                        /**
+                         * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                         */
+                        res.location("/api/v2/EventiPubblici/" + eventId).status(201).send();
+                    });
+            })
+            .catch(err => {
+                //Qualcosa
             });
     } catch (error) {
         console.log(error);
