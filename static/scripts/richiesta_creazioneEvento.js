@@ -57,7 +57,8 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
         checkSendCondition(getId("indirizzo").value == "", "Inserire indirizzo") ||
         checkSendCondition(getId("Citta").value == "", "Inserire citt&agrave;") ||
         checkSendCondition(getId("durata").value == "" || Number.isNaN(parseInt(getId("durata").value)) || Number(getId("durata").value) <= 0, "Inserire durata corretta") ||
-        checkSendCondition(getId("maxPers").value == "" || Number.isNaN(parseInt(getId("maxPers").value)) || Number(getId("maxPers").value) < 2, "Inserire numero massimo persone corretto");
+        checkSendCondition(getId("maxPers").value == "" || Number.isNaN(parseInt(getId("maxPers").value)) || Number(getId("maxPers").value) < 2, "Inserire numero massimo persone corretto") ||
+        checkSendCondition(getId("descrizione").value == "", "Inserire descrizione evento");
 
     var file = new FileReader(), realFile = document.querySelector("input[type=file]").files[0],
         format = getFileExtension(realFile.name);
@@ -73,6 +74,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 body: JSON.stringify({
                     data: dateEv,
                     ora: getId("ora").value,
+                    descrizione: getId("descrizione").value,
                     durata: Number(getId("durata").value),
                     maxPers: Number(getId("maxPers").value),
                     categoria: getId("categoria").value,

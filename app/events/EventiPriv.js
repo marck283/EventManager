@@ -303,7 +303,7 @@ router.post('', async (req, res) => {
 
                     //controllo che le date non siano ripetute
                     var count = 0;
-                    let d2 = elem.split("T")[0];
+                    let d2 = elem.split("T")[0]; //Riscrivere queste righe di codice come per gli eventi pubblici e personali, se possibile
                     ElencoDate.forEach(e => { if (e == d2) { count += 1 } });
                     if (count > 1) {
                         res.status(400).json({ error: "date ripetute" }).send();

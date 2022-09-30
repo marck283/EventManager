@@ -304,6 +304,7 @@ router.post('', async (req, res) => {
         var options = {
             data: req.body.data,
             durata: req.body.durata,
+            descrizione: req.body.descrizione,
             ora: req.body.ora,
             maxPers: req.body.maxPers,
             categoria: req.body.categoria,
@@ -316,6 +317,7 @@ router.post('', async (req, res) => {
             'data': 'required|array|minLength:1',
             'data.*': 'required|string|minLength:10|maxLength:10',
             durata: 'required|integer|min:1',
+            descrizione: 'required|string|minLength:1|maxLength:140',
             ora: 'required|string|minLength:5|maxLength:5',
             maxPers: 'required|integer|min:2',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',

@@ -169,6 +169,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2024"],
             durata: 2,
+            descrizione: "ciao",
             ora: "11:00",
             maxPers: 200,
             categoria: "Sport",
@@ -190,6 +191,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -211,6 +213,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -232,6 +235,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -253,6 +257,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -274,6 +279,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -295,6 +301,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -316,6 +323,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -337,6 +345,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -357,6 +366,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .set('Accept', 'application/json')
         .send({
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -378,6 +388,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022","07-08-2024","07-09-2023","11-11-2022","12-12-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -399,6 +410,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["13-06-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -420,6 +432,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["02-06-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -441,6 +454,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 citta: "Mortara"
             },
@@ -461,6 +475,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
             },
@@ -481,6 +496,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "",
                 citta: "Mortara"
@@ -502,6 +518,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11|00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -524,6 +541,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: [String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dateObj.getDate() - 1).padStart(2, '0') + "-" + dateObj.getFullYear()],
             ora: String(dateObj.getHours()).padStart(2, '0') + ":" + String(dateObj.getMinutes() - 1).padStart(2, '0'),
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -545,6 +563,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -565,6 +584,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .send({
             data: ["11-11-2022"],
             ora: "11:00",
+            descrizione: "ciao",
             luogoEv: {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
@@ -572,6 +592,71 @@ describe("POST /api/v2/EventiPubblici", () => {
             nomeAtt: "Girare a vuoto 4",
             maxPers: 20,
             durata: 2,
+            eventPic: picPayload
+        })
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
+    });
+    test("POST /api/v2/EventiPubblici con utente autenticato e campo descrizione non compilato", () => {
+        jest.setTimeout(8000);
+        return request(app)
+        .post('/api/v2/EventiPubblici')
+        .set('x-access-token', token)
+        .set('Accept', 'application/json')
+        .send({
+            data: ["11-11-2024"],
+            durata: 2,
+            ora: "11:00",
+            maxPers: 200,
+            categoria: "Sport",
+            nomeAtt: "Girare a vuoto",
+            luogoEv: {
+                indirizzo: "Via del campo",
+                citta: "Mortara"
+            },
+            eventPic: picPayload
+        })
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
+    });
+    test("POST /api/v2/EventiPubblici con utente autenticato e campo descrizione compilato come stringa vuota", () => {
+        jest.setTimeout(8000);
+        return request(app)
+        .post('/api/v2/EventiPubblici')
+        .set('x-access-token', token)
+        .set('Accept', 'application/json')
+        .send({
+            data: ["11-11-2024"],
+            durata: 2,
+            descizione: "",
+            ora: "11:00",
+            maxPers: 200,
+            categoria: "Sport",
+            nomeAtt: "Girare a vuoto",
+            luogoEv: {
+                indirizzo: "Via del campo",
+                citta: "Mortara"
+            },
+            eventPic: picPayload
+        })
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
+    });
+    test("POST /api/v2/EventiPubblici con utente autenticato e campo descrizione compilato con lunghezza superiore al massimo consentito", () => {
+        jest.setTimeout(8000);
+        return request(app)
+        .post('/api/v2/EventiPubblici')
+        .set('x-access-token', token)
+        .set('Accept', 'application/json')
+        .send({
+            data: ["11-11-2024"],
+            durata: 2,
+            descrizione: picPayload,
+            ora: "11:00",
+            maxPers: 200,
+            categoria: "Sport",
+            nomeAtt: "Girare a vuoto",
+            luogoEv: {
+                indirizzo: "Via del campo",
+                citta: "Mortara"
+            },
             eventPic: picPayload
         })
         .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
