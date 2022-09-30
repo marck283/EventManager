@@ -295,7 +295,7 @@ describe("POST /api/v2/EventiPrivati", () => {
                 indirizzo: "Via del campo",
                 citta: "Mortara"
             },
-            ElencoEmailInviti: ["gg.aa@gmail.com"]
+            ElencoEmailInviti: ["gg.ee@gmail.com"]
         })
         .expect(403, {error: "giorno o ora non disponibile"});
     });

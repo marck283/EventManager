@@ -26,11 +26,12 @@ fetch('../api/v2/Utenti/me', { method: 'GET', headers: { 'x-access-token': token
                     password.textContent = resp.password;
 
                     var img = new Image();
-                    console.log(resp.picture);
                     img.src = resp.picture;
                     img.alt = "Immagine profilo utente";
                     img.style.borderRadius = "60mm";
                     document.getElementById("profilePic").appendChild(img);
+
+                    document.getElementById("eval").textContent = resp.valutazioneMedia;
                 });
                 break;
             }

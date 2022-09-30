@@ -18,7 +18,8 @@ router.get('/me', async (req, res) => {
             tel: utente.tel,
             url: "/api/v2/Utenti/" + IDexample,
             password: utente.password,
-            picture: utente.profilePic
+            picture: utente.profilePic,
+            valutazioneMedia: utente.valutazioneMedia
         });
     }catch(error){
         console.log(error);
