@@ -160,51 +160,16 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        var dati = eventP.data.split(",");
+        for (var elem of eventP.data) {
+            var date = new Date(), d1 = new Date(elem);
+            let orario = eventP.ora.split(':');
+            
+            d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
+            d1.setDate(d1.getDate() + 1);
 
-        for (var elem of dati) {
-
-            var datta = elem;
-            var date = new Date();
-            var mm = date.getMonth() + 1
-            var dd = date.getDate()
-            var yy = date.getFullYear()
-            dats = datta.split('/');
-
-            if (dats[0][0] == '0') {
-                mese = dats[0][1];
-            } else {
-                mese = dats[0];
-            }
-
-            if (dats[1][0] == '0') {
-                giorno = dats[1][1];
-            } else {
-                giorno = dats[1];
-            }
-
-            anno = dats[2];
-
-            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+            if (d1 < date) {
                 res.status(403).json({ error: "evento non disponibile" }).send()
                 return;
-            } else {
-                if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
-                    let orario = eventP.ora.split(':');
-                    let str1 = orario[0];
-                    let str2 = orario[1];
-                    if (orario[0][0] == 0) {
-                        str1 = orario[0][1];
-                    }
-                    if (orario[1][0] == 0) {
-                        str2 = orario[1][1];
-                    }
-
-                    if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                        res.status(403).json({ error: "evento non disponibile" }).send()
-                        return;
-                    }
-                }
             }
         }
 

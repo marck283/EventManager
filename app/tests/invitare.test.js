@@ -14,11 +14,11 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
     const eventPublic = require('../collezioni/eventPublic.js');
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if (criterias == '9876543') {
-        return { _id: '9876543', data: '05/11/2023', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }
+        return { _id: '9876543', data: ['11-05-2023'], ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }
       }
 
       if (criterias == '987654') {
-        return { _id: '987654', data: '05/11/2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '12365', partecipantiID: ['12365'] }
+        return { _id: '987654', data: ['11-05-2010'], ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '12365', partecipantiID: ['12365'] }
       }
     });
     const Users = require('../collezioni/utenti.js');
@@ -85,7 +85,6 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
       set('x-access-token', token).send({ email: 'gg.aa@gmail.com' });
     expect(response.statusCode).toBe(201);
     expect(response.header.location).toBe('/api/v2/EventiPubblici/9876543/Inviti/43534');
-
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente che è già stato invitato per quell'evento", async () => {
@@ -182,7 +181,9 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
     }
     var id7 = "9876543";
     var token1 = jwt.sign(payload7, process.env.SUPER_SECRET, options7);
-    await request(app).post('/api/v2/EventiPubblici/' + id7 + '/Inviti').
-      set('x-access-token', token1).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "L'utente non può auto invitarsi" });
+    await request(app).post('/api/v2/EventiPubblici/' + id7 + '/Inviti')
+      .set('x-access-token', token1).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', /json/)
+      .expect(403)
+      .expect({ error: "L'utente non può auto invitarsi" });
   });
 });

@@ -206,34 +206,16 @@ router.post('/:id/Inviti', async (req, res) => {
         }
 
         //controllo che le date non siano di una giornata precedente a quella odierna
+        for (var elem of eventP.data) {
+            var date = new Date(), d1 = new Date(elem);
+            let orario = eventP.ora.split(':');
 
-        var dati = eventP.data.split(",");
-
-        for (var elem of dati) {
-            var data = elem;
-            var date = new Date();
-            var mm = date.getMonth() + 1
-            var dd = date.getDate()
-            var yy = date.getFullYear()
-            let dats = data.split('/');
-
-            let mese = dats[0].toString().padStart(2, '0');
-            let giorno = dats[1].toString().padStart(2, '0');
-            let anno = dats[2];
-
-            if (yy > Number(anno) || (yy == Number(anno) && (mm > Number(mese) || (mm == Number(mese) && dd > Number(giorno))))) {
+            d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
+            d1.setDate(d1.getDate() + 1);
+            
+            if (d1 < date) {
                 res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
-            }
-            if (yy == Number(anno) && mm == Number(mese) && dd == Number(giorno)) {
-                let orario = eventP.ora.split(':');
-                let str1 = orario[0].padStart(2, '0');
-                let str2 = orario[1].padStart(2, '0');
-
-                if (Number(str1) < date.getHours() || (Number(str1) == date.getHours() && Number(str2) < date.getMinutes())) {
-                    res.status(403).json({ error: "evento non disponibile" }).send()
-                    return;
-                }
             }
         }
 
