@@ -25,7 +25,8 @@ module.exports = {
                 idevent: event._id,
                 self: apiUrl,
                 name: event.nomeAtt,
-                category: event.categoria
+                category: event.categoria,
+                eventPic: event.eventPic
             }
         });
     }

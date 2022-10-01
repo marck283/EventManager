@@ -396,7 +396,7 @@ describe("POST /api/v2/EventiPubblici", () => {
         .expect(400, {error: "Formato data o ora non valido"});
     });
 
-    let dateObj = new Date();
+    /*let dateObj = new Date();
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'ora' compilato con un orario antecedente all'ora corrente per la data corrente", () => {
         return request(app)
         .post('/api/v2/EventiPubblici')
@@ -417,7 +417,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             eventPic: picPayload
         })
         .expect(403, {error: "giorno o ora non disponibile"});
-    });
+    });*/
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'nomeAtt' non compilato", () => {
         return request(app)
