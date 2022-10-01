@@ -7,7 +7,6 @@ if (localStorage.getItem('token') != null) {
 
 fetch('../api/v2/Utenti/me', { method: 'GET', headers: { 'x-access-token': token } })
     .then(resp => {
-
         switch (resp.status) {
             case 200: {
                 resp.json().then(resp => {

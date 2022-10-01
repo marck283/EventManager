@@ -55,7 +55,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         
         await request(app).patch('/api/v2/EventiPubblici/'+'67890').
         set('x-access-token', jwt.sign({email: "aa.bb@gmail.com", id: "1111"}, process.env.SUPER_SECRET, {expiresIn: 3600}))
-        .expect('Content-Type', /json/).expect(403).expect({error: "Non sei autorizzato a modificare l'evento."});
+        .expect('Content-Type', /json/).expect(403).expect({error: "Non sei autorizzato a modificare, terminare od annullare l'evento."});
         
     });
     
