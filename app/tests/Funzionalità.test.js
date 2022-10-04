@@ -11,12 +11,12 @@ describe('Funzionalità', () => {
       
       var eventi = [evento1,evento2];
       expect(eventmap.map(eventi,"pub")).toEqual([{id: "pub",
-                    idevent: evento1._id,
-                    self: "/api/v2/EventiPubblici/" + evento1._id,
+                    idevent: evento1.id,
+                    self: "/api/v2/EventiPubblici/" + evento1.id,
                     name: "Evento",
                     category: "svago"},{id: "pub",
-                    idevent: evento2._id,
-                    self: "/api/v2/EventiPubblici/"+ evento2._id,
+                    idevent: evento2.id,
+                    self: "/api/v2/EventiPubblici/"+ evento2.id,
                     name: "Evento",
                     category: "svago"}]);
      
