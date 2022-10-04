@@ -160,7 +160,7 @@ var requestWithParams = async (id, day) => {
                     for (var f of resp.eventi) { //f è il singolo evento
                         if (categories.find(e => e == f.category) === undefined) {
                             //Se non trovo la categoria dell'evento considerato all'interno dell'array delle categorie
-                            //già stampate a video, la inserisco e stampo tutti gli eventi ad essa appartenenti tale categoria.
+                            //già stampate a video, la inserisco e stampo tutti gli eventi ad essa appartenenti.
                             categories.push(f.category);
                             category = f.category;
                             var h3 = document.createElement("h3");
