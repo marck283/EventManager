@@ -10,9 +10,7 @@ const dateTest = require('../dateRegexTest.js');
 
 router.use(express.json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
-router.patch('/:id', async (req, res) => {
-
-    //var utent = req.loggedUser.id;
+router.delete('/:id/annullaEvento', async (req, res) => {
     var utent = req.loggedUser.id;
     var id_evento = req.params.id;
 
@@ -25,10 +23,34 @@ router.patch('/:id', async (req, res) => {
         }
 
         if (utent != evento.organizzatoreID) {
-            res.status(403).json({ error: "Non sei autorizzato a modificare l'evento." });
+            res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
+            return;
+        }
+        await evento.delete();
+        res.status(200).json({ message: "Evento annullato con successo." }).send();
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Errore del server." }).send();
+    }
+    return;
+});
+
+router.patch('/:id', async (req, res) => {
+    var utent = req.loggedUser.id;
+    var id_evento = req.params.id;
+
+    try {
+        let evento = await eventPublic.findById(id_evento);
+
+        if (evento == undefined) {
+            res.status(404).json({ error: "Non esiste alcun evento pubblico con l'id specificato." });
             return;
         }
 
+        if (utent != evento.organizzatoreID) {
+            res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
+            return;
+        }
         if (req.body.nomeAtt != "" && req.body.nomeAtt != undefined) {
             evento.nomeAtt = req.body.nomeAtt;
         }
@@ -330,10 +352,10 @@ router.post('', async (req, res) => {
                         }
 
                         let etaMin = null, etaMax = null;
-                        if(req.body.etaMin != undefined) {
+                        if (req.body.etaMin != undefined) {
                             etaMin = Number(req.body.etaMin);
                         }
-                        if(req.body.etaMax != undefined) {
+                        if (req.body.etaMax != undefined) {
                             etaMax = Number(req.body.etaMax);
                         }
 
@@ -352,7 +374,8 @@ router.post('', async (req, res) => {
                             organizzatoreID: utent,
                             eventPic: "data:image/png;base64," + req.body.eventPic,
                             etaMin: etaMin,
-                            etaMax: etaMax
+                            etaMax: etaMax,
+                            terminato: false
                         });
                         eventP.partecipantiID.push(utent);
 

@@ -18,5 +18,6 @@ module.exports = mongoose.model('EventoP', new Schema({
 	partecipantiID: [String],
 	eventPic: String,
 	etaMin: Number,
-	etaMax: Number
+	etaMax: Number,
+	terminato: Boolean
 }));
