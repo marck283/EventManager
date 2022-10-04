@@ -54,7 +54,7 @@ router.get("", async (req, res) => {
     v1.check()
     .then(matched => {
         if(!matched) {
-            res.status(400).json({error: "Richiesta malformata."});
+            res.status(400).json({error: "Richiesta malformata."}).send();
             return;
         } else {
             if(durata != undefined) {
