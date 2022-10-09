@@ -1,5 +1,22 @@
 var getId = id => document.getElementById(id);
 
+var requestOrg = () => {
+    fetch("../api/v2/publicEventOgList")
+    .then(resp => {
+        switch(resp.status) {
+            case 200: {
+                resp.json().then(data => manipulateDom("pub", data, "eventLists"));
+                break;
+            }
+            case 400: //Non dovrebbe mai succedere
+            case 404: {
+                resp.json().then(data => alert(data.error));
+                break;
+            }
+        }
+    })
+}
+
 var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {
     var api = "";
     if(listType === "pers") {
@@ -21,7 +38,7 @@ var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata =
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(listType, resp, idElem));
+                resp.json().then(resp => manipulateDom(listType, resp, idElem, true));
                 break;
             }
 
@@ -76,14 +93,20 @@ var showIfChecked = pageType => {
         if(pageType == "pers") {
             getId("storicoEventiContainer").style.display = "none";
             getId("storicoEventi").style.display = "none";
-            getId("storicoEventi").innerHTML = "";
+            getId("storicoEventi").textContent = "";
         }
     }
 };
 
-var manipulateDom = (listType, response, id = "eventLists") => {
+var manipulateDom = (listType, response, id = "eventLists", evOrg = false) => {
     var categories = [];
-    getId(id).innerHTML = "";
+    getId(id).textContent = "";
+    if(evOrg) {
+        //Se sto per stampare la lista degli eventi organizzati da me, allora stampo anche il titolo.
+        let h3 = document.createElement("h3");
+        h3.textContent = "Eventi organizzati";
+        getId(id).appendChild(h3);
+    }
     for (var f of response.eventi) {
         if (categories.find(e => e === f.category) == undefined) {
             categories.push(f.category);

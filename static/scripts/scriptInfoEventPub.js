@@ -53,10 +53,8 @@ fetch('../api/v2/EventiPubblici/' + id)
                         img.alt = "Immagine evento";
                         document.getElementById("img").appendChild(img);
 
-                        if(resp.terminato) {
-                            document.getElementById("terminato").style.display = "block";
-                        } else {
-                            document.getElementById("terminato").style.display = "none";
+                        if(!resp.terminato) {
+                            document.getElementById("evaluation").disabled = true;
                         }
                     }
                 });
@@ -101,3 +99,7 @@ var annulla = () => {
         }
     })
 };
+
+var scriviRecensione = () => {
+    window.location = 'recensionePub.html?id=' + id;
+}

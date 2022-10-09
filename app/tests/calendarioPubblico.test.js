@@ -12,8 +12,8 @@ describe('GET /api/v2/eventiCalendarioPubblico', () => {
     const eventPublic = require('../collezioni/eventPublic.js');
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
-        { id: '9876543', data: '05/11/2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234'] },
-        { id: '987653', data: '05/11/2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'] }
+        { id: '9876543', data: '05/11/2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234'], recensioni: [] },
+        { id: '987653', data: '05/11/2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'], recensioni: [] }
       ]
     });
   });

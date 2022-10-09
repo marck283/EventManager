@@ -29,7 +29,7 @@ router.get("", async (req, res) => {
         var utent = req.loggedUser.id;
         let eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
         if(eventList.length > 0) {
-            res.status(200).json({eventList: eventList}).send();
+            res.status(200).json({eventi: eventList}).send();
         } else {
             res.status(404).json({error: "Nessun evento organizzato da questo utente."}).send();
         }

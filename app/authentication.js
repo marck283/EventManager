@@ -22,7 +22,8 @@ router.use(limiter);
 async function verify(token) {
 	return await client.verifyIdToken({
 		idToken: token,
-		audience: "22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",  // Specify the CLIENT_ID of the app that accesses the backend
+		audience: ["22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",
+	"22819640695-dcdotbkfl0ssvvp0ike213c7eqskk49h.apps.googleusercontent.com"],  // Specify the CLIENT_ID of the app that accesses the backend
 		// Or, if multiple clients access the backend:
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	})

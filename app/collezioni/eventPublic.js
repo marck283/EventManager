@@ -19,5 +19,6 @@ module.exports = mongoose.model('EventoP', new Schema({
 	eventPic: String,
 	etaMin: Number,
 	etaMax: Number,
-	terminato: Boolean
+	terminato: Boolean,
+	recensioni: [String] //Array di id delle recensioni
 }));
