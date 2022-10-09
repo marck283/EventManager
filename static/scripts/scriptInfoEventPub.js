@@ -99,3 +99,7 @@ var annulla = () => {
         }
     })
 };
+
+var scriviRecensione = () => {
+    window.location = 'recensionePub.html?id=' + id;
+}

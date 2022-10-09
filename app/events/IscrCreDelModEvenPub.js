@@ -7,6 +7,7 @@ const Users = require('../collezioni/utenti.js');
 const biglietti = require('../collezioni/biglietti.js');
 const { Validator } = require('node-input-validator');
 const dateTest = require('../dateRegexTest.js');
+const Recensioni = require('../collezioni/recensioniPub.js');
 
 router.use(express.json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -26,6 +27,14 @@ router.delete('/:id/annullaEvento', async (req, res) => {
             res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
             return;
         }
+
+        //Trova e cancella tutte le recensioni relative all'evento
+        var recensioni = evento.recensioni;
+        recensioni.forEach(async e => {
+            var recensione = await Recensioni.findById(e);
+            await recensione.delete();
+        });
+
         await evento.delete();
         res.status(200).json({ message: "Evento annullato con successo." }).send();
     } catch (err) {
@@ -375,7 +384,8 @@ router.post('', async (req, res) => {
                             eventPic: "data:image/png;base64," + req.body.eventPic,
                             etaMin: etaMin,
                             etaMax: etaMax,
-                            terminato: false
+                            terminato: false,
+                            recensioni: []
                         });
                         eventP.partecipantiID.push(utent);
 

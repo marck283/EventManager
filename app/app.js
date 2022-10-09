@@ -16,6 +16,7 @@ const recPsw = require('./pswRecovery.js');
 const cookieParser = require('cookie-parser');
 const csrfCreation = require('./csrfTokenCreation.js');
 const pubEvOrgList = require('./events/elencoEventiPubOrg.js');
+const recensioni = require('./events/recensioni.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -63,6 +64,7 @@ app.use('/api/v2/EventiPrivati', EventoPrivato);
 app.use('/api/v2/Utenti', Utente);
 app.use("/api/v2/eventiCalendarioPersonale", calendarEventsPers);
 app.use("/api/v2/PublicEventOrgList", pubEvOrgList);
+app.use("/api/v2/Recensioni", recensioni);
 
 /* Default 404 handler */
 app.use((req, res) => {
