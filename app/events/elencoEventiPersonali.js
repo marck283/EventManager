@@ -41,7 +41,7 @@ var findPubEvents = async (user) => {
     return eventsPub;
 };
 
-var filterEvents = eventsArr => {
+var filterEvents = (eventsArr, passato) => {
     var curr = new Date();
     return eventsArr.filter(e => {
         var hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
@@ -49,8 +49,19 @@ var filterEvents = eventsArr => {
         for(let d of e.data) {
             var d1 = new Date(d);
             d1.setHours(hoursDB, minsDB);
-            if(d1 < curr) {
-                return true;
+            switch(passato) {
+                case true: {
+                    if(d1 < curr) {
+                        return true;
+                    }
+                    break;
+                }
+                case false: {
+                    if(d1 >= curr) {
+                        return true;
+                    }
+                    break;
+                }
             }
         }
     });
@@ -114,11 +125,13 @@ router.get("", async (req, res) => {
         switch (req.query.passato) {
             case "True": {
                 //Filtro per date passate
-                eventsPub = filterEvents(eventsPub);
-                eventsPriv = filterEvents(eventsPriv);
+                eventsPub = filterEvents(eventsPub, true);
+                eventsPriv = filterEvents(eventsPriv, true);
                 break;
             }
             case "False": {
+                eventsPub = filterEvents(eventsPub, false);
+                eventsPriv = filterEvents(eventsPriv, false);
                 break;
             }
         }

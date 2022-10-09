@@ -14,15 +14,15 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     const recensione = "2345";
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
-        {id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234'], recensioni: [recensione]},
-        {id:'987653', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '123', partecipantiID: ['2222','1234'], recensioni: [recensione]}
+        {id:'9876543', data: '05-11-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234'], recensioni: [recensione]},
+        {id:'987653', data: '05-11-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '123', partecipantiID: ['2222','1234'], recensioni: [recensione]}
       ]
     });
     const eventPersonal = require('../collezioni/eventPersonal.js');
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID.$eq == '2222') {
         return [
-        {id:'797569', data: '05/11/2010',  ora:'11:33', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', recensioni: [recensione]},
+        {id:'797569', data: '05-11-2010',  ora:'11:33', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', recensioni: [recensione]},
         ];
       } else {
         return []
@@ -31,8 +31,8 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     const eventPrivate = require('../collezioni/eventPrivat.js');
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
       return [
-        {id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323'], recensioni: [recensione]},
-        {id:'785478458',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323'], recensioni: [recensione]}
+        {id:'75975947',data: '05-11-2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323'], recensioni: [recensione]},
+        {id:'785478458',data: '05-11-2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323'], recensioni: [recensione]}
       ]
     });
   });
@@ -65,22 +65,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         idevent:'797569',
         self: "/api/v2/EventiPersonali/797569",
         name: "Piscina",
-        category: "svago"},
-      {id: "pub",
-        idevent:'987653',
-        self: "/api/v2/EventiPubblici/987653",
-        name: "Event",
-        category: "svago"},
-      {id: "priv",
-        idevent:'75975947',
-        self: "/api/v2/EventiPrivati/75975947",
-        name: "Eventt",
-        category: "operazione"},
-      {id: "priv",
-        idevent:'785478458',
-        self: "/api/v2/EventiPrivati/785478458",
-        name: "Eventt",
-        category: "operazione"}]
+        category: "svago"}]
     });
   });
 
