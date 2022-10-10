@@ -3,6 +3,14 @@ const router = express.Router();
 const eventPublic = require('../collezioni/eventPublic.js');
 const { Validator } = require('node-input-validator');
 const Recensione = require('../collezioni/recensioniPub.js');
+const User = require('../collezioni/utenti.js');
+
+var meanEval = evArr => {
+    var sum = 0;
+    evArr.forEach(e => sum += e.valMedia);
+    
+    return sum/evArr.length;
+}
 
 router.post("/:id", async (req, res) => {
     try {
@@ -33,7 +41,13 @@ router.post("/:id", async (req, res) => {
                 evento.valMedia = (evento.valMedia*(evento.recensioni.length - 1) + recensione1.valutazione)/evento.recensioni.length;
                 await evento.save();
 
-                res.status(201).json({ message: "Recensione aggiunta con successo" }).send();
+                //Now find the user and update its evaluation.
+                var user = await User.findById(req.loggedUser.id);
+                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: req.loggedUser.id}});
+                user.valutazioneMedia = meanEval(eventsPub);
+                await user.save();
+
+                res.status(201).json({ message: "Recensione salvata con successo" }).send();
             });
     } catch (error) {
         console.log(error);
