@@ -385,7 +385,8 @@ router.post('', async (req, res) => {
                             etaMin: etaMin,
                             etaMax: etaMax,
                             terminato: false,
-                            recensioni: []
+                            recensioni: [],
+                            valMedia: 0.0
                         });
                         eventP.partecipantiID.push(utent);
 
