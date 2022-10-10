@@ -67,7 +67,11 @@ router.get("", async (req, res) => {
                 events = events.filter(e => e.luogoEv.citta == citta);
             }
             if(events.length > 0) {
-                res.status(200).json({eventi: eventsMap.map(events, "pub")}).send();
+                var events1 = eventsMap.map(events, "pub");
+
+                //Ordina gli eventi ottenuti per valutazione media decrescente
+                events1.sort((e, e1) => e.valMedia >= e1.valMedia);
+                res.status(200).json({eventi: events1}).send();
             } else {
                 res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
             }

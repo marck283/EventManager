@@ -30,6 +30,7 @@ router.post("/:id", async (req, res) => {
                 var recensione1 = await recensione.save();
 
                 evento.recensioni.push(recensione1.id);
+                evento.valMedia = (evento.valMedia*(evento.recensioni.length - 1) + recensione1.valutazione)/evento.recensioni.length;
                 await evento.save();
 
                 res.status(201).json({ message: "Recensione aggiunta con successo" }).send();
