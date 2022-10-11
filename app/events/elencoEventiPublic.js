@@ -5,6 +5,7 @@ const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 const { Validator } = require('node-input-validator');
+const User = require('../collezioni/utenti.js');
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -69,8 +70,11 @@ router.get("", async (req, res) => {
             if(events.length > 0) {
                 var events1 = eventsMap.map(events, "pub");
 
-                //Ordina gli eventi ottenuti per valutazione media decrescente
-                events1.sort((e, e1) => e.valMedia <= e1.valMedia);
+                //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
+                events1.sort((e, e1) => {
+                    var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
+                    return org.valutazioneMedia < org1.valutazioneMedia;
+                });
                 res.status(200).json({eventi: events1}).send();
             } else {
                 res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
