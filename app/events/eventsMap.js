@@ -20,6 +20,7 @@ module.exports = {
                     return {};
                 }
             }
+            
             return {
                 id: eventType,
                 idevent: event.id,
@@ -27,7 +28,7 @@ module.exports = {
                 name: event.nomeAtt,
                 category: event.categoria,
                 eventPic: event.eventPic
-            }
+            };
         });
     }
 }

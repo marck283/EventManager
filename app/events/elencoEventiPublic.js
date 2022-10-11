@@ -18,6 +18,12 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
+var filterCondition = (condition, arr, cb) => {
+    if(condition) {
+        arr.filter(cb);
+    }
+}
+
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
     var autenticato = false;
@@ -40,12 +46,8 @@ router.get("", async (req, res) => {
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
-    if(nomeAtt != undefined && nomeAtt != "") {
-        events = events.filter(e => e.nomeAtt.includes(nomeAtt));
-    }
-    if(categoria != undefined && categoria != "") {
-        events = events.filter(e => e.categoria == categoria);
-    }
+    filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
+    filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
 
     const v1 = new Validator({
         durata: durata
@@ -58,17 +60,13 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."}).send();
             return;
         } else {
-            if(durata != undefined) {
-                events = events.filter(e => e.durata == durata);
-            }
-            if(indirizzo != undefined && indirizzo != "") {
-                events = events.filter(e => e.luogoEv.indirizzo == indirizzo);
-            }
-            if(citta != undefined && citta != "") {
-                events = events.filter(e => e.luogoEv.citta == citta);
-            }
+            filterCondition(durata != undefined, events, e => e.durata == durata);
+            filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
+            filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+            
             if(events.length > 0) {
                 var events1 = eventsMap.map(events, "pub");
+                events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
 
                 //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
                 events1.sort((e, e1) => {
