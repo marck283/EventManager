@@ -1,6 +1,6 @@
 const request = require('supertest'), mongoose = require('mongoose');
 const app = require('../app.js');
-const jwt = require('jsonwebtoken');
+const createToken = require('../tokenCreation.js');
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
     beforeAll(async () => {
@@ -13,11 +13,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
     });
 
     // create a valid token
-    var token = jwt.sign(
-        { id: "62993bc81430d0dd9a208934", email: 'gg.ee@gmail.com' },
-        process.env.SUPER_SECRET,
-        { expiresIn: 86400 }
-    );
+    var token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'passato' non compilato", () => {
         return request(app)

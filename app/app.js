@@ -56,7 +56,7 @@ var limiter = RateLimit({
 //Avoids Brute Force attacks by limiting the number of requests per IP
 app.use(limiter);
 
-app.use(tokenChecker);
+app.use(tokenChecker.tokenChecker);
 
 app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
 app.use('/api/v2/EventiPersonali', EventoPersonale);

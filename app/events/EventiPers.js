@@ -7,8 +7,8 @@ const dateTest = require('../dateRegexTest.js');
 
 router.patch('/:id', async (req, res) => {
 
-    //var utent = req.loggedUser.id;
-    var utent = req.loggedUser.id;
+    //var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -72,7 +72,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    let utent = req.loggedUser.id;
+    let utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);

@@ -9,8 +9,8 @@ const { Validator } = require('node-input-validator');
 const dateTest = require('../dateRegexTest.js');
 
 router.patch('/:id', async (req, res) => {
-    //var utent = req.loggedUser.id;
-    var utent = req.loggedUser.id;
+    //var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -64,7 +64,7 @@ var spliceArr = (param1, param2) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPrivat.findById(req.params.idEvento);
-        var utente = req.loggedUser.id;
+        var utente = req.loggedUser.id || req.loggedUser.sub;
         var utenteObj = await Users.findById(utente);
         var iscr = await biglietti.findById(req.params.idIscr);
 
@@ -149,7 +149,7 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -222,7 +222,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);

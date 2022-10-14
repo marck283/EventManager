@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const createToken = require('../tokenCreation.js');
 const app = require('../app');
 
 describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
@@ -71,16 +71,8 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente non ancora invitato o partecipante a quell'evento", async () => {
     // create a valid token
     expect.assertions(2);
-    var payload = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id = "9876543";
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    var token = createToken("gg.ee@gmail.com", "1234", 3600);
     const response = await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
       set('x-access-token', token).send({ email: 'gg.aa@gmail.com' });
     expect(response.statusCode).toBe(201);
@@ -88,99 +80,45 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente che è già stato invitato per quell'evento", async () => {
-    // create a valid token
-    var payload2 = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options2 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id2 = "9876543";
-    var token = jwt.sign(payload2, process.env.SUPER_SECRET, options2);
+    var token = createToken("gg.ee@gmail.com", "1234", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id2 + '/Inviti').
       set('x-access-token', token).send({ email: 'gg.tt@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "L'utente con quella email è già invitato a quell'evento" });
   });
 
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email non è passata", async () => {
-    // create a valid token
-    var payload3 = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options3 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id3 = "9876543";
-    var token = jwt.sign(payload3, process.env.SUPER_SECRET, options3);
+    var token = createToken("gg.ee@gmail.com", "1234", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id3 + '/Inviti').
       set('x-access-token', token).expect('Content-Type', /json/).expect(400).expect({ error: "Campo vuoto o indefinito" });
   });
 
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente non sia organizzatore dell'evento", async () => {
-    // create a valid token
-    var payload4 = {
-      email: "gg.et@gmail.com",
-      id: "123"
-    }
-
-    var options4 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id4 = "9876543";
-    var token = jwt.sign(payload4, process.env.SUPER_SECRET, options4);
+    var token = createToken("gg.et@gmail.com", "123", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id4 + '/Inviti').
       set('x-access-token', token).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "L'utente non può invitare ad un evento che non è suo" });
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente associato all'email passata sia già partecipante all'evento", async () => {
-    // create a valid token
-    var payload5 = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options5 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id5 = "9876543";
-    var token = jwt.sign(payload5, process.env.SUPER_SECRET, options5);
+    var token = createToken("gg.ee@gmail.com", "1234", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id5 + '/Inviti').
       set('x-access-token', token).send({ email: 'gg.et@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "L'utente con quella email è già partecipante all'evento" });
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'evento non sia disponibile", async () => {
-    // create a valid token
-    var payload6 = {
-      email: "gg.et@gmail.com",
-      id: "12365"
-    }
-
-    var options6 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id6 = "987654";
-    var token1 = jwt.sign(payload6, process.env.SUPER_SECRET, options6);
+    var token1 = createToken("gg.et@gmail.com", "12365", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id6 + '/Inviti').
       set('x-access-token', token1).send({ email: 'gg.aa@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "evento non disponibile" });
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente indica la sua stessa email per l'invito", async () => {
-    // create a valid token
-    var payload7 = {
-      email: "gg.ee@gmail.com",
-      id: "1234"
-    }
-
-    var options7 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
     var id7 = "9876543";
-    var token1 = jwt.sign(payload7, process.env.SUPER_SECRET, options7);
+    var token1 = createToken("gg.ee@gmail.com", "1234", 3600);
     await request(app).post('/api/v2/EventiPubblici/' + id7 + '/Inviti')
       .set('x-access-token', token1).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', /json/)
       .expect(403)

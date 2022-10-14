@@ -16,7 +16,7 @@ router.use(limiter);
 
 router.get("", async (req, res) => {
     const v = new Validator({
-        utent: req.loggedUser.id
+        utent: req.loggedUser.id || req.loggedUser.sub
     }, {
         utent: 'required|string|minLength:1'
     });
@@ -26,7 +26,7 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."});
             return;
         }
-        var utent = req.loggedUser.id;
+        var utent = req.loggedUser.id || req.loggedUser.sub;
         let eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
         if(eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();

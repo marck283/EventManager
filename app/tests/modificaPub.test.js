@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
+const createToken = require('../tokenCreation.js');
 const app = require('../app.js');
 
 describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
@@ -42,19 +42,12 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         eventSaveSpy.mockRestore();
     });
     
-    var payload = {
-        email: 'gg.ee@gmail.com',
-        id: '2222'
-    }
-    var options = {
-        expiresIn: 3600
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('PATCH /api/v2/EventiPubblici/idEvento con utente non organizzatore dovrebbe restituire 403', async() => {
         
         await request(app).patch('/api/v2/EventiPubblici/'+'67890').
-        set('x-access-token', jwt.sign({email: "aa.bb@gmail.com", id: "1111"}, process.env.SUPER_SECRET, {expiresIn: 3600}))
+        set('x-access-token', createToken("aa.bb@gmail.com", "1111", 3600))
         .expect('Content-Type', /json/).expect(403).expect({error: "Non sei autorizzato a modificare, terminare od annullare l'evento."});
         
     });

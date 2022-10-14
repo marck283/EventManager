@@ -30,7 +30,7 @@ router.post("/:id", async (req, res) => {
                     return;
                 }
                 var recensione = new Recensione({
-                    idUtente: req.loggedUser.id,
+                    idUtente: req.loggedUser.id || req.loggedUser.sub,
                     idEvento: id,
                     valutazione: req.body.evaluation,
                     descrizione: req.body.description
@@ -42,8 +42,8 @@ router.post("/:id", async (req, res) => {
                 await evento.save();
 
                 //Now find the user and update its evaluation.
-                var user = await User.findById(req.loggedUser.id);
-                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: req.loggedUser.id}});
+                var user = await User.findById(req.loggedUser.id || req.loggedUser.sub);
+                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: req.loggedUser.id || req.loggedUser.sub}});
                 user.valutazioneMedia = meanEval(eventsPub);
                 await user.save();
 

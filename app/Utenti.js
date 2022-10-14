@@ -7,7 +7,7 @@ const eventPrivat = require('./collezioni/eventPrivat.js');
 const Inviti = require('./collezioni/invit.js');
 
 router.get('/me', async (req, res) => {
-    IDexample = req.loggedUser.id;
+    IDexample = req.loggedUser.id || req.loggedUser.sub;
     
     try{
         let utente = await Utente.findById(IDexample);
@@ -29,7 +29,7 @@ router.get('/me', async (req, res) => {
 
 router.get('/me/Inviti', async (req, res) => {
     try {
-        var IDexample = req.loggedUser.id, ListaInviti = await Inviti.find({utenteid:IDexample});
+        var IDexample = req.loggedUser.id || req.loggedUser.sub, ListaInviti = await Inviti.find({utenteid:IDexample});
 
         if(ListaInviti.length == 0) {
             res.status(404).json({error: "Non ci sono inviti per questo utente"}).send();
@@ -96,7 +96,7 @@ router.get('/me/Inviti', async (req, res) => {
 
 router.get('/me/Iscrizioni', async (req, res) => {
     try{
-        var IDexample = req.loggedUser.id, ListaBiglietti = await Biglietto.find({utenteid:IDexample});
+        var IDexample = req.loggedUser.id || req.loggedUser.sub, ListaBiglietti = await Biglietto.find({utenteid:IDexample});
         if(ListaBiglietti.length == 0) {
             res.status(404).json({error: "Non ci sono biglietti per questo utente"}).send();
             return;

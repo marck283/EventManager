@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const createToken = require('../tokenCreation.js');
 const app     = require('../app.js');
 
 describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
@@ -46,15 +46,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   });
 
   // create a valid token
-  var payload = {
-    email: "gg.ee@gmail.com",
-    id: "2222"
-  }
-
-  var options = {
-    expiresIn: 3600 // expires in 24 hours
-  }
-  var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+  var token = createToken("gg.ee@gmail.com", "2222", 3600);
   
   test("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').

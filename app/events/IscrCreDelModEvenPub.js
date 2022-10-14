@@ -12,7 +12,7 @@ const Recensioni = require('../collezioni/recensioniPub.js');
 router.use(express.json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
 router.delete('/:id/annullaEvento', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -45,7 +45,7 @@ router.delete('/:id/annullaEvento', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -99,7 +99,7 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPublic.findById(req.params.idEvento);
-        var utente = req.loggedUser.id;
+        var utente = req.loggedUser.id || req.loggedUser.sub;
         var utenteObj = await Users.findById(utente);
         var iscr = await biglietti.findById(req.params.idIscr);
 
@@ -151,7 +151,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
     try {
@@ -167,6 +167,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             d1.setDate(d1.getDate() + 1);
             d1.setHours(orario[0].padStart(2, '0'), orario[1].padStart(2, '0'));
 
+            //Solo una data sbagliata per determinare che un evento su più date non è disponibile? Qualcosa non va...
             if (date < d1) {
                 res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
@@ -222,7 +223,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 router.post('/:id/Inviti', async (req, res) => {
     try {
-        var utent = req.loggedUser.id;
+        var utent = req.loggedUser.id || req.loggedUser.sub;
         var id_evento = req.params.id;
 
         if (req.body.email == "" || req.body.email == undefined) {
@@ -293,7 +294,7 @@ router.post('/:id/Inviti', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    var utent = req.loggedUser.id;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await Users.findById(utent);

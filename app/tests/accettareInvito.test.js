@@ -1,6 +1,7 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../app.js');
+const createToken = require('../tokenCreation.js');
 
 describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
@@ -81,19 +82,12 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         bigliettoSaveSpy.mockRestore();
     });
     
-    var payload = {
-        email: "gg.ee@gmail.com",
-        id: "2222"
-    }
-    var options = {
-        expiresIn: 3600
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
         await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').
-        set('x-access-token', jwt.sign({email: "aa.bb@gmail.com", id: "5555"}, process.env.SUPER_SECRET, {expiresIn: 3600})).expect('Content-Type', /json/).expect(403).expect({error: "Non sei invitato a questo evento"});
+        set('x-access-token', createToken("aa.bb@gmail.com", "5555", 3600)).expect('Content-Type', /json/).expect(403).expect({error: "Non sei invitato a questo evento"});
         
     });
     

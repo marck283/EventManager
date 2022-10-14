@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const createToken = require('../tokenCreation.js');
 const app = require('../app');
 
 describe('GET /api/v2/EventiPrivati/:id', () => {
@@ -39,15 +39,7 @@ describe('GET /api/v2/EventiPrivati/:id', () => {
     UsersSpy.mockRestore();
   });
 
-  var payload = {
-    email: "gg.ee@gmail.com",
-    id: "2222"
-  }
-
-  var options = {
-    expiresIn: 3600 // expires in 24 hours
-  }
-  var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+  var token = createToken("gg.ee@gmail.com", "2222", 3600);
 
 
   test('GET /api/v2/EventiPrivati/:id nel caso di evento esistente', async () => {

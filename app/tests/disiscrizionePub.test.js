@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
+const createToken = require('../tokenCreation.js');
 const app = require('../app.js');
 
 describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
@@ -97,14 +97,7 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
         bigliettoDeleteOneSpy.mockRestore();
     });
     
-    var payload = {
-        email: "gg.ee@gmail.com",
-        id: "2222"
-    }
-    var options = {
-        expiresIn: 3600 // expires in 24 hours
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr con idIscr inesistente dovrebbe restituire 404', async() => {
         

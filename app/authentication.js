@@ -5,10 +5,8 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
 const RateLimit = require('express-rate-limit');
 const { Validator } = require('node-input-validator');
-
-//Check for the correctness of the client-id
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client("22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com");
+const tokenChecker = require('./tokenChecker.js').verify;
+const createToken = require('./tokenCreation.js');
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -19,38 +17,12 @@ var limiter = RateLimit({
 
 router.use(limiter);
 
-async function verify(token) {
-	return await client.verifyIdToken({
-		idToken: token,
-		audience: ["22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",
-	"22819640695-dcdotbkfl0ssvvp0ike213c7eqskk49h.apps.googleusercontent.com"],  // Specify the CLIENT_ID of the app that accesses the backend
-		// Or, if multiple clients access the backend:
-		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-	})
-		.catch(err => {
-			throw err;
-		});
-};
-
-var createToken = (email, id) => {
-	// if user is found and password is right create a token
-	var payload = {
-		email: email,
-		id: id
-		// other data encrypted in the token	
-	}
-	var options = {
-		expiresIn: 3600 // expires in 1 hour
-	}
-	return jwt.sign(payload, process.env.SUPER_SECRET, options);
-};
-
 var result = (token, email, id, error = false, message = "") => {
 	if (error) {
 		return {
 			success: false,
 			message: message
-		}
+		};
 	}
 	return {
 		success: true,
@@ -82,6 +54,7 @@ router.post('', (req, res) => {
 				return;
 			}
 			//Check the JWT tokens
+			var authOK = false, error = false;
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				//Checks the Google token
 
@@ -89,8 +62,9 @@ router.post('', (req, res) => {
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await verify(req.body.googleJwt.credential)
+				await tokenChecker(req.body.googleJwt.credential)
 					.then(async ticket => {
+						console.log("token OK");
 						var payload = ticket.getPayload();
 						//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
 						let user = await Utente.exists({ email: { $eq: payload.email } });
@@ -108,15 +82,21 @@ router.post('', (req, res) => {
 							});
 							await user.save();
 						}
-						res.status(200).json(result(createToken(payload.email, user._id), payload.email, user._id)).send();
+						authOK = true;
+						res.status(200).json(result(req.body.googleJwt.credential, payload.email, user._id)).send();
 					})
 					.catch(err => {
+						error = true;
+						console.log(err);
 						res.status(500).json({
 							error: "Errore interno al server."
 						}).send();
-						console.log(err);
-					});
-				return; //Next step: associate the token with an actual user account on this server
+					}); //Next step: associate the token with an actual user account on this server
+			}
+
+			//Set Facebook Login, then check if login is successful or an error happened
+			if(authOK || error) {
+				return; //Come mai qui esce l'errore "Cannot remove headers after they are sent to the client?"
 			}
 
 			//No authentication with identity providers, so use email and password
@@ -147,7 +127,7 @@ router.post('', (req, res) => {
 								if (!result1) {
 									res.status(403).json(result(undefined, undefined, undefined, true, "Autenticazione fallita. Password sbagliata.")).send();
 								} else {
-									res.status(200).json(result(createToken(user.email, user._id), user.email, user._id)).send();
+									res.status(200).json(result(createToken(user.email, user._id, 3600), user.email, user._id)).send();
 								}
 							})
 							.catch(err => {

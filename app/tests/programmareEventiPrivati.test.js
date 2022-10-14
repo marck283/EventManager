@@ -1,7 +1,7 @@
 const request = require('supertest'), mongoose = require('mongoose');
 const app = require('../app.js');
-const jwt = require('jsonwebtoken');
 const EventPriv = require('../collezioni/eventPrivat.js'), inviti = require('../collezioni/invit.js');
+const createToken = require('../tokenCreation.js');
 
 describe("POST /api/v2/EventiPrivati", () => {
     beforeAll(async () => {
@@ -15,11 +15,7 @@ describe("POST /api/v2/EventiPrivati", () => {
     });
 
     // create a valid token
-    var token = jwt.sign(
-        { id: "62e1667818bfa6ca7793fdeb", email: 'marco.villa@gmail.com' },
-        process.env.SUPER_SECRET,
-        { expiresIn: 86400 }
-    );
+    var token = createToken("marco.villa@gmail.com", "62e1667818bfa6ca7793fdeb", 86400);
 
     test("POST /api/v2/EventiPrivati con utente autenticato e tutti i campi obbligatori compilati correttamente", () => {
         return request(app)

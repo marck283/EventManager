@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const createToken = require('../tokenCreation.js');
 const app     = require('../app');
 
 describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
@@ -54,16 +54,8 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
   });
 
   test("GET /api/v2/Utenti//me/Iscrizioni da autenticati, quindi con token valido, nel caso l'utente ha delle iscrizioni valide associate", async () => {
-      // create a valid token
-    var payload = {
-      email: "gg.ee@gmail.com",
-      id: "2222"
-    }
-
-    var options = {
-      expiresIn: 3600 // expires in 24 hours
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    // create a valid token
+    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     await request(app).get('/api/v2/Utenti//me/Iscrizioni').
     set('x-access-token', token).
     expect('Content-Type', /json/).
@@ -88,16 +80,8 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
   });
 
   test("GET /api/v2/Utenti//me/Iscrizioni da autenticati, quindi con token valido, nel caso l'utente non è associato ad nessuna iscrizione", async () => {
-      // create a valid token
-    var payload2 = {
-      email: "gg.vv@gmail.com",
-      id: "111111111111"
-    }
-
-    var options2 = {
-      expiresIn: 3600 // expires in 24 hours
-    }
-    var token = jwt.sign(payload2, process.env.SUPER_SECRET, options2);
+    // create a valid token
+    var token = createToken("gg.vv@gmail.com", "111111111111", 3600);
     await request(app).get('/api/v2/Utenti//me/Iscrizioni').
     set('x-access-token', token).
     expect('Content-Type', /json/).

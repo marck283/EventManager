@@ -11,7 +11,7 @@ router.get("/:data", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {};
     
-    var user = req.loggedUser.id;
+    var user = req.loggedUser.id || req.loggedUser.sub;
 
     //Eseguire la funzione verify, poi cercare gli eventi nel database
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
@@ -69,7 +69,7 @@ var filterEvents = (eventsArr, passato) => {
 
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    var user = req.loggedUser.id;
+    var user = req.loggedUser.id || req.loggedUser.sub;
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 

@@ -1,6 +1,6 @@
 const request = require('supertest');
+const createToken = require('../tokenCreation.js');
 const app = require('../app.js');
-const jwt = require('jsonwebtoken');
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
     let mockFindPers, mockFindPub, mockFindPriv;
@@ -66,11 +66,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
     });
 
     // create a valid token
-    var token = jwt.sign(
-        { id: "62993bc81430d0dd9a208934", email: 'gg.ee@gmail.com' },
-        process.env.SUPER_SECRET,
-        { expiresIn: 86400 }
-    );
+    var token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const createToken = require('../tokenCreation.js');
 const app     = require('../app');
 
 describe('GET /api/v2/Utenti/me', () => {
@@ -22,17 +22,8 @@ describe('GET /api/v2/Utenti/me', () => {
  
   
   test('GET /api/v2/Utenti/me da autenticati, quindi con token valido', async () => {
-    var payload = {
-      email: "gg.ee@gmail.com",
-      id: "2222"
-    }
-
-    var options = {
-      expiresIn: 3600 // expires in 24 hours
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
       await request(app).get('/api/v2/Utenti/me').
-      set('x-access-token', token).
+      set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
       expect('Content-Type', /json/).
       expect(200).expect({nome: 'Carlo',
               email: 'gg.aa@gmail.com',
@@ -42,9 +33,8 @@ describe('GET /api/v2/Utenti/me', () => {
   });
 
   test('GET /api/v2/Utenti/me da non autenticati, quindi con un token non valido', async () => {
-    var token = '345678';
     await request(app).get('/api/v2/Utenti/me').
-    set('x-access-token', token).
+    set('x-access-token', '345678').
     expect('Content-Type', /json/).
     expect(401).expect({success: false,
         message: 'fallita autenticazione'});

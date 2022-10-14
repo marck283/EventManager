@@ -1,5 +1,5 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
+const createToken = require('../tokenCreation.js');
 const app = require('../app.js');
 
 describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
@@ -30,14 +30,7 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
         eventPublicSpy.mockRestore();
     });
     
-    var payload = {
-        email: 'gg.ee@gmail.com',
-        id: '2222'
-    }
-    var options = {
-        expiresIn: 3600
-    }
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('POST /api/v2/EventiPubblici/idEvento/Iscrizioni con id inesistente dovrebbe restituire 404', async () => {
         
