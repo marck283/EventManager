@@ -6,7 +6,7 @@ const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 const { Validator } = require('node-input-validator');
 const User = require('../collezioni/utenti.js');
-const tokenChecker = require('../tokenChecker.js');
+const verify = require('../googleTokenChecker.js');
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -30,24 +30,32 @@ router.get("", async (req, res) => {
     var autenticato = false;
     var user = "";
 
-    if (token) {
-        jwt.verify(token, process.env.SUPER_SECRET, async (err, decoded) => {
-            if (!err) {
-                user = decoded.id;
-                autenticato = true;
-            } else {
-                await tokenChecker.verify(token, () => autenticato = true, () => autenticato = false);
-            }
-        });
-    }
-
     var events = await eventPublic.find({});
-    if(autenticato) {
-        events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined);
-    }
-
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
+
+    if (token) {
+        //Ancora da testarne il funzionamento
+        if(token.iss === "accounts.google.com" || token.iss === "https://accounts.google.com") {
+            //Questo è un token Google
+            await verify(token)
+            .then(() => {
+                user = token.getPayload().sub;
+                autenticato = true;
+            });
+        } else {
+            //Questo non è un token Google
+            jwt.verify(token, process.env.SUPER_SECRET, (err, decoded) => {
+                if (!err) {
+                    user = decoded.id;
+                    autenticato = true;
+                }
+            });
+        }
+        if(autenticato) {
+            events = events.filter(e => e.partecipantiID.find(e => e == user) == undefined);
+        }
+    }
 
     filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
     filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
@@ -60,7 +68,7 @@ router.get("", async (req, res) => {
     v1.check()
     .then(matched => {
         if(!matched) {
-            res.status(400).json({error: "Richiesta malformata."}).send();
+            res.status(400).json({error: "Richiesta malformata."});
         } else {
             filterCondition(durata != undefined, events, e => e.durata == durata);
             filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
@@ -75,13 +83,13 @@ router.get("", async (req, res) => {
                     var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
                     return org.valutazioneMedia < org1.valutazioneMedia;
                 });
-                res.status(200).json({eventi: events1}).send();
+                res.status(200).json({eventi: events1});
             } else {
-                res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
             }
         }
-    });
-    return;
+    })
+    .catch(err => console.log(err));
 });
 
 router.get("/:data", async (req, res) => {
