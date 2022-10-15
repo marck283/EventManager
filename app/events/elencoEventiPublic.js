@@ -6,6 +6,7 @@ const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');
 const { Validator } = require('node-input-validator');
 const User = require('../collezioni/utenti.js');
+const tokenChecker = require('../tokenChecker.js');
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -30,10 +31,12 @@ router.get("", async (req, res) => {
     var user = "";
 
     if (token) {
-        jwt.verify(token, process.env.SUPER_SECRET, (err, decoded) => {
+        jwt.verify(token, process.env.SUPER_SECRET, async (err, decoded) => {
             if (!err) {
                 user = decoded.id;
                 autenticato = true;
+            } else {
+                await tokenChecker.verify(token, () => autenticato = true, () => autenticato = false);
             }
         });
     }
@@ -58,7 +61,6 @@ router.get("", async (req, res) => {
     .then(matched => {
         if(!matched) {
             res.status(400).json({error: "Richiesta malformata."}).send();
-            return;
         } else {
             filterCondition(durata != undefined, events, e => e.durata == durata);
             filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);

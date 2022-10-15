@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const crypto = require('bcrypt');
 const RateLimit = require('express-rate-limit');
 const { Validator } = require('node-input-validator');
-const tokenChecker = require('./tokenChecker.js').verify;
+const tokenChecker = require('./tokenChecker.js');
 const createToken = require('./tokenCreation.js');
 
 var limiter = RateLimit({
@@ -61,7 +61,7 @@ router.post('', (req, res) => {
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await tokenChecker(req.body.googleJwt.credential, async ticket => {
+				await tokenChecker.verify(req.body.googleJwt.credential, async ticket => {
 					console.log("token OK");
 					var payload = ticket.getPayload();
 					//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
@@ -87,6 +87,7 @@ router.post('', (req, res) => {
 						error: "Errore interno al server."
 					}).send();
 				});
+				return;
 			}
 
 			//Set Facebook Login
