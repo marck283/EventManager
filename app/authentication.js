@@ -54,7 +54,6 @@ router.post('', (req, res) => {
 				return;
 			}
 			//Check the JWT tokens
-			var authOK = false, error = false;
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				//Checks the Google token
 
@@ -62,42 +61,35 @@ router.post('', (req, res) => {
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await tokenChecker(req.body.googleJwt.credential)
-					.then(async ticket => {
-						console.log("token OK");
-						var payload = ticket.getPayload();
-						//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
-						let user = await Utente.exists({ email: { $eq: payload.email } });
-						if (user == null) {
-							//Create a new user
-							user = new Utente({
-								nome: payload.given_name,
-								email: payload.email,
-								password: "",
-								salt: "",
-								tel: "",
-								profilePic: payload.picture,
-								numEvOrg: 0,
-								valutazioneMedia: 0.0
-							});
-							await user.save();
-						}
-						authOK = true;
-						res.status(200).json(result(req.body.googleJwt.credential, payload.email, user._id)).send();
-					})
-					.catch(err => {
-						error = true;
-						console.log(err);
-						res.status(500).json({
-							error: "Errore interno al server."
-						}).send();
-					}); //Next step: associate the token with an actual user account on this server
+				await tokenChecker(req.body.googleJwt.credential, async ticket => {
+					console.log("token OK");
+					var payload = ticket.getPayload();
+					//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
+					let user = await Utente.exists({ email: { $eq: payload.email } });
+					if (user == null) {
+						//Create a new user
+						user = new Utente({
+							nome: payload.given_name,
+							email: payload.email,
+							password: "",
+							salt: "",
+							tel: "",
+							profilePic: payload.picture,
+							numEvOrg: 0,
+							valutazioneMedia: 0.0
+						});
+						await user.save();
+					}
+					res.status(200).json(result(req.body.googleJwt.credential, payload.email, user._id)).send();
+				}, err => {
+					console.log(err);
+					res.status(500).json({
+						error: "Errore interno al server."
+					}).send();
+				});
 			}
 
-			//Set Facebook Login, then check if login is successful or an error happened
-			if(authOK || error) {
-				return; //Come mai qui esce l'errore "Cannot remove headers after they are sent to the client?"
-			}
+			//Set Facebook Login
 
 			//No authentication with identity providers, so use email and password
 			const v1 = new Validator({

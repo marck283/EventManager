@@ -7,7 +7,7 @@ const eventPrivat = require('./collezioni/eventPrivat.js');
 const Inviti = require('./collezioni/invit.js');
 
 router.get('/me', async (req, res) => {
-    IDexample = req.loggedUser.id || req.loggedUser.sub;
+    var IDexample = req.loggedUser.id || req.loggedUser.sub;
     
     try{
         let utente = await Utente.findById(IDexample);

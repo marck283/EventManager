@@ -19,13 +19,11 @@ describe('GET /api/v2/Utenti/me', () => {
     UtenteSpy.mockRestore();
   });
 
- 
-  
   test('GET /api/v2/Utenti/me da autenticati, quindi con token valido', async () => {
       await request(app).get('/api/v2/Utenti/me').
       set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
       expect('Content-Type', /json/).
-      expect(200).expect({nome: 'Carlo',
+      expect(200, {nome: 'Carlo',
               email: 'gg.aa@gmail.com',
               tel: '3452345664567',
               url: '/api/v2/Utenti/2222',
@@ -36,7 +34,6 @@ describe('GET /api/v2/Utenti/me', () => {
     await request(app).get('/api/v2/Utenti/me').
     set('x-access-token', '345678').
     expect('Content-Type', /json/).
-    expect(401).expect({success: false,
-        message: 'fallita autenticazione'});
+    expect(401, {success: false, message: 'fallita autenticazione'});
   });
 });
