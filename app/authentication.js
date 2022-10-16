@@ -80,7 +80,7 @@ router.post('', (req, res) => {
 						});
 						await user.save();
 					}
-					res.status(200).json(result(req.body.googleJwt.credential, payload.email, user._id)).send();
+					res.status(200).json(result(req.body.googleJwt.credential, payload.email, user.id)).send();
 				})
 				.catch(err => {
 					console.log(err);
