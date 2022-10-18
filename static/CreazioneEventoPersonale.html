@@ -1,0 +1,140 @@
+<!--  Pagina della creazione di un evento personale -->
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creazione evento personale</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!--formden.js communicates with FormDen server to validate fields and submit via AJAX -->
+  <script type="text/javascript" src="https://formden.com/static/cdn/formden.js" integrity="sha384-MsKPMz6b6gP+SF0UXTkFPd6Vvm5s+oHuVfmfyMON0VCCrbPYxan15zuNk5sIQQBO" crossorigin="anonymous"></script>
+
+  <!-- Special version of Bootstrap that is isolated to content wrapped in .bootstrap-iso -->
+  <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" integrity="sha384-34U14a9ISTviFf44/OGfcoBiXJTk4jYxkR3fNtRqGxyCbsUyRM90SuD3D7Mmy4Bz" crossorigin="anonymous" />
+
+  <!--Font Awesome (added because you use icons in your prepend/append)-->
+  <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" integrity="sha384-MI32KR77SgI9QAPUs+6R7leEOwtop70UsjEtFEezfKnMjXWx15NENsZpfDgq8m8S" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/styles/common.css" />
+  <link rel="stylesheet" href="/styles/bootstrapIso.css" />
+  <link rel="stylesheet" href="/styles/cardsLayout.css" />
+  <script src="./scripts/alerts/tutorialAlert.js"></script>
+  <script src="/scripts/logout.js"></script>
+
+  <script>
+    var token = "";
+    if (localStorage.getItem('token') != null) {
+      token = localStorage.getItem('token');
+    }
+  </script>
+  <script src="scripts/aggiungi_elimina_date.js"></script>
+  <script src="scripts/richiesta_creazioneEvento.js"></script>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Scegli azione</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="CreazioneEvento.html">Creazione evento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="publicCalendar.html">Calendario pubblico</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="calendarioPersonale.html">Calendario personale</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="layoutUtente.html">Dati personali</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="inviti.html">Inviti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html" onclick="logout()">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Creazione evento personale</h1>
+    <input type="submit" id="guida" class="btn btn-primary" value="Guida" /><br><br>
+    <span id="title-card"></span><br><br>
+
+    <!-- indicazione di tutti i campi di input per creare un certo evento pubblico -->
+    <label for="nomeAtt">Nome attivit&agrave;:</label>
+    <input type="text" name="nomeAtt" id="nomeAtt" /><span id="vuotoN"></span><br>
+    <label>Luogo evento:</label><br>
+    <label for="indirizzo">Indirizzo:</label>
+    <input type="text" name="indirizzo" id="indirizzo" /><span id="vuotoI"></span><br>
+    <label for="Citta">Citt&agrave;:</label>
+    <input type="text" name="Citta" id="Citta" /><span id="vuotoCi"></span><br>
+    <label for="categoria">Categoria:</label>
+    <select class="form-select" id="categoria" name="categoria">
+      <option value="Sport" selected>Sport</option>
+      <option value="Spettacolo">Spettacolo</option>
+      <option value="Manifestazione">Manifestazione</option>
+      <option value="Viaggio">Viaggio</option>
+      <option value="Altro">Altro</option>
+    </select><span id="vuotoCa"></span><br>
+    <div class="form-group ">
+      <label class="control-label col-sm-2 requiredField" for="date">
+        Date
+      </label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <div class="input-group-addon">
+          </div>
+          <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" />
+          <span id="vuotoDa"></span>
+          <button class="btn btn-primary" onclick="aggiungi()">Aggiungi data</button>
+          <button class="btn btn-secondary" onclick="reset()">Reset date</button>
+          <br>
+        </div>
+      </div>
+    </div>
+    <br>
+    <label for="ora">Ora d'inizio:</label>
+    <input type="ora" name="ora" id="ora" /><span id="vuotoO"></span><br>
+    <label for="durata">Durata in ore:</label>
+    <input type="number" min="1" name="durata" value="1" id="durata" /><span id="vuotoDu"></span><br><br>
+
+
+
+
+
+
+    <button class="btn btn-primary" onclick="requestPe()">Crea Evento</button>
+
+    <h2 id="loc"></h2>
+  </div>
+
+  <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+  <!-- Include jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js" integrity="sha384-+54fLHoW8AHu3nHtUxs9fW2XKOZ2ZwKHB5olRtKSDTKJIb1Na1EceFZMS8E72mzW" crossorigin="anonymous"></script>
+
+  <!-- Include Date Range Picker -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js" integrity="sha384-aHFhM5aT8aFA9xA6PAeaB8dav8Bc3nF2gDv/DnBl7E6Qhutr42h9VSmf7BXTdugy" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" integrity="sha384-oQPlepmWw0NnzP5Cy8gA9Q3XOJrv+Os+uVsv93hZChsFr2FeEk2at3W50doSLPzu" crossorigin="anonymous" />
+
+
+
+  <script src="./scripts/dateInput.js"></script>
+  <script src="/scripts/alerts/CreazioneEventoPersonaleAlerts.js"></script>
+
+</body>
+
+</html>

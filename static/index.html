@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-site-verification" content="BWf_ZN7A-aFZ4bBSrgvDGOf6EE5oEHTpRPKWHxaZYW8" />
+  <title>Pagina di login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/common.css" />
+  <link rel="stylesheet" href="/styles/cardsLayout.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./scripts/alerts/tutorialAlert.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LcFNDshAAAAACVBq4EVAPCurLB4xFbBeKaqey1V"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" integrity="sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    var TokenUser = "";
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
+  </script>
+  <script src="/scripts/autenticazione.js"></script>
+  <script src="/scripts/getCsrfToken.js"></script>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v15.0&appId=1143189906271722&autoLogAppEvents=1" nonce="UsQ80wZd"></script>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Scegli azione</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="CreazioneEvento.html">Creazione evento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="publicCalendar.html">Calendario pubblico</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="calendarioPersonale.html">Calendario personale</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="layoutUtente.html">Dati personali</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="inviti.html">Inviti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <span id="loggedUser">
+      <h1 style="padding: 1 rem;">Login</h1>
+    </span>
+    <br><br>
+    <input type="submit" value="Guida" id="guida" class="btn btn-primary" /><br><br>
+    <span id="title-card"></span>
+    <span id="second-title-card"></span><br><br>
+    <form name="loginform" id="loginform">
+      <input type="hidden" name="csrfToken" id="csrfField" />
+      <label for="loginEmail">Email:</label>
+      <input name="email" required type="email" id="loginEmail" /><br /><br />
+      <label for="loginPassword">Password:</label>
+      <input name="pass" required type="password" id="loginPassword" /><br />
+      <a href="sendPswRecoveryEmail.html" target="_blank" id="pswreset">Password dimenticata?</a><br /><br />
+      <button type="button" onclick="login()" class="g-recaptcha btn btn-primary"data-sitekey="6LcFNDshAAAAACVBq4EVAPCurLB4xFbBeKaqey1V" 
+      data-callback='onSubmit' data-action='submit'>Login</button>
+      <input type="reset" value="Reimposta" class="btn btn-secondary" /><br><br>
+      <div id="googleSignIn">
+        <div id="g_id_onload"
+          data-client_id="22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com"
+          data-callback="login"
+          data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left">
+        </div>
+      </div><br>
+      <div class="fb-login-button" data-width="" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" onlogin="fbLogin();"></div>
+    </form>
+    <br />
+    <button type="button" class="btn btn-secondary" onclick="window.location = 'registrazione.html'">Registrati</button>
+    <h1 id="usr"></h1>
+    <script>
+      getCsrfToken();
+      window.fbAsyncInit();
+    </script>
+    <script src="scripts/alerts/indexAlerts.js"></script>
+  </div>
+</body>
+</html>
