@@ -13,6 +13,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     beforeAll( () => {
         jest.useFakeTimers();
+        jest.setTimeout(8000);
         const EventPrivat = require('../collezioni/eventPrivat.js');
         eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
             if(criterias == '6543') {
@@ -36,7 +37,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         
         const User = require('../collezioni/utenti.js');
         userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
-            if(criterias == '2222'){
+            if(criterias == '2222') {
                 return {
                     _id: '2222',
                     nome: 'Mario',
@@ -75,6 +76,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     });
     
     afterAll(async () => {
+        jest.useRealTimers();
         eventPrivatSpy.mockRestore();
         userSpy.mockRestore();
         eventSaveSpy.mockRestore();
@@ -86,8 +88,9 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
-        await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').
-        set('x-access-token', createToken("aa.bb@gmail.com", "5555", 3600)).expect('Content-Type', /json/).expect(403).expect({error: "Non sei invitato a questo evento"});
+        await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni')
+        .set('x-access-token', createToken("aa.bb@gmail.com", "5555", 3600))
+        .expect('Content-Type', /json/).expect(403, {error: "Non sei invitato a questo evento"});
         
     });
     
