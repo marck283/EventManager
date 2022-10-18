@@ -17,7 +17,6 @@ const cookieParser = require('cookie-parser');
 const csrfCreation = require('./csrfTokenCreation.js');
 const pubEvOrgList = require('./events/elencoEventiPubOrg.js');
 const recensioni = require('./events/recensioni.js');
-const gTokenExch = require('./googleTokenExchange.js');
 
 /**
  * Configure Express.js parsing middleware
@@ -45,7 +44,6 @@ app.use('/api/v2/eventiCalendarioPubblico', calendarEventsPub);
 app.use('/api/v2/Utenti', regandric);
 app.use('/api/v2/RecuperoPassword', recPsw);
 app.use('/api/v2/CsrfToken', csrfCreation);
-app.use('/api/v2/GoogleToken', gTokenExch);
 
 var limiter = RateLimit({
     windowMs: 1*60*1000, //1 minute
