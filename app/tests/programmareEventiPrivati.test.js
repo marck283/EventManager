@@ -1,17 +1,19 @@
-const request = require('supertest'), mongoose = require('mongoose');
-const app = require('../app.js');
-const EventPriv = require('../collezioni/eventPrivat.js'), inviti = require('../collezioni/invit.js');
-const createToken = require('../tokenCreation.js');
+import request from 'supertest';
+import { connect, connection } from 'mongoose';
+import app, { locals } from '../app.js';
+import evPriv from '../collezioni/eventPrivat.js';
+import invit from '../collezioni/invit.js';
+import createToken from '../tokenCreation.js';
 
 describe("POST /api/v2/EventiPrivati", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
+        locals.db = connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
-        await EventPriv.deleteMany({});
-        await inviti.deleteMany({});
-        mongoose.connection.close(true);
+        await evPriv.deleteMany({});
+        await invit.deleteMany({});
+        connection.close(true);
     });
 
     // create a valid token

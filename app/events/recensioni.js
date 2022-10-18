@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const eventPublic = require('../collezioni/eventPublic.js');
+const eventPublic = require('../collezioni/eventPublic.js').default;
 const { Validator } = require('node-input-validator');
 const Recensione = require('../collezioni/recensioniPub.js');
 const User = require('../collezioni/utenti.js');

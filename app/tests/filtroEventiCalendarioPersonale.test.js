@@ -1,12 +1,12 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app = require('../app.js');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app.js';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
     let mockFindPers, mockFindPub, mockFindPriv;
     beforeAll(async () => {
         jest.setTimeout(8000);
-        const eventPers = require('../collezioni/eventPersonal.js'), eventPub = require('../collezioni/eventPublic.js');
+        const eventPers = require('../collezioni/eventPersonal.js'), eventPub = require('../collezioni/eventPublic.js').default;
         const eventPriv = require('../collezioni/eventPrivat.js');
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
             return [{

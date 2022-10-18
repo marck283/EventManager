@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Utente = require('./collezioni/utenti.js');
 const Biglietto = require('./collezioni/biglietti.js');
-const eventPublic = require('./collezioni/eventPublic.js');
+const eventPublic = require('./collezioni/eventPublic.js').default;
 const eventPrivat = require('./collezioni/eventPrivat.js');
 const Inviti = require('./collezioni/invit.js');
 

@@ -1,17 +1,17 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('../app.js');
-const EventPersonal = require('../collezioni/eventPersonal.js');
-const createToken = require('../tokenCreation.js');
+import request from 'supertest';
+import { connect, connection } from 'mongoose';
+import app, { locals } from '../app.js';
+import evPers from '../collezioni/eventPersonal.js';
+import createToken from '../tokenCreation.js';
 
 describe("POST /api/v2/EventiPersonali", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
+        locals.db = connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
-        await EventPersonal.deleteMany({});
-        mongoose.connection.close(true);
+        await evPers.deleteMany({});
+        connection.close(true);
     });
 
     // create a valid token

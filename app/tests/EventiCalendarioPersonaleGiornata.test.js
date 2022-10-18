@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app     = require('../app.js');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app.js';
 
 describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
 
@@ -11,7 +11,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   
 
   beforeAll( () => {
-    const eventPublic = require('../collezioni/eventPublic');
+    const eventPublic = require('../collezioni/eventPublic').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
         {id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},

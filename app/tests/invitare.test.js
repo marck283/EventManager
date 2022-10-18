@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app = require('../app');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app';
 
 describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
@@ -11,7 +11,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   let InvitiSspy;
 
   beforeAll(() => {
-    const eventPublic = require('../collezioni/eventPublic.js');
+    const eventPublic = require('../collezioni/eventPublic.js').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if (criterias == '9876543') {
         return { _id: '9876543', data: ['11-05-2023'], ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }

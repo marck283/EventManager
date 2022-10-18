@@ -1,5 +1,5 @@
-const request = require('supertest');
-const app = require('../app.js');
+import request from 'supertest';
+import app from '../app.js';
 
 describe('GET /api/v2/CsrfToken', () => {
     test('GET /api/v2/CsrfToken dovrebbe restituire 200', async () => {

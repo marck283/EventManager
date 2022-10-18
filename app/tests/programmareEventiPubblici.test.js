@@ -1,16 +1,17 @@
-const request = require('supertest'), mongoose = require('mongoose');
-const app = require('../app.js');
-const EventPublic = require('../collezioni/eventPublic.js');
-const createToken = require('../tokenCreation.js');
+import request from 'supertest';
+import { connect, connection } from 'mongoose';
+import app, { locals } from '../app.js';
+import evPub from '../collezioni/eventPublic.js';
+import createToken from '../tokenCreation.js';
 
 describe("POST /api/v2/EventiPubblici", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
+        locals.db = connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
-        await EventPublic.deleteMany({});
-        mongoose.connection.close(true);
+        await evPub.deleteMany({});
+        connection.close(true);
     });
 
     // create a valid token

@@ -1,7 +1,6 @@
-const request = require('supertest');
-const jwt = require('jsonwebtoken');
-const app = require('../app.js');
-const createToken = require('../tokenCreation.js');
+import request from 'supertest';
+import app from '../app.js';
+import createToken from '../tokenCreation.js';
 
 describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     

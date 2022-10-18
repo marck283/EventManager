@@ -1,5 +1,5 @@
-const request = require('supertest');
-const app     = require('../app');
+import request from 'supertest';
+import app from '../app';
 
 describe('GET /api/v2/EventiPubblici/:id', () => {
 
@@ -7,7 +7,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   let UsersSpy;
 
   beforeAll( () => {
-    const eventPublic = require('../collezioni/eventPublic.js');
+    const eventPublic = require('../collezioni/eventPublic.js').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '9876543'){
         return {_id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}

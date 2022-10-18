@@ -1,5 +1,6 @@
 module.exports = {
     test: function(date, dateStr) {
+        var regu;
         switch (String(date.getMonth() + 1).padStart(2, '0')) {
             case '01':
             case '03':

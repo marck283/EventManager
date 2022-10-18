@@ -1,13 +1,13 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app = require('../app.js');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app.js';
 
 describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     
     let eventPublicSpy;
     
     beforeAll(() => {
-        const EventPublic = require('../collezioni/eventPublic.js');
+        const EventPublic = require('../collezioni/eventPublic.js').default;
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '67890') {
                 return {

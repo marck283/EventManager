@@ -246,7 +246,8 @@ router.post('', async (req, res) => {
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
             citta: 'required|string|minLength:1',
-            ElencoEmailInviti: 'required|array|minLength:1'
+            'ElencoEmailInviti': 'required|array|minLength:1',
+            'ElencoEmailInviti.*': 'required|string|minLength:1'
         });
         v.check()
             .then(async matched => {
@@ -281,8 +282,8 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                for (elem of req.body.ElencoEmailInviti) {
-                    //controllo che le date non siano ripetute
+                for (var elem of req.body.ElencoEmailInviti) {
+                    //controllo che le email non siano ripetute
                     var counti = 0;
                     req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
                     if (counti > 1) {
@@ -293,18 +294,18 @@ router.post('', async (req, res) => {
 
                 //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
                 var ListaInvitati = [], ut = await Users.findById(utent);
+                if(req.body.ElencoEmailInviti.includes(e => e == ut.email)) {
+                    res.status(403).json({ error: "non puoi invitarti al tuo stesso evento" });
+                    return;
+                }
                 for (var elem of req.body.ElencoEmailInviti) {
-                    u = await Users.find({ email: { $eq: elem } });
-                    if (u.length == 0) {
-                        res.status(404).json({ error: "un email di un utente da invitare non è corretto" });
+                    let u = await Users.find({ email: { $eq: elem } });
+                    if(u.length > 0) {
+                        ListaInvitati.push(u[0].id);
+                    } else {
+                        res.status(404).json({error: "email non trovata"}).send();
                         return;
                     }
-
-                    if (ut.email == u[0].email) {
-                        res.status(403).json({ error: "non puoi invitarti al tuo stesso evento" });
-                        return;
-                    }
-                    ListaInvitati.push(u[0].id);
                 }
 
                 let eventP = new eventPrivat({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent, invitatiID: ListaInvitati });

@@ -1,6 +1,6 @@
 const express = require('express');
 const RateLimit = require('express-rate-limit');
-const eventPublic = require('../collezioni/eventPublic.js');
+const eventPublic = require('../collezioni/eventPublic.js').default;
 const router = express.Router();
 const eventsMap = require('./eventsMap.js');
 var jwt = require('jsonwebtoken');

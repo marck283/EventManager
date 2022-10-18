@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app     = require('../app');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app';
 
 describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
@@ -30,7 +30,7 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       }
 
     });
-    const eventPublic = require('../collezioni/eventPublic.js');
+    const eventPublic = require('../collezioni/eventPublic.js').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '0987654'){
         return {_id:'0987654', data: '05/11/2050',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}

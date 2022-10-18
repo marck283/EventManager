@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app     = require('../app');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app';
 
 describe('GET /api/v2/Utenti/me', () => {
 

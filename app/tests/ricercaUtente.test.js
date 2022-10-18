@@ -1,14 +1,15 @@
-const request = require('supertest'), mongoose = require('mongoose');
-const app = require('../app.js');
+import request from 'supertest';
+import { connect, connection } from 'mongoose';
+import app, { locals } from '../app.js';
 
 describe("GET /api/v2/Utenti", () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
-        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
+        locals.db = connect(process.env.DB_URL_TEST);
     });
 
     afterAll(async () => {
-        mongoose.connection.close(true);
+        connection.close(true);
     });
 
     test("GET /api/v2/Utenti non restituisce alcun utente", () => {

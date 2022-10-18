@@ -1,8 +1,8 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import { Schema as _Schema, model } from 'mongoose';
+var Schema = _Schema;
 
 // set up a mongoose model
-module.exports = mongoose.model('EventoP', new Schema({ 
+export default model('EventoP', new Schema({ 
 	categoria: String,
 	nomeAtt: String,
 	descrizione: String,

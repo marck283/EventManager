@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app = require('../app.js');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app.js';
 
 describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
     
@@ -13,7 +13,7 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
     
     beforeAll( () => {
         
-        const eventPublic = require('../collezioni/eventPublic.js');
+        const eventPublic = require('../collezioni/eventPublic.js').default;
         eventPublicSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '6543'){
                 return {

@@ -1,6 +1,6 @@
-const request = require('supertest');
-const createToken = require('../tokenCreation.js');
-const app = require('../app.js');
+import request from 'supertest';
+import createToken from '../tokenCreation.js';
+import app from '../app.js';
 
 describe('POST /api/v2//api/v2/EventiPrivati', () => {
 
@@ -45,7 +45,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   // create a valid token
   const token = createToken("gg.ee@gmail.com", "1234", 3600);
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata ad nessun utente nel sistema", async () => {
+  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],
@@ -58,7 +58,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
           citta: "Bologna"
         },
         ElencoEmailInviti: ['gg.uu@gmail.com']
-      }).expect('Content-Type', /json/).expect(404, {error: "un email di un utente da invitare non è corretto"});
+      }).expect('Content-Type', /json/).expect(404, {error: "email non trovata"});
   });
 
 

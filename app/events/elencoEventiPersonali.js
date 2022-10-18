@@ -1,5 +1,5 @@
 const express = require('express');
-const eventPublic = require('../collezioni/eventPublic.js');
+const eventPublic = require('../collezioni/eventPublic.js').default;
 const eventPersonal = require('../collezioni/eventPersonal.js');
 const eventPrivate = require('../collezioni/eventPrivat.js');
 const router = express.Router();

@@ -1,5 +1,5 @@
 const express = require('express');
-const eventPublic = require('../collezioni/eventPublic.js');
+const eventPublic = require('../collezioni/eventPublic.js').default;
 const router = express.Router();
 var qrcode = require('qrcode');
 const Inviti = require('../collezioni/invit.js');

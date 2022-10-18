@@ -1,5 +1,5 @@
-const request = require('supertest');
-const app = require('../app.js');
+import request from 'supertest';
+import app from '../app.js';
 
 describe('POST /api/v2/Utenti', () => {
     

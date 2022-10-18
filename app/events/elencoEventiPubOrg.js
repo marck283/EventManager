@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { Validator } = require('node-input-validator');
 const RateLimit = require('express-rate-limit');
+const eventPublic = require('../collezioni/eventPublic.js').default;
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
