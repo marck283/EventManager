@@ -1,11 +1,10 @@
 import request from 'supertest';
 import app from '../app.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
 
 describe("GET /api/v2/eventiCalendarioPubblico", () => {
     let mockFind;
     beforeAll(async () => {
-        const eventPublic = require('../collezioni/eventPublic.mjs').default;
-
         jest.setTimeout(8000);
         mockFind = jest.spyOn(eventPublic, "find").mockImplementation(criterias => {
             return [{

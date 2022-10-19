@@ -1,6 +1,9 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
+import eventPersonal from '../collezioni/eventPersonal.mjs';
+import eventPrivate from '../collezioni/eventPrivat.mjs';
 
 describe('GET /api/v2/eventiCalendarioPersonale', () => {
 
@@ -10,7 +13,6 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
   let eventsPrivSpy;
 
   beforeAll( () => {
-    const eventPublic = require('../collezioni/eventPublic.mjs').default;
     const recensione = "2345";
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
@@ -18,7 +20,6 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         {id:'987653', data: '05-11-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '123', partecipantiID: ['2222','1234'], recensioni: [recensione]}
       ]
     });
-    const eventPersonal = require('../collezioni/eventPersonal.mjs').default;
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID.$eq == '2222') {
         return [
@@ -28,7 +29,6 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         return []
       }
     });
-    const eventPrivate = require('../collezioni/eventPrivat.mjs').default;
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
       return [
         {id:'75975947',data: '05-11-2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323'], recensioni: [recensione]},
@@ -42,9 +42,6 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     eventsPerSpy.mockRestore();
     eventsPrivSpy.mockRestore();
   });
-
- 
-  
 
   test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
     // create a valid token
@@ -62,7 +59,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
 
   test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso non ci siano eventi pubblici o privati che l'utente si è iscritto o creato, e non ci siano eventi personali che l'utente ha creato ", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
-    set('x-access-token', createToken("gg.ee@gmail.com", "2222464646", 3600)).
+    set('x-access-token', createToken("gg.ee@gmail.com", "2223", 3600)).
     expect('Content-Type', /json/).
     expect(404).expect({error:"Non esiste alcun evento programmato."});
   });

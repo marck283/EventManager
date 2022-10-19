@@ -1,13 +1,12 @@
 import request from 'supertest';
 import app from '../app.mjs';
+import Utente from '../collezioni/utenti.mjs';
 
 describe('POST /api/v2/authentications', () => {
     
     let userFindOneSpy;
     
     beforeAll( () => {
-        
-        const Utente = require('../collezioni/utenti.mjs').default;
         jest.setTimeout(8000);
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation(criterias => {
             

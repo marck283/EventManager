@@ -1,6 +1,9 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
+import Users from '../collezioni/utenti.mjs';
+import biglietti from '../collezioni/biglietti.mjs';
 
 describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
     
@@ -12,8 +15,6 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
     let bigliettoDeleteOneSpy;
     
     beforeAll( () => {
-        
-        const eventPublic = require('../collezioni/eventPublic.mjs').default;
         eventPublicSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '6543'){
                 return {
@@ -34,7 +35,6 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
             }
         });
         
-        const Users = require('../collezioni/utenti.mjs').default;
         userSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
             if(criterias == '2222'){
                 return {
@@ -52,7 +52,6 @@ describe('DELETE /api/v2/EventiPubblici/idEvento/Iscrizioni/idIscr', () => {
             }
         });
         
-        const biglietti = require('../collezioni/biglietti.mjs').default;
         bigliettoSpy = jest.spyOn(biglietti, 'findById').mockImplementation(criterias => {
             if(criterias == '1111'){
                 return {

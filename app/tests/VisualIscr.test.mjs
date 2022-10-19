@@ -1,6 +1,10 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import Biglietto from '../collezioni/biglietti.mjs';
+import Utente from '../collezioni/utenti.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
+import eventPrivat from '../collezioni/eventPrivat.mjs';
 
 describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
@@ -10,7 +14,6 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
   let eventsPrivSpy;
 
   beforeAll( () => {
-    const Biglietto = require('../collezioni/biglietti.mjs').default;
     eventsBigliettSpy = jest.spyOn(Biglietto, 'find').mockImplementation(criterias => {
       if(criterias.utenteid == "2222"){
         return [
@@ -20,7 +23,7 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       }
       return [];
     });
-    const Utente = require('../collezioni/utenti.mjs').default;
+    
     UsersSpy = jest.spyOn(Utente, 'findById').mockImplementation(criterias => {
       if(criterias == '1234'){
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['0987654','09887754'] , EventiIscrtto: ['9876543']}
@@ -30,14 +33,14 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
       }
 
     });
-    const eventPublic = require('../collezioni/eventPublic.mjs').default;
+    
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '0987654'){
         return {_id:'0987654', data: '05/11/2050',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
       }
       
     });
-    const eventPrivat = require('../collezioni/eventPrivat.mjs').default;
+    
     eventsPrivSpy = jest.spyOn(eventPrivat, 'findById').mockImplementation(criterias => {
      if(criterias == '09887754'){
         return {_id:'09887754', data: '05/11/2050',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
@@ -55,9 +58,8 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
   test("GET /api/v2/Utenti//me/Iscrizioni da autenticati, quindi con token valido, nel caso l'utente ha delle iscrizioni valide associate", async () => {
     // create a valid token
-    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     await request(app).get('/api/v2/Utenti//me/Iscrizioni').
-    set('x-access-token', token).
+    set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
     expect('Content-Type', /json/).
     expect(200).expect([{ eventoUrl: "/api/v2/EventiPubblici/0987654",eventoid: "0987654",utenteUrl: "/api/v2/Utenti/2222",utenteid: "2222",
                         nomeUtente: "Andrea",
@@ -81,9 +83,8 @@ describe('GET /api/v2/Utenti/me/Iscrizioni', () => {
 
   test("GET /api/v2/Utenti//me/Iscrizioni da autenticati, quindi con token valido, nel caso l'utente non è associato ad nessuna iscrizione", async () => {
     // create a valid token
-    var token = createToken("gg.vv@gmail.com", "111111111111", 3600);
     await request(app).get('/api/v2/Utenti//me/Iscrizioni').
-    set('x-access-token', token).
+    set('x-access-token', createToken("gg.vv@gmail.com", "111111111111", 3600)).
     expect('Content-Type', /json/).
     expect(404).expect({ error: "Non ci sono biglietti per questo utente"});
   });

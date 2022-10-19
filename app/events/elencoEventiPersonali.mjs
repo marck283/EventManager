@@ -131,7 +131,9 @@ router.get("", async (req, res) => {
             }
             case "False": {
                 eventsPub = filterEvents(eventsPub, false);
+                console.log(eventsPub);
                 eventsPriv = filterEvents(eventsPriv, false);
+                console.log(eventsPriv);
                 break;
             }
         }

@@ -1,6 +1,9 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
+import Users from '../collezioni/utenti.mjs';
+import Inviti from '../collezioni/invit.mjs';
 
 describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
@@ -11,7 +14,6 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   let InvitiSspy;
 
   beforeAll(() => {
-    const eventPublic = require('../collezioni/eventPublic.mjs').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if (criterias == '9876543') {
         return { _id: '9876543', data: ['11-05-2023'], ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }
@@ -21,7 +23,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
         return { _id: '987654', data: ['11-05-2010'], ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '12365', partecipantiID: ['12365'] }
       }
     });
-    const Users = require('../collezioni/utenti.mjs').default;
+    
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
       if (criterias == '1234') {
         return { _id: '1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] }
@@ -45,7 +47,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
       }
       return [];
     });
-    const Inviti = require('../collezioni/invit.mjs').default;
+    
     Invitispy = jest.spyOn(Inviti, 'find').mockImplementation(criterias => {
       if (criterias.utenteid == '12345') {
         return [{ _id: '43534', utenteid: '12345', eventoid: '9876543', tipoevent: 'pub' }];

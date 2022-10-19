@@ -1,13 +1,13 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import Utente from '../collezioni/utenti.mjs';
 
 describe('GET /api/v2/Utenti/me', () => {
 
   let UtenteSpy;
 
   beforeAll( () => {
-    const Utente = require('../collezioni/utenti.mjs').default;
     UtenteSpy = jest.spyOn(Utente, 'findById').mockImplementation(criterias => {
       if(criterias == "2222"){
         return {_id:'2222',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}  

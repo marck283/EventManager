@@ -1,6 +1,9 @@
 import request from 'supertest';
 import app from '../app.mjs';
 import createToken from '../tokenCreation.mjs';
+import EventPrivat from '../collezioni/eventPrivat.mjs';
+import User from '../collezioni/utenti.mjs';
+import Biglietti from '../collezioni/biglietti.mjs';
 
 describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
@@ -13,7 +16,6 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     beforeAll( () => {
         jest.useFakeTimers();
         jest.setTimeout(8000);
-        const EventPrivat = require('../collezioni/eventPrivat.mjs').default;
         eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
             if(criterias == '6543') {
                 return {
@@ -34,7 +36,6 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
             }
         });
         
-        const User = require('../collezioni/utenti.mjs').default;
         userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
             if(criterias == '2222') {
                 return {
@@ -51,8 +52,6 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
                 };
             }
         });
-        
-        const Biglietti = require('../collezioni/biglietti.mjs').default;
         
         eventSaveSpy = jest.spyOn(EventPrivat.prototype, 'save').mockImplementation(criterias => {
             return {

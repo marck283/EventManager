@@ -1,6 +1,9 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import eventPublic from '../collezioni/eventPublic.mjs';
+import eventPersonal from '../collezioni/eventPersonal.mjs';
+import eventPrivate from '../collezioni/eventPrivat.mjs';
 
 describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
 
@@ -11,7 +14,6 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   
 
   beforeAll( () => {
-    const eventPublic = require('../collezioni/eventPublic.mjs').default;
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
         {id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
@@ -19,7 +21,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
         {id:'9878456846784568', data: '05/12/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']}
       ]
     });
-    const eventPersonal = require('../collezioni/eventPersonal.mjs').default;
+    
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID == '2222'){
         return [
@@ -30,7 +32,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
       }
       return []
     });
-    const eventPrivate = require('../collezioni/eventPrivat.mjs').default;
+
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
       return [
         {id:'75975947',data: '05/11/2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1234','2222'], invitatiID: ['2323']},

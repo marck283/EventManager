@@ -1,6 +1,9 @@
 import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
+import Users from '../collezioni/utenti.mjs';
+import Inviti from '../collezioni/invit.mjs';
+import eventPrivat from '../collezioni/eventPrivat.mjs';
 
 describe('POST /api/v2//api/v2/EventiPrivati', () => {
 
@@ -10,7 +13,6 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   let EventPrSSpy;
 
   beforeAll( () => {
-    const Users = require('../collezioni/utenti.mjs').default;
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
       if(criterias == '1234') {
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'] , EventiIscrtto: ['9876543'], save: function(){}}
@@ -27,8 +29,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }
       return [];
     });
-    const Inviti = require('../collezioni/invit.mjs').default;
-    const eventPrivat = require('../collezioni/eventPrivat.mjs').default;
+    
     InvitiSspy = jest.spyOn(Inviti.prototype, 'save').mockImplementation(criterias => {});
     UsersSSpy = jest.spyOn(Users.prototype, 'save').mockImplementation(criterias => {});
     EventPrSSpy = jest.spyOn(eventPrivat.prototype, 'save').mockImplementation(criterias => { return {id: "345678"}; });

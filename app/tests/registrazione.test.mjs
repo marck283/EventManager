@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../app.mjs';
+import Utente from '../collezioni/utenti.mjs';
 
 describe('POST /api/v2/Utenti', () => {
     
@@ -7,8 +8,6 @@ describe('POST /api/v2/Utenti', () => {
     let userSaveSpy;
     
     beforeAll( () => {
-        
-        const Utente = require('../collezioni/utenti.mjs').default;
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation(criterias => {
             if(criterias.email.$eq == 'gg.ee@gmail.com') {
                 return {
