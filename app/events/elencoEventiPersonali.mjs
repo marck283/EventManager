@@ -10,8 +10,6 @@ router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {};
-
-    console.log(typeof obj);
     
     var user = req.loggedUser.id || req.loggedUser.sub;
 
@@ -74,8 +72,6 @@ router.get("", async (req, res) => {
     var user = req.loggedUser.id || req.loggedUser.sub;
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
-
-    console.log(typeof durata);
 
     eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
     eventsPub = await findPubEvents(user);

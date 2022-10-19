@@ -146,10 +146,10 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "Spettacolo",
             durata: 2
         })
-        .expect(400, {error: "date ripetute"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
-    test("POST /api/v2/EventiPersonali con utente autenticato e campo 'data' compilato inserendo almeno una data non conforme al formato 'mese/gorno/anno'", () => {
+    test("POST /api/v2/EventiPersonali con utente autenticato e campo 'data' compilato inserendo almeno una data non conforme al formato 'mese-giorno-anno'", () => {
         return request(app)
         .post('/api/v2/EventiPersonali')
         .set('x-access-token', token)
@@ -165,7 +165,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "Manifestazione",
             durata: 2
         })
-        .expect(400, {error: "Formato data o ora non valido"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     //Test case scritto il 3 giugno
@@ -185,7 +185,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "Viaggio",
             durata: 2
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'indirizzo' non compilato", () => {
@@ -259,7 +259,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "Manifestazione",
             durata: 2
         })
-        .expect(400, {error: "Formato data o ora non valido"});
+        .expect(400, {error: "Formato ora non valido"});
     });
 
     let dateObj = new Date();
@@ -280,7 +280,7 @@ describe("POST /api/v2/EventiPersonali", () => {
             categoria: "Viaggio",
             durata: 2
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPersonali con utente autenticato e campo 'nomeAtt' non compilato", () => {

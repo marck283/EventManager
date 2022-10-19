@@ -238,7 +238,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(400, {error: "Date ripetute o nessuna data inserita."});
+        .expect(400, {error: "Date ripetute o nessuna data inserita o formato data sbagliato."});
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'data' compilato inserendo più volte la stessa data", () => {
@@ -260,7 +260,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(400, {error: "Date ripetute o nessuna data inserita."});
+        .expect(400, {error: "Date ripetute o nessuna data inserita o formato data sbagliato."});
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'data' compilato inserendo almeno una data non conforme al formato 'mese/gorno/anno'", () => {
@@ -282,7 +282,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(400, {error: "Formato data o ora non valido"});
+        .expect(400, {error: "Date ripetute o nessuna data inserita o formato data sbagliato."});
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'data' compilato inserendo una data antecedente a quella corrente", () => {
@@ -304,7 +304,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Date ripetute o nessuna data inserita o formato data sbagliato."});
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'indirizzo' non compilato", () => {
@@ -390,7 +390,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(400, {error: "Formato data o ora non valido"});
+        .expect(400, {error: "Formato ora non valido"});
     });
 
     let dateObj = new Date();
@@ -413,7 +413,7 @@ describe("POST /api/v2/EventiPubblici", () => {
             durata: 2,
             eventPic: picPayload
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Date ripetute o nessuna data inserita o formato data sbagliato."});
     });
 
     test("POST /api/v2/EventiPubblici con utente autenticato e campo 'nomeAtt' non compilato", () => {

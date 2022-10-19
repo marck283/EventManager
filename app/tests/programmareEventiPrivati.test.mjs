@@ -155,7 +155,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "date ripetute"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'data' compilato inserendo almeno una data non conforme al formato 'mese/gorno/anno'", () => {
@@ -175,7 +175,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(400, {error: "Data o ora non valida."});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     //Test case scritto il 3 giugno
@@ -196,7 +196,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.aa@gmail.com"]
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'indirizzo' non compilato", () => {
@@ -295,7 +295,7 @@ describe("POST /api/v2/EventiPrivati", () => {
             },
             ElencoEmailInviti: ["gg.ee@gmail.com"]
         })
-        .expect(403, {error: "giorno o ora non disponibile"});
+        .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
     });
 
     test("POST /api/v2/EventiPrivati con utente autenticato e campo 'nomeAtt' non compilato", () => {

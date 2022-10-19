@@ -3,7 +3,7 @@ import eventPersonal from '../collezioni/eventPersonal.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import { Validator } from 'node-input-validator';
-import { test } from '../dateRegexTest.mjs';
+import { test } from '../hourRegexTest.mjs';
 
 router.patch('/:id', async (req, res) => {
 
@@ -87,8 +87,8 @@ router.post('', async (req, res) => {
             indirizzo: req.body.luogoEv.indirizzo,
             citta: req.body.luogoEv.citta
         }, {
-            'data': 'required|array|minLength:10',
-            'data.*': 'required|string|minLength:10|maxLength:10',
+            'data': 'required|arrayUnique',
+            'data.*': 'required|dateFormat:MM-DD-YYYY|dateAfterToday:1,seconds',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
@@ -103,53 +103,31 @@ router.post('', async (req, res) => {
                     return;
                 }
                 var ElencoDate = req.body.data;
-                var ora = req.body.ora;
 
-                for (var elem of ElencoDate) {
-                    //Controllo che la data abbia un formato corretto
-                    var date = new Date();
-                    let d1 = new Date(elem);
-                    if (!test(d1, elem + "T" + ora)) {
-                        res.status(400).json({ error: "Formato data o ora non valido" }).send();
-                        return;
-                    }
-
-                    d1.setDate(d1.getDate() + 1);
-
-                    //controllo che le date non siano di una giornata precedente a quella odierna
-                    if (d1 < date) {
-                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
-                        return;
-                    }
-
-                    //controllo che le date non siano ripetute
-                    var count = 0;
-                    ElencoDate.forEach(e => { if (e == elem) { count += 1 } });
-                    if (count > 1) {
-                        res.status(400).json({ error: "date ripetute" }).send();
-                        return;
-                    }
-
-                    let eventP = new eventPersonal({ data: ElencoDate, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
-
-                    //Si salva il documento personale
-                    eventP = await eventP.save();
-
-                    //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                    utente.EventiCreati.push(eventP.id);
-
-                    //Si salva il modulo dell'utente
-                    await utente.save();
-
-                    let eventId = eventP.id;
-
-                    console.log('Evento salvato con successo');
-
-                    /**
-                     * Si posiziona il link alla risorsa appena creata nel header location della risposata
-                     */
-                    res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
+                if (!test(req.body.ora)) {
+                    res.status(400).json({ error: "Formato ora non valido" }).send();
+                    return;
                 }
+
+                let eventP = new eventPersonal({ data: ElencoDate, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+
+                //Si salva il documento personale
+                eventP = await eventP.save();
+
+                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                utente.EventiCreati.push(eventP.id);
+
+                //Si salva il modulo dell'utente
+                await utente.save();
+
+                let eventId = eventP.id;
+
+                console.log('Evento salvato con successo');
+
+                /**
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 */
+                res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
             });
     } catch (error) {
         console.log(error);

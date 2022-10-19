@@ -6,7 +6,7 @@ import biglietti from '../collezioni/biglietti.mjs';
 import Users from '../collezioni/utenti.mjs';
 import { toDataURL } from 'qrcode';
 import { Validator } from 'node-input-validator';
-import { test } from '../dateRegexTest.mjs';
+import { test } from '../hourRegexTest.mjs';
 
 router.patch('/:id', async (req, res) => {
     //var utent = req.loggedUser.id || req.loggedUser.sub;
@@ -238,8 +238,8 @@ router.post('', async (req, res) => {
             ElencoEmailInviti: req.body.ElencoEmailInviti
         };
         const v = new Validator(options, {
-            'data': 'required|array|minLength:10',
-            'data.*': 'required|string|minLength:10|maxLength:10',
+            'data': 'required|arrayUnique',
+            'data.*': 'required|dateFormat:MM-DD-YYYY|dateAfterToday:1,seconds',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
@@ -256,30 +256,9 @@ router.post('', async (req, res) => {
                     return;
                 }
                 var ElencoDate = req.body.data;
-                var ora = req.body.ora;
-
-                for (var elem of ElencoDate) {
-                    //controllo che la data ha un formato corretto
-                    var date = new Date();
-                    let d1 = new Date(elem);
-                    if (!test(d1, elem + "T" + ora)) {
-                        res.status(400).json({ error: "Data o ora non valida." }).send();
-                        return;
-                    }
-
-                    //controllo che le date non siano ripetute
-                    var count = 0;
-                    let d2 = elem.split("T")[0]; //Riscrivere queste righe di codice come per gli eventi pubblici e personali, se possibile
-                    ElencoDate.forEach(e => { if (e == d2) { count += 1 } });
-                    if (count > 1) {
-                        res.status(400).json({ error: "date ripetute" }).send();
-                        return;
-                    }
-                    //controllo che le date non siano di una giornata precedente a quella odierna
-                    if (d1 < date) {
-                        res.status(403).json({ error: "giorno o ora non disponibile" }).send();
-                        return;
-                    }
+                if (!test(req.body.ora)) {
+                    res.status(400).json({ error: "Data o ora non valida." }).send();
+                    return;
                 }
 
                 for (var elem of req.body.ElencoEmailInviti) {

@@ -14,7 +14,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
     });
 
     // create a valid token
-    var token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
+    const token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'passato' non compilato", () => {
         return request(app)
