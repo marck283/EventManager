@@ -39,7 +39,7 @@ app.use(limiter);
 import EventoPubblico from './events/EventiPub.mjs';
 import calendarEventsPub from './events/elencoEventiPublic.mjs';
 import autenticato from './authentication.mjs';
-import regandric from './regandRicerca.mjs';
+import regandric from './regAndRicerca.mjs';
 import recPsw from './pswRecovery.mjs';
 import csrfCreation from './csrfTokenCreation.mjs';
 import gTokenExch from './googleTokenExchange.mjs';
