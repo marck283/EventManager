@@ -4,17 +4,25 @@ import app from '../app.mjs';
 import createToken from '../tokenCreation.mjs';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
+    var timeout;
+    var token;
     beforeAll(async () => {
-        jest.setTimeout(8000);
+        token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
         app.locals.db = connect(process.env.DB_URL_TEST);
     });
 
     afterAll(async () => {
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
+        token = null;
         connection.close(true);
     });
-
-    // create a valid token
-    const token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
 
     test("GET /api/v2/eventiCalendarioPersonale con campo 'passato' non compilato", () => {
         return request(app)

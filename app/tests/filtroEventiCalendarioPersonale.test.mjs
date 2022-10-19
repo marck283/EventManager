@@ -6,9 +6,14 @@ import eventPub from '../collezioni/eventPublic.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
-    let mockFindPers, mockFindPub, mockFindPriv;
+    let mockFindPers, mockFindPub, mockFindPriv, timeout;
     beforeAll(async () => {
-        jest.setTimeout(8000);
+        jest.useFakeTimers();
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
             return [{
                 _id: "12344",
@@ -64,6 +69,13 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         mockFindPers.mockRestore();
         mockFindPub.mockRestore();
         mockFindPriv.mockRestore();
+        jest.useRealTimers();
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
+        mockFindPub = null;
+        mockFindPers = null;
+        mockFindPriv = null;
     });
 
     // create a valid token

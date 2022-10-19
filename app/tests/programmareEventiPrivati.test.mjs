@@ -6,13 +6,21 @@ import invit from '../collezioni/invit.mjs';
 import createToken from '../tokenCreation.mjs';
 
 describe("POST /api/v2/EventiPrivati", () => {
+    let timeout;
     beforeAll(async () => {
-        jest.setTimeout(8000);
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
         app.locals.db = connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
         await evPriv.deleteMany({});
         await invit.deleteMany({});
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
         connection.close(true);
     });
 

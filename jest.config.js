@@ -107,7 +107,7 @@ module.exports = {
   // resolver: undefined,
 
   // Automatically restore mock state between every test
-  // restoreMocks: false,
+  restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
   // rootDir: undefined,
@@ -127,7 +127,7 @@ module.exports = {
   // setupFilesAfterEnv: [],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
-  // slowTestThreshold: 5,
+  slowTestThreshold: 10,
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -165,7 +165,9 @@ module.exports = {
   // testURL: "http://localhost",
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
-  // timers: "real",
+  fakeTimers: {
+    timerLimit: 10000
+  },
 
   // A map from regular expressions to paths to transformers
   transform: {

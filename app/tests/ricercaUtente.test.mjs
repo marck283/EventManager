@@ -1,33 +1,47 @@
 import request from 'supertest';
-import { connect, connection } from 'mongoose';
+import mongoose from 'mongoose';
 import app from '../app.mjs';
 
 describe("GET /api/v2/Utenti", () => {
-    beforeAll(async () => {
-        jest.setTimeout(8000);
-        app.locals.db = connect(process.env.DB_URL_TEST);
+    let timeout;
+    beforeAll(() => {
+        app.locals.db = mongoose.connect(process.env.DB_URL_TEST);
+    });
+
+    beforeEach(() => {
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
+    });
+
+    afterEach(() => {
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
     });
 
     afterAll(async () => {
-        connection.close(true);
-    });
+        await mongoose.connection.close(true);
+    }, 20000);
 
-    test("GET /api/v2/Utenti non restituisce alcun utente", () => {
-        return request(app)
+    test("GET /api/v2/Utenti non restituisce alcun utente", async () => {
+        await request(app)
             .get('/api/v2/Utenti?email=gg.ea@gmail.com')
             .set('Accept', 'application/json')
             .expect(404, { error: "Nessun utente trovato per la email indicata." });
     });
 
-    test("GET /api/v2/Utenti con campo 'email' non compilato", () => {
-        return request(app)
+    test("GET /api/v2/Utenti con campo 'email' non compilato", async () => {
+        await request(app)
             .get('/api/v2/Utenti')
             .set('Accept', 'application/json')
             .expect(400, {error: "Indirizzo email non fornito."});
     });
 
-    test("GET /api/v2/Utenti con campo email compilato con email parziale", () => {
-        return request(app)
+    test("GET /api/v2/Utenti con campo email compilato con email parziale", async () => {
+        await request(app)
             .get("/api/v2/Utenti?email=marc")
             .set("Accept", "application/json")
             .expect(200, {

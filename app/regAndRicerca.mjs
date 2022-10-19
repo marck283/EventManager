@@ -18,7 +18,7 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-router.use(json({limit: '25mb'}));
+router.use(json({limit: '50mb'}));
 
 router.get("", async (req, res) => {
     var email = req.query.email;
@@ -35,21 +35,22 @@ router.get("", async (req, res) => {
                     error: "Indirizzo email non fornito."
                 }).send();
             } else {
-                var utenti = await Utente.find({});
-                utenti = utenti.filter(e => e.email.includes(email));
-                utenti = utenti.map(u => {
-                    return {
-                        nome: u.nome,
-                        email: u.email,
-                        urlUtente: "/api/v2/Utenti/" + u._id
-                    }
-                });
+                var utenti = await Utente.find({email: {$regex: email, $options: 'i'}});
 
                 if (utenti.length == 0) {
                     res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
                     return;
                 }
-                res.status(200).json({ utenti: utenti });
+
+                utenti = utenti.map(u => {
+                    return {
+                        nome: u.nome,
+                        email: u.email,
+                        urlUtente: "/api/v2/Utenti/" + u._id
+                    };
+                });
+
+                res.status(200).json({ utenti: utenti }).send();
             }
         })
     return;
@@ -68,7 +69,7 @@ router.patch('', async (req, res) => {
             if (!matched) {
                 res.status(400).json({ error: "Campo vuoto o indefinito." }).send();
             } else {
-                var utente = await Utente.findOne({ email: { $eq: req.body.email } }).exec();
+                var utente = await Utente.findOne({ email: { $eq: req.body.email } }).exec(); //Questa exec() è proprio necessaria?
                 if (utente == undefined) {
                     res.status(404).json({ error: "Utente non trovato." }).send();
                     return;

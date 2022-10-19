@@ -5,12 +5,20 @@ import evPers from '../collezioni/eventPersonal.mjs';
 import createToken from '../tokenCreation.mjs';
 
 describe("POST /api/v2/EventiPersonali", () => {
+    let timeout;
     beforeAll(async () => {
-        jest.setTimeout(8000);
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
         app.locals.db = connect(process.env.DB_URL_TEST);
     });
     afterAll(async () => {
         await evPers.deleteMany({});
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
         connection.close(true);
     });
 

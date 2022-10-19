@@ -3,9 +3,14 @@ import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
 
 describe("GET /api/v2/eventiCalendarioPubblico", () => {
-    let mockFind;
+    let mockFind, timeout;
     beforeAll(async () => {
-        jest.setTimeout(8000);
+        jest.useFakeTimers();
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
         mockFind = jest.spyOn(eventPublic, "find").mockImplementation(criterias => {
             return [{
                 _id: "12345",
@@ -26,7 +31,11 @@ describe("GET /api/v2/eventiCalendarioPubblico", () => {
     });
 
     afterAll(async () => {
+        jest.useRealTimers();
         jest.restoreAllMocks();
+        timeout.unref;
+        timeout = null;
+        mockFind = null;
     });
 
     test("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore non numerico", () => {

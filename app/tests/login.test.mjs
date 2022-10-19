@@ -4,10 +4,10 @@ import Utente from '../collezioni/utenti.mjs';
 
 describe('POST /api/v2/authentications', () => {
     
-    let userFindOneSpy;
+    let userFindOneSpy, timeout;
     
     beforeAll( () => {
-        jest.setTimeout(8000);
+        jest.useFakeTimers();
         userFindOneSpy = jest.spyOn(Utente, 'findOne').mockImplementation(criterias => {
             
             if(criterias.email.$eq == 'marco.villa@gmail.com') {
@@ -22,11 +22,25 @@ describe('POST /api/v2/authentications', () => {
                 };
             }
         });
-    
+    });
+
+    beforeEach(() => {
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            };
+        });
+    });
+
+    afterEach(() => {
+        timeout.mockRestore();
+        timeout.unref;
+        timeout = null;
     });
     
     afterAll(async () => {
         userFindOneSpy.mockRestore();
+        jest.useRealTimers();
     });
     
     test('POST /api/v2/authentications con password sbagliata dovrebbe restituire 403', async() => {

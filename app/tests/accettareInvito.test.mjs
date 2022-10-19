@@ -7,15 +7,22 @@ import Biglietti from '../collezioni/biglietti.mjs';
 
 describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
-    let eventPrivatSpy;
-    let userSpy;
-    let eventSaveSpy;
-    let userSaveSpy;
-    let bigliettoSaveSpy;
+    var eventPrivatSpy;
+    var userSpy;
+    var eventSaveSpy;
+    var userSaveSpy;
+    var bigliettoSaveSpy;
+    var timeout;
+    var token;
     
     beforeAll( () => {
+        token = createToken("gg.ee@gmail.com", "2222", 3600);
         jest.useFakeTimers();
-        jest.setTimeout(8000);
+        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
+            return {
+                unref: jest.fn()
+            }
+        });
         eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
             if(criterias == '6543') {
                 return {
@@ -75,14 +82,21 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     afterAll(async () => {
         jest.useRealTimers();
+        jest.clearAllTimers();
+        timeout.mockRestore();
+        timeout.unref;
         eventPrivatSpy.mockRestore();
         userSpy.mockRestore();
         eventSaveSpy.mockRestore();
         userSaveSpy.mockRestore();
         bigliettoSaveSpy.mockRestore();
+        eventPrivatSpy = null;
+        userSpy = null;
+        eventSaveSpy = null;
+        userSaveSpy = null;
+        bigliettoSaveSpy = null;
+        token = null;
     });
-    
-    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
