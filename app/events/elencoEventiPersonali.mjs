@@ -37,34 +37,22 @@ router.get("/:data", async (req, res) => {
 
 var findPubEvents = async (user) => {
     var eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user);
+    console.log(eventsPub);
+
+    //Il motivo per vui qui non restituisce nulla nel caso in cui un utente sia autenticato con Google potrebbe essere che,
+    //all'iscrizione dell'utente all'evento, non utilizzo il campo "sub" ma l'id di MongoDB?
+    //In tal caso, il problema si potrebbe risolvere semplicemente usando il campo "sub" sia qui che per l'iscrizione all'evento...
+    eventsPub = eventsPub.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
+    console.log(eventsPub);
     return eventsPub;
 };
 
 var filterEvents = (eventsArr, passato) => {
     var curr = new Date();
-    return eventsArr.filter(e => {
-        var hoursArr = e.ora.split(':'), hoursDB = hoursArr[0], minsDB = hoursArr[1];
-
-        for(let d of e.data) {
-            var d1 = new Date(d);
-            d1.setHours(hoursDB, minsDB);
-            switch(passato) {
-                case true: {
-                    if(d1 < curr) {
-                        return true;
-                    }
-                    break;
-                }
-                case false: {
-                    if(d1 >= curr) {
-                        return true;
-                    }
-                    break;
-                }
-            }
-        }
-    });
+    if(passato) {
+        return eventsArr.filter(e => new Date(e.data + "T" + e.ora) < curr);
+    }
+    return eventsArr.filter(e => new Date(e.data + "T" + e.ora) >= curr);
 };
 
 router.get("", async (req, res) => {

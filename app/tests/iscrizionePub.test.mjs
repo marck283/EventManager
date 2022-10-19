@@ -2,12 +2,15 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import EventPublic from '../collezioni/eventPublic.mjs';
+import {jest} from '@jest/globals';
 
 describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     
     let eventPublicSpy;
+    var token;
     
     beforeAll(() => {
+        token = createToken("gg.ee@gmail.com", "2222", 3600);
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '67890') {
                 return {
@@ -26,11 +29,11 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
         });
     });
     
-    afterAll(async () => {
+    afterAll(() => {
         eventPublicSpy.mockRestore();
+        eventPublicSpy = null;
+        token = null;
     });
-    
-    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('POST /api/v2/EventiPubblici/idEvento/Iscrizioni con id inesistente dovrebbe restituire 404', async () => {
         

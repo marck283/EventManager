@@ -4,6 +4,7 @@ import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPersonal from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
+import {jest} from '@jest/globals';
 
 describe('GET /api/v2/eventiCalendarioPersonale', () => {
 
@@ -37,10 +38,11 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     });
   });
 
-  afterAll(async () => {
-    eventsPubSpy.mockRestore();
-    eventsPerSpy.mockRestore();
-    eventsPrivSpy.mockRestore();
+  afterAll(() => {
+    jest.restoreAllMocks();
+    eventsPubSpy = null;
+    eventsPerSpy = null;
+    eventsPrivSpy = null;
   });
 
   test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {

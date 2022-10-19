@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../app.mjs';
 import Utente from '../collezioni/utenti.mjs';
+import { jest } from '@jest/globals';
 
 describe('POST /api/v2/Utenti', () => {
     
@@ -37,9 +38,10 @@ describe('POST /api/v2/Utenti', () => {
     
     });
     
-    afterAll(async () => {
-        userFindOneSpy.mockRestore();
-        userSaveSpy.mockRestore();
+    afterAll(() => {
+        jest.restoreAllMocks();
+        userFindOneSpy = null;
+        userSaveSpy = null;
     });
     
     test('POST /api/v2/Utenti con email già registrata dovrebbe restituire 409', async() => {

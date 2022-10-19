@@ -1,5 +1,5 @@
 import pkg from 'jsonwebtoken';
-const { verify: _verify } = pkg;;
+const { verify: _verify } = pkg;
 import verify from './googleTokenChecker.mjs';
 
 const tokenChecker = async (req, res, next) => {
@@ -14,7 +14,7 @@ const tokenChecker = async (req, res, next) => {
 	}
 	await verify(token)
 		.then(ticket => {
-			console.log("ho il token Google");
+			//console.log("ho il token Google");
 			req.loggedUser = ticket.getPayload();
 			next();
 		})
@@ -25,11 +25,11 @@ const tokenChecker = async (req, res, next) => {
 						success: false,
 						message: 'fallita autenticazione'
 					}).send();
-				} else {
-					console.log("ho il token");
-					req.loggedUser = decoded;
-					next();
+					return;
 				}
+				//console.log("ho il token");
+				req.loggedUser = decoded;
+				next();
 			});
 		});
 };

@@ -18,7 +18,7 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-router.use(json({limit: '50mb'}));
+router.use(json({ limit: '50mb' }));
 
 router.get("", async (req, res) => {
     var email = req.query.email;
@@ -26,32 +26,31 @@ router.get("", async (req, res) => {
     const v = new Validator({
         email: req.query.email
     }, {
-        email: 'required|string'
+        email: 'required|email'
     });
     v.check()
         .then(async matched => {
             if (!matched) {
-                res.status(400).json({
-                    error: "Indirizzo email non fornito."
-                }).send();
-            } else {
-                var utenti = await Utente.find({email: {$regex: email, $options: 'i'}});
-
-                if (utenti.length == 0) {
-                    res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
-                    return;
-                }
-
-                utenti = utenti.map(u => {
-                    return {
-                        nome: u.nome,
-                        email: u.email,
-                        urlUtente: "/api/v2/Utenti/" + u._id
-                    };
-                });
-
-                res.status(200).json({ utenti: utenti }).send();
+                res.status(400).json({ error: "Indirizzo email non fornito." }).send();
+                return;
             }
+            
+            var utenti = await Utente.find({ email: { $regex: email, $options: 'i' } }).then(ok => console.log(ok));
+
+            if (utenti.length == 0) {
+                res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
+                return;
+            }
+
+            utenti = utenti.map(u => {
+                return {
+                    nome: u.nome,
+                    email: u.email,
+                    urlUtente: "/api/v2/Utenti/" + u._id
+                };
+            });
+
+            res.status(200).json({ utenti: utenti }).send();
         })
     return;
 });

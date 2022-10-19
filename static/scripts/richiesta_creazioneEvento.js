@@ -71,6 +71,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
             if(getId("flexCheckEtaMin").checked) {
                 etaMin = Number(getId("etaMin").value);
             }
+            console.log(dateEv);
             fetch("/api/v2/EventiPubblici", {
                 method: 'POST',
                 headers: {

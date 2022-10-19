@@ -4,16 +4,12 @@ import app from '../app.mjs';
 import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPub from '../collezioni/eventPublic.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
+import {jest} from '@jest/globals';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
-    let mockFindPers, mockFindPub, mockFindPriv, timeout;
-    beforeAll(async () => {
+    let mockFindPers, mockFindPub, mockFindPriv;
+    beforeAll(() => {
         jest.useFakeTimers();
-        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
-            return {
-                unref: jest.fn()
-            };
-        });
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
             return [{
                 _id: "12344",
@@ -66,13 +62,8 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
     });
 
     afterAll(async () => {
-        mockFindPers.mockRestore();
-        mockFindPub.mockRestore();
-        mockFindPriv.mockRestore();
-        jest.useRealTimers();
-        timeout.mockRestore();
-        timeout.unref;
-        timeout = null;
+        jest.restoreAllMocks();
+        jest.clearAllTimers();
         mockFindPub = null;
         mockFindPers = null;
         mockFindPriv = null;

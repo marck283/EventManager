@@ -3,26 +3,17 @@ import app from '../app.mjs';
 import createToken from '../tokenCreation.mjs';
 import EventPrivat from '../collezioni/eventPrivat.mjs';
 import User from '../collezioni/utenti.mjs';
-import Biglietti from '../collezioni/biglietti.mjs';
+import {jest} from '@jest/globals';
 
 describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
     
     var eventPrivatSpy;
     var userSpy;
-    var eventSaveSpy;
-    var userSaveSpy;
-    var bigliettoSaveSpy;
-    var timeout;
     var token;
     
     beforeAll( () => {
         token = createToken("gg.ee@gmail.com", "2222", 3600);
         jest.useFakeTimers();
-        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
-            return {
-                unref: jest.fn()
-            }
-        });
         eventPrivatSpy = jest.spyOn(EventPrivat, 'findById').mockImplementation(criterias => {
             if(criterias == '6543') {
                 return {
@@ -60,41 +51,13 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
             }
         });
         
-        eventSaveSpy = jest.spyOn(EventPrivat.prototype, 'save').mockImplementation(criterias => {
-            return {
-                //Vuoto perché inutilizzato
-            }
-        });
-        
-        userSaveSpy = jest.spyOn(User.prototype, 'save').mockImplementation(criterias => {
-            return {
-                //Vuoto perché inutilizzato
-            }
-        });
-        
-        bigliettoSaveSpy = jest.spyOn(Biglietti.prototype, 'save').mockImplementation(criterias => {
-            return {
-                //Vuoto perché inutilizzato
-            }
-        });
-        
     });
     
-    afterAll(async () => {
-        jest.useRealTimers();
+    afterAll(() => {
         jest.clearAllTimers();
-        timeout.mockRestore();
-        timeout.unref;
-        eventPrivatSpy.mockRestore();
-        userSpy.mockRestore();
-        eventSaveSpy.mockRestore();
-        userSaveSpy.mockRestore();
-        bigliettoSaveSpy.mockRestore();
+        jest.restoreAllMocks();
         eventPrivatSpy = null;
         userSpy = null;
-        eventSaveSpy = null;
-        userSaveSpy = null;
-        bigliettoSaveSpy = null;
         token = null;
     });
     

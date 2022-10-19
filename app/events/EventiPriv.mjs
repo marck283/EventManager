@@ -161,7 +161,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         }
 
         for (var elem of eventP.data) {
-            var date = new Date(), d1 = new Date(elem);
+            let date = new Date(), d1 = new Date(elem);
             let orario = eventP.ora.split(':');
 
             d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
@@ -178,11 +178,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        for (elem of eventP.partecipantiID) {
-            if (elem == utent) {
-                res.status(403).json({ error: "Già iscritto" }).send();
-                return;
-            }
+        if(eventP.partecipantiID.includes(utent)) {
+            res.status(403).json({ error: "Già iscritto" }).send();
+            return;
         }
 
         let data = {
@@ -200,9 +198,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 throw Error("errore creazione biglietto")
             }
 
-            bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "priv" });
-            idBigl = bigl._id;
-            return await bigl.save();
+            let bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "priv" });
+            idBigl = bigl.id;
+            await bigl.save();
         });
 
         //Si cerca l'utente organizzatore dell'evento
@@ -246,8 +244,8 @@ router.post('', async (req, res) => {
             nomeAtt: 'required|string|minLength:1',
             indirizzo: 'required|string|minLength:1',
             citta: 'required|string|minLength:1',
-            'ElencoEmailInviti': 'required|array|minLength:1',
-            'ElencoEmailInviti.*': 'required|string|minLength:1'
+            'ElencoEmailInviti': 'required|arrayUnique|minLength:1',
+            'ElencoEmailInviti.*': 'required|email|minLength:1|notIn:' + utente.email
         });
         v.check()
             .then(async matched => {
@@ -255,28 +253,14 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
-                var ElencoDate = req.body.data;
+                
                 if (!test(req.body.ora)) {
                     res.status(400).json({ error: "Data o ora non valida." }).send();
                     return;
                 }
 
-                for (var elem of req.body.ElencoEmailInviti) {
-                    //controllo che le email non siano ripetute
-                    var counti = 0;
-                    req.body.ElencoEmailInviti.forEach(e => { if (e == elem) { counti += 1 } });
-                    if (counti > 1) {
-                        res.status(400).json({ error: "email ripetute" }).send();
-                        return;
-                    }
-                }
-
                 //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
-                var ListaInvitati = [], ut = await Users.findById(utent);
-                if(req.body.ElencoEmailInviti.includes(e => e == ut.email)) {
-                    res.status(403).json({ error: "non puoi invitarti al tuo stesso evento" });
-                    return;
-                }
+                var ListaInvitati = [];
                 for (var elem of req.body.ElencoEmailInviti) {
                     let u = await Users.find({ email: { $eq: elem } });
                     if(u.length > 0) {

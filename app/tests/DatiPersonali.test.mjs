@@ -2,6 +2,7 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import Utente from '../collezioni/utenti.mjs';
+import {jest} from '@jest/globals';
 
 describe('GET /api/v2/Utenti/me', () => {
 
@@ -15,8 +16,9 @@ describe('GET /api/v2/Utenti/me', () => {
     });
   });
 
-  afterAll(async () => {
+  afterAll(() => {
     UtenteSpy.mockRestore();
+    UtenteSpy = null;
   });
 
   test('GET /api/v2/Utenti/me da autenticati, quindi con token valido', async () => {

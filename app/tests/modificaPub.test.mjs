@@ -2,11 +2,11 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import EventPublic from '../collezioni/eventPublic.mjs';
+import {jest} from '@jest/globals';
 
 describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     
     let eventPublicSpy;
-    let eventSaveSpy;
     
     beforeAll( () => {
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
@@ -29,17 +29,11 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
             }
         });
         
-        eventSaveSpy = jest.spyOn(EventPublic.prototype, 'save').mockImplementation(criterias => {
-            return {
-                //Vuoto perché inutilizzato
-            }
-        });
-        
     });
     
-    afterAll(async () => {
-        eventPublicSpy.mockRestore();
-        eventSaveSpy.mockRestore();
+    afterAll(() => {
+        jest.restoreAllMocks();
+        eventPublicSpy = null;
     });
     
     var token = createToken("gg.ee@gmail.com", "2222", 3600);

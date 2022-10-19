@@ -2,13 +2,14 @@ import request from 'supertest';
 import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import Users from '../collezioni/utenti.mjs';
+import {jest} from '@jest/globals';
 
 describe('GET /api/v2/EventiPubblici/:id', () => {
 
   let eventsPubSpy;
   let UsersSpy;
 
-  beforeAll( () => {
+  beforeAll(() => {
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '9876543'){
         return {_id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
@@ -25,8 +26,9 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   });
 
   afterAll(async () => {
-    eventsPubSpy.mockRestore();
-    UsersSpy.mockRestore();
+    jest.restoreAllMocks();
+    eventsPubSpy = null;
+    UsersSpy = null;
   });
 
  

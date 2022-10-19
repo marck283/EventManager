@@ -2,14 +2,18 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
+import {jest} from '@jest/globals';
 
 describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
 
   
   let eventsPubSpy;
   
+  // create a valid token
+  var token;
 
-  beforeAll( () => {
+  beforeAll(() => {
+    token = createToken("gg.ee@gmail.com", "2222", 3600);
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
         {id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
@@ -19,12 +23,11 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
     });
   });
 
-  afterAll(async () => {
+  afterAll(() => {
     eventsPubSpy.mockRestore();
+    eventsPubSpy = null;
+    token = null;
   });
-
-  // create a valid token
-  var token = createToken("gg.ee@gmail.com", "2222", 3600);
   
   test("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici per la data passata a cui l'utente non si è iscritto o creato", async () => {
     await request(app).get('/api/v2/eventiCalendarioPubblico/05-11-2010').

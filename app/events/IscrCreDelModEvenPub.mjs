@@ -269,13 +269,9 @@ router.post('/:id/Inviti', async (req, res) => {
         }
 
         var ListaInviti = await Inviti.find({ utenteid: utente[0]._id })
-        if (ListaInviti.length > 0) {
-            for (var elem of ListaInviti) {
-                if (elem.eventoid == id_evento) {
-                    res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
-                    return;
-                }
-            }
+        if (ListaInviti.length > 0 && ListaEventi.includes(elem => elem.eventoid == id_evento)) {
+            res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
+            return;
         }
 
         if (eventP.partecipantiID.includes(utente[0]._id)) {
@@ -299,21 +295,23 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         var utente;
         if(utent === req.loggedUser.sub) {
-            //Se l'utente è un utente Googlle, allora cerco per email
+            //Se l'utente è un utente Google, allora cerco per email
             utente = await Users.findOne({email: {$eq: req.loggedUser.email}});
         } else {
             //Altrimenti cerco per id
             utente = await Users.findById(utent);
         }
+        console.log(req.body.data);
         const v = new Validator({
             data: req.body.data
         }, {
             'data': 'required|arrayUnique|minLength:1',
-            'data.*': 'required|dateFormat:MM-DD-YYYY|dateAfterToday:1,seconds'
+            'data.*': 'required|dateFormat:MM-DD-YYYY'
         });
         v.check()
             .then(matched => {
                 if (!matched) {
+                    console.log(v.errors);
                     res.status(400).json({ error: "Date ripetute o nessuna data inserita o formato data sbagliato." }).send();
                     return;
                 }
@@ -349,12 +347,17 @@ router.post('', async (req, res) => {
                             res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                             return;
                         }
-                        var ElencoDate = req.body.data, date = new Date();
                         if (!test(req.body.ora)) {
                             res.status(400).json({ error: "Formato ora non valido" }).send();
                             return;
                         }
-
+                        var d = new Date();
+                        if(req.body.data.includes(d1 => new Date(d1) < d) && req.body.data.length == 1) {
+                            res.status(400).json({error: "Data non valida."}).send();
+                            return;
+                        }
+                        d = null;
+                        
                         let etaMin = null, etaMax = null;
                         if (req.body.etaMin != undefined) {
                             etaMin = Number(req.body.etaMin);
@@ -363,9 +366,11 @@ router.post('', async (req, res) => {
                             etaMax = Number(req.body.etaMax);
                         }
 
+                        console.log(utente);
+
                         //Si crea un documento evento pubblico
                         let eventP = new eventPublic({
-                            data: ElencoDate,
+                            data: req.body.data,
                             durata: req.body.durata,
                             ora: req.body.ora,
                             maxPers: req.body.maxPers,
@@ -404,7 +409,7 @@ router.post('', async (req, res) => {
                     });
             })
             .catch(err => {
-                //Qualcosa
+                console.log(err);
             });
     } catch (error) {
         console.log(error);

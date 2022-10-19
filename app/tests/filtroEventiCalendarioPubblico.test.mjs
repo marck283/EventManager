@@ -1,16 +1,12 @@
 import request from 'supertest';
 import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
+import {jest} from '@jest/globals';
 
 describe("GET /api/v2/eventiCalendarioPubblico", () => {
-    let mockFind, timeout;
-    beforeAll(async () => {
+    let mockFind;
+    beforeAll(() => {
         jest.useFakeTimers();
-        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
-            return {
-                unref: jest.fn()
-            };
-        });
         mockFind = jest.spyOn(eventPublic, "find").mockImplementation(criterias => {
             return [{
                 _id: "12345",
@@ -30,11 +26,9 @@ describe("GET /api/v2/eventiCalendarioPubblico", () => {
         });
     });
 
-    afterAll(async () => {
-        jest.useRealTimers();
+    afterAll(() => {
+        jest.clearAllTimers();
         jest.restoreAllMocks();
-        timeout.unref;
-        timeout = null;
         mockFind = null;
     });
 

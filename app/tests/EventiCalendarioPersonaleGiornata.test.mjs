@@ -4,6 +4,7 @@ import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPersonal from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
+import {jest} from '@jest/globals';
 
 describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
 
@@ -27,8 +28,6 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
         return [
        {id:'797569', data: '05/11/2010',  ora:'11:33', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222'}
         ]
-
-
       }
       return []
     });
@@ -41,10 +40,11 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     });
   });
 
-  afterAll(async () => {
-    eventsPubSpy.mockRestore();
-    eventsPerSpy.mockRestore();
-    eventsPrivSpy.mockRestore();
+  afterAll(() => {
+    jest.restoreAllMocks();
+    eventsPubSpy = null;
+    eventsPerSpy = null;
+    eventsPrivSpy = null;
   });
 
   // create a valid token

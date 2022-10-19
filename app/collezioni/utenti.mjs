@@ -1,5 +1,4 @@
-import { Schema as _Schema, model } from 'mongoose';
-var Schema = _Schema;
+import { Schema, model } from 'mongoose';
 
 // Si crea un modello per il modello degli utenti con indice sull'email
 

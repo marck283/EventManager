@@ -2,24 +2,18 @@ import request from 'supertest';
 import { connect, connection } from 'mongoose';
 import app from '../app.mjs';
 import createToken from '../tokenCreation.mjs';
+import { jest } from '@jest/globals';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
-    var timeout;
     var token;
     beforeAll(async () => {
         token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
-        timeout = jest.spyOn(global, 'setTimeout').mockImplementation(() => {
-            return {
-                unref: jest.fn()
-            };
-        });
+        jest.useFakeTimers();
         app.locals.db = connect(process.env.DB_URL_TEST);
     });
 
     afterAll(async () => {
-        timeout.mockRestore();
-        timeout.unref;
-        timeout = null;
+        jest.clearAllTimers();
         token = null;
         connection.close(true);
     });

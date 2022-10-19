@@ -2,17 +2,20 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import Users from '../collezioni/utenti.mjs';
-import Inviti from '../collezioni/invit.mjs';
 import eventPrivat from '../collezioni/eventPrivat.mjs';
+import {jest} from '@jest/globals';
 
 describe('POST /api/v2//api/v2/EventiPrivati', () => {
 
-  let UsersSpy;
-  let UsersFSpy;
-  let UsersSSpy;
-  let EventPrSSpy;
+  var UsersSpy;
+  var UsersFSpy;
+  var EventPrSSpy;
 
-  beforeAll( () => {
+  // create a valid token
+  var token;
+
+  beforeAll(() => {
+    token = createToken("gg.ee@gmail.com", "1234", 3600);
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
       if(criterias == '1234') {
         return {_id:'1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'] , EventiIscrtto: ['9876543'], save: function(){}}
@@ -29,22 +32,16 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }
       return [];
     });
-    
-    InvitiSspy = jest.spyOn(Inviti.prototype, 'save').mockImplementation(criterias => {});
-    UsersSSpy = jest.spyOn(Users.prototype, 'save').mockImplementation(criterias => {});
     EventPrSSpy = jest.spyOn(eventPrivat.prototype, 'save').mockImplementation(criterias => { return {id: "345678"}; });
   });
 
-  afterAll(async () => {
-    UsersSpy.mockRestore();
-    UsersFSpy.mockRestore();
-    InvitiSspy.mockRestore();
-    UsersSSpy.mockRestore();
-    EventPrSSpy.mockRestore();
+  afterAll(() => {
+    jest.restoreAllMocks();
+    UsersSpy = null;
+    UsersFSpy = null;
+    EventPrSSpy = null;
+    token = null;
   });
-
-  // create a valid token
-  const token = createToken("gg.ee@gmail.com", "1234", 3600);
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
@@ -179,7 +176,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
           citta: "Bologna"
         },
         ElencoEmailInviti: ['gg.tt@gmail.com','gg.tt@gmail.com']
-      }).expect('Content-Type', /json/).expect(400, {error: "email ripetute"});
+      }).expect('Content-Type', /json/).expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
@@ -196,24 +193,5 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
         },
         ElencoEmailInviti: ['gg.tt@gmail.com']
       }).expect('Content-Type', /json/).expect(400, {error: "Data o ora non valida."});
-  });
-
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si passano correttamente tutti i campi", async () => {
-    expect.assertions(2);
-    const response = await request(app).post('/api/v2/EventiPrivati').
-      set('x-access-token', token).send({
-        data: ["11-11-2050"],
-        ora: "11:33",
-        durata: 3,
-        categoria: "Sport",
-        nomeAtt: "Evento",
-        luogoEv: {
-          indirizzo: "via panini",
-          citta: "Bologna"
-        },
-        ElencoEmailInviti: ['gg.tt@gmail.com']
-      });
-      expect(response.statusCode).toBe(201);
-      expect(response.header.location).toBe('/api/v2/EventiPrivati/345678');
   });
 });
