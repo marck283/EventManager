@@ -13,13 +13,14 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   var UsersFSpy;
   var Invitispy;
   var InvitiSspy;
-  var token, token1, token2;
+  var token, token1, token2, token3;
   var id, id1;
 
   beforeAll(() => {
     token = createToken("gg.ee@gmail.com", "1234", 3600);
     token1 = createToken("gg.et@gmail.com", "123", 3600);
     token2 = createToken("gg.et@gmail.com", "12365", 3600);
+    token3 = createToken("gg.ee@gmail.com", "12345", 3600);
     id = "9876543";
     id1 = "987654";
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
@@ -112,7 +113,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente associato all'email passata sia già partecipante all'evento", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id1 + '/Inviti').
-      set('x-access-token', token).send({ email: 'gg.et@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "evento non disponibile" });
+      set('x-access-token', token3).send({ email: 'gg.et@gmail.com' }).expect('Content-Type', /json/).expect(403).expect({ error: "evento non disponibile" });
   });
 
   test("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'evento non sia disponibile", async () => {

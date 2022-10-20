@@ -238,17 +238,16 @@ router.post('/:id/Inviti', async (req, res) => {
         }
 
         //controllo che le date non siano di una giornata precedente a quella odierna
-        for (var elem of eventP.data) {
-            var date = new Date(), d1 = new Date(elem);
+        if(eventP.data.filter(d => {
+            var date = new Date(), d1 = new Date(d);
             let orario = eventP.ora.split(':');
 
             d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
             d1.setDate(d1.getDate() + 1);
-
-            if (d1 < date) {
-                res.status(403).json({ error: "evento non disponibile" }).send();
-                return;
-            }
+            return d1 < date;
+        }).length > 0) {
+            res.status(403).json({ error: "evento non disponibile" }).send();
+            return;
         }
 
         if (eventP.organizzatoreID != utent) {
@@ -256,20 +255,20 @@ router.post('/:id/Inviti', async (req, res) => {
             return;
         }
 
-        var utenteorg = await Users.findById(utent)
+        var utenteorg = await Users.findById(utent);
         if (utenteorg.email == req.body.email) {
             res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
             return;
         }
 
-        var utente = await Users.find({ email: { $eq: req.body.email } })
+        var utente = await Users.find({ email: { $eq: req.body.email } });
         if (utente.length == 0) {
             res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
             return;
         }
 
-        var ListaInviti = await Inviti.find({ utenteid: utente[0]._id })
-        if (ListaInviti.length > 0 && ListaEventi.includes(elem => elem.eventoid == id_evento)) {
+        var ListaInviti = await Inviti.find({ utenteid: utente[0]._id });
+        if (ListaInviti.length > 0 && ListaInviti.filter(elem => elem.eventoid == id_evento).length > 0) {
             res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
             return;
         }

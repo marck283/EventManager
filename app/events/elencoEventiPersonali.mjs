@@ -5,6 +5,7 @@ import eventPrivate from '../collezioni/eventPrivat.mjs';
 const router = Router();
 import { map } from './eventsMap.mjs';
 import { Validator } from 'node-input-validator';
+import User from '../collezioni/utenti.mjs';
 
 router.get("/:data", async (req, res) => {
     var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
@@ -37,12 +38,14 @@ router.get("/:data", async (req, res) => {
 
 var findPubEvents = async (user) => {
     var eventsPub = await eventPublic.find({});
+    console.log("Pre-filtering:");
     console.log(eventsPub);
 
     //Il motivo per vui qui non restituisce nulla nel caso in cui un utente sia autenticato con Google potrebbe essere che,
     //all'iscrizione dell'utente all'evento, non utilizzo il campo "sub" ma l'id di MongoDB?
     //In tal caso, il problema si potrebbe risolvere semplicemente usando il campo "sub" sia qui che per l'iscrizione all'evento...
     eventsPub = eventsPub.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
+    console.log("Post-filtering:");
     console.log(eventsPub);
     return eventsPub;
 };
@@ -60,12 +63,22 @@ router.get("", async (req, res) => {
     var user = req.loggedUser.id || req.loggedUser.sub;
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
+    console.log(user);
+    if(user === req.loggedUser.sub) {
+        //Se l'utente è autenticato con Google, allora devo prima trovare il documento dell'utente nel database, per poi
+        //ottenere l'id di MongoDB e utilizzarlo per cercare gli eventi pubblici a cui l'utente è iscritto.
+        user = await User.findOne({email: {$eq: req.loggedUser.email}});
+        user = user.id;
+    }
+    console.log(user);
 
-    eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
+    eventsPers = await eventPersonal.find({organizzatoreID: user}).catch(err => console.log(err)); //Richiedi gli eventi personali.
+    console.log("After event find");
+
     eventsPub = await findPubEvents(user);
     eventsPriv = await eventPrivate.find({});
     eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
-
+    console.log("Before validation...");
     const v = new Validator({
         durata: durata,
         passato: req.query.passato
@@ -79,6 +92,7 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."}).send();
             return;
         }
+        console.log("OK");
         if(nomeAtt != undefined && nomeAtt != "") {
             eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
             eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
