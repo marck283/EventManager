@@ -8,7 +8,7 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 
 router.get("/:data", async (req, res) => {
-    var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var obj = {};
     
