@@ -36,7 +36,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   test('GET /api/v2/EventiPubblici/:id nel caso di evento esistente', async () => {
       await request(app).get('/api/v2/EventiPubblici/9876543').
       expect('Content-Type', /json/).
-      expect(200).expect({nomeAtt: "Evento",
+      expect(200, {nomeAtt: "Evento",
             categoria: "svago",
             data: '05/11/2010',
             ora: '11:33',
@@ -50,6 +50,6 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   test('GET /api/v2/EventiPubblici/:id nel caso di evento non esistente', async () => {
     await request(app).get('/api/v2/EventiPubblici/34567876543').
     expect('Content-Type', /json/).
-    expect(404).expect({error: "Non esiste nessun evento con l'id selezionato"});
+    expect(404, {error: "Non esiste nessun evento con l'id selezionato"});
   });
 });

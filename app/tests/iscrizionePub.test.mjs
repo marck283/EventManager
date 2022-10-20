@@ -37,15 +37,15 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     
     test('POST /api/v2/EventiPubblici/idEvento/Iscrizioni con id inesistente dovrebbe restituire 404', async () => {
         
-        await request(app).post('/api/v2/EventiPubblici/'+'12345'+'/Iscrizioni').
-        set('x-access-token', token).expect('Content-Type', /json/).expect(404).expect({error: "Non esiste nessun evento con l'id selezionato"});
+        await request(app).post('/api/v2/EventiPubblici/12345/Iscrizioni').
+        set('x-access-token', token).expect('Content-Type', /json/).expect(404, {error: "Non esiste nessun evento con l'id selezionato"});
         
     });
     
     test('POST /api/v2/EventiPubblici/idEvento/Iscrizioni con posti pieni dovrebbe restituire 403', async () => {
         
-        await request(app).post('/api/v2/EventiPubblici/'+'67890'+'/Iscrizioni').
-        set('x-access-token', token).expect('Content-Type', /json/).expect(403).expect({error: "Non spazio nell'evento"});
+        await request(app).post('/api/v2/EventiPubblici/67890/Iscrizioni').
+        set('x-access-token', token).expect('Content-Type', /json/).expect(403, {error: "Non spazio nell'evento"});
         
     });
 });

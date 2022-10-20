@@ -351,7 +351,7 @@ router.post('', async (req, res) => {
                             return;
                         }
                         var d = new Date();
-                        if(req.body.data.includes(d1 => new Date(d1) < d) && req.body.data.length == 1) {
+                        if(req.body.data.filter(d1 => new Date(d1) < d).length > 0 && req.body.data.length == 1) {
                             res.status(400).json({error: "Data non valida."}).send();
                             return;
                         }

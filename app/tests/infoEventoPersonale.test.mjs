@@ -36,7 +36,7 @@ describe('GET /api/v2/EventiPersonali/:id', () => {
   test('GET /api/v2/EventiPersonali/:id nel caso di evento esistente', async () => {
     await request(app).get('/api/v2/EventiPersonali/9876543').set('x-access-token', token).
       expect('Content-Type', /json/).
-      expect(200).expect({
+      expect(200, {
         nomeAtt: 'Piscina',
         categoria: 'svago',
         data: '05/11/2010',
@@ -50,6 +50,6 @@ describe('GET /api/v2/EventiPersonali/:id', () => {
   test('GET /api/v2/EventoPersonali/:id nel caso di evento non esistente', async () => {
     await request(app).get('/api/v2/EventiPersonali/34567876543').set('x-access-token', token).
       expect('Content-Type', /json/).
-      expect(404).expect({ error: "Non esiste nessun evento con l'id selezionato" });
+      expect(404, { error: "Non esiste nessun evento con l'id selezionato" });
   });
 });

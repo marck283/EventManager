@@ -7,8 +7,10 @@ import {jest} from '@jest/globals';
 describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     
     let eventPublicSpy;
+    var token;
     
     beforeAll( () => {
+        token = createToken("gg.ee@gmail.com", "2222", 3600);
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
             if(criterias == '67890'){
                 return {
@@ -34,15 +36,14 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     afterAll(() => {
         jest.restoreAllMocks();
         eventPublicSpy = null;
+        token = null;
     });
-    
-    var token = createToken("gg.ee@gmail.com", "2222", 3600);
     
     test('PATCH /api/v2/EventiPubblici/idEvento con utente non organizzatore dovrebbe restituire 403', async() => {
         
         await request(app).patch('/api/v2/EventiPubblici/'+'67890').
         set('x-access-token', createToken("aa.bb@gmail.com", "1111", 3600))
-        .expect('Content-Type', /json/).expect(403).expect({error: "Non sei autorizzato a modificare, terminare od annullare l'evento."});
+        .expect('Content-Type', /json/).expect(403, {error: "Non sei autorizzato a modificare, terminare od annullare l'evento."});
         
     });
     

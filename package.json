@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "clearCache": "jest --clear-cache",
-    "test": "jest"
+    "test": "jest --logHeapUsage"
   },
   "repository": {
     "type": "git",
