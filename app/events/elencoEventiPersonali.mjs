@@ -22,9 +22,9 @@ router.get("/:data", async (req, res) => {
     eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
     eventsPers = eventsPers.filter(e => e.data.includes(str));
     eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str));
+    eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
     eventsPriv = await eventPrivate.find({});
-    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || (e.organizzatoreID == user)) && e.data.includes(str));
+    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
     
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers");
@@ -34,9 +34,9 @@ router.get("/:data", async (req, res) => {
         eventsPriv.forEach(e => eventsPers.push(e));
         obj.eventi = eventsPers;
         obj.data = str;
-        res.status(200).json(obj);
+        res.status(200).json(obj).send();
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento programmato per la giornata selezionata."});
+        res.status(404).json({"error": "Non esiste alcun evento programmato per la giornata selezionata."}).send();
     }
 });
 
@@ -71,7 +71,7 @@ router.get("", async (req, res) => {
         user = user.id;
     }
 
-    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali.
+    eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
     eventsPub = await findPubEvents(user);
     eventsPriv = await eventPrivate.find({});
     eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
