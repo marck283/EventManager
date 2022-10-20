@@ -12,7 +12,7 @@ router.get('/:id', async(req, res) => {
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
         let partecipanti = [];
-        for (var i of eventoPubblico.partecipantiID){
+        for (var i of eventoPubblico.partecipantiID) {
             let tmp = await Users.findById(i);
             partecipanti.push(tmp.nome);
         }
@@ -29,7 +29,7 @@ router.get('/:id', async(req, res) => {
             partecipanti: partecipanti,
             eventPic: eventoPubblico.eventPic,
             terminato: eventoPubblico.terminato
-        });
+        }).send();
     } catch(error) {
         console.log(error);
         res.status(500).json({error: "Errore nel Server"}).send();
