@@ -18,4 +18,4 @@ var client = new OAuth2Client(process.env.GCLIENT_ID);
 	});
 };
 
-export default {verify, client};
+export default verify;
