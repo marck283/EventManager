@@ -27,8 +27,13 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."});
             return;
         }
-        var utent = req.loggedUser.id || req.loggedUser.sub;
-        let eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
+        var utent = req.loggedUser.id || req.loggedUser.sub, eventList;
+
+        if(utent === req.loggedUser.id) {
+            eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
+        } else {
+            eventList = await eventPublic.fing({email: {$eq: req.loggedUser.email}});
+        }
         if(eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {

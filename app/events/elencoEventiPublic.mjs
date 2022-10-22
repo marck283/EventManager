@@ -26,6 +26,62 @@ var filterCondition = (condition, arr, cb) => {
     }
 }
 
+var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) => {
+    const v1 = new Validator({
+        durata: durata
+    }, {
+        durata: 'integer|min:1',
+    });
+
+    var events1 = null;
+
+    await v1.check()
+        .then(matched => {
+            if (!matched) {
+                events1 = 1;
+            } else {
+                filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
+                filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
+                filterCondition(durata != undefined, events, e => e.durata == durata);
+                filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
+                filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+
+                //Filter for events happening in the future
+                var curr = new Date();
+                events = events.filter(e => {
+                    return new Date(e.data + "Z" + e.ora) >= curr;
+                });
+
+                if (events.length > 0) {
+                    events1 = map(events, "pub");
+                    events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
+
+                    //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
+                    events1.sort((e, e1) => {
+                        var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
+                        return org.valutazioneMedia < org1.valutazioneMedia;
+                    });
+                }
+            }
+        })
+        .catch(err => console.log(err));
+
+    return events1;
+}
+
+var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, citta) => {
+    var events1 = await queryEvents(events, nomeAtt, categoria, durata, indirizzo, citta);
+    if (events1 != null) {
+        if (events1 != 1) {
+            res.status(200).json({ eventi: events1 });
+        } else {
+            res.status(400).json({ error: "Richiesta malformata." });
+        }
+    } else {
+        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+    }
+}
+
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
     var user = "";
@@ -43,40 +99,7 @@ router.get("", async (req, res) => {
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (!e.partecipantiID.includes(utente.id) && e.organizzatoreID !== utente.id));
 
-                filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
-                filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-
-                const v1 = new Validator({
-                    durata: durata
-                }, {
-                    durata: 'integer|min:1',
-                });
-                v1.check()
-                    .then(matched => {
-                        if (!matched) {
-                            res.status(400).json({ error: "Richiesta malformata." });
-                        } else {
-                            filterCondition(durata != undefined, events, e => e.durata == durata);
-                            filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
-                            filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
-
-                            if (events.length > 0) {
-                                var events1 = map(events, "pub");
-                                events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
-
-                                //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-                                events1.sort((e, e1) => {
-                                    var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
-                                    return org.valutazioneMedia < org1.valutazioneMedia;
-                                });
-                                console.log(events1);
-                                res.status(200).json({ eventi: events1 });
-                            } else {
-                                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-                            }
-                        }
-                    })
-                    .catch(err => console.log(err));
+                queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
             })
             .catch(err => {
                 //Questo non è un token Google
@@ -87,77 +110,12 @@ router.get("", async (req, res) => {
                         events = events.filter(e => (!e.partecipantiID.includes(user) && e.organizzatoreID !== user));
                     }
 
-                    filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
-                    filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-
-                    const v1 = new Validator({
-                        durata: durata
-                    }, {
-                        durata: 'integer|min:1',
-                    });
-                    v1.check()
-                        .then(matched => {
-                            if (!matched) {
-                                res.status(400).json({ error: "Richiesta malformata." });
-                            } else {
-                                filterCondition(durata != undefined, events, e => e.durata == durata);
-                                filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
-                                filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
-
-                                if (events.length > 0) {
-                                    var events1 = map(events, "pub");
-                                    events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
-
-                                    //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-                                    events1.sort((e, e1) => {
-                                        var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
-                                        return org.valutazioneMedia < org1.valutazioneMedia;
-                                    });
-                                    res.status(200).json({ eventi: events1 });
-                                } else {
-                                    res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-                                }
-                            }
-                        })
-                        .catch(err => console.log(err));
+                    queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
                 });
             });
     } else {
-        filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
-        filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-
-        const v1 = new Validator({
-            durata: durata
-        }, {
-            durata: 'integer|min:1',
-        });
-        v1.check()
-            .then(matched => {
-                if (!matched) {
-                    res.status(400).json({ error: "Richiesta malformata." });
-                } else {
-                    filterCondition(durata != undefined, events, e => e.durata == durata);
-                    filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
-                    filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
-
-                    if (events.length > 0) {
-                        var events1 = map(events, "pub");
-                        events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
-
-                        //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-                        events1.sort((e, e1) => {
-                            var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
-                            return org.valutazioneMedia < org1.valutazioneMedia;
-                        });
-                        res.status(200).json({ eventi: events1 });
-                    } else {
-                        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-                    }
-                }
-            })
-            .catch(err => console.log(err));
+        queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
     }
-
 });
 
 router.get("/:data", async (req, res) => {
