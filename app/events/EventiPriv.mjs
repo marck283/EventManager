@@ -7,6 +7,7 @@ import Users from '../collezioni/utenti.mjs';
 import { toDataURL } from 'qrcode';
 import { Validator } from 'node-input-validator';
 import { test } from '../hourRegexTest.mjs';
+import dateCheck from '../dateCheck.mjs';
 
 router.patch('/:id', async (req, res) => {
     //var utent = req.loggedUser.id || req.loggedUser.sub;
@@ -237,7 +238,7 @@ router.post('', async (req, res) => {
         };
         const v = new Validator(options, {
             'data': 'required|arrayUnique',
-            'data.*': 'required|dateFormat:MM-DD-YYYY|dateAfterToday:1,seconds',
+            'data.*': 'required|dateFormat:MM-DD-YYYY',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
@@ -255,7 +256,12 @@ router.post('', async (req, res) => {
                 }
                 
                 if (!test(req.body.ora)) {
-                    res.status(400).json({ error: "Data o ora non valida." }).send();
+                    res.status(400).json({ error: "Ora non valida." }).send();
+                    return;
+                }
+
+                if(dateCheck(req.body.data, req.body.ora)) {
+                    res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
 
@@ -264,7 +270,7 @@ router.post('', async (req, res) => {
                 for (var elem of req.body.ElencoEmailInviti) {
                     let u = await Users.find({ email: { $eq: elem } });
                     if(u.length > 0) {
-                        ListaInvitati.push(u[0].id);
+                        ListaInvitati.push(u.id);
                     } else {
                         res.status(404).json({error: "email non trovata"}).send();
                         return;
@@ -288,10 +294,10 @@ router.post('', async (req, res) => {
                 let eventId = eventP.id;
 
                 //creare gli inviti a questi eventi 
-                for (var elem of ListaInvitati) {
+                ListaInvitati.forEach(async elem => {
                     let invito = new invit({ utenteid: elem, eventoid: eventId, tipoevent: "priv" });
                     await invito.save();
-                }
+                });
                 console.log('Evento salvato con successo');
 
                 /**

@@ -119,32 +119,28 @@ router.get("", async (req, res) => {
 });
 
 router.get("/:data", async (req, res) => {
-    var str = req.params.data.split("-").join("/"); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
-    var events;
-    var obj = {}, token = req.header("x-access-token");
-    var autenticato = false;
+    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
+    var events, token = req.header("x-access-token");
     var user = "";
+
+    events = await eventPublic.find({});
+    events = events.filter(e => e.data.includes(str));
 
     if (token) {
         tVerify(token, process.env.SUPER_SECRET, function (err, decoded) {
             if (!err) {
                 user = decoded.id;
-                autenticato = true;
+                //Cerco nel database gli eventi a cui l'utente autenticato non è iscritto
+                events = events.filter(e => (e.partecipantiID.find(e => e == user) == undefined));
             }
         });
     }
 
-    events = await eventPublic.find({});
-    events = events.filter(e => e.data.includes(str));
-    if (autenticato) {
-        //Cerco nel database gli eventi a cui l'utente autenticato non è iscritto
-        events = events.filter(e => (e.partecipantiID.find(e => e == user) == undefined));
-    }
-
     if (events.length > 0) {
-        obj.eventi = map(events, "pub");
-        obj.data = str;
-        res.status(200).json(obj).send();
+        res.status(200).json({
+            eventi: map(events, "pub"),
+            data: str
+        }).send();
     } else {
         res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." }).send();
     }

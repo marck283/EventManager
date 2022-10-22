@@ -16,9 +16,9 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
     token = createToken("gg.ee@gmail.com", "2222", 3600);
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
-        {id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
-        {id:'987653', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']},
-        {id:'9878456846784568', data: '05/12/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']}
+        {id:'9876543', data: '05-11-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']},
+        {id:'987653', data: '05-11-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']},
+        {id:'9878456846784568', data: '05-12-2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222','1234']}
       ]
     });
   });
@@ -37,7 +37,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
                     idevent:'9876543',
                     self: "/api/v2/EventiPubblici/9876543",
                     name: "Evento",
-                    category: "svago"}], data: '05/11/2010'});
+                    category: "svago"}], data: '05-11-2010'});
   });
 
   test("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {

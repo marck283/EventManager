@@ -58,6 +58,15 @@ var filterEvents = (eventsArr, passato) => {
     return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
 };
 
+/**
+ * This function filters an array of arrays of events by the conditions that the user has specified as parameter.
+ * The parameters of the object that specifies the conditions upon which to filter the events are:
+ * - cond: the condition to verify in order to filter the events. It can be any boolean value;
+ * - cb: the callback function that will be executed if the condition is verified. It must contain a condition that relates to the object that is being filtered. 
+ * @param {Array<Array<>>} val The array of arrays to filter
+ * @param {Array<Object>} arr The array of conditions to filter the events, together with a callback function that specifies the conditions to filter the elements of an array.
+ * @returns The filtered array of arrays of events
+ */
 var arrFilter = (val, arr) => {
     for(let i = 0; i < arr.length; i++) {
         if(arr[i].cond) {

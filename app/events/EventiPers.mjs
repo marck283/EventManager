@@ -88,7 +88,7 @@ router.post('', async (req, res) => {
             citta: req.body.luogoEv.citta
         }, {
             'data': 'required|arrayUnique',
-            'data.*': 'required|dateFormat:MM-DD-YYYY|dateAfterToday:1,seconds',
+            'data.*': 'required|dateFormat:MM-DD-YYYY',
             durata: 'required|integer|min:1',
             ora: 'required|string|minLength:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',

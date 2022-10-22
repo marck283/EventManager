@@ -59,7 +59,6 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }).expect('Content-Type', /json/).expect(404, {error: "email non trovata"});
   });
 
-
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
@@ -76,22 +75,6 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       })
       .expect('Content-Type', /json/)
       .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
-  });
-
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un giorno non disponibile", async () => {
-    await request(app).post('/api/v2/EventiPrivati').
-      set('x-access-token', token).send({
-        data: ["11-11-2010","11-12-2050"],
-        ora: "11:33",
-        durata: 3,
-        categoria: "Manifestazione",
-        nomeAtt: "Evento",
-        luogoEv: {
-          indirizzo: "via panini",
-          citta: "Bologna"
-        },
-        ElencoEmailInviti: ['gg.tt@gmail.com']
-      }).expect('Content-Type', /json/).expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
   test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica giornate ripetute", async () => {
@@ -192,6 +175,6 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
           citta: "Bologna"
         },
         ElencoEmailInviti: ['gg.tt@gmail.com']
-      }).expect('Content-Type', /json/).expect(400, {error: "Data o ora non valida."});
+      }).expect('Content-Type', /json/).expect(400, {error: "Ora non valida."});
   });
 });

@@ -8,6 +8,7 @@ import biglietti from '../collezioni/biglietti.mjs';
 import { Validator } from 'node-input-validator';
 import { test } from '../hourRegexTest.mjs';
 import Recensioni from '../collezioni/recensioniPub.mjs';
+import dateCheck from '../dateCheck.mjs';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -161,17 +162,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        for (var elem of eventP.data) {
-            var date = new Date(), d1 = new Date(elem);
-            let orario = eventP.ora.split(':');
-            d1.setDate(d1.getDate() + 1);
-            d1.setHours(orario[0].padStart(2, '0'), orario[1].padStart(2, '0'));
-
-            //Solo una data sbagliata per determinare che un evento su più date non è disponibile? Qualcosa non va...
-            if (date < d1) {
-                res.status(403).json({ error: "evento non disponibile" }).send();
-                return;
-            }
+        if(dateCheck(eventP.data, eventP.ora)) {
+            res.status(403).json({ error: "evento non disponibile" }).send();
+            return;
         }
 
         if (eventP.partecipantiID.length == eventP.maxPers) {
@@ -300,7 +293,7 @@ router.post('', async (req, res) => {
             //Altrimenti cerco per id
             utente = await Users.findById(utent);
         }
-        console.log(req.body.data);
+        
         const v = new Validator({
             data: req.body.data
         }, {
@@ -350,12 +343,11 @@ router.post('', async (req, res) => {
                             res.status(400).json({ error: "Formato ora non valido" }).send();
                             return;
                         }
-                        var d = new Date();
-                        if(req.body.data.filter(d1 => new Date(d1) < d).length > 0 && req.body.data.length == 1) {
-                            res.status(400).json({error: "Data non valida."}).send();
+                        
+                        if(dateCheck(req.body.data, req.body.ora)) {
+                            res.status(400).json({ error: "Data non valida." }).send();
                             return;
                         }
-                        d = null;
                         
                         let etaMin = null, etaMax = null;
                         if (req.body.etaMin != undefined) {
@@ -364,8 +356,6 @@ router.post('', async (req, res) => {
                         if (req.body.etaMax != undefined) {
                             etaMax = Number(req.body.etaMax);
                         }
-
-                        console.log(utente);
 
                         //Si crea un documento evento pubblico
                         let eventP = new eventPublic({

@@ -32,7 +32,7 @@ router.get("", async (req, res) => {
         if(utent === req.loggedUser.id) {
             eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
         } else {
-            eventList = await eventPublic.fing({email: {$eq: req.loggedUser.email}});
+            eventList = await eventPublic.find({email: {$eq: req.loggedUser.email}});
         }
         if(eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
