@@ -34,6 +34,12 @@ router.get("", async (req, res) => {
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
+    const v1 = new Validator({
+        durata: durata
+    }, {
+        durata: 'integer|min:1',
+    });
+
     if (token != undefined && token != "") {
         //Test per token Google
         await verify(token)
@@ -46,11 +52,6 @@ router.get("", async (req, res) => {
                 filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
                 filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
 
-                const v1 = new Validator({
-                    durata: durata
-                }, {
-                    durata: 'integer|min:1',
-                });
                 v1.check()
                     .then(matched => {
                         if (!matched) {
@@ -59,6 +60,12 @@ router.get("", async (req, res) => {
                             filterCondition(durata != undefined, events, e => e.durata == durata);
                             filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
                             filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+
+                            //Filter for events happening in the future
+                            var curr = new Date();
+                            events = events.filter(e => {
+                                return new Date(e.data + "Z" + e.ora) >= curr;
+                            });
 
                             if (events.length > 0) {
                                 var events1 = map(events, "pub");
@@ -89,12 +96,7 @@ router.get("", async (req, res) => {
 
                     filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
                     filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-
-                    const v1 = new Validator({
-                        durata: durata
-                    }, {
-                        durata: 'integer|min:1',
-                    });
+                    
                     v1.check()
                         .then(matched => {
                             if (!matched) {
@@ -103,6 +105,12 @@ router.get("", async (req, res) => {
                                 filterCondition(durata != undefined, events, e => e.durata == durata);
                                 filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
                                 filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+
+                                //Filter for events happening in the future
+                                var curr = new Date();
+                                events = events.filter(e => {
+                                    return new Date(e.data + "Z" + e.ora) >= curr;
+                                });
 
                                 if (events.length > 0) {
                                     var events1 = map(events, "pub");
@@ -125,12 +133,7 @@ router.get("", async (req, res) => {
     } else {
         filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
         filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-
-        const v1 = new Validator({
-            durata: durata
-        }, {
-            durata: 'integer|min:1',
-        });
+        
         v1.check()
             .then(matched => {
                 if (!matched) {
@@ -139,6 +142,12 @@ router.get("", async (req, res) => {
                     filterCondition(durata != undefined, events, e => e.durata == durata);
                     filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
                     filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+
+                    //Filter for events happening in the future
+                    var curr = new Date();
+                    events = events.filter(e => {
+                        return new Date(e.data + "Z" + e.ora) >= curr;
+                    });
 
                     if (events.length > 0) {
                         var events1 = map(events, "pub");
