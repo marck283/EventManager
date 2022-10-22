@@ -58,6 +58,18 @@ var filterEvents = (eventsArr, passato) => {
     return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
 };
 
+var arrFilter = (val, arr) => {
+    for(let i = 0; i < arr.length; i++) {
+        if(arr[i].cond) {
+            for(let j = 0; j < val.length; j++) {
+                val[j].filter(arr[i].cb);
+            }
+        }
+    }
+
+    return val;
+}
+
 router.get("", async (req, res) => {
     var eventsPers = [], eventsPub = [], eventsPriv = [];
     var user = req.loggedUser.id || req.loggedUser.sub;
@@ -90,36 +102,25 @@ router.get("", async (req, res) => {
             return;
         }
         
-        if(nomeAtt != undefined && nomeAtt != "") {
-            eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
-            eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
-            eventsPriv = eventsPriv.filter(e => e.nomeAtt.includes(nomeAtt));
-        }
-        
-        if(categoria != undefined && categoria != "") {
-            eventsPers = eventsPers.filter(e => e.categoria == categoria);
-            eventsPub = eventsPub.filter(e => e.categoria == categoria);
-            eventsPriv = eventsPriv.filter(e => e.categoria == categoria);
-        }
-
-        //Since "durata" is not required, it can still be undefined or an empty value.
-        if(durata != undefined && durata != "") {
-            eventsPers = eventsPers.filter(e => e.durata == durata);
-            eventsPub = eventsPub.filter(e => e.durata == durata);
-            eventsPriv = eventsPriv.filter(e => e.durata == durata);
-        }
-        
-        if(indirizzo != undefined && indirizzo != "") {
-            eventsPers = eventsPers.filter(e => e.luogoEv.indirizzo == indirizzo);
-            eventsPub = eventsPub.filter(e => e.luogoEv.indirizzo == indirizzo);
-            eventsPriv = eventsPriv.filter(e => e.luogoEv.indirizzo == indirizzo);
-        }
-    
-        if(citta != undefined && citta != "") {
-            eventsPers = eventsPers.filter(e => e.luogoEv.citta == citta);
-            eventsPub = eventsPub.filter(e => e.luogoEv.citta == citta);
-            eventsPriv = eventsPriv.filter(e => e.luogoEv.citta == citta);
-        }
+        let events = arrFilter([eventsPers, eventsPub, eventsPriv], [{
+            cond: nomeAtt != undefined && nomeAtt != "",
+            cb: e1 => e1.nomeAtt.includes(nomeAtt)
+        }, {
+            cond: categoria != undefined && categoria != "",
+            cb: e1 => e1.categoria == categoria
+        }, {
+            cond: durata != undefined && durata != "",
+            cb: e1 => e1.durata == durata
+        }, {
+            cond: indirizzo != undefined && indirizzo != "",
+            cb: e1 => e1.luogoEv.indirizzo == indirizzo
+        }, {
+            cond: citta != undefined && citta != "",
+            cb: e1 => e1.luogoEv.citta == citta
+        }]);
+        eventsPers = events[0];
+        eventsPub = events[1];
+        eventsPriv = events[2];
     
         switch (req.query.passato) {
             case "True": {
