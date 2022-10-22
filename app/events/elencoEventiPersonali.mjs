@@ -89,7 +89,7 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."}).send();
             return;
         }
-
+        
         if(nomeAtt != undefined && nomeAtt != "") {
             eventsPers = eventsPers.filter(e => e.nomeAtt.includes(nomeAtt));
             eventsPub = eventsPub.filter(e => e.nomeAtt.includes(nomeAtt));
