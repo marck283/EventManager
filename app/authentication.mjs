@@ -4,8 +4,9 @@ import Utente from './collezioni/utenti.mjs'; // get our mongoose model
 import { compare } from 'bcrypt';
 import RateLimit from 'express-rate-limit';
 import { Validator } from 'node-input-validator';
-import verify from './googleTokenChecker.mjs';
+import gTokenChecker from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
+import {google} from 'googleapis';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -60,19 +61,32 @@ router.post('', (req, res) => {
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await verify(req.body.googleJwt.credential)
+				await gTokenChecker.verify(req.body.googleJwt.credential)
 				.then(async ticket => {
 					var payload = ticket.getPayload();
-					//Retry implementing the user's data request to the Google People API using gapi in the client-side JavaScript code.
 					let user = await Utente.exists({ email: { $eq: payload.email } });
 					if (user == null) {
 						//Create a new user
+						const service = google.people({
+							version: 'v1',
+							auth: process.env.PEOPLE_API_ID,
+							headers: {
+								"Referer": "https://localhost:8080"
+							}
+						});
+						const res = await service.people.get({
+							resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers"
+						});
+						var tel = "";
+						if(res.data.phoneNumbers != undefined) {
+							tel = res.data.phoneNumbers[0].canonicalForm;
+						}
 						user = new Utente({
 							nome: payload.given_name,
 							email: payload.email,
 							password: "",
 							salt: "",
-							tel: "",
+							tel: tel,
 							profilePic: payload.picture,
 							numEvOrg: 0,
 							valutazioneMedia: 0.0

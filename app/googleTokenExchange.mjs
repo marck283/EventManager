@@ -2,30 +2,23 @@ import { Router } from 'express';
 const router = Router();
 import { google } from 'googleapis';
 
-var web, oauth2Client, url;
-import('../credentials.json', {
-    assert: {
-        type: 'json'
-    }
-}).then(cred => {
-    web = cred.default.web;
-    oauth2Client = new google.auth.OAuth2(
-        web.client_id,
-        web.client_secret,
-        web.redirect_uris[5]
-    );
+var oauth2Client = new google.auth.OAuth2(
+    process.env.GCLIENT_ID,
+    process.env.GCLIENT_SECRET,
+    process.env.GCLIENT_REDIRECT_DEV //Da cambiare ogni volta che si cambia ambiente da "sviluppo" a "distribuzione".
+);
 
-    //Now generate an authorization URL for the OAuth 2.0 client
-    const scopes = [];
+//Now generate an authorization URL for the OAuth 2.0 client
+const scopes = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'];
 
-    url = oauth2Client.generateAuthUrl({
-        // 'online' (default) or 'offline' (gets refresh_token)
-        access_type: 'offline',
+var url = oauth2Client.generateAuthUrl({
+    // 'online' (default) or 'offline' (gets refresh_token)
+    access_type: 'offline',
 
-        // If you only need one scope you can pass it as a string
-        scope: scopes
-    });
+    // If you only need one scope you can pass it as a string
+    scope: scopes
 });
+
 import { Validator } from 'node-input-validator';
 
 router.get('', (req, res) => {
@@ -41,7 +34,8 @@ router.get('', (req, res) => {
                 return;
             }
 
-            //Now exchange the authorization token for an access token
+            //Now exchange the authorization token for an access token, then save the refresh token in the database to bind it
+            //to the user's account.
             const { tokens } = oauth2Client.getToken(req.query.code);
             res.status(200).json({ authToken: tokens.access_token }).send();
             return;

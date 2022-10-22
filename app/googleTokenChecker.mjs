@@ -1,6 +1,7 @@
 //Check for the correctness of the client-id
 import { OAuth2Client } from 'google-auth-library';
-const client = new OAuth2Client("22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com");
+
+var client = new OAuth2Client(process.env.GCLIENT_ID);
 
 /**
  * Function to be used for Google Sign In only, otherwise it will not work.
@@ -17,4 +18,4 @@ const client = new OAuth2Client("22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.ap
 	});
 };
 
-export default verify;
+export default {verify, client};
