@@ -7,7 +7,7 @@ import pkg from 'jsonwebtoken';
 const tVerify = pkg.verify;
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
-import verify from '../googleTokenChecker.mjs';
+import gTokenChecker from '../googleTokenChecker.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
@@ -36,7 +36,7 @@ router.get("", async (req, res) => {
 
     if (token != undefined && token != "") {
         //Test per token Google
-        await verify(token)
+        await gTokenChecker.verify(token)
             .then(async ticket => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
