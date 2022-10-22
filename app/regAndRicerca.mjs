@@ -35,7 +35,7 @@ router.get("", async (req, res) => {
                 return;
             }
             
-            var utenti = await Utente.find({ email: { $regex: email, $options: 'i' } }).then(ok => console.log(ok));
+            var utenti = await Utente.find({ email: { $regex: email, $options: 'i' } });
 
             if (utenti.length == 0) {
                 res.status(404).json({ error: "Nessun utente trovato per la email indicata." });
