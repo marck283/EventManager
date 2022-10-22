@@ -5,7 +5,7 @@ import { google } from 'googleapis';
 var oauth2Client = new google.auth.OAuth2(
     process.env.GCLIENT_ID,
     process.env.GCLIENT_SECRET,
-    process.env.GCLIENT_REDIRECT_DEV //Da cambiare ogni volta che si cambia ambiente da "sviluppo" a "distribuzione".
+    process.env.GCLIENT_REDIRECT //Da cambiare ogni volta che si cambia ambiente da "sviluppo" a "distribuzione".
 );
 
 //Now generate an authorization URL for the OAuth 2.0 client
