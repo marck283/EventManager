@@ -36,10 +36,11 @@ router.get('', (req, res) => {
 
             //Now exchange the authorization token for an access token, then save the refresh token in the database to bind it
             //to the user's account.
-            const token = decodeURIComponent(req.query.code);
-            console.log(token);
-            const { tokens } = await oauth2Client.getToken(token);
-            res.status(200).json({ authToken: tokens}).send();
+            //const token = decodeURIComponent(req.query.code);
+            //console.log(token);
+            const { tokens } = await oauth2Client.getToken(decodeURIComponent(req.query.code));
+            console.log(tokens);
+            res.status(200).json({ authToken: tokens.access_token}).send();
             return;
         });
 });
