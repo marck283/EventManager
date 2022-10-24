@@ -38,7 +38,7 @@ router.get('', (req, res) => {
             //to the user's account.
             const token = decodeURIComponent(req.query.code);
             console.log(token);
-            const { tokens } = oauth2Client.getToken(token);
+            const { tokens } = await oauth2Client.getToken(token);
             res.status(200).json({ authToken: tokens}).send();
             return;
         });
