@@ -39,6 +39,7 @@ var result = (token, email, id, profilePic, error = false, message = "") => {
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 router.post('', (req, res) => {
+	console.log("Call received");
 	var voptions = {};
 	if (req.params.g_csrf_token) {
 		voptions.csrfToken = g_csrf_token;
@@ -51,6 +52,7 @@ router.post('', (req, res) => {
 	v.check()
 		.then(async matched1 => {
 			if (!matched1) {
+				console.log("NOK");
 				res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
 				return;
 			}
