@@ -1,5 +1,7 @@
 import { Router } from 'express';
 const router = Router();
+import verify from './googleTokenChecker.mjs';
+import User from './collezioni/utenti.mjs';
 
 import { Validator } from 'node-input-validator';
 
@@ -19,12 +21,17 @@ router.get('', (req, res) => {
 
             //Now exchange the authorization token for an access token, then save the refresh token in the database to bind it
             //to the user's account.
-            //const token = decodeURIComponent(req.query.code);
-            //console.log(token);
 
             const { tokens } = await oauth2Client.getToken(decodeURIComponent(req.query.code));
             oauth2Client.setCredentials(tokens);
             console.log(tokens);
+            await verify(tokens.access_token)
+            .then(async ticket => {
+                const payload = ticket.getPayload();
+                const user = await User.findOne({email: {$eq: payload.email}});
+                user.g_refresh_token = tokens.refresh_token;
+                await user.save();
+            });
             res.status(200).json({ authToken: tokens.access_token}).send();
             return;
         });

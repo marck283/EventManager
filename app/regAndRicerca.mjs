@@ -140,7 +140,8 @@ router.post('', async (req, res) => {
                                             tel: req.body.tel,
                                             profilePic: "data:image/png;base64," + req.body.picture,
                                             numEvOrg: Number('0'),
-                                            valutazioneMedia: Number('0.0')
+                                            valutazioneMedia: Number('0.0'),
+                                            g_refresh_token: ""
                                         });
 
                                         let Utentes = await Utent.save(), utenteId = Utentes.id;

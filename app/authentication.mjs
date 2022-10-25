@@ -94,7 +94,8 @@ router.post('', (req, res) => {
 							tel: tel,
 							profilePic: payload.picture,
 							numEvOrg: 0,
-							valutazioneMedia: 0.0
+							valutazioneMedia: 0.0,
+							g_refresh_token: ""
 						});
 						await user.save();
 					}
