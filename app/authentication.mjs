@@ -17,7 +17,7 @@ var limiter = RateLimit({
 
 router.use(limiter);
 
-var result = (token, email, id, error = false, message = "") => {
+var result = (token, email, id, profilePic, error = false, message = "") => {
 	if (error) {
 		return {
 			success: false,
@@ -29,6 +29,7 @@ var result = (token, email, id, error = false, message = "") => {
 		message: "Autenticazione completata",
 		token: token,
 		email: email,
+		profilePic: profilePic,
 		id: id,
 		self: "/api/v2/Utenti/" + id
 	};
