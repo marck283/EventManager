@@ -57,22 +57,21 @@ router.post('', (req, res) => {
 			}
 			//Check the JWT tokens
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
-				//Checks the Google token
-				console.log(req.body.googleJwt);
+				let gJwt = req.body.googleJwt;
+				if(gJwt.credential != null && gJwt.credential != undefined) {
+					gJwt = gJwt.credential;
+				}
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await verify(req.body.googleJwt)
+				await verify(gJwt)
 				.then(async ticket => {
-					console.log("OK");
 					var payload = ticket.getPayload();
-					console.log("OK1");
 					let user = await Utente.exists({ email: { $eq: payload.email } });
 					if (user == null) {
 						//Create a new user
-						console.log("User OK");
 						const service = google.people({
 							version: 'v1',
 							auth: process.env.PEOPLE_API_ID,
@@ -85,7 +84,6 @@ router.post('', (req, res) => {
 						});
 						var tel = "";
 						if(res.data.phoneNumbers != undefined) {
-							console.log("phone OK");
 							tel = res.data.phoneNumbers[0].canonicalForm;
 						}
 						user = new Utente({
@@ -99,10 +97,8 @@ router.post('', (req, res) => {
 							valutazioneMedia: 0.0
 						});
 						await user.save();
-						console.log("User saved");
 					}
-					console.log("About to send response...");
-					res.status(200).json(result(req.body.googleJwt.credential, payload.email, user.id)).send();
+					res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
 				})
 				.catch(err => {
 					console.log(err);
@@ -112,7 +108,6 @@ router.post('', (req, res) => {
 				});
 				return;
 			}
-			console.log("no token");
 
 			//Set Facebook Login
 
