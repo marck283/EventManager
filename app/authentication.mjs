@@ -52,7 +52,7 @@ router.post('', (req, res) => {
 	v.check()
 		.then(async matched1 => {
 			if (!matched1) {
-				console.log("NOK");
+				console.log(v.errors);
 				res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
 				return;
 			}
