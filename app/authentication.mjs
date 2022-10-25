@@ -56,6 +56,9 @@ router.post('', (req, res) => {
 				return;
 			}
 			//Check the JWT tokens
+
+			//Avrei una domanda: PERCHé I TOKEN JWT GOOGLE PER L'AUTENTICAZIONE STANDARD
+			//E QUELLI PER ANDROID HANNO DUE FORMATI DIVERSI?
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				let gJwt = req.body.googleJwt;
 				if(gJwt.credential != null && gJwt.credential != undefined) {
