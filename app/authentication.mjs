@@ -56,7 +56,7 @@ router.post('', (req, res) => {
 				return;
 			}
 			//Check the JWT tokens
-			if (req.body.googleJwt.credential != null && req.body.googleJwt.credential != undefined) {
+			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				//Checks the Google token
 				console.log(req.body.googleJwt);
 
