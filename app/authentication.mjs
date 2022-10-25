@@ -65,10 +65,13 @@ router.post('', (req, res) => {
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
 				await verify(req.body.googleJwt.credential)
 				.then(async ticket => {
+					console.log("OK");
 					var payload = ticket.getPayload();
+					console.log("OK1");
 					let user = await Utente.exists({ email: { $eq: payload.email } });
 					if (user == null) {
 						//Create a new user
+						console.log("User OK");
 						const service = google.people({
 							version: 'v1',
 							auth: process.env.PEOPLE_API_ID,
@@ -81,6 +84,7 @@ router.post('', (req, res) => {
 						});
 						var tel = "";
 						if(res.data.phoneNumbers != undefined) {
+							console.log("phone OK");
 							tel = res.data.phoneNumbers[0].canonicalForm;
 						}
 						user = new Utente({
@@ -94,7 +98,9 @@ router.post('', (req, res) => {
 							valutazioneMedia: 0.0
 						});
 						await user.save();
+						console.log("User saved");
 					}
+					console.log("About to send response...");
 					res.status(200).json(result(req.body.googleJwt.credential, payload.email, user.id)).send();
 				})
 				.catch(err => {
@@ -105,6 +111,7 @@ router.post('', (req, res) => {
 				});
 				return;
 			}
+			console.log("no token");
 
 			//Set Facebook Login
 
