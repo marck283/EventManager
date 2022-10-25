@@ -56,15 +56,15 @@ router.post('', (req, res) => {
 				return;
 			}
 			//Check the JWT tokens
-			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
+			if (req.body.googleJwt.credential != null && req.body.googleJwt.credential != undefined) {
 				//Checks the Google token
-				console.log(req.body);
+				console.log(req.body.googleJwt);
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await verify(req.body.googleJwt.credential)
+				await verify(req.body.googleJwt)
 				.then(async ticket => {
 					console.log("OK");
 					var payload = ticket.getPayload();
