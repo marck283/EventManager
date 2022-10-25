@@ -39,10 +39,9 @@ var result = (token, email, id, profilePic, error = false, message = "") => {
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 router.post('', (req, res) => {
-	console.log("Call received");
 	var voptions = {};
 	if (req.params.g_csrf_token) {
-		voptions.csrfToken = g_csrf_token;
+		voptions.csrfToken = req.params.g_csrf_token;
 	} else {
 		voptions.csrfToken = req.body.csrfToken;
 	}
@@ -59,7 +58,7 @@ router.post('', (req, res) => {
 			//Check the JWT tokens
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				//Checks the Google token
-				console.log(req.body.googleJwt.credential);
+				console.log(req.body);
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
