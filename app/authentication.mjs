@@ -69,7 +69,7 @@ router.post('', (req, res) => {
 				//https://www.googleapis.com/oauth2/v3/certs; pay attention to import the new keys if the old ones expire. To do this,
 				//check the keys' expiry date in the header of the response of the above link.)
 				//Then follow the instructions in the following link: https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-				await verify(gJwt)
+				await verify.verify(gJwt)
 				.then(async ticket => {
 					var payload = ticket.getPayload();
 					let user = await Utente.exists({ email: { $eq: payload.email } });
