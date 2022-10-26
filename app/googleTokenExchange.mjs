@@ -31,8 +31,12 @@ router.get('', (req, res) => {
                 const user = await User.findOne({email: {$eq: payload.email}});
                 user.g_refresh_token = tokens.refresh_token;
                 await user.save();
+                res.status(200).json({ authToken: tokens.access_token}).send();
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({ message: "Errore di interno al server." }).send();
             });
-            res.status(200).json({ authToken: tokens.access_token}).send();
             return;
         });
 });
