@@ -12,7 +12,7 @@ const tokenChecker = async (req, res, next) => {
 		});
 		return;
 	}
-	await verify(token)
+	await verify.verify(token)
 		.then(ticket => {
 			//console.log("ho il token Google");
 			req.loggedUser = ticket.getPayload();

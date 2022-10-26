@@ -22,14 +22,14 @@ router.get('', (req, res) => {
             //Now exchange the authorization token for an access token, then save the refresh token in the database to bind it
             //to the user's account.
 
-            const { tokens } = await oauth2Client.getToken(decodeURIComponent(req.query.code));
+            const { tokens } = await verify.client.getToken(decodeURIComponent(req.query.code));
             oauth2Client.setCredentials(tokens);
             if(tokens.access_token == null || tokens.access_token == undefined) {
                 console.log("access token null or undefined");
             } else {
                 console.log(tokens);
             }
-            await verify(tokens.access_token)
+            await verify.verify(tokens.access_token)
             .then(async ticket => {
                 const payload = ticket.getPayload();
                 const user = await User.findOne({email: {$eq: payload.email}});
