@@ -24,7 +24,11 @@ router.get('', (req, res) => {
 
             const { tokens } = await oauth2Client.getToken(decodeURIComponent(req.query.code));
             oauth2Client.setCredentials(tokens);
-            console.log(tokens);
+            if(tokens.access_token == null || tokens.access_token == undefined) {
+                console.log("access token null or undefined");
+            } else {
+                console.log(tokens);
+            }
             await verify(tokens.access_token)
             .then(async ticket => {
                 const payload = ticket.getPayload();
