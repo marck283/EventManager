@@ -1,7 +1,7 @@
 //Check for the correctness of the client-id
 import { OAuth2Client } from 'google-auth-library';
 
-var client = new OAuth2Client(process.env.GCLIENT_ID);
+var client = new OAuth2Client(process.env.GCLIENT_ID, process.env.GCLIENT_SECRET);
 
 /**
  * Function to be used for Google Sign In only, otherwise it will not work.
