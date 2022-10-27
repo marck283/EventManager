@@ -90,7 +90,7 @@ router.get("", async (req, res) => {
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
 
-    console.log(token);
+    console.log(token == undefined);
 
     if (token != undefined && token != "") {
         //Test per token Google
