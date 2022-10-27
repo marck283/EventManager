@@ -15,6 +15,7 @@ router.get('', (req, res) => {
     v.check()
         .then(async matched => {
             if (!matched) {
+                console.log("NOK");
                 res.status(400).json({ message: "Richiesta malformata." }).send();
                 return;
             }
