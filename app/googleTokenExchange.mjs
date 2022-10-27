@@ -23,6 +23,8 @@ router.get('', (req, res) => {
             //Now exchange the authorization token for an access token, then save the refresh token in the database to bind it
             //to the user's account.
 
+            console.log(decodeURIComponent(req.query.code));
+
             const { tokens } = await verify.client.getToken(decodeURIComponent(req.query.code));
             verify.client.setCredentials(tokens);
             if(tokens.access_token == null || tokens.access_token == undefined) {
