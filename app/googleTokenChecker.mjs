@@ -21,8 +21,7 @@ const url = client.generateAuthUrl({
 	return client.verifyIdToken({
 		idToken: token,
 		audience: ["22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",
-	"666454225517-itbjsj8g0hp5rq3hmbcg8ieg4mi9o5s3.apps.googleusercontent.com"],  // Specify the CLIENT_ID of the app that accesses the backend
-		grant_type: 'id_token'	
+	"666454225517-itbjsj8g0hp5rq3hmbcg8ieg4mi9o5s3.apps.googleusercontent.com"],  // Specify the CLIENT_ID of the app that accesses the backend	
 	// Or, if multiple clients access the backend:
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	});
