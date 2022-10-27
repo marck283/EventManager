@@ -25,14 +25,14 @@ router.get('', (req, res) => {
 
             console.log(decodeURIComponent(req.query.code));
 
-            const { tokens } = await verify.client.getToken(decodeURIComponent(req.query.code));
+            const { tokens } = await verify.client.getToken(req.query.code);
             verify.client.setCredentials(tokens);
             if(tokens.access_token == null || tokens.access_token == undefined) {
                 console.log("access token null or undefined");
             } else {
                 console.log(tokens);
             }
-            await verify.verify(tokens.access_token)
+            await verify.verify(tokens.id_token)
             .then(async ticket => {
                 const payload = ticket.getPayload();
                 const user = await User.findOne({email: {$eq: payload.email}});
