@@ -24,7 +24,7 @@ router.get('', (req, res) => {
             //to the user's account.
 
             const { tokens } = await verify.client.getToken(decodeURIComponent(req.query.code));
-            oauth2Client.setCredentials(tokens);
+            verify.client.setCredentials(tokens);
             if(tokens.access_token == null || tokens.access_token == undefined) {
                 console.log("access token null or undefined");
             } else {
