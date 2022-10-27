@@ -92,7 +92,7 @@ router.get("", async (req, res) => {
 
     if (token != undefined && token != "") {
         //Test per token Google
-        await verify(token)
+        await verify.verify(token)
             .then(async ticket => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;

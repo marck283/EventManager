@@ -18,7 +18,7 @@ const url = client.generateAuthUrl({
  */
  var verify = async token => {
 	//await client.request({url});
-	const ticket = await client.verifyIdToken({
+	return await client.verifyIdToken({
 		idToken: token,
 		audience: ["22819640695-40ie511a43vdbh8p82o5uhm6b62529rm.apps.googleusercontent.com",
 	"666454225517-itbjsj8g0hp5rq3hmbcg8ieg4mi9o5s3.apps.googleusercontent.com"],  // Specify the CLIENT_ID of the app that accesses the backend
@@ -26,7 +26,6 @@ const url = client.generateAuthUrl({
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	})
 	.catch(err => console.log(err));
-	return ticket;
 };
 
 export default {verify, client};
