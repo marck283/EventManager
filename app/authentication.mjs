@@ -106,8 +106,8 @@ router.post('', (req, res) => {
 				})
 				.catch(err => {
 					console.log(err);
-					res.status(500).json({
-						error: "Errore interno al server."
+					res.status(401).json({
+						error: "Token non valido."
 					}).send();
 				});
 				return;
