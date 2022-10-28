@@ -93,7 +93,7 @@ router.get("", async (req, res) => {
     console.log(token == null);
 
     //Aggiungere controllo per token != null
-    if (token != undefined && token != "") {
+    if (token != undefined && token != null && token != "") {
         //Test per token Google
         await verify.verify(token)
             .then(async ticket => {
