@@ -7,10 +7,14 @@ import { map } from './eventsMap.mjs';
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 
+var findEvents = async (obj, arr, cb) => {
+    var events = await arr.find(obj);
+    return events.filter(cb);
+}
+
 router.get("/:data", async (req, res) => {
     var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    var obj = {};
     
     var user = req.loggedUser.id || req.loggedUser.sub;
     if(user === req.loggedUser.sub) {
@@ -18,25 +22,23 @@ router.get("/:data", async (req, res) => {
         user = user.id;
     }
 
-    //Eseguire la funzione verify, poi cercare gli eventi nel database
-    eventsPers = await eventPersonal.find({organizzatoreID: user}); //Richiedi gli eventi personali per la data selezionata.
-    eventsPers = eventsPers.filter(e => e.data.includes(str));
-    eventsPub = await eventPublic.find({});
-    eventsPub = eventsPub.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
-    eventsPriv = await eventPrivate.find({});
-    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
+    eventsPers = findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
+    eventsPub = findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
+    eventsPriv = findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
     
+    console.log(eventsPers.length);
+    console.log(eventsPub.length);
+    console.log(eventsPriv.length);
+
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers");
         eventsPub = map(eventsPub, "pub");
         eventsPriv = map(eventsPriv, "priv");
         eventsPub.forEach(e => eventsPers.push(e));
         eventsPriv.forEach(e => eventsPers.push(e));
-        obj.eventi = eventsPers;
-        obj.data = str;
-        res.status(200).json(obj).send();
+        res.status(200).json({eventi: eventsPers, data: str}).send();
     } else {
-        res.status(404).json({"error": "Non esiste alcun evento programmato per la giornata selezionata."}).send();
+        res.status(404).json({error: "Non esiste alcun evento programmato per la giornata selezionata."}).send();
     }
 });
 
