@@ -3,6 +3,8 @@ var router = Router();
 import { Validator } from 'node-input-validator';
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
+import eventPers from '../collezioni/eventPersonal.mjs';
+import eventPriv from '../collezioni/eventPrivat.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -27,13 +29,25 @@ router.get("", async (req, res) => {
             res.status(400).json({error: "Richiesta malformata."});
             return;
         }
-        var utent = req.loggedUser.id || req.loggedUser.sub, eventList;
+        var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
 
         if(utent === req.loggedUser.id) {
             eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
+            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent}});
+            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}});
         } else {
             eventList = await eventPublic.find({email: {$eq: req.loggedUser.email}});
+            eventsPers = await eventPers.find({email: {$eq: req.loggedUser.email}});
+            eventsPriv = await eventPriv.find({email: {$eq: req.loggedUser.email}});
         }
+
+        if(eventsPers != null && eventsPers != undefined && eventsPers.length > 0) {
+            eventList.push(eventsPers);
+        }
+        if(eventsPriv != null && eventsPriv != undefined && eventsPriv.length > 0) {
+            eventList.push(eventsPriv);
+        }
+
         if(eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {
