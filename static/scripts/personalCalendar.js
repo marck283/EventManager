@@ -118,11 +118,7 @@ class Cal {
         document.getElementById(this.divId).innerHTML = html;
 
         for (var elem of document.getElementsByTagName("a")) {
-            if (m < 9) {
-                elem.onclick = myPopup.bind(this, ["0" + (m + 1).toString(), elem.getAttribute("id"), y.toString()]);
-            } else {
-                elem.onclick = myPopup.bind(this, [(m + 1).toString(), elem.getAttribute("id"), y.toString()]);
-            }
+            elem.onclick = myPopup.bind(this, [(m + 1).toString().padStart(2, '0'), elem.getAttribute("id"), y.toString()]);
         }
     }
 }
@@ -147,7 +143,7 @@ var requestWithParams = async (id, day) => {
     getId(id).innerHTML = "";
     getId(id).style.display = "block";
 
-    fetch("/api/v2/eventiCalendarioPersonale/" + day.join("-") + "?passato=False", {
+    fetch("/api/v2/eventiCalendarioPersonale/" + day + "?passato=False", {
         method: 'GET',
         headers: {
             'x-access-token': token //Invio il token di accesso attraverso un header della richiesta.
@@ -237,9 +233,7 @@ var requestWithParams = async (id, day) => {
 function myPopup(day) {
     var popup = getId("myPopup1");
     popup.style.display = "block";
-
-    //Niente da vedere qui... (inserire gli eventi del giorno selezionato
-    //trovati per richiesta GET e query secondo il parametro 'day', espresso come 'giorno/mese/anno').
-    requestWithParams("elencoEventi", day);
+    console.log(day.join("-"));
+    requestWithParams("elencoEventi", day.join("-"));
     popup.classList.toggle("show");
 }

@@ -22,9 +22,10 @@ router.get("/:data", async (req, res) => {
         user = user.id;
     }
 
-    eventsPers = findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
-    eventsPub = findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
-    eventsPriv = findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
+    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
+    eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
+    console.log(eventsPub.length);
+    eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers");
