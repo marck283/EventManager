@@ -17,7 +17,8 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-router.get("", async (req, res) => {
+router.get("/:data", async (req, res) => {
+    var data = req.params.data;
     const v = new Validator({
         utent: req.loggedUser.id || req.loggedUser.sub
     }, {
@@ -32,13 +33,13 @@ router.get("", async (req, res) => {
         var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
 
         if(utent === req.loggedUser.id) {
-            eventList = await eventPublic.find({organizzatoreID: {$eq: utent}});
-            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent}});
-            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}});
+            eventList = await eventPublic.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
+            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
+            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
         } else {
-            eventList = await eventPublic.find({email: {$eq: req.loggedUser.email}});
-            eventsPers = await eventPers.find({email: {$eq: req.loggedUser.email}});
-            eventsPriv = await eventPriv.find({email: {$eq: req.loggedUser.email}});
+            eventList = await eventPublic.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
+            eventsPers = await eventPers.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
+            eventsPriv = await eventPriv.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
         }
 
         if(eventsPers != null && eventsPers != undefined && eventsPers.length > 0) {
