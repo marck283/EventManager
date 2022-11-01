@@ -1,4 +1,4 @@
-export function map(events, eventType) {
+export default function map(events, eventType) {
     return events.map(event => {
         var apiUrl;
         switch (eventType) {

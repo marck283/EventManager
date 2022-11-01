@@ -2,7 +2,7 @@ import { Router } from 'express';
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
-import { map } from './eventsMap.mjs';
+import map from './eventsMap.mjs';
 import pkg from 'jsonwebtoken';
 const tVerify = pkg.verify;
 import { Validator } from 'node-input-validator';

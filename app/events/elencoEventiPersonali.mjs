@@ -3,7 +3,7 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPersonal from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
 const router = Router();
-import { map } from './eventsMap.mjs';
+import map from './eventsMap.mjs';
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 
