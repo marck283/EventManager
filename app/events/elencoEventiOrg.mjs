@@ -5,6 +5,7 @@ import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
+import map from './eventsMap.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -42,14 +43,20 @@ router.get("/:data", async (req, res) => {
             eventsPriv = await eventPriv.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
         }
 
+        if(eventList != null && eventList != undefined && eventList.length > 0) {
+            eventList = map(eventList, "pub");
+        }
+
         if(eventsPers != null && eventsPers != undefined && eventsPers.length > 0) {
+            eventsPers = map(eventsPers, "pers");
             eventList.push(eventsPers);
         }
         if(eventsPriv != null && eventsPriv != undefined && eventsPriv.length > 0) {
+            eventsPriv = map(eventsPriv, "priv");
             eventList.push(eventsPriv);
         }
 
-        if(eventList.length > 0) {
+        if(eventList != null && eventList != undefined && eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {
             res.status(404).json({error: "Nessun evento organizzato da questo utente."}).send();
