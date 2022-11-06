@@ -130,9 +130,23 @@ var mapEvents = (token) => new Promise((resolve, reject) => {
     }
 });
 
+var setResponse = async (res, events, str) => {
+    if (events.length > 0) {
+        var orgNames = [];
+        for(let e of events) {
+            orgNames.push((await User.findById(e.organizzatoreID)).nome);
+        }
+        res.status(200).json({
+            eventi: map(events, "pub", orgNames),
+            data: str
+        }).send();
+    } else {
+        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
+    }
+    return;
+}
+
 router.get("/:data", async (req, res) => {
-    //Da correggere bug di visualizzazione degli eventi che non permette la restituzione degli eventi disponibili
-     
     var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
     var events = [], token = req.header("x-access-token");
 
@@ -147,19 +161,7 @@ router.get("/:data", async (req, res) => {
             await mapEvents(token)
             .then(async decoded => {
                 events = events.filter(e => !e.partecipantiID.includes(decoded.id));
-                if (events.length > 0) {
-                    var orgNames = [];
-                    for(let e of events) {
-                        orgNames.push((await User.findById(e.organizzatoreID)).nome);
-                    }
-                    res.status(200).json({
-                        eventi: map(events, "pub", orgNames),
-                        data: str
-                    }).send();
-                } else {
-                    res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
-                }
-                return;
+                setResponse(res, events, str);
             })
             .catch(async err => {
                 console.log(err);
@@ -169,21 +171,11 @@ router.get("/:data", async (req, res) => {
                     events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
                         email: { $eq: ticket.getPayload().email}
                     }).id)) == undefined));
-                    if (events.length > 0) {
-                        var orgNames = [];
-                        for(let e of events) {
-                            orgNames.push((await User.findById(e.organizzatoreID)).nome);
-                        }
-                        res.status(200).json({
-                            eventi: map(events, "pub", orgNames),
-                            data: str
-                        });
-                    } else {
-                        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
-                    }
-                    return;
+                    setResponse(res, events, str);
                 });
             });
+    } else {
+        setResponse(res, events, str);
     }
     return;
 });
