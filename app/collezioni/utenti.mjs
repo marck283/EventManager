@@ -9,7 +9,7 @@ var Users = new Schema({
     tel: String,
     password: String,
     salt: String,
-    EventiCreati: [String] ,
+    EventiCreati: [String],
     EventiIscrtto: [String],
     numEvOrg: Number,
     valutazioneMedia: Number,

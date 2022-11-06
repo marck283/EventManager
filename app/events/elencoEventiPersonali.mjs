@@ -12,6 +12,19 @@ var findEvents = async (obj, arr, cb) => {
     return events.filter(cb);
 }
 
+var setOrgNameAndPush = (name, events, addEvents, push = false) => {
+    if(!push) {
+        events.forEach(e => e.orgName = name);
+    }
+    
+    if(push && addEvents != null && addEvents != undefined && addEvents.length > 0) {
+        addEvents.forEach(e => {
+            e.orgName = name;
+            events.push(e);
+        });
+    }
+};
+
 router.get("/:data", async (req, res) => {
     var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
     var eventsPers = [], eventsPub = [], eventsPriv = [];
@@ -21,22 +34,24 @@ router.get("/:data", async (req, res) => {
         user = await User.findOne({email: {$eq: req.loggedUser.email}});
         user = user.id;
     }
+    let name = (await User.findById(user)).nome;
 
     eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
     eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
-    console.log(eventsPub.length);
     eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers");
+        setOrgNameAndPush(name, eventsPers, null, false);
         eventsPub = map(eventsPub, "pub");
         eventsPriv = map(eventsPriv, "priv");
-        eventsPub.forEach(e => eventsPers.push(e));
-        eventsPriv.forEach(e => eventsPers.push(e));
-        res.status(200).json({eventi: eventsPers, data: str}).send();
+        setOrgNameAndPush(name, eventsPers, eventsPub, true);
+        setOrgNameAndPush(name, eventsPers, eventsPriv, true);
+        res.status(200).json({eventi: eventsPers, data: str});
     } else {
-        res.status(404).json({error: "Non esiste alcun evento programmato per la giornata selezionata."}).send();
+        res.status(404).json({error: "Non esiste alcun evento programmato per la giornata selezionata."});
     }
+    return; //This, along with the elimination of the "send()" call, should avoid the "[ERR_HTTP_HEADERS_SENT]" errors.
 });
 
 var findPubEvents = async (user) => {
