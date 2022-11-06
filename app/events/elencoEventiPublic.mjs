@@ -125,7 +125,7 @@ router.get("", async (req, res) => {
 var mapEvents = (token) => new Promise((resolve, reject) => {
     try {
         return resolve(tVerify(token, process.env.SUPER_SECRET));
-    } catch(err) {
+    } catch (err) {
         return reject();
     }
 });
@@ -133,7 +133,7 @@ var mapEvents = (token) => new Promise((resolve, reject) => {
 var setResponse = async (res, events, str) => {
     if (events.length > 0) {
         var orgNames = [];
-        for(let e of events) {
+        for (let e of events) {
             orgNames.push((await User.findById(e.organizzatoreID)).nome);
         }
         res.status(200).json({
@@ -151,14 +151,14 @@ router.get("/:data", async (req, res) => {
     var events = [], token = req.header("x-access-token");
 
     events = await eventPublic.find({});
-    if(events.length == 0) {
+    if (events.length == 0) {
         res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
         return;
     }
     events = events.filter(e => e.data.includes(str));
 
     if (token) {
-            await mapEvents(token)
+        await mapEvents(token)
             .then(async decoded => {
                 events = events.filter(e => !e.partecipantiID.includes(decoded.id));
                 setResponse(res, events, str);
@@ -167,12 +167,12 @@ router.get("/:data", async (req, res) => {
                 console.log(err);
                 //Token non valido; tentiamo con la verifica di Google
                 await verify.verify(token)
-                .then(async ticket => {
-                    events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
-                        email: { $eq: ticket.getPayload().email}
-                    }).id)) == undefined));
-                    setResponse(res, events, str);
-                });
+                    .then(async ticket => {
+                        events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
+                            email: { $eq: ticket.getPayload().email }
+                        }).id)) == undefined));
+                        setResponse(res, events, str);
+                    });
             });
     } else {
         setResponse(res, events, str);

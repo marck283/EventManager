@@ -92,7 +92,10 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                     },
                     eventPic: file.result.substring(formatSpecIndex),
                     etaMin: etaMin,
-                    etaMax: etaMax
+                    etaMax: etaMax,
+                    civNum: getId("civNum").value,
+                    cap: getId("cap").value,
+                    provincia: getId("provincia").value
                 })
             })
                 .then(resp => {

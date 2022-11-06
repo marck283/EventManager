@@ -20,6 +20,7 @@
   "homepage": "https://github.com/marck283/EventManager#readme",
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.1",
+    "@googlemaps/google-maps-services-js": "^3.3.16",
     "babel-jest": "^29.2.1",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
