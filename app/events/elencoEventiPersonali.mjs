@@ -12,18 +12,13 @@ var findEvents = async (obj, arr, cb) => {
     return events.filter(cb);
 }
 
-var setOrgNameAndPush = (name, events, addEvents, push = false) => {
-    if(!push) {
-        events.forEach(e => e.orgName = name);
+var getOrgNames = async events => {
+    var orgNames = [];
+    for(let e of events) {
+        orgNames.push((await User.findById(e.organizzatoreID)).nome);
     }
-    
-    if(push && addEvents != null && addEvents != undefined && addEvents.length > 0) {
-        addEvents.forEach(e => {
-            e.orgName = name;
-            events.push(e);
-        });
-    }
-};
+    return orgNames;
+}
 
 router.get("/:data", async (req, res) => {
     var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
@@ -34,19 +29,18 @@ router.get("/:data", async (req, res) => {
         user = await User.findOne({email: {$eq: req.loggedUser.email}});
         user = user.id;
     }
-    let name = (await User.findById(user)).nome;
+    let user1 = await User.findById(user);
 
     eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
     eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
     eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        eventsPers = map(eventsPers, "pers");
-        setOrgNameAndPush(name, eventsPers, null, false);
-        eventsPub = map(eventsPub, "pub");
-        eventsPriv = map(eventsPriv, "priv");
-        setOrgNameAndPush(name, eventsPers, eventsPub, true);
-        setOrgNameAndPush(name, eventsPers, eventsPriv, true);
+        eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
+        eventsPub = map(eventsPub, "pub", getOrgNames(eventsPub));
+        eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
+        eventsPub.forEach(e => eventsPers.push(e));
+        eventsPriv.forEach(e => eventsPers.push(e));
         res.status(200).json({eventi: eventsPers, data: str});
     } else {
         res.status(404).json({error: "Non esiste alcun evento programmato per la giornata selezionata."});
@@ -161,10 +155,10 @@ router.get("", async (req, res) => {
         }
     
         if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-            eventsPers = map(eventsPers, "pers");
-            eventsPub = map(eventsPub, "pub");
+            eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
+            eventsPub = map(eventsPub, "pub", getOrgNames(eventsPub));
             eventsPub.forEach(e => eventsPers.push(e));
-            eventsPriv = map(eventsPriv, "priv");
+            eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
             eventsPriv.forEach(e => eventsPers.push(e));
     
             res.status(200).json({eventi: eventsPers});

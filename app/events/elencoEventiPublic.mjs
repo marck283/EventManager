@@ -53,7 +53,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                 });
 
                 if (events.length > 0) {
-                    events1 = map(events, "pub");
+                    events1 = map(events, "pub", null);
                     events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
 
                     //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
@@ -122,32 +122,70 @@ router.get("", async (req, res) => {
     }
 });
 
+var mapEvents = (token) => new Promise((resolve, reject) => {
+    try {
+        return resolve(tVerify(token, process.env.SUPER_SECRET));
+    } catch(err) {
+        return reject();
+    }
+});
+
 router.get("/:data", async (req, res) => {
+    //Da correggere bug di visualizzazione degli eventi che non permette la restituzione degli eventi disponibili
+     
     var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
-    var events, token = req.header("x-access-token");
-    var user = "";
+    var events = [], token = req.header("x-access-token");
 
     events = await eventPublic.find({});
+    if(events.length == 0) {
+        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
+        return;
+    }
     events = events.filter(e => e.data.includes(str));
 
     if (token) {
-        tVerify(token, process.env.SUPER_SECRET, function (err, decoded) {
-            if (!err) {
-                user = decoded.id;
-                //Cerco nel database gli eventi a cui l'utente autenticato non è iscritto
-                events = events.filter(e => (e.partecipantiID.find(e => e == user) == undefined));
-            }
-        });
+            await mapEvents(token)
+            .then(async decoded => {
+                events = events.filter(e => !e.partecipantiID.includes(decoded.id));
+                if (events.length > 0) {
+                    var orgNames = [];
+                    for(let e of events) {
+                        orgNames.push((await User.findById(e.organizzatoreID)).nome);
+                    }
+                    res.status(200).json({
+                        eventi: map(events, "pub", orgNames),
+                        data: str
+                    }).send();
+                } else {
+                    res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
+                }
+                return;
+            })
+            .catch(async err => {
+                console.log(err);
+                //Token non valido; tentiamo con la verifica di Google
+                await verify.verify(token)
+                .then(async ticket => {
+                    events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
+                        email: { $eq: ticket.getPayload().email}
+                    }).id)) == undefined));
+                    if (events.length > 0) {
+                        var orgNames = [];
+                        for(let e of events) {
+                            orgNames.push((await User.findById(e.organizzatoreID)).nome);
+                        }
+                        res.status(200).json({
+                            eventi: map(events, "pub", orgNames),
+                            data: str
+                        });
+                    } else {
+                        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
+                    }
+                    return;
+                });
+            });
     }
-
-    if (events.length > 0) {
-        res.status(200).json({
-            eventi: map(events, "pub"),
-            data: str
-        }).send();
-    } else {
-        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." }).send();
-    }
+    return;
 });
 
 export default router;

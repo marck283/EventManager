@@ -1,5 +1,7 @@
-export default function map(events, eventType) {
+export default function map(events, eventType, orgNames) {
+    let i = 0;
     return events.map(event => {
+        console.log(i);
         var apiUrl;
         switch (eventType) {
             case "pers": {
@@ -20,13 +22,16 @@ export default function map(events, eventType) {
             }
         }
 
-        return {
+        let obj = {
             id: eventType,
             idevent: event.id,
             self: apiUrl,
             name: event.nomeAtt,
             category: event.categoria,
-            eventPic: event.eventPic
+            eventPic: event.eventPic,
+            orgName: orgNames[i]
         };
+        i += 1;
+        return obj;
     });
 }

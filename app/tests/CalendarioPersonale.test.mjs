@@ -4,6 +4,7 @@ import app from '../app.mjs';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPersonal from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
+import User from '../collezioni/utenti.mjs';
 import {jest} from '@jest/globals';
 
 describe('GET /api/v2/eventiCalendarioPersonale', () => {
@@ -12,6 +13,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
   let eventsPubSpy;
   let eventsPerSpy;
   let eventsPrivSpy;
+  let userSpy;
 
   beforeAll( () => {
     const recensione = "2345";
@@ -36,6 +38,21 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         {id:'785478458',data: '05-11-2010',  ora: '11:33', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323'], recensioni: [recensione]}
       ]
     });
+    userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
+      if(criterias.id === '2222') {
+        return [{
+          nome: 'Giovanni',
+          profilePic: '',
+          email: 'gg.ee@gmail.com',
+          tel: '',
+          password: '',
+          salt: '',
+          EventiCreati: ['797569'],
+          EventiIscrtto: ['9878456846784568', '987653', '75975947']
+        }];
+      }
+      return [];
+    })
   });
 
   afterAll(() => {
@@ -43,6 +60,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     eventsPubSpy = null;
     eventsPerSpy = null;
     eventsPrivSpy = null;
+    userSpy = null;
   });
 
   test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {

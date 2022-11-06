@@ -18,6 +18,14 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
+var getOrgNames = async events => {
+    var orgNames = [];
+    for(let e of events) {
+        orgNames.push((await User.findById(e.organizzatoreID)).nome);
+    }
+    return orgNames;
+}
+
 router.get("/:data", async (req, res) => {
     var data = req.params.data;
     const v = new Validator({
@@ -44,15 +52,15 @@ router.get("/:data", async (req, res) => {
         }
 
         if(eventList != null && eventList != undefined && eventList.length > 0) {
-            eventList = map(eventList, "pub");
+            eventList = map(eventList, "pub", getOrgNames(eventList));
         }
 
         if(eventsPers != null && eventsPers != undefined && eventsPers.length > 0) {
-            eventsPers = map(eventsPers, "pers");
+            eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
             eventList.push(eventsPers);
         }
         if(eventsPriv != null && eventsPriv != undefined && eventsPriv.length > 0) {
-            eventsPriv = map(eventsPriv, "priv");
+            eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
             eventList.push(eventsPriv);
         }
 
