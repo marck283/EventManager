@@ -381,8 +381,8 @@ router.post('', async (req, res) => {
 
                                     //Si crea un documento evento pubblico
 
-                                    //NOTA: modificare il server in modo da includere anche il numero civico,
-                                    //il CAP e la provincia
+                                    let provincia = req.body.provincia;
+                                    
                                     let eventP = new eventPublic({
                                         data: req.body.data,
                                         durata: req.body.durata,
