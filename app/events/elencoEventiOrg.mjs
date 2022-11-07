@@ -55,10 +55,10 @@ router.get("/:data", async (req, res) => {
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
             obj = {organizzatoreID: {$eq: utent.id}, data: {$eq: data}};
-            eventList = findEvents(eventPublic, obj);
+            eventList = await findEvents(eventPublic, obj);
             console.log("list: " + eventList);
-            eventsPers = findEvents(eventPers, obj);
-            eventsPriv = findEvents(eventPriv, obj);
+            eventsPers = await findEvents(eventPers, obj);
+            eventsPriv = await findEvents(eventPriv, obj);
         }
 
         if(eventList != null && eventList != undefined && eventList.length > 0) {
