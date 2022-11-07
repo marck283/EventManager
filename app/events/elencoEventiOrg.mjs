@@ -48,6 +48,7 @@ router.get("/:data", async (req, res) => {
             eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
         } else {
             eventList = await eventPublic.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
+            console.log("list: " + eventList);
             eventsPers = await eventPers.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
             eventsPriv = await eventPriv.find({email: {$eq: req.loggedUser.email}, data: {$eq: data}});
         }
@@ -65,13 +66,13 @@ router.get("/:data", async (req, res) => {
             eventList.push(eventsPriv);
         }
 
-        console.log(eventList.length);
+        console.log(eventList);
         if(eventList != null && eventList != undefined && eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {
             res.status(404).json({error: "Nessun evento organizzato da questo utente."}).send();
         }
-    });    
+    });
 });
 
 export default router;
