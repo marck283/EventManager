@@ -367,7 +367,7 @@ router.post('', async (req, res) => {
 
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
                         geoReq(req.body.luogoEv.indirizzo + ", " + req.body.civNum + ", " +
-                            req.body.cap + ", " + req.body.citta + ", " + req.body.stato)
+                            req.body.cap + ", " + req.body.citta + ", " + req.body.provincia)
                             .then(async r => {
                                 console.log(r.status);
                                 if (r.status == "OK") {
@@ -381,7 +381,7 @@ router.post('', async (req, res) => {
 
                                     //Si crea un documento evento pubblico
 
-                                    //NOTA: modificare i l server in modo da includere anche il numero civico,
+                                    //NOTA: modificare il server in modo da includere anche il numero civico,
                                     //il CAP e la provincia
                                     let eventP = new eventPublic({
                                         data: req.body.data,
@@ -392,7 +392,10 @@ router.post('', async (req, res) => {
                                         nomeAtt: req.body.nomeAtt,
                                         luogoEv: {
                                             indirizzo: req.body.luogoEv.indirizzo,
-                                            citta: req.body.luogoEv.citta
+                                            civNum: req.body.civNum,
+                                            cap: req.body.cap,
+                                            citta: req.body.luogoEv.citta,
+                                            privincia: req.body.provincia
                                         },
                                         organizzatoreID: utente.id,
                                         eventPic: "data:image/png;base64," + req.body.eventPic,

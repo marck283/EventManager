@@ -12,7 +12,10 @@ export default model('EventoP', new Schema({
 	maxPers: Number,
 	luogoEv: {
 		indirizzo: String,
-		citta: String
+		civNum: String,
+		cap: Number,
+		citta: String,
+		provincia: String
 	},
 	organizzatoreID: String,
 	partecipantiID: [String],
