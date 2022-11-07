@@ -65,6 +65,7 @@ router.get("/:data", async (req, res) => {
             eventList.push(eventsPriv);
         }
 
+        console.log(eventList.length);
         if(eventList != null && eventList != undefined && eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {
