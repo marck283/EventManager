@@ -29,7 +29,6 @@ router.get("/:data", async (req, res) => {
         user = await User.findOne({email: {$eq: req.loggedUser.email}});
         user = user.id;
     }
-    let user1 = await User.findById(user);
 
     eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
     eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));

@@ -24,5 +24,6 @@ export default model('EventoP', new Schema({
 	etaMax: Number,
 	terminato: Boolean,
 	recensioni: [String], //Array di id delle recensioni
-	valMedia: Number
+	valMedia: Number,
+	orgName: String
 }));

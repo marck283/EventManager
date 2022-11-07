@@ -48,10 +48,10 @@ router.get("/:data", async (req, res) => {
             eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
-            eventList = await eventPublic.find({organizzatoreID: utent.id, data: {$eq: data}});
+            eventList = await eventPublic.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
             console.log("list: " + eventList);
-            eventsPers = await eventPers.find({organizzatoreID: utent.id, data: {$eq: data}});
-            eventsPriv = await eventPriv.find({organizzatoreID: utent.id, data: {$eq: data}});
+            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
+            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
         }
 
         if(eventList != null && eventList != undefined && eventList.length > 0) {
