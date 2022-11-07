@@ -29,7 +29,9 @@ export default function map(events, eventType, orgNames) {
             name: event.nomeAtt,
             category: event.categoria,
             eventPic: event.eventPic,
-            orgName: orgNames[i]
+            orgName: orgNames[i],
+            days: event.data,
+            hours: event.ora
         };
         i += 1;
         return obj;

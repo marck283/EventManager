@@ -55,7 +55,8 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
                     idevent:'9876543',
                     self: "/api/v2/EventiPubblici/9876543",
                     name: "Evento",
-                    category: "svago", orgName: "Giovanna"}], data: '05-11-2010'});
+                    category: "svago", orgName: "Giovanna", days: '05-11-2010',
+                    hours: '11:33'}], data: '05-11-2010'});
   });
 
   test("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {

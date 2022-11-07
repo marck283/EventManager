@@ -104,21 +104,27 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
           idevent: '797569',
           self: '/api/v2/EventiPersonali/797569',
           name: 'Piscina',
-          category: 'svago'
+          category: 'svago',
+          days: '05-11-2010',
+          hours: '11:33'
         },
         {
           id: 'pub',
           idevent: '987653',
           self: '/api/v2/EventiPubblici/987653',
           name: 'Event',
-          category: 'svago'
+          category: 'svago',
+          days: '05-11-2010',
+          hours: '11:33'
         },
         {
           id: 'priv',
           idevent: '75975947',
           self: '/api/v2/EventiPrivati/75975947',
           name: 'Eventt',
-          category: 'operazione'
+          category: 'operazione',
+          days: '05-11-2010',
+          hours: '11:33'
         }], data: '05-11-2010'
       });
   });

@@ -68,12 +68,15 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
     expect('Content-Type', /json/).
-    expect(200, {eventi: [
-      {id: "pers",
+    expect(200, {eventi: [{
+        id: "pers",
         idevent:'797569',
         self: "/api/v2/EventiPersonali/797569",
         name: "Piscina",
-        category: "svago"}]
+        category: "svago",
+        days: '05-11-2010',
+        hours: '11:33'
+      }]
     });
   });
 
