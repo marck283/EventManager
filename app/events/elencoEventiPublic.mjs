@@ -48,9 +48,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
                 //Filter for events happening in the future
                 var curr = new Date();
-                events = events.filter(e => {
-                    return new Date(e.data + "Z" + e.ora) >= curr;
-                });
+                events = events.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
 
                 if (events.length > 0) {
                     events1 = map(events, "pub", null);
@@ -61,6 +59,9 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                         var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
                         return org.valutazioneMedia < org1.valutazioneMedia;
                     });
+                    console.log(events1.length);
+                } else {
+                    console.log("No events found");
                 }
             }
         })
@@ -78,6 +79,7 @@ var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, ci
             res.status(400).json({ error: "Richiesta malformata." });
         }
     } else {
+        console.log("null");
         res.status(404).json({ error: "Non sono presenti eventi organizzati." });
     }
 }
