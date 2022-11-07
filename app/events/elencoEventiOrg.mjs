@@ -6,6 +6,7 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
+import User from '../collezioni/utenti.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
