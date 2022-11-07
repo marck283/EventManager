@@ -72,6 +72,9 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 etaMin = Number(getId("etaMin").value);
             }
             console.log(dateEv);
+            console.log(getId("civNum").value);
+            console.log(getId("cap").value);
+            console.log(getId("provincia").value);
             fetch("/api/v2/EventiPubblici", {
                 method: 'POST',
                 headers: {
@@ -88,14 +91,14 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                     nomeAtt: getId("nomeAtt").value,
                     luogoEv: {
                         indirizzo: getId("indirizzo").value,
-                        citta: getId("Citta").value
+                        civNum: getId("civNum").value,
+                        citta: getId("Citta").value,
+                        cap: getId("cap").value,
+                        provincia: getId("provincia").value
                     },
                     eventPic: file.result.substring(formatSpecIndex),
                     etaMin: etaMin,
-                    etaMax: etaMax,
-                    civNum: getId("civNum").value,
-                    cap: getId("cap").value,
-                    provincia: getId("provincia").value
+                    etaMax: etaMax
                 })
             })
                 .then(resp => {

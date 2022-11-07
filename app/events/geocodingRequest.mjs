@@ -5,7 +5,7 @@ const geocodingRequest = (address) => {
 
     return client.geocode({
         params: {
-            key: process.env.GEOCODE_API_KEY,
+            key: process.env.GEOCODING_API_KEY,
             outputFormat: 'json',
             address: encodeURIComponent(address)
         }

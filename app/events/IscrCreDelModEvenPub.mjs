@@ -10,6 +10,7 @@ import { test } from '../hourRegexTest.mjs';
 import Recensioni from '../collezioni/recensioniPub.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
+import map from './provinceID.mjs';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -320,9 +321,9 @@ router.post('', async (req, res) => {
                     picture: req.body.eventPic,
                     etaMin: req.body.etaMin,
                     etaMax: req.body.etaMax,
-                    civNum: req.body.civNum,
-                    cap: req.body.cap,
-                    provincia: req.body.provincia
+                    civNum: req.body.luogoEv.civNum,
+                    cap: req.body.luogoEv.cap,
+                    provincia: req.body.luogoEv.provincia
                 };
                 const v1 = new Validator(options, {
                     durata: 'required|integer|min:1',
@@ -352,6 +353,7 @@ router.post('', async (req, res) => {
                 v1.check()
                     .then(async matched => {
                         if (!matched) {
+                            console.log(v1.errors);
                             res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                             return;
                         }
@@ -365,12 +367,14 @@ router.post('', async (req, res) => {
                             return;
                         }
 
+                        console.log(req.body.luogoEv.citta);
+
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
-                        geoReq(req.body.luogoEv.indirizzo + ", " + req.body.civNum + ", " +
-                            req.body.cap + ", " + req.body.citta + ", " + req.body.provincia)
+                        geoReq(req.body.luogoEv.indirizzo + ", " + req.body.luogoEv.civNum + ", " +
+                            req.body.luogoEv.cap + ", " + req.body.luogoEv.citta + ", " + req.body.luogoEv.provincia)
                             .then(async r => {
-                                console.log(r.status);
-                                if (r.status == "OK") {
+                                console.log(r.data.status);
+                                if (r.data.status == "OK") {
                                     let etaMin = null, etaMax = null;
                                     if (req.body.etaMin != undefined) {
                                         etaMin = Number(req.body.etaMin);
@@ -380,9 +384,6 @@ router.post('', async (req, res) => {
                                     }
 
                                     //Si crea un documento evento pubblico
-
-                                    let provincia = req.body.provincia;
-                                    
                                     let eventP = new eventPublic({
                                         data: req.body.data,
                                         durata: req.body.durata,
@@ -395,7 +396,7 @@ router.post('', async (req, res) => {
                                             civNum: req.body.civNum,
                                             cap: req.body.cap,
                                             citta: req.body.luogoEv.citta,
-                                            privincia: req.body.provincia
+                                            privincia: map(req.body.provincia)
                                         },
                                         organizzatoreID: utente.id,
                                         eventPic: "data:image/png;base64," + req.body.eventPic,
@@ -424,7 +425,7 @@ router.post('', async (req, res) => {
                                      */
                                     res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
                                 } else {
-                                    console.log(r.error_message);
+                                    console.log("err: " + r.error_message);
                                 }
                             })
                             .catch(err => {
