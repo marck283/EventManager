@@ -27,6 +27,10 @@ var getOrgNames = async events => {
     return orgNames;
 }
 
+var findEvents = async (arr, obj) => {
+    return await arr.find(obj);
+}
+
 router.get("/:data", async (req, res) => {
     var data = req.params.data;
     const v = new Validator({
@@ -41,17 +45,20 @@ router.get("/:data", async (req, res) => {
             return;
         }
         var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
+        let obj;
 
         if(utent === req.loggedUser.id) {
-            eventList = await eventPublic.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
-            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
-            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent}, data: {$eq: data}});
+            obj = {organizzatoreID: {$eq: utent}, data: {$eq: data}};
+            eventList = findEvents(eventPublic, obj);
+            eventsPers = findEvents(eventPers, obj);
+            eventsPriv = findEvents(eventPriv, obj);
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
-            eventList = await eventPublic.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
+            obj = {organizzatoreID: {$eq: utent.id}, data: {$eq: data}};
+            eventList = findEvents(eventPublic, obj);
             console.log("list: " + eventList);
-            eventsPers = await eventPers.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
-            eventsPriv = await eventPriv.find({organizzatoreID: {$eq: utent.id}, data: {$eq: data}});
+            eventsPers = findEvents(eventPers, obj);
+            eventsPriv = findEvents(eventPriv, obj);
         }
 
         if(eventList != null && eventList != undefined && eventList.length > 0) {
