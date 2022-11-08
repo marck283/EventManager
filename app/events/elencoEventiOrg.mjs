@@ -64,7 +64,6 @@ router.get("/:data", async (req, res) => {
             console.log(utent[0].id); //undefined?
         }
         eventList = await findEvents(eventPublic, obj);
-        console.log("list: " + eventList);
         eventsPers = await findEvents(eventPers, obj);
         eventsPriv = await findEvents(eventPriv, obj);
 
@@ -72,7 +71,6 @@ router.get("/:data", async (req, res) => {
         eventList = mapAndPush(eventsPers, eventList, "pers");
         eventList = mapAndPush(eventsPriv, eventList, "priv");
 
-        console.log(eventList);
         if(eventList != null && eventList != undefined && eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
         } else {
