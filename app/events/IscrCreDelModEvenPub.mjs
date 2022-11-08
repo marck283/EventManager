@@ -407,6 +407,8 @@ router.post('', async (req, res) => {
                                         valMedia: 0.0,
                                         orgName: utente.nome
                                     });
+
+                                    //Questo è davvero necessario?
                                     eventP.partecipantiID.push(utente.id);
 
                                     //Si salva il documento pubblico

@@ -61,6 +61,7 @@ router.get("/:data", async (req, res) => {
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
             obj = {organizzatoreID: {$eq: utent.id}, data: {$eq: data}};
+            console.log(utent.id);
         }
         eventList = await findEvents(eventPublic, obj);
         console.log("list: " + eventList);
