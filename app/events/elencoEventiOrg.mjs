@@ -31,6 +31,15 @@ var findEvents = async (arr, obj) => {
     return await arr.find(obj);
 }
 
+var mapAndPush = (arr, genArr, cat, push) => {
+    if(arr != null && arr != undefined && arr.length > 0) {
+        let events = map(arr, cat, getOrgNames(arr));
+        genArr.push(events);
+    }
+
+    return genArr;
+}
+
 router.get("/:data", async (req, res) => {
     var data = req.params.data;
     const v = new Validator({
@@ -49,30 +58,18 @@ router.get("/:data", async (req, res) => {
 
         if(utent === req.loggedUser.id) {
             obj = {organizzatoreID: {$eq: utent}, data: {$eq: data}};
-            eventList = findEvents(eventPublic, obj);
-            eventsPers = findEvents(eventPers, obj);
-            eventsPriv = findEvents(eventPriv, obj);
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
             obj = {organizzatoreID: {$eq: utent.id}, data: {$eq: data}};
-            eventList = await findEvents(eventPublic, obj);
-            console.log("list: " + eventList);
-            eventsPers = await findEvents(eventPers, obj);
-            eventsPriv = await findEvents(eventPriv, obj);
         }
+        eventList = await findEvents(eventPublic, obj);
+        console.log("list: " + eventList);
+        eventsPers = await findEvents(eventPers, obj);
+        eventsPriv = await findEvents(eventPriv, obj);
 
-        if(eventList != null && eventList != undefined && eventList.length > 0) {
-            eventList = map(eventList, "pub", getOrgNames(eventList));
-        }
-
-        if(eventsPers != null && eventsPers != undefined && eventsPers.length > 0) {
-            eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
-            eventList.push(eventsPers);
-        }
-        if(eventsPriv != null && eventsPriv != undefined && eventsPriv.length > 0) {
-            eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
-            eventList.push(eventsPriv);
-        }
+        eventList = mapAndPush(eventList, [], "pub", true);
+        eventList = mapAndPush(eventsPers, eventList, "pers", true);
+        eventList = mapAndPush(eventsPriv, eventList, "priv", true);
 
         console.log(eventList);
         if(eventList != null && eventList != undefined && eventList.length > 0) {
