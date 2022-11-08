@@ -31,7 +31,7 @@ var findEvents = async (arr, obj) => {
     return await arr.find(obj);
 }
 
-var mapAndPush = (arr, genArr, cat, push) => {
+var mapAndPush = (arr, genArr, cat) => {
     if(arr != null && arr != undefined && arr.length > 0) {
         let events = map(arr, cat, getOrgNames(arr));
         genArr.push(events);
@@ -67,9 +67,9 @@ router.get("/:data", async (req, res) => {
         eventsPers = await findEvents(eventPers, obj);
         eventsPriv = await findEvents(eventPriv, obj);
 
-        eventList = mapAndPush(eventList, [], "pub", true);
-        eventList = mapAndPush(eventsPers, eventList, "pers", true);
-        eventList = mapAndPush(eventsPriv, eventList, "priv", true);
+        eventList = mapAndPush(eventList, [], "pub");
+        eventList = mapAndPush(eventsPers, eventList, "pers");
+        eventList = mapAndPush(eventsPriv, eventList, "priv");
 
         console.log(eventList);
         if(eventList != null && eventList != undefined && eventList.length > 0) {
