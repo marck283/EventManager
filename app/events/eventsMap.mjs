@@ -1,4 +1,4 @@
-export default function map(events, eventType, orgNames) {
+export default function map(events, eventType, orgNames = null) {
     let i = 0;
     return events.map(event => {
         console.log(i);
@@ -22,17 +22,34 @@ export default function map(events, eventType, orgNames) {
             }
         }
 
-        let obj = {
-            id: eventType,
-            idevent: event.id,
-            self: apiUrl,
-            name: event.nomeAtt,
-            category: event.categoria,
-            eventPic: event.eventPic,
-            orgName: orgNames[i],
-            days: event.data,
-            hours: event.ora
-        };
+        let obj;
+
+        if (orgNames != null) {
+            obj = {
+                id: eventType,
+                idevent: event.id,
+                self: apiUrl,
+                name: event.nomeAtt,
+                category: event.categoria,
+                eventPic: event.eventPic,
+                orgName: orgNames[i],
+                days: event.data,
+                hours: event.ora
+            };
+        } else {
+            obj = {
+                id: eventType,
+                idevent: event.id,
+                self: apiUrl,
+                name: event.nomeAtt,
+                category: event.categoria,
+                eventPic: event.eventPic,
+                days: event.data,
+                hours: event.ora
+            };
+        }
+
+
         i += 1;
         return obj;
     });
