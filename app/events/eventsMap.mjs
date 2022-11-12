@@ -1,6 +1,8 @@
+import User from '../collezioni/utenti.mjs';
+
 export default function map(events, eventType, orgNames = null) {
     let i = 0;
-    return events.map(event => {
+    return events.map(async event => {
         console.log(i);
         var apiUrl;
         switch (eventType) {
@@ -43,6 +45,7 @@ export default function map(events, eventType, orgNames = null) {
                 self: apiUrl,
                 name: event.nomeAtt,
                 category: event.categoria,
+                orgName: (await User.find({EventiCreati: {$elemMatch: {$eq: event.id}}})).name,
                 eventPic: event.eventPic,
                 days: event.data,
                 hours: event.ora

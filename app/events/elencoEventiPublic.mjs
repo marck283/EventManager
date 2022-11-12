@@ -59,7 +59,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                         var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
                         return org.valutazioneMedia < org1.valutazioneMedia;
                     });
-                    console.log("62" + events1.length);
+                    console.log(events1.length);
                 } else {
                     console.log("No events found");
                 }
@@ -102,7 +102,6 @@ router.get("", async (req, res) => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
-                console.log(utente.email);
                 events = events.filter(e => (!e.partecipantiID.includes(utente.id) && e.organizzatoreID !== utente.id));
 
                 queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
