@@ -36,7 +36,7 @@ export default function map(events, eventType, orgNames = null) {
             days: event.data,
             hours: event.ora
         };
-
+        console.log(orgNames[i]);
 
         i += 1;
         return obj;
