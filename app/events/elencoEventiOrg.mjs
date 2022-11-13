@@ -7,6 +7,7 @@ import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
+import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -19,26 +20,18 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var getOrgNames = async events => {
-    var orgNames = [];
-    for(let e of events) {
-        orgNames.push((await User.findById(e.organizzatoreID)).nome);
-    }
-    return orgNames;
-}
-
 var findEvents = async (arr, obj) => {
     return await arr.find(obj);
-}
+};
 
-var mapAndPush = (arr, genArr, cat) => {
+var mapAndPush = async (arr, genArr, cat) => {
     if(arr != null && arr != undefined && arr.length > 0) {
-        let events = map(arr, cat, getOrgNames(arr));
+        let events = map(arr, cat, await getOrgNames(arr));
         events.forEach(e => genArr.push(e));
     }
 
     return genArr;
-}
+};
 
 router.get("/:data", async (req, res) => {
     var data = req.params.data;

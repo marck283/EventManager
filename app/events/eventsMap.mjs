@@ -2,7 +2,8 @@ import User from '../collezioni/utenti.mjs';
 
 export default function map(events, eventType, orgNames = null) {
     let i = 0;
-    return events.map(async event => {
+    console.log(events);
+    return events.map(event => {
         console.log(i);
         var apiUrl;
         switch (eventType) {
@@ -24,33 +25,17 @@ export default function map(events, eventType, orgNames = null) {
             }
         }
 
-        let obj;
-
-        if (orgNames != null) {
-            obj = {
-                id: eventType,
-                idevent: event.id,
-                self: apiUrl,
-                name: event.nomeAtt,
-                category: event.categoria,
-                eventPic: event.eventPic,
-                orgName: orgNames[i],
-                days: event.data,
-                hours: event.ora
-            };
-        } else {
-            obj = {
-                id: eventType,
-                idevent: event.id,
-                self: apiUrl,
-                name: event.nomeAtt,
-                category: event.categoria,
-                orgName: (await User.find({EventiCreati: {$elemMatch: {$eq: event.id}}})).name,
-                eventPic: event.eventPic,
-                days: event.data,
-                hours: event.ora
-            };
-        }
+        let obj = {
+            id: eventType,
+            idevent: event.id,
+            self: apiUrl,
+            name: event.nomeAtt,
+            category: event.categoria,
+            eventPic: event.eventPic,
+            orgName: orgNames[i],
+            days: event.data,
+            hours: event.ora
+        };
 
 
         i += 1;

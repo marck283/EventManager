@@ -6,18 +6,11 @@ const router = Router();
 import map from './eventsMap.mjs';
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
+import getOrgNames from './OrgNames.mjs';
 
 var findEvents = async (obj, arr, cb) => {
     var events = await arr.find(obj);
     return events.filter(cb);
-}
-
-var getOrgNames = async events => {
-    var orgNames = [];
-    for(let e of events) {
-        orgNames.push((await User.findById(e.organizzatoreID)).nome);
-    }
-    return orgNames;
 }
 
 router.get("/:data", async (req, res) => {
@@ -35,9 +28,9 @@ router.get("/:data", async (req, res) => {
     eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
-        eventsPub = map(eventsPub, "pub", getOrgNames(eventsPub));
-        eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
+        eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
+        eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
+        eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
         eventsPub.forEach(e => eventsPers.push(e));
         eventsPriv.forEach(e => eventsPers.push(e));
         res.status(200).json({eventi: eventsPers, data: str});

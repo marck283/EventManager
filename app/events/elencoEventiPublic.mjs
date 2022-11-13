@@ -8,6 +8,7 @@ const tVerify = pkg.verify;
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import verify from '../googleTokenChecker.mjs';
+import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
@@ -24,7 +25,7 @@ var filterCondition = (condition, arr, cb) => {
     if (condition) {
         arr.filter(cb);
     }
-}
+};
 
 var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) => {
     const v1 = new Validator({
@@ -36,7 +37,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
     var events1 = null;
 
     await v1.check()
-        .then(matched => {
+        .then(async matched => {
             if (!matched) {
                 events1 = 1;
             } else {
@@ -51,7 +52,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                 events = events.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
 
                 if (events.length > 0) {
-                    events1 = map(events, "pub", null);
+                    events1 = await map(events, "pub", getOrgNames(events));
                     events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
 
                     //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
@@ -123,7 +124,7 @@ router.get("", async (req, res) => {
     }
 });
 
-var mapEvents = (token) => new Promise((resolve, reject) => {
+var mapEvents = token => new Promise((resolve, reject) => {
     try {
         return resolve(tVerify(token, process.env.SUPER_SECRET));
     } catch (err) {
@@ -133,12 +134,11 @@ var mapEvents = (token) => new Promise((resolve, reject) => {
 
 var setResponse = async (res, events, str) => {
     if (events.length > 0) {
-        var orgNames = [];
-        for (let e of events) {
-            orgNames.push((await User.findById(e.organizzatoreID)).nome);
-        }
+        var orgNames = await getOrgNames(events);
+        var eventsAss = map(events, "pub", orgNames);
+        console.log("EventsAss: " + eventsAss);
         res.status(200).json({
-            eventi: map(events, "pub", orgNames),
+            eventi: eventsAss,
             data: str
         }).send();
     } else {
@@ -162,9 +162,10 @@ router.get("/:data", async (req, res) => {
         await mapEvents(token)
             .then(async decoded => {
                 events = events.filter(e => !e.partecipantiID.includes(decoded.id));
-                setResponse(res, events, str);
+                await setResponse(res, events, str);
             })
             .catch(async err => {
+                console.log("NOK");
                 console.log(err);
                 //Token non valido; tentiamo con la verifica di Google
                 await verify.verify(token)
@@ -172,11 +173,11 @@ router.get("/:data", async (req, res) => {
                         events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
                             email: { $eq: ticket.getPayload().email }
                         }).id)) == undefined));
-                        setResponse(res, events, str);
+                        await setResponse(res, events, str);
                     });
             });
     } else {
-        setResponse(res, events, str);
+        await setResponse(res, events, str);
     }
     return;
 });
