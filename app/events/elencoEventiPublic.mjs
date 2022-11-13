@@ -52,7 +52,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                 events = events.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
 
                 if (events.length > 0) {
-                    events1 = await map(events, "pub", getOrgNames(events));
+                    events1 = await map(events, "pub", await getOrgNames(events));
                     events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
 
                     //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
