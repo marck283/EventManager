@@ -134,7 +134,9 @@ var mapEvents = token => new Promise((resolve, reject) => {
 
 var setResponse = async (res, events, str) => {
     if (events.length > 0) {
-        var eventsAss = map(events, "pub", await getOrgNames(events));
+        var orgNames = await getOrgNames(events);
+        console.log(orgNames);
+        var eventsAss = map(events, "pub", orgNames);
         console.log("EventsAss: " + eventsAss);
         res.status(200).json({
             eventi: eventsAss,
@@ -164,7 +166,6 @@ router.get("/:data", async (req, res) => {
                 await setResponse(res, events, str);
             })
             .catch(async err => {
-                console.log("NOK");
                 console.log(err);
                 //Token non valido; tentiamo con la verifica di Google
                 await verify.verify(token)
