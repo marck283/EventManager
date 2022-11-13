@@ -137,7 +137,7 @@ var setResponse = async (res, events, str) => {
         var orgNames = await getOrgNames(events);
         console.log("orgNames: " + orgNames);
         var eventsAss = map(events, "pub", orgNames);
-        console.log("EventsAss: " + eventsAss);
+        //console.log("EventsAss: " + eventsAss);
         res.status(200).json({
             eventi: eventsAss,
             data: str
