@@ -83,7 +83,7 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 },
                 body: JSON.stringify({
                     data: dateEv,
-                    ora: getId("ora").value,
+                    ora: [getId("ora").value],
                     descrizione: getId("descrizione").value,
                     durata: Number(getId("durata").value),
                     maxPers: Number(getId("maxPers").value),

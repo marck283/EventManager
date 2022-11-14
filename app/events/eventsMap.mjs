@@ -1,5 +1,3 @@
-import User from '../collezioni/utenti.mjs';
-
 export default function map(events, eventType, orgNames = null) {
     let i = 0;
     console.log(events);
@@ -33,8 +31,7 @@ export default function map(events, eventType, orgNames = null) {
             category: event.categoria,
             eventPic: event.eventPic,
             orgName: orgNames[i],
-            days: event.data,
-            hours: event.ora
+            dataOra: event.dataOra
         };
         console.log("i: " + orgNames[i]);
 

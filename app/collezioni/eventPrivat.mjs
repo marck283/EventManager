@@ -3,8 +3,7 @@ var Schema = _Schema;
 
 // set up a mongoose model
 export default model('EventoPr', new Schema({ 
-	data: [String],
-	ora: String,
+	dataOra: [Date], //Pair of date and time equivalent to JS Date object
 	durata: Number,
 	categoria: String,
 	nomeAtt: String,

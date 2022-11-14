@@ -1,5 +1,11 @@
 export default function test(dateArr, hourStr) {
-    var d = new Date(), ok = dateArr.filter(d1 => new Date(d1 + "Z" + hourStr) < d).length > 0 && dateArr.length == 1;
+    var i = 0;
+    var d = new Date(), ok = dateArr.filter(d1 => {
+        var j = i;
+        var d2 = new Date(d1 + "Z" + hourStr[j]) < d;
+        ++i;
+        return d2;
+    }).length > 0;
     d = null;
     return ok;
 };

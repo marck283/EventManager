@@ -23,9 +23,9 @@ router.get("/:data", async (req, res) => {
         user = user.id;
     }
 
-    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.data.includes(str));
-    eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
-    eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.data.includes(str));
+    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));

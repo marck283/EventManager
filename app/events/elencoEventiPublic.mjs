@@ -157,12 +157,12 @@ router.get("/:data", async (req, res) => {
         res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
         return;
     }
-    events = events.filter(e => e.data.includes(str));
+    events = events.filter(e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
 
     if (token) {
         await mapEvents(token)
             .then(async decoded => {
-                events = events.filter(e => !e.partecipantiID.includes(decoded.id));
+                events = events.filter(e => e.partecipantiID.length == 0 || !e.partecipantiID.includes(decoded.id));
                 await setResponse(res, events, str);
             })
             .catch(async err => {
@@ -170,9 +170,9 @@ router.get("/:data", async (req, res) => {
                 //Token non valido; tentiamo con la verifica di Google
                 await verify.verify(token)
                     .then(async ticket => {
-                        events = events.filter(e => (e.partecipantiID.find(async e => e == (await User.find({
+                        events = events.filter(async e => (!e.partecipantiID.includes(await User.find({
                             email: { $eq: ticket.getPayload().email }
-                        }).id)) == undefined));
+                        }).id)));
                         await setResponse(res, events, str);
                     });
             });

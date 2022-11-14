@@ -3,5 +3,6 @@ var Schema = _Schema;
 
 // set up a mongoose model
 export default model('EventoPe', new Schema({ 
-	data: [String],  ora: String, durata: Number, categoria: String, nomeAtt: String, luogoEv: {indirizzo: String, citta: String}, organizzatoreID: String}
+	dataOra: [Date], //Pair of date and time equivalent to JS Date object
+	durata: Number, categoria: String, nomeAtt: String, luogoEv: {indirizzo: String, citta: String}, organizzatoreID: String}
 ));

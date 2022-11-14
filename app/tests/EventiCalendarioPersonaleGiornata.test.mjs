@@ -22,16 +22,16 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     token = createToken("gg.ee@gmail.com", "2222", 3600);
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => 
       [
-        { id: '9876543', data: '05-11-2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234'] },
-        { id: '987653', data: '05-11-2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'] },
-        { id: '9878456846784568', data: '05-12-2010', ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'] }
+        { id: '9876543', dataOra: [new Date('2010-05-11T11:33:00.000Z')], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234'] },
+        { id: '987653', dataOra: [new Date('2010-05-11T11:33:00.000Z')], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'] },
+        { id: '9878456846784568', dataOra: [new Date('2010-05-11T11:33:00.000Z')], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['2222', '1234'] }
       ]
     );
 
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if (criterias.organizzatoreID == '2222') {
         return [
-          { id: '797569', data: '05-11-2010', ora: '11:33', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '2222' }
+          { id: '797569', dataOra: [new Date('2010-05-11T11:33:00.000Z')], durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '2222' }
         ]
       }
       return [];
@@ -40,8 +40,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => [
       {
         id: '75975947',
-        data: '05-11-2010',
-        ora: '11:33',
+        dataOra: [new Date('2010-05-11T11:33:00.000Z')],
         durata: 4,
         categoria: 'operazione',
         nomeAtt: 'Eventt',
@@ -54,8 +53,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
         invitatiID: ['2323']
       }, {
         id: '785478458',
-        data: '05-11-2010',
-        ora: '11:33',
+        dataOra: [new Date('2010-05-11T11:33:00.000Z')],
         durata: 4,
         categoria: 'operazione',
         nomeAtt: 'Eventt',
@@ -95,18 +93,18 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   });
 
   test("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
-    await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
+    const response = await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
       set('x-access-token', token).
-      expect('Content-Type', /json/).
-      expect(200, {
+      expect('Content-Type', /json/);
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toStrictEqual({
         eventi: [{
-          id: 'pers',
+          id: "pers",
           idevent: '797569',
-          self: '/api/v2/EventiPersonali/797569',
           name: 'Piscina',
+          self: '/api/v2/EventiPersonali/797569',
           category: 'svago',
-          days: '05-11-2010',
-          hours: '11:33'
+          dataOra: ['2010-05-11T11:33:00.000Z']
         },
         {
           id: 'pub',
@@ -114,8 +112,15 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
           self: '/api/v2/EventiPubblici/987653',
           name: 'Event',
           category: 'svago',
-          days: '05-11-2010',
-          hours: '11:33'
+          dataOra: ['2010-05-11T11:33:00.000Z']
+        },
+        {
+          id: "pub",
+          idevent: '9878456846784568',
+          self: '/api/v2/EventiPubblici/9878456846784568',
+          name: 'Evet',
+          category: 'svago',
+          dataOra: ['2010-05-11T11:33:00.000Z']
         },
         {
           id: 'priv',
@@ -123,8 +128,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
           self: '/api/v2/EventiPrivati/75975947',
           name: 'Eventt',
           category: 'operazione',
-          days: '05-11-2010',
-          hours: '11:33'
+          dataOra: ['2010-05-11T11:33:00.000Z']
         }], data: '05-11-2010'
       });
   });

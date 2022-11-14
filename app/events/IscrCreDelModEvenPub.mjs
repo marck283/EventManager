@@ -328,7 +328,8 @@ router.post('', async (req, res) => {
                 const v1 = new Validator(options, {
                     durata: 'required|integer|min:1',
                     descrizione: 'required|string|minLength:1|maxLength:140',
-                    ora: 'required|string|minLength:5|maxLength:5',
+                    'ora': 'required|array|minLength:1',
+                    'ora.*': 'required|string|minLength:5|maxLength:5',
                     maxPers: 'required|integer|min:2',
                     categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
                     nomeAtt: 'required|string|minLength:1',
@@ -357,8 +358,14 @@ router.post('', async (req, res) => {
                             res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                             return;
                         }
+
                         if (!test(req.body.ora)) {
                             res.status(400).json({ error: "Formato ora non valido" }).send();
+                            return;
+                        }
+
+                        if(req.body.data.length !== req.body.ora.length) {
+                            res.status(400).json({ error: "Le date e le ore non corrispondono" }).send();
                             return;
                         }
 
@@ -366,8 +373,6 @@ router.post('', async (req, res) => {
                             res.status(400).json({ error: "Data non valida." }).send();
                             return;
                         }
-
-                        console.log(req.body.luogoEv.citta);
 
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
                         geoReq(req.body.luogoEv.indirizzo + ", " + req.body.luogoEv.civNum + ", " +
@@ -383,11 +388,15 @@ router.post('', async (req, res) => {
                                         etaMax = Number(req.body.etaMax);
                                     }
 
+                                    var dateArr = [], i = 0;
+                                    for(let d of req.body.data) {
+                                        dateArr.push(new Date(d + "Z" + req.body.ora[i]));
+                                    }
+
                                     //Si crea un documento evento pubblico
                                     let eventP = new eventPublic({
-                                        data: req.body.data,
+                                        dataOra: dateArr,
                                         durata: req.body.durata,
-                                        ora: req.body.ora,
                                         maxPers: req.body.maxPers,
                                         categoria: req.body.categoria,
                                         nomeAtt: req.body.nomeAtt,

@@ -6,8 +6,7 @@ export default model('EventoP', new Schema({
 	categoria: String,
 	nomeAtt: String,
 	descrizione: String,
-	data: [String],
-	ora: String,
+	dataOra: [Date], //Pair of date and time equivalent to JS Date object
 	durata: Number,
 	maxPers: Number,
 	luogoEv: {
