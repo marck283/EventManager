@@ -277,7 +277,20 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                let eventP = new eventPrivat({ data: req.body.data, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent, invitatiID: ListaInvitati });
+                let eventP = new eventPrivat({
+                    data: req.body.data,
+                    durata: req.body.durata,
+                    ora: req.body.ora,
+                    categoria: req.body.categoria,
+                    nomeAtt: req.body.nomeAtt,
+                    luogoEv: {
+                        indirizzo: req.body.luogoEv.indirizzo,
+                        citta: req.body.luogoEv.citta
+                    },
+                    organizzatoreID: utent,
+                    invitatiID: ListaInvitati,
+                    partecipantiID: []
+                });
                 eventP.partecipantiID.push(utent);
 
                 //Si salva il documento personale

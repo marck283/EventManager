@@ -414,7 +414,8 @@ router.post('', async (req, res) => {
                                         terminato: false,
                                         recensioni: [],
                                         valMedia: 0.0,
-                                        orgName: utente.nome
+                                        orgName: utente.nome,
+                                        partecipantiID: []
                                     });
 
                                     //Questo è davvero necessario?

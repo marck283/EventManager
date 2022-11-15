@@ -49,7 +49,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
                 //Filter for events happening in the future
                 var curr = new Date();
-                events = events.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
+                events = events.filter(e => e.dataOra.filter(d => d >= curr).length > 0);
 
                 if (events.length > 0) {
                     events1 = await map(events, "pub", await getOrgNames(events));
@@ -104,6 +104,8 @@ router.get("", async (req, res) => {
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (!e.partecipantiID.includes(utente.id) && e.organizzatoreID !== utente.id));
+
+                console.log("Events: " + events);
 
                 queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
             })
