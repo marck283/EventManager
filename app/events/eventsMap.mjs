@@ -1,9 +1,7 @@
 export default function map(events, eventType, orgNames = null) {
     let i = 0;
-    console.log("map", events);
     return events.map(event => {
         var apiUrl;
-        console.log("eventID: " + event.id);
         switch (eventType) {
             case "pers": {
                 apiUrl = "/api/v2/EventiPersonali/" + event.id;

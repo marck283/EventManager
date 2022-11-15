@@ -137,9 +137,7 @@ var mapEvents = token => new Promise((resolve, reject) => {
 var setResponse = async (res, events, str) => {
     if (events.length > 0) {
         var orgNames = await getOrgNames(events);
-        console.log("orgNames: " + orgNames);
         var eventsAss = map(events, "pub", orgNames);
-        //console.log("EventsAss: " + eventsAss);
         res.status(200).json({
             eventi: eventsAss,
             data: str

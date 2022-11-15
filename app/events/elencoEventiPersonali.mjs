@@ -57,7 +57,6 @@ router.get("/:data", async (req, res) => {
     var user = req.loggedUser.id || req.loggedUser.sub, user1;
     if (user === req.loggedUser.sub) {
         user1 = await User.findOne({ email: { $eq: req.loggedUser.email } });
-        //user = user.id;
     } else {
         user1 = await User.findById(user);
     }
