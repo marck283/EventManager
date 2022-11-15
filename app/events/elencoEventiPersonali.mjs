@@ -8,7 +8,7 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 
-var findEvents = async (obj, arr, evType) => {
+var findEvents = async (obj, arr, evType, user = null) => {
     var events = await arr.find(obj);
     console.log(events);
     if(evType === "pers") {
@@ -30,9 +30,9 @@ router.get("/:data", async (req, res) => {
     //Correggere bug che impedisce di ritornare gli eventi che l'utente ha organizzato o a cui partecipa in un giorno specifico.
     eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, "pers");
     console.log(eventsPers.length);
-    eventsPub = await findEvents({}, eventPublic, "pub");
+    eventsPub = await findEvents({}, eventPublic, "pub", user);
     console.log(eventsPub.length);
-    eventsPriv = await findEvents({}, eventPrivate, "priv");
+    eventsPriv = await findEvents({}, eventPrivate, "priv", user);
     console.log(eventsPriv.length);
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
