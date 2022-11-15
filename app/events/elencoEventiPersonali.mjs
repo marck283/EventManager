@@ -8,10 +8,13 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 
-var findEvents = async (obj, arr, cb) => {
+var findEvents = async (obj, arr, evType) => {
     var events = await arr.find(obj);
     console.log(events);
-    return events.filter(cb);
+    if(evType === "pers") {
+        return events.filter(e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    }
+    return events.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
 }
 
 router.get("/:data", async (req, res) => {
@@ -25,9 +28,12 @@ router.get("/:data", async (req, res) => {
     }
 
     //Correggere bug che impedisce di ritornare gli eventi che l'utente ha organizzato o a cui partecipa in un giorno specifico.
-    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
-    eventsPub = await findEvents({}, eventPublic, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
-    eventsPriv = await findEvents({}, eventPrivate, e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, "pers");
+    console.log(eventsPers.length);
+    eventsPub = await findEvents({}, eventPublic, "pub");
+    console.log(eventsPub.length);
+    eventsPriv = await findEvents({}, eventPrivate, "priv");
+    console.log(eventsPriv.length);
 
     if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
