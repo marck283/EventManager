@@ -61,7 +61,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         token = null;
     });
     
-    test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
+    it('POST /api/v2/EventiPrivati/idEvento/Iscrizioni con utente non invitato dovrebbe restituire 403', async() => {
         
         await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni')
         .set('x-access-token', createToken("aa.bb@gmail.com", "5555", 3600))
@@ -69,7 +69,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         
     });
     
-    test('POST /api/v2/EventiPrivati/idEvento/Iscrizioni effettuata con successo dovrebbe restituire 201', async() => {
+    it('POST /api/v2/EventiPrivati/idEvento/Iscrizioni effettuata con successo dovrebbe restituire 201', async() => {
         
         const response = await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').set('x-access-token', token);
         expect(response.statusCode).toBe(201);

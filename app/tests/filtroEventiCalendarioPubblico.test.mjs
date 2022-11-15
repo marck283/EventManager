@@ -32,7 +32,7 @@ describe("GET /api/v2/eventiCalendarioPubblico", () => {
         mockFind = null;
     });
 
-    test("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore non numerico", () => {
+    it("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPubblico")
         .set('Accept', 'application/json')
@@ -45,7 +45,7 @@ describe("GET /api/v2/eventiCalendarioPubblico", () => {
         .expect(400, {error: "Richiesta malformata."});
     });
 
-    test("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore minore o uguale a 0", () => {
+    it("GET /api/v2/eventiCalendarioPubblico con campo 'durata' compilato con un valore minore o uguale a 0", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPubblico")
         .set('Accept', 'application/json')

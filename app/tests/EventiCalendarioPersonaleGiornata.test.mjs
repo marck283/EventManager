@@ -150,7 +150,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     userSpy = null;
   });
 
-  test("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
       set('x-access-token', token).
       expect('Content-Type', /json/);
@@ -192,14 +192,14 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     });
   });
 
-  test("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05112010').
       set('x-access-token', token).
       expect('Content-Type', /json/).
       expect(400, { error: "Data non valida" });
   });
 
-  test("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di cui non esiste alcun evento pubblico o privato per la data passata a cui l'utente non si è iscritto o creato, oppure non esiste alcun evento personale creato dall'utente per quella data", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di cui non esiste alcun evento pubblico o privato per la data passata a cui l'utente non si è iscritto o creato, oppure non esiste alcun evento personale creato dall'utente per quella data", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05-13-2010').
       set('x-access-token', token).
       expect('Content-Type', /json/).

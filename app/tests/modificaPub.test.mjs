@@ -39,7 +39,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         token = null;
     });
     
-    test('PATCH /api/v2/EventiPubblici/idEvento con utente non organizzatore dovrebbe restituire 403', async() => {
+    it('PATCH /api/v2/EventiPubblici/idEvento con utente non organizzatore dovrebbe restituire 403', async() => {
         
         await request(app).patch('/api/v2/EventiPubblici/'+'67890').
         set('x-access-token', createToken("aa.bb@gmail.com", "1111", 3600))
@@ -47,7 +47,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         
     });
     
-    test('PATCH /api/v2/EventiPubblici/idEvento effettuata con successo dovrebbe restituire 200', async() => {
+    it('PATCH /api/v2/EventiPubblici/idEvento effettuata con successo dovrebbe restituire 200', async() => {
         
         const response = await request(app).patch('/api/v2/EventiPubblici/'+'67890').
         set('x-access-token', token).

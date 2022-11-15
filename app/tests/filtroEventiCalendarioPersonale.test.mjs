@@ -72,7 +72,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
     // create a valid token
     var token = createToken("gg.ee@gmail.com", "62993bc81430d0dd9a208934", 86400);
 
-    test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
+    it("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPersonale?passato=False")
         .set('x-access-token', token)
@@ -86,7 +86,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .expect(400, {error: "Richiesta malformata."});
     });
 
-    test("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
+    it("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
         return request(app)
         .get("/api/v2/eventiCalendarioPersonale?passato=False")
         .set('x-access-token', token)

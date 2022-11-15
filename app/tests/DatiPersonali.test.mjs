@@ -21,7 +21,7 @@ describe('GET /api/v2/Utenti/me', () => {
     UtenteSpy = null;
   });
 
-  test('GET /api/v2/Utenti/me da autenticati, quindi con token valido', async () => {
+  it('GET /api/v2/Utenti/me da autenticati, quindi con token valido', async () => {
       await request(app).get('/api/v2/Utenti/me').
       set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
       expect('Content-Type', /json/).
@@ -32,7 +32,7 @@ describe('GET /api/v2/Utenti/me', () => {
               password: '756756747'});
   });
 
-  test('GET /api/v2/Utenti/me da non autenticati, quindi con un token non valido', async () => {
+  it('GET /api/v2/Utenti/me da non autenticati, quindi con un token non valido', async () => {
     await request(app).get('/api/v2/Utenti/me').
     set('x-access-token', '345678').
     expect('Content-Type', /json/).

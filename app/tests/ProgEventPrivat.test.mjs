@@ -43,7 +43,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     token = null;
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],
@@ -59,7 +59,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }).expect('Content-Type', /json/).expect(404, {error: "email non trovata"});
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
         data: ["11-11-2050","13-12-2050"],
@@ -77,7 +77,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica giornate ripetute", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica giornate ripetute", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-11-2050"],
@@ -95,7 +95,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo durata non è del formato corretto", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo durata non è del formato corretto", async () => {
     await request(app)
     .post('/api/v2/EventiPrivati')
     .set('x-access-token', token)
@@ -115,7 +115,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],
@@ -131,7 +131,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
     
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo dell'elenco degli invitati non è specificato", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo dell'elenco degli invitati non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],
@@ -146,7 +146,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   });
 
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],
@@ -162,7 +162,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       }).expect('Content-Type', /json/).expect(400, {error: "Campo vuoto o indefinito o non del formato corretto."});
   });
 
-  test("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
+  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
         data: ["11-11-2050","11-12-2050"],

@@ -44,7 +44,7 @@ describe('POST /api/v2/Utenti', () => {
         userSaveSpy = null;
     });
     
-    test('POST /api/v2/Utenti con email già registrata dovrebbe restituire 409', async() => {
+    it('POST /api/v2/Utenti con email già registrata dovrebbe restituire 409', async() => {
         
         await request(app).post('/api/v2/Utenti').
         send({nome: 'Mario', email: 'gg.ee@gmail.com', pass: 'abcd', tel: '', csrfToken: 'i0sPzta9-9U1pYkEY2iVQd6krhh9vc6SQzKc'}).
@@ -52,7 +52,7 @@ describe('POST /api/v2/Utenti', () => {
         
     });
     
-    test('POST /api/v2/Utenti ', async() => {
+    it('POST /api/v2/Utenti ', async() => {
         
         const response = await request(app).post('/api/v2/Utenti').
         send({nome: 'Fabio', email: 'aa.bb@gmail.com', pass: 'abcd', tel: '', csrfToken: 'i0sPzta9-9U1pYkEY2iVQd6krhh9vc6SQzKc'});

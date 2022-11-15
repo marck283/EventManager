@@ -63,7 +63,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     userSpy = null;
   });
 
-  test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
     // create a valid token
     await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
@@ -79,7 +79,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     });
   });
 
-  test("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso non ci siano eventi pubblici o privati che l'utente si è iscritto o creato, e non ci siano eventi personali che l'utente ha creato ", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso non ci siano eventi pubblici o privati che l'utente si è iscritto o creato, e non ci siano eventi personali che l'utente ha creato ", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2223", 3600)).
     expect('Content-Type', /json/).
