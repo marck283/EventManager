@@ -1,9 +1,9 @@
 export default function map(events, eventType, orgNames = null) {
     let i = 0;
-    console.log(events);
+    console.log("map", events);
     return events.map(event => {
-        console.log(i);
         var apiUrl;
+        console.log("eventID: " + event.id);
         switch (eventType) {
             case "pers": {
                 apiUrl = "/api/v2/EventiPersonali/" + event.id;
@@ -33,9 +33,9 @@ export default function map(events, eventType, orgNames = null) {
             orgName: orgNames[i],
             dataOra: event.dataOra
         };
-        console.log("i: " + orgNames[i]);
 
         i += 1;
+
         return obj;
     });
 }

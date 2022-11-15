@@ -8,42 +8,78 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 
-var findEvents = async (obj, arr, evType, user = null) => {
-    var events = await arr.find(obj);
-    console.log(events);
-    if(evType === "pers") {
-        return events.filter(e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+var filterArr = (e, str) => e.dataOra.filter(d => d.toISOString().split("T").includes(str.split("T")[0])).length > 0;
+
+function isEmpty(o) {
+    for(var i in o){
+        if(o.hasOwnProperty(i)) {
+            return false;
+        }
     }
-    return events.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user) && e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    return true;
+}
+
+var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
+    let pers = await eventPersonal.findById(e);
+    let pub = await eventPublic.findById(e);
+    let priv = await eventPrivate.findById(e);
+    
+    if (pers != null && pers != undefined && !isEmpty(pers) && filterArr(pers, str)) {
+        eventsPers.push(pers);
+    }
+
+    if (pub != null && pub != undefined && !isEmpty(pub) && filterArr(pub, str)) {
+        eventsPub.push(pub);
+    }
+
+    if (priv != null && priv != undefined && !isEmpty(priv)) {
+        if (filterArr(priv, str)) {
+            eventsPriv.push(priv);
+        }
+    } else {
+        console.log("uh oh");
+    }
+    return;
 }
 
 router.get("/:data", async (req, res) => {
-    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+    var str = new Date(req.params.data); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+
+    if (str == "Invalid Date") {
+        res.status(400).json({ error: "Data non valida" });
+        return;
+    }
+    str.setDate(str.getDate() + 1);
+    str = str.toISOString();
+
     var eventsPers = [], eventsPub = [], eventsPriv = [];
-    
-    var user = req.loggedUser.id || req.loggedUser.sub;
-    if(user === req.loggedUser.sub) {
-        user = await User.findOne({email: {$eq: req.loggedUser.email}});
-        user = user.id;
+
+    var user = req.loggedUser.id || req.loggedUser.sub, user1;
+    if (user === req.loggedUser.sub) {
+        user1 = await User.findOne({ email: { $eq: req.loggedUser.email } });
+        //user = user.id;
+    } else {
+        user1 = await User.findById(user);
     }
 
-    //Correggere bug che impedisce di ritornare gli eventi che l'utente ha organizzato o a cui partecipa in un giorno specifico.
-    eventsPers = await findEvents({organizzatoreID: user}, eventPersonal, "pers");
-    console.log(eventsPers.length);
-    eventsPub = await findEvents({}, eventPublic, "pub", user);
-    console.log(eventsPub.length);
-    eventsPriv = await findEvents({}, eventPrivate, "priv", user);
-    console.log(eventsPriv.length);
+    for (let e of user1.EventiCreati) {
+        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
+    }
 
-    if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
+    for (let e of user1.EventiIscrtto) {
+        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
+    }
+    console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
+
+    if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
         eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
         eventsPub.forEach(e => eventsPers.push(e));
         eventsPriv.forEach(e => eventsPers.push(e));
-        res.status(200).json({eventi: eventsPers, data: str});
+        res.status(200).json({ eventi: eventsPers, data: str });
     } else {
-        res.status(404).json({error: "Non esiste alcun evento programmato per la giornata selezionata."});
+        res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
     }
     return; //This, along with the elimination of the "send()" call, should avoid the "[ERR_HTTP_HEADERS_SENT]" errors.
 });
@@ -60,7 +96,7 @@ var findPubEvents = async (user) => {
 
 var filterEvents = (eventsArr, passato) => {
     var curr = new Date();
-    if(passato) {
+    if (passato) {
         return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) < curr);
     }
     return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
@@ -76,9 +112,9 @@ var filterEvents = (eventsArr, passato) => {
  * @returns The filtered array of arrays of events
  */
 var arrFilter = (val, arr) => {
-    for(let i = 0; i < arr.length; i++) {
-        if(arr[i].cond) {
-            for(let j = 0; j < val.length; j++) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].cond) {
+            for (let j = 0; j < val.length; j++) {
                 val[j].filter(arr[i].cb);
             }
         }
@@ -92,19 +128,19 @@ router.get("", async (req, res) => {
     var user = req.loggedUser.id || req.loggedUser.sub;
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta");
-    
-    if(user === req.loggedUser.sub) {
+
+    if (user === req.loggedUser.sub) {
         //Se l'utente è autenticato con Google, allora devo prima trovare il documento dell'utente nel database, per poi
         //ottenere l'id di MongoDB e utilizzarlo per cercare gli eventi pubblici a cui l'utente è iscritto.
-        user = await User.findOne({email: {$eq: req.loggedUser.email}});
+        user = await User.findOne({ email: { $eq: req.loggedUser.email } });
         user = user.id;
     }
 
-    eventsPers = await eventPersonal.find({organizzatoreID: {$eq: user}}); //Richiedi gli eventi personali.
+    eventsPers = await eventPersonal.find({ organizzatoreID: { $eq: user } }); //Richiedi gli eventi personali.
     eventsPub = await findPubEvents(user);
-    eventsPriv = await eventPrivate.find({});
-    eventsPriv = eventsPriv.filter(e => (e.partecipantiID.find(e => e == user) != undefined || e.organizzatoreID == user));
-    
+    eventsPriv = await eventPrivate.find({$or: [{organizzatoreID: {$eq: user}}, {$in: [user, '$partecipantiID']}]});
+    //eventsPriv = eventsPriv.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
+
     const v = new Validator({
         durata: durata,
         passato: req.query.passato
@@ -113,59 +149,59 @@ router.get("", async (req, res) => {
         passato: 'required|string|in:True,False'
     });
     v.check()
-    .then(matched => {
-        if(!matched) {
-            res.status(400).json({error: "Richiesta malformata."}).send();
-            return;
-        }
-        
-        let events = arrFilter([eventsPers, eventsPub, eventsPriv], [{
-            cond: nomeAtt != undefined && nomeAtt != "",
-            cb: e1 => e1.nomeAtt.includes(nomeAtt)
-        }, {
-            cond: categoria != undefined && categoria != "",
-            cb: e1 => e1.categoria == categoria
-        }, {
-            cond: durata != undefined && durata != "",
-            cb: e1 => e1.durata == durata
-        }, {
-            cond: indirizzo != undefined && indirizzo != "",
-            cb: e1 => e1.luogoEv.indirizzo == indirizzo
-        }, {
-            cond: citta != undefined && citta != "",
-            cb: e1 => e1.luogoEv.citta == citta
-        }]);
-        eventsPers = events[0];
-        eventsPub = events[1];
-        eventsPriv = events[2];
-    
-        switch (req.query.passato) {
-            case "True": {
-                //Filtro per date passate
-                eventsPers = filterEvents(eventsPers, true);
-                eventsPub = filterEvents(eventsPub, true);
-                eventsPriv = filterEvents(eventsPriv, true);
-                break;
+        .then(matched => {
+            if (!matched) {
+                res.status(400).json({ error: "Richiesta malformata." }).send();
+                return;
             }
-            case "False": {
-                eventsPub = filterEvents(eventsPub, false);
-                eventsPriv = filterEvents(eventsPriv, false);
-                break;
+
+            let events = arrFilter([eventsPers, eventsPub, eventsPriv], [{
+                cond: nomeAtt != undefined && nomeAtt != "",
+                cb: e1 => e1.nomeAtt.includes(nomeAtt)
+            }, {
+                cond: categoria != undefined && categoria != "",
+                cb: e1 => e1.categoria == categoria
+            }, {
+                cond: durata != undefined && durata != "",
+                cb: e1 => e1.durata == durata
+            }, {
+                cond: indirizzo != undefined && indirizzo != "",
+                cb: e1 => e1.luogoEv.indirizzo == indirizzo
+            }, {
+                cond: citta != undefined && citta != "",
+                cb: e1 => e1.luogoEv.citta == citta
+            }]);
+            eventsPers = events[0];
+            eventsPub = events[1];
+            eventsPriv = events[2];
+
+            switch (req.query.passato) {
+                case "True": {
+                    //Filtro per date passate
+                    eventsPers = filterEvents(eventsPers, true);
+                    eventsPub = filterEvents(eventsPub, true);
+                    eventsPriv = filterEvents(eventsPriv, true);
+                    break;
+                }
+                case "False": {
+                    eventsPub = filterEvents(eventsPub, false);
+                    eventsPriv = filterEvents(eventsPriv, false);
+                    break;
+                }
             }
-        }
-    
-        if(eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-            eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
-            eventsPub = map(eventsPub, "pub", getOrgNames(eventsPub));
-            eventsPub.forEach(e => eventsPers.push(e));
-            eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
-            eventsPriv.forEach(e => eventsPers.push(e));
-    
-            res.status(200).json({eventi: eventsPers});
-        } else {
-            res.status(404).json({error: "Non esiste alcun evento programmato."});
-        }
-    });
+
+            if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
+                eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));
+                eventsPub = map(eventsPub, "pub", getOrgNames(eventsPub));
+                eventsPub.forEach(e => eventsPers.push(e));
+                eventsPriv = map(eventsPriv, "priv", getOrgNames(eventsPriv));
+                eventsPriv.forEach(e => eventsPers.push(e));
+
+                res.status(200).json({ eventi: eventsPers });
+            } else {
+                res.status(404).json({ error: "Non esiste alcun evento programmato." });
+            }
+        });
 });
 
 export default router;
