@@ -10,6 +10,7 @@ import getOrgNames from './OrgNames.mjs';
 
 var findEvents = async (obj, arr, cb) => {
     var events = await arr.find(obj);
+    console.log(events);
     return events.filter(cb);
 }
 
