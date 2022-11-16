@@ -58,7 +58,7 @@ var map = province => {
         case "Messina": return "ME";
         case "Milano": return "MI";
         case "Modena": return "MO";
-        case "Monza e della Brianza": return "MB";
+        case "Monza e Brianza": return "MB";
         case "Napoli": return "NA";
         case "Novara": return "NO";
         case "Nuoro": return "NU";
