@@ -9,14 +9,17 @@ import User from './collezioni/utenti.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
+    let utente;
 
     if(IDexample === req.loggedUser.sub) {
-        IDexample = (await User.find({email: {$eq: req.loggedUser.email}})).id;
+        //Errore sulla ricerca delle informazioni degli utenti con Google. Come mai? Potrebbe essere che non salvo
+        //correttamente i documenti degli utenti quando gli eventi vengono creati? Risultato: EventiCreati è undefined... Perché?
+        utente = await User.find({email: {$eq: req.loggedUser.email}});
+    } else {
+        utente = await Utente.findById(IDexample);
     }
     
-    try{
-        let utente = await Utente.findById(IDexample);
-
+    try {
         res.status(200).json({
             nome: utente.nome,
             email: utente.email,
