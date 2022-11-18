@@ -9,18 +9,23 @@ import User from './collezioni/utenti.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
-    let utente;
+    let utente, obj;
 
     if(IDexample === req.loggedUser.sub) {
-        //Errore sulla ricerca delle informazioni degli utenti con Google. Come mai? Potrebbe essere che non salvo
-        //correttamente i documenti degli utenti quando gli eventi vengono creati? Risultato: EventiCreati è undefined... Perché?
         utente = await User.find({email: {$eq: req.loggedUser.email}});
+        obj = {
+            nome: utente[0].nome,
+            email: utente[0].email,
+            tel: utente[0].tel,
+            url: "/api/v2/Utenti/" + IDexample,
+            password: utente[0].password,
+            picture: utente[0].profilePic,
+            numEvOrg: utente[0].EventiCreati.length,
+            valutazioneMedia: utente[0].valutazioneMedia
+        };
     } else {
         utente = await Utente.findById(IDexample);
-    }
-    
-    try {
-        res.status(200).json({
+        obj = {
             nome: utente.nome,
             email: utente.email,
             tel: utente.tel,
@@ -29,11 +34,17 @@ router.get('/me', async (req, res) => {
             picture: utente.profilePic,
             numEvOrg: utente.EventiCreati.length,
             valutazioneMedia: utente.valutazioneMedia
-        });
-    }catch(error){
-        console.log(error);
-        res.status(500).json({error: "Errore nel Server"}).send();
+        }
     }
+    
+    try {
+        res.status(200).json(obj);
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({error: "Errore nel Server"});
+    }
+
+    return;
 });
 
 router.get('/me/Inviti', async (req, res) => {
