@@ -5,9 +5,14 @@ import Biglietto from './collezioni/biglietti.mjs';
 import eventPublic from './collezioni/eventPublic.mjs';
 import eventPrivat from './collezioni/eventPrivat.mjs';
 import Inviti from './collezioni/invit.mjs';
+import User from './collezioni/utenti.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
+
+    if(IDexample === req.loggedUser.sub) {
+        IDexample = (await User.find({email: {$eq: req.loggedUser.email}})).id;
+    }
     
     try{
         let utente = await Utente.findById(IDexample);
