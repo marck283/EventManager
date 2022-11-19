@@ -102,6 +102,7 @@ router.post('', (req, res) => {
 						});
 						await user.save();
 					}
+					user = await Utente.findOne({ email: {$eq: payload.email}});
 					res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
 				})
 				.catch(err => {
