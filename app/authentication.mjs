@@ -105,11 +105,59 @@ router.post('', (req, res) => {
 					user = await Utente.findOne({ email: {$eq: payload.email}});
 					res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
 				})
-				.catch(err => {
+				.catch(async err => {
 					console.log(err);
-					res.status(401).json({
-						error: "Token non valido."
-					}).send();
+					var error = false;
+					const resp = await fetch("graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
+					.catch(err => {
+						res.status(500).json({
+							error: "Errore interno al server"
+						}).send();
+						error = true;
+					});
+
+					if(!error) {
+						const json = await resp.json();
+						if(json.data.is_valid) {
+							console.log("scopes: " + json.data);
+							const scopes = json.data.scopes;
+							if(!scopes.includes("email")) {
+								res.status(400).json({
+									error: "L'utente non ha concesso l'autorizzazione per l'email"
+								});
+							} else {
+								await fetch("graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
+								.then(async resp => {
+									const json = await resp.json();
+									var user = new Utente({
+										nome: json.data.nome,
+										email: json.data.email,
+										password: "",
+										salt: "",
+										tel: "",
+										profilePic: json.data.picture.data.url,
+										numEvOrg: 0,
+										valutazioneMedia: 0.0,
+										g_refresh_token: ""
+									});
+									await user.save();
+
+									user = await Utente.findOne({ email: {$eq: json.data.email}});
+									res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
+								})
+								.catch(err => {
+									res.status(400).json({
+										error: "OAuth exception"
+									}).send();
+								});
+								
+							}
+						} else {
+							res.status(401).json({
+								error: "Token non valido."
+							}).send();
+						}
+					}
 				});
 				return;
 			}
