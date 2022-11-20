@@ -168,6 +168,8 @@ router.post('', async (req, res) => {
 });
 
 router.delete("/deleteMe", (req, res) => {
+    //Da riscrivere completamente tenendo conto anche degli utenti Facebook...
+    //Inoltre, iniziare a scrivere codice per autenticazione utenti con Facebook nel server web.
     const v = new Validator({
         token: req.body.token
     }, {
