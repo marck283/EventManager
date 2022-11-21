@@ -173,7 +173,9 @@ router.post("/facebookLogin", async (req, res) => {
 					return;
 				}
 				var error = false;
-				const resp = await fetch(encodeURI("graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN))
+				var url = new URL("https://graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN);
+				
+				const resp = await fetch(url)
 					.catch(err => {
 						console.log(err);
 						res.status(500).json({
