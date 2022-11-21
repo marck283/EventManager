@@ -174,7 +174,7 @@ router.post("/facebookLogin", async (req, res) => {
 				}
 				var error = false;
 				console.log("googleJwt: " + req.body.googleJwt);
-				var url = new URL("https://graph.facebook.com/{graph-api-version}/oauth/access_token?grant_type=fb_exchange_token&client_id=1143189906271722&client_secret=e49898d219c092dce5a0a1d345c26b12&fb_exchange_token=" + req.body.googleJwt);
+				var url = new URL("https://graph.facebook.com/v15.0/oauth/access_token?grant_type=fb_exchange_token&client_id=1143189906271722&client_secret=e49898d219c092dce5a0a1d345c26b12&fb_exchange_token=" + req.body.googleJwt);
 				
 				const resp = await fetch(url)
 					.catch(err => {
