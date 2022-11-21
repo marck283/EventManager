@@ -174,7 +174,7 @@ router.post("/facebookLogin", async (req, res) => {
 				}
 				var error = false;
 				console.log("googleJwt: " + req.body.googleJwt);
-				var url = new URL("https://graph.facebook.com/v15.0/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN);
+				var url = new URL("https://graph.facebook.com/{graph-api-version}/oauth/access_token?grant_type=fb_exchange_token&client_id=1143189906271722&client_secret=e49898d219c092dce5a0a1d345c26b12&fb_exchange_token=" + req.body.googleJwt);
 				
 				const resp = await fetch(url)
 					.catch(err => {
@@ -189,8 +189,8 @@ router.post("/facebookLogin", async (req, res) => {
 					await resp.json()
 					.then(async json => {
 						console.log(json);
-						if (json.data.is_valid != null && json.data.is_valid != undefined) {
-							console.log("scopes: " + json.data);
+						if (json.access_token != null && json.access_token != undefined) {
+							console.log("scopes: " + json.access_token);
 							const scopes = json.data.scopes;
 							if (!scopes.includes("email")) {
 								console.log("noEmail");
@@ -200,10 +200,10 @@ router.post("/facebookLogin", async (req, res) => {
 							} else {
 								await fetch("graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
 									.then(async resp => {
-										const json = await resp.json();
+										const json1 = await resp.json();
 										var user = new Utente({
-											nome: json.data.nome,
-											email: json.data.email,
+											nome: json1.data.nome,
+											email: json1.data.email,
 											password: "",
 											salt: "",
 											tel: "",
@@ -214,8 +214,8 @@ router.post("/facebookLogin", async (req, res) => {
 										});
 										await user.save();
 		
-										user = await Utente.findOne({ email: { $eq: json.data.email } });
-										res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
+										user = await Utente.findOne({ email: { $eq: json1.data.email } });
+										res.status(200).json(result(json.access_token, json1.data.email, user.id, json1.data.picture.data.url)).send();
 									})
 									.catch(err => {
 										console.log(err, "2");
