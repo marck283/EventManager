@@ -187,6 +187,7 @@ router.post("/facebookLogin", async (req, res) => {
 				if (!error) {
 					await resp.json()
 					.then(async json => {
+						console.log(json);
 						if (json.data.is_valid) {
 							console.log("scopes: " + json.data);
 							const scopes = json.data.scopes;
@@ -224,6 +225,7 @@ router.post("/facebookLogin", async (req, res) => {
 		
 							}
 						} else {
+							console.log("Invalid token");
 							res.status(401).json({
 								error: "Token non valido."
 							}).send();
