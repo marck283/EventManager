@@ -216,7 +216,7 @@ router.post("/facebookLogin", async (req, res) => {
 										res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
 									})
 									.catch(err => {
-										console.log(err);
+										console.log(err, "2");
 										res.status(400).json({
 											error: "OAuth exception"
 										}).send();
