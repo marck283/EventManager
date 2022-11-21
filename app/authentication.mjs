@@ -173,7 +173,7 @@ router.post("/facebookLogin", async (req, res) => {
 					return;
 				}
 				var error = false;
-				var url = new URL("https://graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN);
+				var url = new URL("https://graph.facebook.com/debug_token?input_token=" + req.body.googleJwt);
 				
 				const resp = await fetch(url)
 					.catch(err => {
@@ -191,6 +191,7 @@ router.post("/facebookLogin", async (req, res) => {
 							console.log("scopes: " + json.data);
 							const scopes = json.data.scopes;
 							if (!scopes.includes("email")) {
+								console.log("noEmail");
 								res.status(400).json({
 									error: "L'utente non ha concesso l'autorizzazione per l'email"
 								});
@@ -215,6 +216,7 @@ router.post("/facebookLogin", async (req, res) => {
 										res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
 									})
 									.catch(err => {
+										console.log(err);
 										res.status(400).json({
 											error: "OAuth exception"
 										}).send();
