@@ -174,65 +174,41 @@ router.post("/facebookLogin", async (req, res) => {
 				}
 				var error = false;
 				console.log("googleJwt: " + req.body.googleJwt);
-				var url = new URL("https://graph.facebook.com/v15.0/oauth/access_token?grant_type=fb_exchange_token&client_id=" + process.env.FACEBOOK_APP_ID + "&client_secret=" + process.env.FACEBOOK_APP_SECRET + "&fb_exchange_token=" + req.body.googleJwt);
-
-				const resp = await fetch(url)
-					.catch(err => {
-						console.log(err);
-						res.status(500).json({
-							error: "Errore interno al server"
-						}).send();
-						error = true;
-					});
-
-				if (!error) {
-					await resp.json()
-						.then(async json => {
-							console.log(json);
-							if (json.access_token != null && json.access_token != undefined) {
-								await fetch("https://graph.facebook.com/v15.0/debug_token?input_token=" + json.access_token + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
+				await fetch("https://graph.facebook.com/v15.0/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
+					.then(async resp => {
+						await resp.json()
+							.then(async json2 => {
+								console.log(json2);
+								await fetch("https://graph.facebook.com/v15.0/" + json2.data.user_id + "?fields=email,name,picture&access_token=" + json.access_token)
 									.then(async resp => {
-										await resp.json()
-											.then(async json2 => {
-												console.log(json2);
-												await fetch("https://graph.facebook.com/v15.0/" + json2.data.user_id + "?fields=email,name,picture&access_token=" + json.access_token)
-													.then(async resp => {
-														const json1 = await resp.json();
-														var user = new Utente({
-															nome: json1.data.nome,
-															email: json1.data.email,
-															password: "",
-															salt: "",
-															tel: "",
-															profilePic: json.data.picture.data.url,
-															numEvOrg: 0,
-															valutazioneMedia: 0.0,
-															g_refresh_token: ""
-														});
-														await user.save();
+										const json1 = await resp.json();
+										var user = new Utente({
+											nome: json1.data.nome,
+											email: json1.data.email,
+											password: "",
+											salt: "",
+											tel: "",
+											profilePic: json1.data.picture.data.url,
+											numEvOrg: 0,
+											valutazioneMedia: 0.0,
+											g_refresh_token: ""
+										});
+										await user.save();
 
-														user = await Utente.findOne({ email: { $eq: json1.data.email } });
-														res.status(200).json(result(json.access_token, json1.data.email, user.id, json1.data.picture.data.url)).send();
-													})
-													.catch(err => {
-														res.status(400).json({
-															error: "OAuth exception"
-														}).send();
-													});
-											});
+										user = await Utente.findOne({ email: { $eq: json1.data.email } });
+										res.status(200).json(result(json.access_token, json1.data.email, user.id, json1.data.picture.data.url)).send();
 									})
 									.catch(err => {
-										console.log(err);
-										error = true;
+										res.status(400).json({
+											error: "OAuth exception"
+										}).send();
 									});
-							} else {
-								console.log("Invalid token");
-								res.status(401).json({
-									error: "Token non valido."
-								}).send();
-							}
-						});
-				}
+							});
+					})
+					.catch(err => {
+						console.log(err);
+						error = true;
+					});
 			});
 	} catch (err) {
 		console.log(err);
