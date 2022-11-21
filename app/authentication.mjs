@@ -188,7 +188,7 @@ router.post("/facebookLogin", async (req, res) => {
 					await resp.json()
 					.then(async json => {
 						console.log(json);
-						if (json.data.is_valid) {
+						if (json.data.is_valid != null && json.data.is_valid != undefined) {
 							console.log("scopes: " + json.data);
 							const scopes = json.data.scopes;
 							if (!scopes.includes("email")) {
