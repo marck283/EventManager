@@ -198,8 +198,9 @@ router.post("/facebookLogin", async (req, res) => {
 
 								if (!error) {
 									await resp.json()
-										.then(async json => {
-											await fetch("https://graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
+										.then(async json2 => {
+											console.log(json2);
+											await fetch("https://graph.facebook.com/v15.0/" + json2.data.user_id + "?fields=email,name,picture&access_token=" + json.access_token)
 												.then(async resp => {
 													const json1 = await resp.json();
 													var user = new Utente({
@@ -219,7 +220,6 @@ router.post("/facebookLogin", async (req, res) => {
 													res.status(200).json(result(json.access_token, json1.data.email, user.id, json1.data.picture.data.url)).send();
 												})
 												.catch(err => {
-													console.log(err, "2");
 													res.status(400).json({
 														error: "OAuth exception"
 													}).send();
