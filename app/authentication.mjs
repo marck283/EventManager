@@ -175,6 +175,7 @@ router.post("/facebookLogin", async (req, res) => {
 				var error = false;
 				const resp = await fetch("graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
 					.catch(err => {
+						console.log(err);
 						res.status(500).json({
 							error: "Errore interno al server"
 						}).send();
