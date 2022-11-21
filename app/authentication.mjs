@@ -175,7 +175,7 @@ router.post("/facebookLogin", async (req, res) => {
 				var error = false;
 				console.log("googleJwt: " + req.body.googleJwt);
 				var url = new URL("https://graph.facebook.com/v15.0/oauth/access_token?grant_type=fb_exchange_token&client_id=1143189906271722&client_secret=e49898d219c092dce5a0a1d345c26b12&fb_exchange_token=" + req.body.googleJwt);
-				
+
 				const resp = await fetch(url)
 					.catch(err => {
 						console.log(err);
@@ -184,21 +184,13 @@ router.post("/facebookLogin", async (req, res) => {
 						}).send();
 						error = true;
 					});
-	
+
 				if (!error) {
 					await resp.json()
-					.then(async json => {
-						console.log(json);
-						if (json.access_token != null && json.access_token != undefined) {
-							console.log("scopes: " + json.access_token);
-							const scopes = json.data.scopes;
-							if (!scopes.includes("email")) {
-								console.log("noEmail");
-								res.status(400).json({
-									error: "L'utente non ha concesso l'autorizzazione per l'email"
-								});
-							} else {
-								await fetch("graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
+						.then(async json => {
+							console.log(json);
+							if (json.access_token != null && json.access_token != undefined) {
+								await fetch("https://graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
 									.then(async resp => {
 										const json1 = await resp.json();
 										var user = new Utente({
@@ -213,7 +205,7 @@ router.post("/facebookLogin", async (req, res) => {
 											g_refresh_token: ""
 										});
 										await user.save();
-		
+
 										user = await Utente.findOne({ email: { $eq: json1.data.email } });
 										res.status(200).json(result(json.access_token, json1.data.email, user.id, json1.data.picture.data.url)).send();
 									})
@@ -223,18 +215,16 @@ router.post("/facebookLogin", async (req, res) => {
 											error: "OAuth exception"
 										}).send();
 									});
-		
+							} else {
+								console.log("Invalid token");
+								res.status(401).json({
+									error: "Token non valido."
+								}).send();
 							}
-						} else {
-							console.log("Invalid token");
-							res.status(401).json({
-								error: "Token non valido."
-							}).send();
-						}
-					});
+						});
 				}
 			});
-	} catch(err) {
+	} catch (err) {
 		console.log(err);
 		res.status(500).json({
 			error: "Errore interno al server"
