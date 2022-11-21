@@ -159,72 +159,79 @@ router.post('', (req, res) => {
 });
 
 router.post("/facebookLogin", async (req, res) => {
-	const v = new Validator({
-		csrfToken: req.body.csrfToken
-	}, {
-		csrfToken: 'required|string'
-	});
-	v.check()
-		.then(async matched => {
-			if (!matched) {
-				console.log(v.errors);
-				res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
-				return;
-			}
-			var error = false;
-			const resp = await fetch("graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
-				.catch(err => {
-					res.status(500).json({
-						error: "Errore interno al server"
-					}).send();
-					error = true;
-				});
-
-			if (!error) {
-				await resp.json()
-				.then(async json => {
-					if (json.data.is_valid) {
-						console.log("scopes: " + json.data);
-						const scopes = json.data.scopes;
-						if (!scopes.includes("email")) {
-							res.status(400).json({
-								error: "L'utente non ha concesso l'autorizzazione per l'email"
-							});
-						} else {
-							await fetch("graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
-								.then(async resp => {
-									const json = await resp.json();
-									var user = new Utente({
-										nome: json.data.nome,
-										email: json.data.email,
-										password: "",
-										salt: "",
-										tel: "",
-										profilePic: json.data.picture.data.url,
-										numEvOrg: 0,
-										valutazioneMedia: 0.0,
-										g_refresh_token: ""
-									});
-									await user.save();
-	
-									user = await Utente.findOne({ email: { $eq: json.data.email } });
-									res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
-								})
-								.catch(err => {
-									res.status(400).json({
-										error: "OAuth exception"
-									}).send();
-								});
-	
-						}
-					} else {
-						res.status(401).json({
-							error: "Token non valido."
-						}).send();
-					}
-				});
-			}
+	try {
+		const v = new Validator({
+			csrfToken: req.body.csrfToken
+		}, {
+			csrfToken: 'required|string'
 		});
+		v.check()
+			.then(async matched => {
+				if (!matched) {
+					console.log(v.errors);
+					res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
+					return;
+				}
+				var error = false;
+				const resp = await fetch("graph.facebook.com/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
+					.catch(err => {
+						res.status(500).json({
+							error: "Errore interno al server"
+						}).send();
+						error = true;
+					});
+	
+				if (!error) {
+					await resp.json()
+					.then(async json => {
+						if (json.data.is_valid) {
+							console.log("scopes: " + json.data);
+							const scopes = json.data.scopes;
+							if (!scopes.includes("email")) {
+								res.status(400).json({
+									error: "L'utente non ha concesso l'autorizzazione per l'email"
+								});
+							} else {
+								await fetch("graph.facebook.com/v15.0/" + json.data.user_id + "?fields=email,name,picture&access_token=" + req.body.googleJwt)
+									.then(async resp => {
+										const json = await resp.json();
+										var user = new Utente({
+											nome: json.data.nome,
+											email: json.data.email,
+											password: "",
+											salt: "",
+											tel: "",
+											profilePic: json.data.picture.data.url,
+											numEvOrg: 0,
+											valutazioneMedia: 0.0,
+											g_refresh_token: ""
+										});
+										await user.save();
+		
+										user = await Utente.findOne({ email: { $eq: json.data.email } });
+										res.status(200).json(result(req.body.googleJwt, json.data.email, user.id, json.data.picture.data.url)).send();
+									})
+									.catch(err => {
+										res.status(400).json({
+											error: "OAuth exception"
+										}).send();
+									});
+		
+							}
+						} else {
+							res.status(401).json({
+								error: "Token non valido."
+							}).send();
+						}
+					});
+				}
+			});
+	} catch(err) {
+		console.log(err);
+		res.status(500).json({
+			error: "Errore interno al server"
+		}).send();
+	}
 });
 
 export default router;
