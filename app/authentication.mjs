@@ -173,7 +173,7 @@ router.post("/facebookLogin", async (req, res) => {
 					return;
 				}
 				var error = false;
-				var url = new URL("https://graph.facebook.com/debug_token?input_token=" + req.body.googleJwt);
+				var url = new URL("https://graph.facebook.com/v15.0/debug_token?input_token=" + req.body.googleJwt);
 				
 				const resp = await fetch(url)
 					.catch(err => {
