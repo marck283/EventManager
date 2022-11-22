@@ -1,4 +1,5 @@
 import Utente from './collezioni/utenti.mjs';
+import {createToken} from '../tokenCreation.mjs';
 
 var login = async (fbUserId, fbJwt, res) => {
     await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
@@ -22,7 +23,7 @@ var login = async (fbUserId, fbJwt, res) => {
                 });
                 await user.save();
                 user = await Utente.findOne({ email: { $eq: json1.email } });
-                res.status(200).json(result(fbJwt, json1.email, user.id, json1.picture.data.url)).send();
+                res.status(200).json(result(createToken(json1.email, user.id, 3600), json1.email, user.id, json1.picture.data.url)).send();
             }));
 };
 
