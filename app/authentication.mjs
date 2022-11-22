@@ -162,9 +162,13 @@ router.post('', (req, res) => {
 router.post("/facebookLogin", async (req, res) => {
 	try {
 		const v = new Validator({
-			csrfToken: req.body.csrfToken
+			csrfToken: req.body.csrfToken,
+			jwt: req.body.googleJwt,
+			user_id: req.body.userId
 		}, {
-			csrfToken: 'required|string'
+			csrfToken: 'required|string',
+			jwt: 'required|string|minLength:1',
+			user_id: 'required|string|minLength:1'
 		});
 		v.check()
 			.then(async matched => {
@@ -174,7 +178,7 @@ router.post("/facebookLogin", async (req, res) => {
 					return;
 				}
 				console.log("googleJwt: " + req.body.googleJwt);
-				await login(req.body.googleJwt, res);
+				await login(req.body.userId, req.body.googleJwt, res);
 			});
 	} catch (err) {
 		console.log(err);
