@@ -106,9 +106,13 @@ router.post('', (req, res) => {
 								facebookAccount: null
 							});
 							await user.save();
+
+							user = await Utente.findOne({ email: { $eq: payload.email } });
+							res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
+						} else {
+							res.status(409).json({ error: "Un altro account è già registrato con questo indirizzo email."}).send();
+							return;
 						}
-						user = await Utente.findOne({ email: { $eq: payload.email } });
-						res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
 					})
 					.catch(async err => {
 						console.log(err);
