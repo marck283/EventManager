@@ -174,7 +174,7 @@ router.post("/facebookLogin", async (req, res) => {
 					return;
 				}
 				console.log("googleJwt: " + req.body.googleJwt);
-				await login(req.body.googleJwt);
+				await login(req.body.googleJwt, res);
 			});
 	} catch (err) {
 		console.log(err);
