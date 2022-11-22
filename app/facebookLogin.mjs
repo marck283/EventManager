@@ -3,7 +3,7 @@ import Utente from './collezioni/utenti.mjs';
 var handleResponse = (resp, fbJwt, res) => {
     resp.json()
         .then(async json2 => {
-            console.log("json2: ", json2);
+            console.log("json2:", json2);
             await fetch("https://graph.facebook.com/v15.0/" + json2.data.user_id + "?fields=email,name,picture&access_token=" + fbJwt)
                 .then(resp => resp.json()
                     .then(async json1 => {
@@ -22,9 +22,13 @@ var handleResponse = (resp, fbJwt, res) => {
                         user = await Utente.findOne({ email: { $eq: json1.data.email } });
                         res.status(200).json(result(fbJwt, json1.data.email, user.id, json1.data.picture.data.url)).send();
                     })
-                    .catch(err => res.status(400).json({
-                        error: "OAuth exception"
-                    }).send()));
+                    .catch(async err => await fetch("https://graph.facebook.com/v15.0/oauth/access_token?\
+                    grant_type=fb_exchange_token&\
+                    client_id=" + process.env.FACEBOOK_APP_ID + "&\
+                    client_secret=" + process.env.FACEBOOK_APP_SECRET + "&\
+                    fb_exchange_token=" + fbJwt))
+                    .then(resp => resp.json()
+                    .then(json3 => login(json3.code, res))));
         });
 };
 
