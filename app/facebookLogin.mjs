@@ -28,7 +28,7 @@ var handleResponse = (resp, fbJwt, res) => {
 };
 
 var login = (fbJwt, res) => new Promise(async (resolve, reject) => {
-    await fetch("https://graph.facebook.com/v15.0/debug_token?input_token=" + req.body.googleJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
+    await fetch("https://graph.facebook.com/v15.0/debug_token?input_token=" + fbJwt + "&access_token=" + process.env.FACEBOOK_MOBILE_TOKEN)
         .then(resp => resolve(handleResponse(resp, fbJwt, res)))
         .catch(reject());
 });
