@@ -19,7 +19,10 @@ var login = async (fbUserId, fbJwt, res) => {
                     profilePic: json1.picture.data.url,
                     numEvOrg: 0,
                     valutazioneMedia: 0.0,
-                    g_refresh_token: ""
+                    googleAccount: null,
+                    facebookAccount: {
+                        userId: fbUserId
+                    }
                 });
                 await user.save();
                 user = await Utente.findOne({ email: { $eq: json1.email } });

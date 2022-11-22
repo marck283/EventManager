@@ -99,7 +99,11 @@ router.post('', (req, res) => {
 								profilePic: payload.picture,
 								numEvOrg: 0,
 								valutazioneMedia: 0.0,
-								g_refresh_token: ""
+								googleAccount: {
+									userId: payload.sub,
+									g_refresh_token: ""
+								},
+								facebookAccount: null
 							});
 							await user.save();
 						}

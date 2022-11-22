@@ -13,7 +13,13 @@ var Users = new Schema({
     EventiIscrtto: [String],
     numEvOrg: Number,
     valutazioneMedia: Number,
-    g_refresh_token: String
+    googleAccount: {
+        userId: String,
+        g_refresh_token: String
+    },
+    facebookAccount: {
+        userId: String
+    }
 });
 export default model('Utenti', Users);
 
