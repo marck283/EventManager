@@ -28,7 +28,7 @@ var handleResponse = (resp, fbJwt, res) => {
                     client_secret=" + process.env.FACEBOOK_APP_SECRET + "&\
                     fb_exchange_token=" + fbJwt))
                     .then(resp => resp.json()
-                    .then(json3 => login(json3.code, res))));
+                    .then(json3 => login(json3.access_token, res))));
         });
 };
 
