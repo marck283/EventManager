@@ -1,6 +1,7 @@
 import Utente from './collezioni/utenti.mjs';
 
 var handleResponse = (resp, fbJwt, res) => {
+    //Token di access fbJwt scaduto... come risolvere? Vedi qui: https://developers.facebook.com/docs/facebook-login/guides/access-tokens#usertokens
     resp.json()
         .then(async json2 => {
             console.log("json2:", json2);
