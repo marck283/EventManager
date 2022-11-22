@@ -4,6 +4,7 @@ var login = async (fbUserId, fbJwt, res) => {
     await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
         .then(resp => resp.json()
             .then(async json1 => {
+                console.log(json1);
                 var user = new Utente({
                     nome: json1.data.nome,
                     email: json1.data.email,
