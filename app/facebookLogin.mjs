@@ -3,6 +3,7 @@ import Utente from './collezioni/utenti.mjs';
 var handleResponse = (resp, fbJwt, res) => {
     resp.json()
         .then(async json2 => {
+            console.log("json2: ", json2);
             await fetch("https://graph.facebook.com/v15.0/" + json2.data.user_id + "?fields=email,name,picture&access_token=" + fbJwt)
                 .then(resp => resp.json()
                     .then(async json1 => {
