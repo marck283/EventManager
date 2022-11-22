@@ -1,5 +1,5 @@
 import Utente from './collezioni/utenti.mjs';
-import {createToken} from './tokenCreation.mjs';
+import createToken from './tokenCreation.mjs';
 
 var login = async (fbUserId, fbJwt, res) => {
     await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
