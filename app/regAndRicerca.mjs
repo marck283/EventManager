@@ -4,6 +4,9 @@ const router = Router();
 import Utente from './collezioni/utenti.mjs';
 import { hash as _hash, genSalt } from 'bcrypt';
 import { Validator } from 'node-input-validator';
+import User from './collezioni/utenti.mjs';
+import tokenChecker from './tokenChecker.mjs';
+import verify from 'jsonwebtoken';
 
 const saltRounds = 10;
 
@@ -34,7 +37,7 @@ router.get("", async (req, res) => {
                 res.status(400).json({ error: "Indirizzo email non fornito." }).send();
                 return;
             }
-            
+
             var utenti = await Utente.find({ email: { $regex: email, $options: 'i' } });
 
             if (utenti.length == 0) {
@@ -163,5 +166,38 @@ router.post('', async (req, res) => {
         });
     return;
 });
+
+router.delete("/deleteMe", (req, res) => {
+    //Da riscrivere completamente tenendo conto anche degli utenti Facebook...
+    //Inoltre, iniziare a scrivere codice per autenticazione utenti con Facebook nel server web.
+    const v = new Validator({
+        token: req.body.token
+    }, {
+        token: 'required|string|minlength:1'
+    });
+    v.check()
+    .then(async matched => {
+        if(!matched) {
+            res.status(400).json({ error: "Richiesta malformata."}).send();
+            return;
+        }
+        if(verify.verify(req.body.token, process.env.SUPER_SECRET)) {
+            try {
+                var user = req.loggedUser.id || await User.findOneAndDelete({ email: { $eq: req.loggedUser.email } });
+        
+                if (user == req.loggedUser.id) {
+                    user = await User.findByIdAndDelete(req.loggedUser.id);
+                }
+        
+                res.status(200).json({ message: "Utente eliminato con successo."});
+            } catch (err) {
+                console.log(err);
+                res.status(500).json({ error: "Errore interno al server." });
+            }
+        }
+    });
+
+    return;
+})
 
 export default router;

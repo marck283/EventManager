@@ -5,26 +5,46 @@ import Biglietto from './collezioni/biglietti.mjs';
 import eventPublic from './collezioni/eventPublic.mjs';
 import eventPrivat from './collezioni/eventPrivat.mjs';
 import Inviti from './collezioni/invit.mjs';
+import User from './collezioni/utenti.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
-    
-    try{
-        let utente = await Utente.findById(IDexample);
+    let utente, obj;
 
-        res.status(200).json({
+    if(IDexample === req.loggedUser.sub) {
+        utente = await User.find({email: {$eq: req.loggedUser.email}});
+        obj = {
+            nome: utente[0].nome,
+            email: utente[0].email,
+            tel: utente[0].tel,
+            url: "/api/v2/Utenti/" + IDexample,
+            password: utente[0].password,
+            picture: utente[0].profilePic,
+            numEvOrg: utente[0].EventiCreati.length,
+            valutazioneMedia: utente[0].valutazioneMedia
+        };
+    } else {
+        utente = await Utente.findById(IDexample);
+        obj = {
             nome: utente.nome,
             email: utente.email,
             tel: utente.tel,
             url: "/api/v2/Utenti/" + IDexample,
             password: utente.password,
             picture: utente.profilePic,
+            numEvOrg: utente.EventiCreati.length,
             valutazioneMedia: utente.valutazioneMedia
-        });
-    }catch(error){
-        console.log(error);
-        res.status(500).json({error: "Errore nel Server"}).send();
+        }
     }
+    
+    try {
+        res.status(200).json(obj);
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({error: "Errore nel Server"});
+    }
+
+    return;
 });
 
 router.get('/me/Inviti', async (req, res) => {
