@@ -6,19 +6,19 @@ var login = async (fbUserId, fbJwt, res) => {
             .then(async json1 => {
                 console.log(json1);
                 var user = new Utente({
-                    nome: json1.data.nome,
-                    email: json1.data.email,
+                    nome: json1.nome,
+                    email: json1.email,
                     password: "",
                     salt: "",
                     tel: "",
-                    profilePic: json1.data.picture.data.url,
+                    profilePic: json1.picture.data.url,
                     numEvOrg: 0,
                     valutazioneMedia: 0.0,
                     g_refresh_token: ""
                 });
                 await user.save();
-                user = await Utente.findOne({ email: { $eq: json1.data.email } });
-                res.status(200).json(result(fbJwt, json1.data.email, user.id, json1.data.picture.data.url)).send();
+                user = await Utente.findOne({ email: { $eq: json1.email } });
+                res.status(200).json(result(fbJwt, json1.email, user.id, json1.picture.data.url)).send();
             }));
 };
 
