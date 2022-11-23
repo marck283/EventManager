@@ -11,7 +11,7 @@ import getOrgNames from './OrgNames.mjs';
 var filterArr = (e, str) => e.dataOra.filter(d => d.toISOString().split("T").includes(str.split("T")[0])).length > 0;
 
 function isEmpty(o) {
-    for(var i in o){
+    for(var i in o) {
         if(o.hasOwnProperty(i)) {
             return false;
         }
@@ -62,10 +62,6 @@ router.get("/:data", async (req, res) => {
     }
 
     //Perché non vengono ritornati gli eventi?
-    for (let e of user1.EventiCreati) {
-        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
-    }
-
     for (let e of user1.EventiIscrtto) {
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
     }

@@ -150,47 +150,38 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     userSpy = null;
   });
 
-  /*it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
     const response = await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
       set('x-access-token', token).
       expect('Content-Type', /json/);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual({
-      eventi: [{
-        id: "pers",
-        idevent: '797569',
-        self: '/api/v2/EventiPersonali/797569',
-        name: 'Piscina',
-        category: 'svago',
-        orgName: 'Giovanni',
-        dataOra: ['2010-05-11T11:33:00.000Z']
-      },
-      {
-        id: "pub",
-        idevent: '9878456846784568',
-        self: '/api/v2/EventiPubblici/9878456846784568',
-        name: 'Evet',
-        category: 'svago',
-        dataOra: ['2010-05-11T11:33:00.000Z']
-      },
-      {
-        id: 'pub',
-        idevent: '987653',
-        self: '/api/v2/EventiPubblici/987653',
-        name: 'Event',
-        category: 'svago',
-        dataOra: ['2010-05-11T11:33:00.000Z']
-      },
-      {
-        id: 'priv',
-        idevent: '75975947',
-        self: '/api/v2/EventiPrivati/75975947',
-        name: 'Eventt',
-        category: 'operazione',
-        dataOra: ['2010-05-11T11:33:00.000Z']
-      }], data: '2010-05-11T22:00:00.000Z'
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toStrictEqual({
+        eventi: [{
+          id: "pub",
+          idevent: '9878456846784568',
+          self: '/api/v2/EventiPubblici/9878456846784568',
+          name: 'Evet',
+          category: 'svago',
+          dataOra: ['2010-05-11T11:33:00.000Z']
+        },
+        {
+          id: 'pub',
+          idevent: '987653',
+          self: '/api/v2/EventiPubblici/987653',
+          name: 'Event',
+          category: 'svago',
+          dataOra: ['2010-05-11T11:33:00.000Z']
+        },
+        {
+          id: 'priv',
+          idevent: '75975947',
+          self: '/api/v2/EventiPrivati/75975947',
+          name: 'Eventt',
+          category: 'operazione',
+          dataOra: ['2010-05-11T11:33:00.000Z']
+        }], data: '2010-05-11T22:00:00.000Z'
     });
-  });*/
+  });
 
   it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05112010').
