@@ -36,38 +36,34 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
     var events1 = null;
 
-    await v1.check()
-        .then(async matched => {
-            if (!matched) {
-                events1 = 1;
-            } else {
-                filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
-                filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-                filterCondition(durata != undefined, events, e => e.durata == durata);
-                filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
-                filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+    const matched = await v1.check();
+    if (!matched) {
+        events1 = 1;
+    } else {
+        filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
+        filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
+        filterCondition(durata != undefined, events, e => e.durata == durata);
+        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
+        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
 
-                //Filter for events happening in the future
-                var curr = new Date();
-                events = events.filter(e => e.dataOra.filter(d => d >= curr).length > 0);
+        //Filter for events happening in the future
+        var curr = new Date();
+        events = events.filter(e => e.dataOra.filter(d => d >= curr).length > 0);
 
-                if (events.length > 0) {
-                    events1 = await map(events, "pub", await getOrgNames(events));
-                    events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
+        if (events.length > 0) {
+            events1 = await map(events, "pub", await getOrgNames(events));
+            events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
 
-                    //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-                    events1.sort((e, e1) => {
-                        var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
-                        return org.valutazioneMedia < org1.valutazioneMedia;
-                    });
-                    console.log(events1.length);
-                } else {
-                    console.log("No events found");
-                }
-            }
-        })
-        .catch(err => console.log(err));
-
+            //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
+            events1.sort((e, e1) => {
+                var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
+                return org.valutazioneMedia < org1.valutazioneMedia;
+            });
+            console.log(events1.length);
+        } else {
+            console.log("No events found");
+        }
+    }
     return events1;
 }
 
