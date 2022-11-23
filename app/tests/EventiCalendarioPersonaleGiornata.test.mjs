@@ -151,11 +151,10 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   });
 
   it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati per la data passata a cui l'utente non si è iscritto o creato, oppure ci siano eventi personali creati dall'utente per quella data", async () => {
-    const response = await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
-      set('x-access-token', token).
-      expect('Content-Type', /json/);
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toStrictEqual({
+    await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
+      set('x-access-token', token)
+      .expect('Content-Type', /json/)
+      .expect(200, {
         eventi: [{
           id: "pub",
           idevent: '9878456846784568',
