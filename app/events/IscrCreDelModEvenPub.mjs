@@ -324,7 +324,10 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "Date ripetute o nessuna data inserita o formato data sbagliato." }).send();
                     return;
                 }
-                var options = {
+
+                let error = false;
+                for(let i = 0; i < req.body.luogoEv.length; i++) {
+                    var options = {
                     durata: req.body.durata,
                     descrizione: req.body.descrizione,
                     ora: req.body.ora,
@@ -374,25 +377,20 @@ router.post('', async (req, res) => {
                             return;
                         }
 
-                        if (!test(req.body.ora)) {
+                        if (!test(req.body.luogoEv[i].ora)) {
                             res.status(400).json({ error: "Formato ora non valido" }).send();
                             return;
                         }
 
-                        if(req.body.data.length !== req.body.ora.length) {
-                            res.status(400).json({ error: "Le date e le ore non corrispondono" }).send();
-                            return;
-                        }
-
                         //Riscrivere questa parte
-                        if (!dateCheck(req.body.data, req.body.ora)) {
+                        if (dateCheck(req.body.luogoEv[i].data, req.body.luogoEv[i].ora).length == 0) {
                             res.status(400).json({ error: "Data non valida." }).send();
                             return;
                         }
 
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
-                        geoReq(req.body.luogoEv.indirizzo + ", " + req.body.luogoEv.civNum + ", " +
-                            req.body.luogoEv.cap + ", " + req.body.luogoEv.citta + ", " + req.body.luogoEv.provincia)
+                        geoReq(req.body.luogoEv[i].indirizzo + ", " + req.body.luogoEv[i].civNum + ", " +
+                            req.body.luogoEv[i].cap + ", " + req.body.luogoEv[i].citta + ", " + req.body.luogoEv[i].provincia)
                             .then(async r => {
                                 console.log(r.data.status);
                                 if (r.data.status == "OK") {
@@ -406,15 +404,15 @@ router.post('', async (req, res) => {
 
                                     var i = 0;
                                     let obj = [];
-                                    for(let d of req.body.data) {
+                                    for(let d of req.body.luogoEv[i].data) {
                                         obj.push({
-                                            indirizzo: req.body.luogoEv.indirizzo,
-                                            civNum: req.body.luogoEv.civNum,
-                                            cap: req.body.luogoEv.cap,
-                                            citta: req.body.luogoEv.citta,
-                                            privincia: map(req.body.provincia),
+                                            indirizzo: req.body.luogoEv[i].indirizzo,
+                                            civNum: req.body.luogoEv[i].civNum,
+                                            cap: req.body.luogoEv[i].cap,
+                                            citta: req.body.luogoEv[i].citta,
+                                            privincia: map(req.body[i].provincia),
                                             data: d,
-                                            ora: req.body.ora[i],
+                                            ora: req.body.luogoEv[i].ora,
                                             maxPers: req.body.maxPers,
                                             partecipantiID: []
                                         });
@@ -450,7 +448,7 @@ router.post('', async (req, res) => {
                                     console.log('Evento salvato con successo');
 
                                     /**
-                                     * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                                     * Si posiziona il link alla risorsa appena creata nell'header location della risposta
                                      */
                                     res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
                                 } else {
@@ -462,6 +460,7 @@ router.post('', async (req, res) => {
                                 res.status(400).json({ error: "Indirizzo non valido." });
                             });
                     });
+                }
             })
             .catch(err => {
                 console.log(err);

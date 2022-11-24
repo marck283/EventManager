@@ -59,7 +59,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
                 var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
                 return org.valutazioneMedia < org1.valutazioneMedia;
             });
-            console.log(events1.length);
+            console.log(events1.length, events1[0].luogoEv[0]);
         } else {
             console.log("No events found");
         }
