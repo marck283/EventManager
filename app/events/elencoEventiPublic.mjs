@@ -48,7 +48,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
         //Filter for events happening in the future
         var curr = new Date();
-        events = events.filter(e => e.luogoEv.dataOra.filter(d => d >= curr).length > 0);
+        events = events.filter(e => new Date(e.luogoEv.data + "Z" + e.luogoEv.ora).toISOString() >= curr.toISOString());
 
         if (events.length > 0) {
             events1 = await map(events, "pub", await getOrgNames(events));
