@@ -6,11 +6,11 @@ export default model('EventoPe', new Schema({
 	durata: Number,
 	categoria: String,
 	nomeAtt: String,
-	luogoEv: {
+	luogoEv: [{
 		indirizzo: String,
 		citta: String,
 		data: String,
 		ora: String
-	},
+	}],
 	organizzatoreID: String
 }));

@@ -23,9 +23,16 @@ export default function map(events, eventType, orgNames = null) {
 
         let luogoEv = event.luogoEv;
         for (let i = 0; i < luogoEv.length; i++) {
-            const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
+            if(eventType == "pub") {
+                const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
+                luogoEv[i].numPostiRimanenti = numPostiRimanenti;
+            } else {
+                if(eventType == "priv") {
+                    delete luogoEv[i].invitatiID;
+                }
+                luogoEv[i].numPostiRimanenti = 0;
+            }
             delete luogoEv[i].partecipantiID;
-            luogoEv[i].numPostiRimanenti = numPostiRimanenti;
         }
 
         let obj = {

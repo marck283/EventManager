@@ -29,7 +29,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID.$eq == '2222') {
         return [
-        {id:'797569', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33'}, organizzatoreID: '2222'},
+        {id:'797569', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33'}], organizzatoreID: '2222'},
         ];
       } else {
         return []
@@ -37,8 +37,8 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     });
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
       return [
-        {id:'75975947', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']},
-        {id:'785478458', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}
+        {id:'75975947', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']}], organizzatoreID: '1111'},
+        {id:'785478458', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}], organizzatoreID: '2222'}
       ]
     });
     userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
@@ -70,21 +70,23 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
 
   it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
     // create a valid token
-    await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
+    const response = await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
-    expect('Content-Type', /json/).
-    expect(200, {eventi: [{
+    expect('Content-Type', /json/);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toStrictEqual({eventi: [{
         id: "pers",
         idevent:'797569',
         self: "/api/v2/EventiPersonali/797569",
         name: "Piscina",
         category: "svago",
-        luogoEv: {
+        luogoEv: [{
           indirizzo: 'via rossi',
           citta: 'Trento',
           data: '2010-05-11',
-          ora: '11:33'
-        }
+          ora: '11:33',
+          numPostiRimanenti: 0
+        }]
       }]
     });
   });

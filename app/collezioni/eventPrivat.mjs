@@ -6,7 +6,7 @@ export default model('EventoPr', new Schema({
 	durata: Number,
 	categoria: String,
 	nomeAtt: String,
-	luogoEv: {
+	luogoEv: [{
 		indirizzo: String,
 		civNum: String,
 		cap: Number,
@@ -14,9 +14,9 @@ export default model('EventoPr', new Schema({
 		provincia: String, //A two-letter string that uniquely identifies a province in Italy
 		data: String,
 		ora: String,
-		partecipantiID: [String]
-	},
-	organizzatoreID: String,
-	invitatiID: [String]
+		partecipantiID: [String],
+		invitatiID: [String]
+	}],
+	organizzatoreID: String
 }));
 
