@@ -6,18 +6,19 @@ export default model('EventoP', new Schema({
 	categoria: String,
 	nomeAtt: String,
 	descrizione: String,
-	dataOra: [Date], //Pair of date and time equivalent to JS Date object
 	durata: Number,
-	maxPers: Number,
-	luogoEv: {
+	luogoEv: [{
 		indirizzo: String,
 		civNum: String,
 		cap: Number,
 		citta: String,
-		provincia: String
-	},
+		provincia: String,
+		maxPers: Number,
+		data: String,
+		ora: String,
+		partecipantiID: [String]
+	}],
 	organizzatoreID: String,
-	partecipantiID: [String],
 	eventPic: String,
 	etaMin: Number,
 	etaMax: Number,

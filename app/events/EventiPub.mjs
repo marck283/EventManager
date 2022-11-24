@@ -11,25 +11,16 @@ router.get('/:id', async(req, res) => {
             return;
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
-        let partecipanti = [];
-        for (var i of eventoPubblico.partecipantiID) {
-            let tmp = await Users.findById(i);
-            partecipanti.push(tmp.nome);
-        }
 
+        //Al client andrà la computazione del numero di posti rimanenti
         res.status(200).json({
             nomeAtt: eventoPubblico.nomeAtt,
             categoria: eventoPubblico.categoria,
-            data: eventoPubblico.data,
-            ora: eventoPubblico.ora,
             durata: eventoPubblico.durata,
             luogoEv: eventoPubblico.luogoEv,
             organizzatore: organizzatore.nome,
-            maxPers: eventoPubblico.maxPers,
-            partecipanti: partecipanti,
             eventPic: eventoPubblico.eventPic,
-            terminato: eventoPubblico.terminato,
-            postiRimanenti: eventoPubblico.maxPers - eventoPubblico.partecipantiID.length
+            terminato: eventoPubblico.terminato
         }).send();
     } catch(error) {
         console.log(error);

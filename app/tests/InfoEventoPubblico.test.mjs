@@ -12,7 +12,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   beforeAll(() => {
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '9876543') {
-        return {_id:'9876543', data: '05/11/2010',  ora: '11:33', durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234']}
+        return {_id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '05/11/2010',  ora: '11:33', maxPers: 2, partecipantiID: ['1234']}], organizzatoreID: '1234'}
      }
 
     });
@@ -34,15 +34,20 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   it('GET /api/v2/EventiPubblici/:id nel caso di evento esistente', async () => {
       await request(app).get('/api/v2/EventiPubblici/9876543').
       expect('Content-Type', /json/).
-      expect(200, {nomeAtt: "Evento",
-            categoria: "svago",
+      expect(200, {
+        nomeAtt: 'Evento',
+        categoria: 'svago',
+        durata: 2,
+        luogoEv: [{
+            indirizzo: 'via rossi',
+            citta: 'Trento',
             data: '05/11/2010',
             ora: '11:33',
-            durata: 2,
-            luogoEv: {indirizzo: 'via rossi', citta: 'Trento'},
-            organizzatore: 'Carlo',
             maxPers: 2,
-            partecipanti: ['Carlo']});
+            partecipantiID: ['1234']
+          }],
+        organizzatore: 'Carlo'
+      });
   });
 
   it('GET /api/v2/EventiPubblici/:id nel caso di evento non esistente', async () => {
