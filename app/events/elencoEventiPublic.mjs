@@ -48,7 +48,9 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
         //Filter for events happening in the future
         var curr = new Date();
-        events = events.filter(e => new Date(e.luogoEv.data + "Z" + e.luogoEv.ora).toISOString() >= curr.toISOString());
+
+        //Date RangeError makes app crash. Why?
+        events = events.filter(e => new Date(e.luogoEv.data + "Z" + e.luogoEv.ora) >= curr);
 
         if (events.length > 0) {
             events1 = await map(events, "pub", await getOrgNames(events));

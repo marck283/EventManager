@@ -157,63 +157,79 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
-    try {
-        let eventP = await eventPublic.findById(id_evento);
-        if (eventP == undefined) {
-            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+    const v = new Validator({
+        giorno: req.body.data,
+        ora: req.body.ora
+    }, {
+        giorno: 'required|date',
+        ora: 'required|string|minLength:5|maxLength:5'
+    });
+    v.check()
+    .then(async matched => {
+        if(!matched) {
+            res.status(400).json({ error: "Richiesta malformata"}).send();
             return;
         }
-
-        if (dateCheck(eventP.data, eventP.ora)) {
-            res.status(403).json({ error: "evento non disponibile" }).send();
-            return;
-        }
-
-        if (eventP.partecipantiID.length == eventP.maxPers) {
-            res.status(403).json({ error: "Non spazio nell'evento" }).send();
-            return;
-        }
-
-        if (eventP.partecipantiID.includes(utent)) {
-            res.status(403).json({ error: "Già iscritto" }).send();
-            return;
-        }
-
-        let data = {
-            idUtente: utent,
-            idEvento: id_evento
-        };
-
-        let stringdata = JSON.stringify(data);
-
-        //Print QR code to file using base64 encoding
-        var idBigl = "";
-
-        toDataURL(stringdata, async function (err, qrcode) {
-            if (err) {
-                throw Error("errore creazione biglietto");
+        try {
+            var eventP1 = await eventPublic.findById(id_evento);
+            if (eventP1 == undefined) {
+                res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+                return;
             }
 
-            bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub" });
+            eventP1 = eventP1.filter(e => e.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length > 0);
+            if (eventP1.length == 0) {
+                res.status(403).json({ error: "evento non disponibile" }).send();
+                return;
+            }
 
-            idBigl = bigl._id;
-            return await bigl.save();
-        });
-
-        //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent);
-
-        eventP.partecipantiID.push(utent);
-        utente.EventiIscrtto.push(id_evento);
-
-        await eventP.save();
-        await utente.save();
-
-        res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Errore nel server" }).send();
-    }
+            if (eventP1[0].luogoEv[0].partecipantiID.length == eventP1[0].luogoEv[0].maxPers) {
+                res.status(403).json({ error: "Non spazio nell'evento" }).send();
+                return;
+            }
+    
+            if (eventP1[0].luogoEv[0].partecipantiID.includes(utent)) {
+                res.status(403).json({ error: "Già iscritto" }).send();
+                return;
+            }
+    
+            let data = {
+                idUtente: utent,
+                idEvento: id_evento
+            };
+    
+            let stringdata = JSON.stringify(data);
+    
+            //Print QR code to file using base64 encoding
+            var idBigl = "";
+    
+            toDataURL(stringdata, async function (err, qrcode) {
+                if (err) {
+                    throw Error("errore creazione biglietto");
+                }
+    
+                bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
+            ora: req.body.ora });
+    
+                idBigl = bigl._id;
+                return await bigl.save();
+            });
+    
+            //Si cerca l'utente organizzatore dell'evento
+            let utente = await Users.findById(utent);
+    
+            eventP1[0].luogoEv[0].partecipantiID.push(utent);
+            utente.EventiIscrtto.push(id_evento);
+    
+            await eventP1.save();
+            await utente.save();
+    
+            res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: "Errore nel server" }).send();
+        }
+    });
 });
 
 router.post('/:id/Inviti', async (req, res) => {
@@ -369,7 +385,8 @@ router.post('', async (req, res) => {
                             return;
                         }
 
-                        if (dateCheck(req.body.data, req.body.ora)) {
+                        //Riscrivere questa parte
+                        if (!dateCheck(req.body.data, req.body.ora)) {
                             res.status(400).json({ error: "Data non valida." }).send();
                             return;
                         }
@@ -389,24 +406,28 @@ router.post('', async (req, res) => {
                                     }
 
                                     var dateArr = [], i = 0;
+                                    let obj = [];
                                     for(let d of req.body.data) {
-                                        dateArr.push(new Date(d + "Z" + req.body.ora[i]));
-                                    }
-
-                                    //Si crea un documento evento pubblico
-                                    let eventP = new eventPublic({
-                                        dataOra: dateArr,
-                                        durata: req.body.durata,
-                                        maxPers: req.body.maxPers,
-                                        categoria: req.body.categoria,
-                                        nomeAtt: req.body.nomeAtt,
-                                        luogoEv: {
+                                        obj.push({
                                             indirizzo: req.body.luogoEv.indirizzo,
                                             civNum: req.body.civNum,
                                             cap: req.body.cap,
                                             citta: req.body.luogoEv.citta,
-                                            privincia: map(req.body.provincia)
-                                        },
+                                            privincia: map(req.body.provincia),
+                                            data: d,
+                                            ora: req.body.ora[i],
+                                            maxPers: req.body.maxPers,
+                                            partecipantiID: []
+                                        });
+                                        ++i;
+                                    }
+
+                                    //Si crea un documento evento pubblico
+                                    let eventP = new eventPublic({
+                                        durata: req.body.durata,
+                                        categoria: req.body.categoria,
+                                        nomeAtt: req.body.nomeAtt,
+                                        luogoEv: obj,
                                         organizzatoreID: utente.id,
                                         eventPic: "data:image/png;base64," + req.body.eventPic,
                                         etaMin: etaMin,
@@ -414,12 +435,8 @@ router.post('', async (req, res) => {
                                         terminato: false,
                                         recensioni: [],
                                         valMedia: 0.0,
-                                        orgName: utente.nome,
-                                        partecipantiID: []
+                                        orgName: utente.nome
                                     });
-
-                                    //Questo è davvero necessario?
-                                    eventP.partecipantiID.push(utente.id);
 
                                     //Si salva il documento pubblico
                                     eventP = await eventP.save();

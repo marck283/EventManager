@@ -260,7 +260,8 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                if(dateCheck(req.body.data, req.body.ora)) {
+                //Riscrivere questa parte...
+                if(!dateCheck(req.body.data, req.body.ora)) {
                     res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
