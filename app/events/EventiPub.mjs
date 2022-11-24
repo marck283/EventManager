@@ -17,10 +17,10 @@ router.get('/:id', async(req, res) => {
             nomeAtt: eventoPubblico.nomeAtt,
             categoria: eventoPubblico.categoria,
             durata: eventoPubblico.durata,
-            luogoEv: eventoPubblico.luogoEv,
+            luogoEv: eventoPubblico.luogoEv, //Non si potrebbe non restituire gli id dei partecipanti?
             organizzatore: organizzatore.nome,
             eventPic: eventoPubblico.eventPic,
-            terminato: eventoPubblico.terminato
+            terminato: eventoPubblico.terminato,
         }).send();
     } catch(error) {
         console.log(error);
