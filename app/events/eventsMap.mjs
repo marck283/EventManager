@@ -35,6 +35,8 @@ export default function map(events, eventType, orgNames = null) {
             delete luogoEv[i].partecipantiID;
         }
 
+        console.log("luogoEv:", luogoEv);
+
         let obj = {
             id: eventType,
             idevent: event.id,
