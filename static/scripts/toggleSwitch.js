@@ -1,11 +1,11 @@
 var getId = id => document.getElementById(id);
 
 var requestOrg = () => {
-    fetch("../api/v2/publicEventOrgList")
+    fetch("../api/v2/EventOrgList")
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(data => manipulateDom("pub", data, "eventLists"));
+                resp.json().then(data => manipulateDom("pub", data, "eventLists", true));
                 break;
             }
             case 400: //Non dovrebbe mai succedere
@@ -44,7 +44,8 @@ var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata =
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                resp.json().then(resp => manipulateDom(listType, resp, idElem, true));
+                resp.json().then(resp => manipulateDom(listType, resp, idElem, false));
+                requestOrg();
                 break;
             }
 
@@ -107,23 +108,23 @@ var showIfChecked = pageType => {
 var manipulateDom = (listType, response, id = "eventLists", evOrg = false) => {
     var categories = [];
     getId(id).textContent = "";
+
+    let h3 = document.createElement("h3");
     if(evOrg) {
         //Se sto per stampare la lista degli eventi organizzati da me, allora stampo anche il titolo.
-        let h3 = document.createElement("h3");
         h3.textContent = "Eventi organizzati";
-        getId(id).appendChild(h3);
     } else {
-        let h3 = document.createElement("h3");
         h3.textContent = "Altri eventi disponibili";
-        getId(id).appendChild(h3);
     }
+    getId(id).appendChild(h3);
+
     for (var f of response.eventi) {
         if (categories.find(e => e === f.category) == undefined) {
             categories.push(f.category);
             category = f.category;
-            var h3 = document.createElement("h3");
-            h3.textContent = category;
-            getId(id).appendChild(h3);
+            var h31 = document.createElement("h3");
+            h31.textContent = category;
+            getId(id).appendChild(h31);
 
             var ul = document.createElement("ul");
             ul.classList = "list-group list-group-flush";

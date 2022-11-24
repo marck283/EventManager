@@ -30,6 +30,8 @@ var mapAndPush = async (arr, genArr, cat) => {
         events.forEach(e => genArr.push(e));
     }
 
+    console.log(genArr);
+
     return genArr;
 };
 
@@ -53,6 +55,7 @@ router.get("/:data", async (req, res) => {
             obj = {organizzatoreID: {$eq: utent}, data: {$eq: data}};
         } else {
             utent = await User.find({email: {$eq: req.loggedUser.email}});
+            console.log(utent);
             obj = {organizzatoreID: {$eq: utent[0].id}, data: {$eq: data}};
         }
         eventList = await findEvents(eventPublic, obj);
