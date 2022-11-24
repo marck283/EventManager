@@ -14,60 +14,66 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   let eventsPerSpy;
   let eventsPrivSpy;
   let userSpy;
+  var d, h;
 
   // create a valid token
   var token;
 
   beforeAll(() => {
     token = createToken("gg.ee@gmail.com", "2222", 3600);
+    d = '2010-05-11';
+    h = '11:33';
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       switch (criterias) {
         case "9876543": {
           return {
             id: '9876543',
-            dataOra: [new Date('2010-05-11T11:33:00.000Z')],
             durata: 2,
-            maxPers: 2,
             categoria: 'svago',
             nomeAtt: 'Evento',
-            luogoEv: {
+            luogoEv: [{
               indirizzo: 'via rossi',
-              citta: 'Trento'
-            },
-            organizzatoreID: '1234',
-            partecipantiID: ['1234']
+              citta: 'Trento',
+              data: d,
+              ora: h,
+              maxPers: 2,
+              partecipantiID: ['1234']
+            }],
+            organizzatoreID: '1234'
           };
         }
         case "987653": {
           return {
             id: '987653',
-            dataOra: [new Date('2010-05-11T11:33:00.000Z')],
             durata: 2,
-            maxPers: 2,
             categoria: 'svago',
             nomeAtt: 'Event',
-            luogoEv: {
+            luogoEv: [{
               indirizzo: 'via rossi',
-              citta: 'Trento'
-            },
-            organizzatoreID: '1234',
-            partecipantiID: ['2222', '1234']
+              citta: 'Trento',
+              data: d,
+              ora: h,
+              maxPers: 2,
+              partecipantiID: ['2222', '1234']
+            }],
+            organizzatoreID: '1234'
           };
         }
         case "9878456846784568": {
           return {
             id: '9878456846784568',
-            dataOra: [new Date('2010-05-11T11:33:00.000Z')],
             durata: 2,
-            maxPers: 2,
             categoria: 'svago',
             nomeAtt: 'Evet',
-            luogoEv: {
+            luogoEv: [{
               indirizzo: 'via rossi',
-              citta: 'Trento'
-            },
-            organizzatoreID: '1234',
-            partecipantiID: ['2222', '1234']
+              citta: 'Trento',
+              data: d,
+              ora: h,
+              maxPers: 2,
+              partecipantiID: ['2222', '1234']
+            }],
+            organizzatoreID: '1234'
           };
         }
         default: {

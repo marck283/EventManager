@@ -157,11 +157,17 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
+    var eventP1 = await eventPublic.findById(id_evento);
+    if (eventP1 == undefined) {
+        res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+        return;
+    }
+
     const v = new Validator({
         giorno: req.body.data,
         ora: req.body.ora
     }, {
-        giorno: 'required|date',
+        giorno: 'required|string|minLength:10|maxLength:10|dateFormat:MM-DD-YYYY',
         ora: 'required|string|minLength:5|maxLength:5'
     });
     v.check()
@@ -171,24 +177,17 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
         try {
-            var eventP1 = await eventPublic.findById(id_evento);
-            if (eventP1 == undefined) {
-                res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
-                return;
-            }
-
-            eventP1 = eventP1.filter(e => e.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length > 0);
-            if (eventP1.length == 0) {
+            if (eventP1 != null && eventP1 != undefined && eventP1.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length == 0) {
                 res.status(403).json({ error: "evento non disponibile" }).send();
                 return;
             }
 
-            if (eventP1[0].luogoEv[0].partecipantiID.length == eventP1[0].luogoEv[0].maxPers) {
+            if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
                 res.status(403).json({ error: "Non spazio nell'evento" }).send();
                 return;
             }
     
-            if (eventP1[0].luogoEv[0].partecipantiID.includes(utent)) {
+            if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
                 res.status(403).json({ error: "Già iscritto" }).send();
                 return;
             }
@@ -218,7 +217,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             //Si cerca l'utente organizzatore dell'evento
             let utente = await Users.findById(utent);
     
-            eventP1[0].luogoEv[0].partecipantiID.push(utent);
+            eventP1.luogoEv[0].partecipantiID.push(utent);
             utente.EventiIscrtto.push(id_evento);
     
             await eventP1.save();

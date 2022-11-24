@@ -8,7 +8,12 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 
-var filterArr = (e, str) => e.dataOra.filter(d => d.toISOString().split("T").includes(str.split("T")[0])).length > 0;
+var filterArr = (e, str) => {
+    console.log(e);
+    return e.luogoEv.filter(l => l.data == str.split("T")[0]).length > 0;
+};
+
+var filterArrPriv = (e, str) => new Date(e.dataOra).toISOString().split("T")[0] == str.split("T")[0];
 
 function isEmpty(o) {
     for(var i in o) {
@@ -24,7 +29,7 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     let pub = await eventPublic.findById(e);
     let priv = await eventPrivate.findById(e);
     
-    if (pers != null && pers != undefined && !isEmpty(pers) && filterArr(pers, str)) {
+    if (pers != null && pers != undefined && !isEmpty(pers) && filterArrPriv(pers, str)) {
         eventsPers.push(pers);
     }
 
@@ -33,7 +38,7 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     }
 
     if (priv != null && priv != undefined && !isEmpty(priv)) {
-        if (filterArr(priv, str)) {
+        if (filterArrPriv(priv, str)) {
             eventsPriv.push(priv);
         }
     } else {
@@ -83,10 +88,10 @@ router.get("/:data", async (req, res) => {
 var findPubEvents = async (user) => {
     var eventsPub = await eventPublic.find({});
 
-    //Il motivo per vui qui non restituisce nulla nel caso in cui un utente sia autenticato con Google potrebbe essere che,
+    //Il motivo per cui qui non restituisce nulla nel caso in cui un utente sia autenticato con Google potrebbe essere che,
     //all'iscrizione dell'utente all'evento, non utilizzo il campo "sub" ma l'id di MongoDB?
     //In tal caso, il problema si potrebbe risolvere semplicemente usando il campo "sub" sia qui che per l'iscrizione all'evento...
-    eventsPub = eventsPub.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
+    eventsPub = eventsPub.filter(e => (e.luogoEv.filter(l => l.partecipantiID.includes(user)) || e.organizzatoreID == user));
     return eventsPub;
 };
 

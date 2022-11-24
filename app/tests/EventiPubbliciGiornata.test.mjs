@@ -13,16 +13,17 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
   
   // create a valid token
   var token;
-  var d;
+  var d, h;
 
   beforeAll(() => {
     token = createToken("gg.ee@gmail.com", "2222", 3600);
-    d = new Date('05-11-2010Z11:33');
+    d = '05-11-2010';
+    h = '11:33';
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
-        {id:'9876543', dataOra: [d], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: []},
-        {id:'987653', dataOra: [d], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222']},
-        {id:'9878456846784568', dataOra: [d], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['2222']}
+        {id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: []}], organizzatoreID: '1234'},
+        {id:'987653', durata: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['2222']}], organizzatoreID: '1234'},
+        {id:'9878456846784568', durata: 2, categoria: 'svago', nomeAtt: 'Evet', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['2222']}], organizzatoreID: '1234'}
       ]
     });
     userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
@@ -48,6 +49,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
     userSpy = null;
     token = null;
     d = null;
+    h = null;
   });
   
   it("GET /api/v2/eventiCalendarioPubblico/:data da autenticati, quindi con token valido, nel caso ci siano eventi pubblici per la data passata a cui l'utente non si è iscritto o creato", async () => {
@@ -63,8 +65,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
           self: '/api/v2/EventiPubblici/9876543',
           name: 'Evento',
           category: 'svago',
-          orgName: 'Giovanna',
-          dataOra: ['2010-05-11T11:33:00.000Z']
+          orgName: 'Giovanna'
         }
       ],
       data: '05-11-2010'

@@ -14,13 +14,16 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
   let eventsPerSpy;
   let eventsPrivSpy;
   let userSpy;
+  var d, h;
 
   beforeAll( () => {
     const recensione = "2345";
+    d = '2010-05-11';
+    h = '11:33';
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
       return [
-        {id:'9876543', dataOra: ['2010-05-11T11:33:00.000Z'], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1234', partecipantiID: ['1234'], recensioni: [recensione]},
-        {id:'987653', dataOra: ['2010-05-11T11:33:00.000Z'], durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '123', partecipantiID: ['2222','1234'], recensioni: [recensione]}
+        {id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['1234']}], organizzatoreID: '1234', recensioni: [recensione]},
+        {id:'987653', durata: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['2222','1234']}], organizzatoreID: '123', recensioni: [recensione]}
       ]
     });
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
@@ -61,6 +64,8 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     eventsPerSpy = null;
     eventsPrivSpy = null;
     userSpy = null;
+    d = null;
+    h = null;
   });
 
   it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {

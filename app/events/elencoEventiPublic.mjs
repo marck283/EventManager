@@ -43,14 +43,12 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
         filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
         filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
         filterCondition(durata != undefined, events, e => e.durata == durata);
-        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.indirizzo == indirizzo);
-        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.citta == citta);
+        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo));
+        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta));
 
         //Filter for events happening in the future
         var curr = new Date();
-
-        //Date RangeError makes app crash. Why?
-        events = events.filter(e => new Date(e.luogoEv.data + "Z" + e.luogoEv.ora) >= curr);
+        events = events.filter(e => e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr));
 
         if (events.length > 0) {
             events1 = await map(events, "pub", await getOrgNames(events));
@@ -101,7 +99,7 @@ router.get("", async (req, res) => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
-                events = events.filter(e => (!e.partecipantiID.includes(utente.id) && e.organizzatoreID !== utente.id));
+                events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
 
                 console.log("Events: " + events);
 
@@ -113,7 +111,7 @@ router.get("", async (req, res) => {
                     console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                     if (!err) {
                         user = decoded.id;
-                        events = events.filter(e => (!e.partecipantiID.includes(user) && e.organizzatoreID !== user));
+                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID !== user));
                     }
 
                     queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
@@ -155,12 +153,15 @@ router.get("/:data", async (req, res) => {
         res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
         return;
     }
-    events = events.filter(e => e.dataOra.filter(d => str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate() + "-" + d.getFullYear()).length > 0);
+    events = events.filter(e => e.luogoEv.filter(l => {
+        var d = new Date(l.data);
+        return str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate().toString().padStart(2, '0') + "-" + d.getFullYear();
+    }).length > 0);
 
     if (token) {
         await mapEvents(token)
             .then(async decoded => {
-                events = events.filter(e => e.partecipantiID.length == 0 || !e.partecipantiID.includes(decoded.id));
+                events = events.filter(e => e.luogoEv.filter(l => l.partecipantiID.length == 0 || !l.partecipantiID.includes(decoded.id)).length > 0);
                 await setResponse(res, events, str);
             })
             .catch(async err => {

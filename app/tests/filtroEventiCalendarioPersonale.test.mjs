@@ -13,18 +13,18 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
             return [{
                 _id: "12344",
-                data: "06/27/2022",
-                ora: "11:00",
                 durata: 2,
-                maxPers: 200,
                 categoria: "svago",
                 nomeAtt: "Girare a vuoto",
-                lugoEv: {
+                luogoEv: [{
                     indirizzo: "Via del campo",
-                    citta: "Mortara"
-                },
-                organizzatoreID: "2361627wyuwerye378",
-                partecipantiID: ["1234", "2134"]
+                    citta: "Mortara",
+                    data: "06/27/2022",
+                    ora: "11:00",
+                    maxPers: 200,
+                    partecipantiID: ["1234", "2134"]
+                }],
+                organizzatoreID: "2361627wyuwerye378"
             }];
         });
         mockFindPers = jest.spyOn(eventPers, "find").mockImplementation(criterias => {
@@ -33,7 +33,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
                 nomeAtt: "Girare a vuoto",
                 categoria: "svago",
                 durata: 2,
-                lugoEv: {
+                luogoEv: {
                     indirizzo: "Via del campo",
                     citta: "Mortara"
                 },
@@ -50,7 +50,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
                 durata: 2,
                 categoria: "svago",
                 nomeAtt: "Girare a vuoto",
-                lugoEv: {
+                luogoEv: {
                     indirizzo: "Via del campo",
                     citta: "Mortara"
                 },
