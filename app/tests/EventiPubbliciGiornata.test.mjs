@@ -58,16 +58,22 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
     expect('Content-Type', /json/);
     expect(response.statusCode).toBe(200);
     expect(response.body).toStrictEqual({
-      eventi: [
-        {
+      eventi: [{
           id: 'pub',
           idevent: '9876543',
+          luogoEv:[{
+            citta: "Trento",
+            data: "05-11-2010",
+            indirizzo: "via rossi",
+            maxPers: 2,
+            numPostiRimanenti: 2,
+            ora: "11:33",
+          }],
           self: '/api/v2/EventiPubblici/9876543',
           name: 'Evento',
           category: 'svago',
           orgName: 'Giovanna'
-        }
-      ],
+        }],
       data: '05-11-2010'
     });
   });

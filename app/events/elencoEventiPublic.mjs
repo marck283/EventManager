@@ -65,7 +65,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
         }
     }
     return events1;
-}
+};
 
 var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, citta) => {
     var events1 = await queryEvents(events, nomeAtt, categoria, durata, indirizzo, citta);

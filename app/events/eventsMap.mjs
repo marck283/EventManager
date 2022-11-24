@@ -21,6 +21,13 @@ export default function map(events, eventType, orgNames = null) {
             }
         }
 
+        let luogoEv = event.luogoEv;
+        for (let i = 0; i < luogoEv.length; i++) {
+            const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
+            delete luogoEv[i].partecipantiID;
+            luogoEv[i].numPostiRimanenti = numPostiRimanenti;
+        }
+
         let obj = {
             id: eventType,
             idevent: event.id,
@@ -29,7 +36,7 @@ export default function map(events, eventType, orgNames = null) {
             category: event.categoria,
             eventPic: event.eventPic,
             orgName: orgNames[i],
-            dataOra: event.dataOra
+            luogoEv: luogoEv
         };
 
         i += 1;

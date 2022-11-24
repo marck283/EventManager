@@ -29,7 +29,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID.$eq == '2222') {
         return [
-        {id:'797569', dataOra: ['2010-05-11T11:33:00.000Z'], durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', recensioni: [recensione]},
+        {id:'797569', durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: {indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33'}, organizzatoreID: '2222'},
         ];
       } else {
         return []
@@ -37,8 +37,8 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     });
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
       return [
-        {id:'75975947', dataOra: ['2010-05-11T11:33:00.000Z'], durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323'], recensioni: [recensione]},
-        {id:'785478458', dataOra: ['2010-05-11T11:33:00.000Z'], durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323'], recensioni: [recensione]}
+        {id:'75975947', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33'}, organizzatoreID: '1111', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']},
+        {id:'785478458', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: {indirizzo: 'via rossi', citta: 'Trento'}, organizzatoreID: '2222', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}
       ]
     });
     userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
@@ -79,7 +79,12 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         self: "/api/v2/EventiPersonali/797569",
         name: "Piscina",
         category: "svago",
-        dataOra: ['2010-05-11T11:33:00.000Z']
+        luogoEv: {
+          indirizzo: 'via rossi',
+          citta: 'Trento',
+          data: '2010-05-11',
+          ora: '11:33'
+        }
       }]
     });
   });
