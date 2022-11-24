@@ -404,13 +404,13 @@ router.post('', async (req, res) => {
                                         etaMax = Number(req.body.etaMax);
                                     }
 
-                                    var dateArr = [], i = 0;
+                                    var i = 0;
                                     let obj = [];
                                     for(let d of req.body.data) {
                                         obj.push({
                                             indirizzo: req.body.luogoEv.indirizzo,
-                                            civNum: req.body.civNum,
-                                            cap: req.body.cap,
+                                            civNum: req.body.luogoEv.civNum,
+                                            cap: req.body.luogoEv.cap,
                                             citta: req.body.luogoEv.citta,
                                             privincia: map(req.body.provincia),
                                             data: d,
