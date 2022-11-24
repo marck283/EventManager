@@ -171,64 +171,66 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         ora: 'required|string|minLength:5|maxLength:5'
     });
     v.check()
-    .then(async matched => {
-        if(!matched) {
-            res.status(400).json({ error: "Richiesta malformata"}).send();
-            return;
-        }
-        try {
-            if (eventP1 != null && eventP1 != undefined && eventP1.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length == 0) {
-                res.status(403).json({ error: "evento non disponibile" }).send();
+        .then(async matched => {
+            if (!matched) {
+                res.status(400).json({ error: "Richiesta malformata" }).send();
                 return;
             }
-
-            if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
-                res.status(403).json({ error: "Non spazio nell'evento" }).send();
-                return;
-            }
-    
-            if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
-                res.status(403).json({ error: "Già iscritto" }).send();
-                return;
-            }
-    
-            let data = {
-                idUtente: utent,
-                idEvento: id_evento
-            };
-    
-            let stringdata = JSON.stringify(data);
-    
-            //Print QR code to file using base64 encoding
-            var idBigl = "";
-    
-            toDataURL(stringdata, async function (err, qrcode) {
-                if (err) {
-                    throw Error("errore creazione biglietto");
+            try {
+                if (eventP1 != null && eventP1 != undefined && eventP1.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length == 0) {
+                    res.status(403).json({ error: "evento non disponibile" }).send();
+                    return;
                 }
-    
-                bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
-            ora: req.body.ora });
-    
-                idBigl = bigl._id;
-                return await bigl.save();
-            });
-    
-            //Si cerca l'utente organizzatore dell'evento
-            let utente = await Users.findById(utent);
-    
-            eventP1.luogoEv[0].partecipantiID.push(utent);
-            utente.EventiIscrtto.push(id_evento);
-    
-            await eventP1.save();
-            await utente.save();
-    
-            res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ error: "Errore nel server" }).send();
-        }
-    });
+
+                if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
+                    res.status(403).json({ error: "Non spazio nell'evento" }).send();
+                    return;
+                }
+
+                if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
+                    res.status(403).json({ error: "Già iscritto" }).send();
+                    return;
+                }
+
+                let data = {
+                    idUtente: utent,
+                    idEvento: id_evento
+                };
+
+                let stringdata = JSON.stringify(data);
+
+                //Print QR code to file using base64 encoding
+                var idBigl = "";
+
+                toDataURL(stringdata, async function (err, qrcode) {
+                    if (err) {
+                        throw Error("errore creazione biglietto");
+                    }
+
+                    bigl = new biglietti({
+                        eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
+                        ora: req.body.ora
+                    });
+
+                    idBigl = bigl._id;
+                    return await bigl.save();
+                });
+
+                //Si cerca l'utente organizzatore dell'evento
+                let utente = await Users.findById(utent);
+
+                eventP1.luogoEv[0].partecipantiID.push(utent);
+                utente.EventiIscrtto.push(id_evento);
+
+                await eventP1.save();
+                await utente.save();
+
+                res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({ error: "Errore nel server" }).send();
+            }
+        });
 });
 
 router.post('/:id/Inviti', async (req, res) => {
@@ -325,9 +327,12 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                let error = false;
-                for(let i = 0; i < req.body.luogoEv.length; i++) {
-                    var options = {
+                if (dateCheck(req.body.luogoEv).length == 0) {
+                    res.status(400).json({ error: "Data non valida." }).send();
+                    return;
+                }
+
+                var options = {
                     durata: req.body.durata,
                     descrizione: req.body.descrizione,
                     ora: req.body.ora,
@@ -382,12 +387,6 @@ router.post('', async (req, res) => {
                             return;
                         }
 
-                        //Riscrivere questa parte
-                        if (dateCheck(req.body.luogoEv[i].data, req.body.luogoEv[i].ora).length == 0) {
-                            res.status(400).json({ error: "Data non valida." }).send();
-                            return;
-                        }
-
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
                         geoReq(req.body.luogoEv[i].indirizzo + ", " + req.body.luogoEv[i].civNum + ", " +
                             req.body.luogoEv[i].cap + ", " + req.body.luogoEv[i].citta + ", " + req.body.luogoEv[i].provincia)
@@ -404,7 +403,7 @@ router.post('', async (req, res) => {
 
                                     var i = 0;
                                     let obj = [];
-                                    for(let d of req.body.luogoEv[i].data) {
+                                    for (let d of req.body.luogoEv[i]) {
                                         obj.push({
                                             indirizzo: req.body.luogoEv[i].indirizzo,
                                             civNum: req.body.luogoEv[i].civNum,
@@ -460,7 +459,6 @@ router.post('', async (req, res) => {
                                 res.status(400).json({ error: "Indirizzo non valido." });
                             });
                     });
-                }
             })
             .catch(err => {
                 console.log(err);
