@@ -102,7 +102,7 @@ router.get("", async (req, res) => {
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
 
-                console.log("Events: " + events);
+                console.log("Events: " + events[0].luogoEv[0]);
 
                 queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
             })
