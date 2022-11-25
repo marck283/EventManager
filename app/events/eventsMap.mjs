@@ -27,15 +27,13 @@ export default function map(events, eventType, orgNames = null) {
                 const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
                 luogoEv[i].numPostiRimanenti = numPostiRimanenti;
             } else {
-                if(eventType == "priv") {
+                /*if(eventType == "priv") {
                     delete luogoEv[i].invitatiID;
-                }
+                }*/
                 luogoEv[i].numPostiRimanenti = 0;
             }
-            delete luogoEv[i].partecipantiID;
+            //delete luogoEv[i].partecipantiID;
         }
-
-        console.log("luogoEv:", luogoEv);
 
         let obj = {
             id: eventType,
