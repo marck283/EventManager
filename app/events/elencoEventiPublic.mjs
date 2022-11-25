@@ -48,11 +48,13 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
         //Filter for events happening in the future
         var curr = new Date();
-        events = events.filter(e => {
+
+        //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
+        /*events = events.filter(e => {
             e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
             console.log(e.luogoEv.length > 0);
             return e.luogoEv.length > 0;
-        });
+        });*/
         
 
         if (events.length > 0) {
