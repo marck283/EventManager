@@ -12,7 +12,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
   beforeAll(() => {
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if(criterias == '9876543') {
-        return {_id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '05/11/2010',  ora: '11:33', maxPers: 2, partecipantiID: ['1234']}], organizzatoreID: '1234'}
+        return {_id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '05/11/2023',  ora: '11:33', maxPers: 2, partecipantiID: ['1234']}], organizzatoreID: '1234'}
      }
 
     });
@@ -41,7 +41,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
         luogoEv: [{
             indirizzo: 'via rossi',
             citta: 'Trento',
-            data: '05/11/2010',
+            data: '05/11/2023',
             ora: '11:33',
             maxPers: 2,
             partecipantiID: ['1234']

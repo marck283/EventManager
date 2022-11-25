@@ -43,12 +43,17 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
         filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
         filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
         filterCondition(durata != undefined, events, e => e.durata == durata);
-        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo));
-        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta));
+        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo).length > 0);
+        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta).length > 0);
 
         //Filter for events happening in the future
         var curr = new Date();
-        events = events.filter(e => e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr));
+        events = events.filter(e => {
+            e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
+            console.log(e.luogoEv.length > 0);
+            return e.luogoEv.length > 0;
+        });
+        
 
         if (events.length > 0) {
             events1 = await map(events, "pub", await getOrgNames(events));
@@ -82,7 +87,6 @@ var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, ci
             res.status(400).json({ error: "Richiesta malformata." });
         }
     } else {
-        console.log("null");
         res.status(404).json({ error: "Non sono presenti eventi organizzati." });
     }
 }
