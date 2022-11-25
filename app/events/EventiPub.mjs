@@ -11,6 +11,7 @@ router.get('/:id', async(req, res) => {
             return;
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
+        eventoPubblico.luogoEv = eventoPubblico.luogoEv.filter(l => new Date() >= new Date(l.data));
 
         //Al client andrà la computazione del numero di posti rimanenti
         res.status(200).json({

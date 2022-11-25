@@ -70,7 +70,11 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
 var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, citta) => {
     var events1 = await queryEvents(events, nomeAtt, categoria, durata, indirizzo, citta);
-    console.log("Events:", events1[0].luogoEv[0]);
+
+    if(events1 != 1 && events1 != null && events1 != undefined) {
+        console.log("Events:", events1[0].luogoEv[0]);
+    }
+    
     if (events1 != null) {
         if (events1 != 1) {
             res.status(200).json({ eventi: events1 });
