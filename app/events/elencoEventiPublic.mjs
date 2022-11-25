@@ -70,6 +70,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
 
 var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, citta) => {
     var events1 = await queryEvents(events, nomeAtt, categoria, durata, indirizzo, citta);
+    console.log("Events:", events1[0].luogoEv[0]);
     if (events1 != null) {
         if (events1 != 1) {
             res.status(200).json({ eventi: events1 });
@@ -101,8 +102,6 @@ router.get("", async (req, res) => {
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
-
-                console.log("Events: " + events[0].luogoEv[0]);
 
                 queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
             })
