@@ -34,6 +34,7 @@ var login = async (fbUserId, fbJwt, res) => {
                 res.status(200).json(result(createToken(json1.email, user.id, 3600), json1.email, user.id, json1.picture.data.url)).send();
             }))
         .catch(err => {
+            console.log(err);
             res.status(404).json({
                 error: "Utente non trovato."
             }).send();
