@@ -68,6 +68,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
             maxPers: 2,
             numPostiRimanenti: 2,
             ora: "11:33",
+            partecipantiID: []
           }],
           self: '/api/v2/EventiPubblici/9876543',
           name: 'Evento',
