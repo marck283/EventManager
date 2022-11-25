@@ -21,7 +21,7 @@ export default function map(events, eventType, orgNames = null) {
             }
         }
 
-        let luogoEv = event.luogoEv;
+        var luogoEv = event.luogoEv;
         for (let i = 0; i < luogoEv.length; i++) {
             if(eventType == "pub") {
                 const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
