@@ -48,6 +48,7 @@ export default function map(events, eventType, orgNames = null) {
             luogoEv: luogoEv
         };
 
+        console.log("obj:", obj);
         i += 1;
 
         return obj;
