@@ -1,6 +1,24 @@
 import Utente from './collezioni/utenti.mjs';
 import createToken from './tokenCreation.mjs';
 
+var result = (token, email, id, profilePic, error = false, message = "") => {
+	if (error) {
+		return {
+			success: false,
+			message: message
+		};
+	}
+	return {
+		success: true,
+		message: "Autenticazione completata",
+		token: token,
+		email: email,
+		profilePic: profilePic,
+		id: id,
+		self: "/api/v2/Utenti/" + id
+	};
+};
+
 var login = async (fbUserId, fbJwt, res) => {
     await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
         .then(resp => resp.json()
