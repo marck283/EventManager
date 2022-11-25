@@ -403,16 +403,16 @@ router.post('', async (req, res) => {
 
                                     var i = 0;
                                     let obj = [];
-                                    for (let d of req.body.luogoEv[i]) {
+                                    for (let d of req.body.luogoEv) {
                                         obj.push({
-                                            indirizzo: req.body.luogoEv[i].indirizzo,
-                                            civNum: req.body.luogoEv[i].civNum,
-                                            cap: req.body.luogoEv[i].cap,
-                                            citta: req.body.luogoEv[i].citta,
-                                            privincia: map(req.body[i].provincia),
-                                            data: d,
-                                            ora: req.body.luogoEv[i].ora,
-                                            maxPers: req.body.maxPers,
+                                            indirizzo: d[i].indirizzo,
+                                            civNum: d[i].civNum,
+                                            cap: d[i].cap,
+                                            citta: d[i].citta,
+                                            privincia: map(d[i].provincia),
+                                            data: d[i].data,
+                                            ora: d[i].ora,
+                                            maxPers: d[i].maxPers,
                                             partecipantiID: []
                                         });
                                         ++i;

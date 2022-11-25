@@ -24,15 +24,10 @@ export default function map(events, eventType, orgNames = null) {
         var luogoEv = event.luogoEv;
         for (let i = 0; i < luogoEv.length; i++) {
             if(eventType == "pub") {
-                const numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
-                luogoEv[i].numPostiRimanenti = numPostiRimanenti;
+                luogoEv[i].numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
             } else {
-                /*if(eventType == "priv") {
-                    delete luogoEv[i].invitatiID;
-                }*/
                 luogoEv[i].numPostiRimanenti = 0;
             }
-            //delete luogoEv[i].partecipantiID;
         }
 
         let obj = {
@@ -46,7 +41,7 @@ export default function map(events, eventType, orgNames = null) {
             luogoEv: luogoEv
         };
 
-        console.log("obj:", obj);
+        console.log("obj:", obj.luogoEv[0].numPostiRimanenti);
         i += 1;
 
         return obj;
