@@ -40,8 +40,7 @@ export default function map(events, eventType, orgNames = null) {
             orgName: orgNames[i],
             luogoEv: luogoEv
         };
-
-        console.log("obj:", obj.luogoEv[0].numPostiRimanenti);
+        
         i += 1;
 
         return obj;
