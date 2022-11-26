@@ -14,7 +14,6 @@ const tokenChecker = async (req, res, next) => {
 	}
 	await verify.verify(token)
 		.then(ticket => {
-			//console.log("ho il token Google");
 			req.loggedUser = ticket.getPayload();
 			next();
 		})
@@ -27,7 +26,6 @@ const tokenChecker = async (req, res, next) => {
 					}).send();
 					return;
 				}
-				//console.log("ho il token");
 				req.loggedUser = decoded;
 				next();
 			});
