@@ -180,12 +180,12 @@ router.get('/me/Iscrizioni', async (req, res) => {
 });
 
 var deleteGoogleUser = async (user, which) => {
-    user = await Utente.findOneAndDelete({ email: { $eq: req.loggedUser.email } });
+    user = await Utente.findOneAndDelete({ email: { $eq: user.email } });
     which = "google";
 }
 
 var deleteFacebookUser = async (user, which) => {
-    user = await Utente.findByIdAndDelete(req.loggedUser.id);
+    user = await Utente.findByIdAndDelete(user.id);
     which = "facebook";
 }
 
