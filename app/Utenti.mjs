@@ -5,9 +5,6 @@ import Biglietto from './collezioni/biglietti.mjs';
 import eventPublic from './collezioni/eventPublic.mjs';
 import eventPrivat from './collezioni/eventPrivat.mjs';
 import Inviti from './collezioni/invit.mjs';
-import verify from 'jsonwebtoken';
-import googleTokenCheck from './googleTokenChecker.mjs';
-import googleTokenChecker from './googleTokenChecker.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
@@ -181,37 +178,23 @@ router.get('/me/Iscrizioni', async (req, res) => {
     }
 });
 
-router.delete("/deleteMe", (req, res) => {
+router.delete("/deleteMe", async (req, res) => {
     try {
-        const v = new Validator({
-            token: req.body.token
-        }, {
-            token: 'required|string|minlength:1'
-        });
-        v.check()
-            .then(async matched => {
-                if (!matched) {
-                    res.status(400).json({ error: "Richiesta malformata." }).send();
-                    return;
-                }
+        var user = req.loggedUser.id || req.loggedUser.sub;
+        (user == req.loggedUser.sub) ? user = await Utente.findOneAndDelete({ email: { $eq: payload.email } }) :
+            user = await Utente.findByIdAndDelete(req.loggedUser.id);
 
-                var user = req.loggedUser.id || req.loggedUser.sub;
-                (user == req.loggedUser.sub) ? user = await Utente.findOneAndDelete({ email: { $eq: payload.email } }) :
-                user = await Utente.findByIdAndDelete(req.loggedUser.id);
-
-                if (user != null && user != undefined) {
-                    res.status(200).json({ message: "Utente eliminato con successo." });
-                } else {
-                    res.status(404).json({ error: "Utente non trovato." });
-                }
-                return;
-            });
-    } catch(err) {
+        if (user != null && user != undefined) {
+            res.status(200).json({ message: "Utente eliminato con successo." });
+        } else {
+            res.status(404).json({ error: "Utente non trovato." });
+        }
+        return;
+    } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Errore interno al server." });
         return;
     }
-    
 });
 
 export default router;
