@@ -5,6 +5,7 @@ import Biglietto from './collezioni/biglietti.mjs';
 import eventPublic from './collezioni/eventPublic.mjs';
 import eventPrivat from './collezioni/eventPrivat.mjs';
 import Inviti from './collezioni/invit.mjs';
+import eventPersonal from './collezioni/eventPersonal.mjs';
 
 router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser.sub;
@@ -185,6 +186,37 @@ router.delete("/deleteMe", async (req, res) => {
             user = await Utente.findByIdAndDelete(req.loggedUser.id);
 
         if (user != null && user != undefined) {
+            //Ora trovo tutti gli eventi organizzati, i biglietti e gli inviti posseduti da questo utente e li invalido.
+            var listaEventi = await eventPublic.find({ organizzatoreID: user.id });
+            for(let e of listaEventi) {
+                await Biglietto.deleteMany({ eventoid: e.id });
+            }
+            await eventPublic.deleteMany({ organizzatoreID: user.id });
+            await eventPersonal.deleteMany({ organizzatoreID: user.id });
+            await eventPrivat.deleteMany({ organizzatoreID: user.id });
+            await Inviti.deleteMany({ utenteid: user.id });
+
+            var listaBiglietti = await Biglietto.find({ utenteid: user.id });
+            for(let b of listaBiglietti) {
+                let evento = await eventPublic.findById(b.eventoid);
+                if(evento != undefined && evento != null) {
+                    let luogo = evento.luogoEv.filter(l => l.giorno == b.giorno && l.ora == b.ora)[0];
+                    let index = luogo.partecipantiID.indexOf(user.id);
+                    if(index > -1) {
+                        luogo.partecipantiID.splice(index, 1);
+                    }
+                }
+                
+                evento = await eventPrivat.findById(b.eventoid);
+                if(evento != undefined && evento != null) {
+                    let luogo = evento.luogoEv.filter(l => l.giorno == b.giorno && l.ora == b.ora)[0];
+                    let index = luogo.partecipantiID.indexOf(user.id);
+                    if(index > -1) {
+                        luogo.partecipantiID.splice(index, 1);
+                    }
+                }
+            }
+            await Biglietto.deleteMany({ utenteid: user.id });
             res.status(200).json({ message: "Utente eliminato con successo." });
         } else {
             res.status(404).json({ error: "Utente non trovato." });
