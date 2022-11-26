@@ -179,11 +179,22 @@ router.get('/me/Iscrizioni', async (req, res) => {
     }
 });
 
+var deleteGoogleUser = async (user, which) => {
+    user = await Utente.findOneAndDelete({ email: { $eq: req.loggedUser.email } });
+    which = "google";
+}
+
+var deleteFacebookUser = async (user, which) => {
+    user = await Utente.findByIdAndDelete(req.loggedUser.id);
+    which = "facebook";
+}
+
 router.delete("/deleteMe", async (req, res) => {
     try {
+        var which;
         var user = req.loggedUser.id || req.loggedUser.sub;
-        (user == req.loggedUser.sub) ? user = await Utente.findOneAndDelete({ email: { $eq: payload.email } }) :
-            user = await Utente.findByIdAndDelete(req.loggedUser.id);
+        (user == req.loggedUser.sub) ? await deleteGoogleUser(user, which) :
+            await deleteFacebookUser(user, which);
 
         if (user != null && user != undefined) {
             //Ora trovo tutti gli eventi organizzati, i biglietti e gli inviti posseduti da questo utente e li invalido.
@@ -217,7 +228,7 @@ router.delete("/deleteMe", async (req, res) => {
                 }
             }
             await Biglietto.deleteMany({ utenteid: user.id });
-            res.status(200).json({ message: "Utente eliminato con successo." });
+            res.status(200).json({ message: "Utente eliminato con successo.", which: which });
         } else {
             res.status(404).json({ error: "Utente non trovato." });
         }
