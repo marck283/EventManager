@@ -11,7 +11,7 @@ router.get('/me', async (req, res) => {
     let utente, obj;
 
     if (IDexample === req.loggedUser.sub) {
-        utente = await User.find({ email: { $eq: req.loggedUser.email } });
+        utente = await Utente.find({ email: { $eq: req.loggedUser.email } });
         obj = {
             nome: utente[0].nome,
             email: utente[0].email,
