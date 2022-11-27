@@ -107,8 +107,6 @@ router.post('', (req, res) => {
 							});
 							await user.save();
 						} else {
-							console.log(user.facebookAccount);
-							console.log(user.facebookAccount.userId);
 							if(user.facebookAccount != null && user.facebookAccount.userId != null && user.facebookAccount.userId != undefined) {
 								res.status(409).json({ error: "Un altro account è già registrato con questo indirizzo email."}).send();
 								return;
