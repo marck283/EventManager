@@ -27,7 +27,7 @@ var filterCondition = (condition, arr, cb) => {
     }
 };
 
-var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) => {
+var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, orgName) => {
     const v1 = new Validator({
         durata: durata
     }, {
@@ -45,6 +45,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta) =
         filterCondition(durata != undefined, events, e => e.durata == durata);
         filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo).length > 0);
         filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta).length > 0);
+        filterCondition(orgName != null && orgName != "", events, e => e.orgName == orgName);
 
         //Filter for events happening in the future
         var curr = new Date();
@@ -99,7 +100,7 @@ router.get("", async (req, res) => {
 
     var events = await eventPublic.find({});
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
-    var indirizzo = req.header("indirizzo"), citta = req.header("citta");
+    var indirizzo = req.header("indirizzo"), citta = req.header("citta"), orgName = req.header("orgName");
 
     console.log(token == null);
 
@@ -113,7 +114,7 @@ router.get("", async (req, res) => {
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
 
-                queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
+                queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
             })
             .catch(err => {
                 //Questo non è un token Google
@@ -124,11 +125,11 @@ router.get("", async (req, res) => {
                         events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID !== user));
                     }
 
-                    queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
+                    queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
                 });
             });
     } else {
-        queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta);
+        queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
     }
 });
 
