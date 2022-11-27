@@ -23,7 +23,7 @@ router.use(limiter);
 
 var filterCondition = (condition, arr, cb) => {
     if (condition) {
-        arr.filter(cb);
+        arr = arr.filter(cb);
     }
 };
 
