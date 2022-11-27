@@ -118,7 +118,7 @@ router.get("", async (req, res) => {
             .catch(err => {
                 //Questo non è un token Google
                 tVerify(token, process.env.SUPER_SECRET, (err, decoded) => {
-                    console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
+                    console.log(err.message); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                     if (!err) {
                         user = decoded.id;
                         events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID !== user));
