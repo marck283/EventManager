@@ -102,8 +102,14 @@ router.get("", async (req, res) => {
     var events = await eventPublic.find({});
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta"), orgName = req.header("orgName");
-
-    console.log("nomeAtt1:", nomeAtt);
+    
+    if(nomeAtt != undefined && nomeAtt != null) {
+        console.log("nomeAtt1:", nomeAtt);
+    } else {
+        if(nomeOrg != undefined && nomeOrg != null) {
+            console.log("nomeOrg1:", nomeOrg);
+        }
+    }
 
     //Aggiungere controllo per token != null
     if (token != undefined && token != null && token != "") {
