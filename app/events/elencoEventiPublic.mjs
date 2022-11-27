@@ -103,7 +103,7 @@ router.get("", async (req, res) => {
     var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
     var indirizzo = req.header("indirizzo"), citta = req.header("citta"), orgName = req.header("orgName");
 
-    console.log(token == null);
+    console.log("nomeAtt1:", nomeAtt);
 
     //Aggiungere controllo per token != null
     if (token != undefined && token != null && token != "") {
