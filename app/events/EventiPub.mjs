@@ -11,7 +11,9 @@ router.get('/:id', async(req, res) => {
             return;
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
-        eventoPubblico.luogoEv = eventoPubblico.luogoEv.filter(l => new Date() < new Date(l.data + "Z" + l.ora));
+
+        //Da reinserire quando sarà implementata la funzionalità di creazione degli eventi
+        //eventoPubblico.luogoEv = eventoPubblico.luogoEv.filter(l => new Date() < new Date(l.data + "Z" + l.ora));
 
         //Al client andrà la computazione del numero di posti rimanenti
         res.status(200).json({
