@@ -40,6 +40,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, o
     if (!matched) {
         events1 = 1;
     } else {
+        console.log("nomeAtt:", nomeAtt);
         filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
         filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
         filterCondition(durata != undefined, events, e => e.durata == durata);
