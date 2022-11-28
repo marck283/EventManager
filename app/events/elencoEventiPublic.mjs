@@ -41,14 +41,6 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, o
     if (!matched) {
         events1 = 1;
     } else {
-        console.log("nomeAtt:", nomeAtt);
-        events = filterCondition(nomeAtt != null && nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt == nomeAtt);
-        //events = filterCondition(categoria != null && categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-        //events = filterCondition(durata != null && durata != undefined, events, e => e.durata == durata);
-        //events = filterCondition(indirizzo != null && indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo).length > 0);
-        //events = filterCondition(citta != null && citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta).length > 0);
-        events = filterCondition(orgName != null && orgName != undefined && orgName != "", events, e => e.orgName == orgName);
-
         //Filter for events happening in the future
         var curr = new Date();
 
@@ -100,15 +92,15 @@ router.get("", async (req, res) => {
     var token = req.header('x-access-token');
     var user = "";
 
-    var events = await eventPublic.find({});
-    var nomeAtt = req.header("nomeAtt"), categoria = req.header("categoria"), durata = req.header("durata");
-    var indirizzo = req.header("indirizzo"), citta = req.header("citta"), orgName = req.header("orgName");
+    var events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
     
-    if(nomeAtt != undefined && nomeAtt != null) {
-        console.log("nomeAtt1:", nomeAtt);
+    if(nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
+        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }});
     } else {
-        if(orgName != undefined && orgName != null) {
-            console.log("nomeOrg1:", orgName);
+        if(orgName != undefined && orgName != null && orgName != "") {
+            events = await eventPublic.find({ orgName: { $eq: orgName }});
+        } else {
+            events = await eventPublic.find({});
         }
     }
 
