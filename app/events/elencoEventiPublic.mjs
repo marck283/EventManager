@@ -98,7 +98,7 @@ router.get("", async (req, res) => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
-                events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
+                events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID !== utente.id);
 
                 queryWrapper(res, events);
             })
