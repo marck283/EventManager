@@ -33,11 +33,11 @@ var queryEvents = async events => {
     var events1 = null, curr = new Date();
 
     //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
-    /*events = events.filter(e => {
+    events = events.filter(e => {
         e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
         console.log(e.luogoEv.length > 0);
         return e.luogoEv.length > 0;
-    });*/
+    });
 
     if (events != null && events.length > 0) {
         events1 = await map(events, "pub", await getOrgNames(events));
