@@ -28,52 +28,39 @@ var filterCondition = (condition, arr, cb) => {
     return arr;
 };
 
-var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, orgName) => {
-    const v1 = new Validator({
-        durata: durata
-    }, {
-        durata: 'integer|min:1',
-    });
+var queryEvents = async events => {
+    //Filter for events happening in the future
+    var events1 = [], curr = new Date();
 
-    var events1 = null;
+    //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
+    /*events = events.filter(e => {
+        e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
+        console.log(e.luogoEv.length > 0);
+        return e.luogoEv.length > 0;
+    });*/
+    
 
-    const matched = await v1.check();
-    if (!matched) {
-        events1 = 1;
+    if (events != null && events.length > 0) {
+        events1 = await map(events, "pub", await getOrgNames(events));
+        console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
+        events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
+
+        //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
+        events1.sort((e, e1) => {
+            var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
+            return org.valutazioneMedia < org1.valutazioneMedia;
+        });
+        console.log(events1.length);
     } else {
-        //Filter for events happening in the future
-        var curr = new Date();
-
-        //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
-        /*events = events.filter(e => {
-            e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
-            console.log(e.luogoEv.length > 0);
-            return e.luogoEv.length > 0;
-        });*/
-        
-
-        if (events != null && events.length > 0) {
-            events1 = await map(events, "pub", await getOrgNames(events));
-            console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
-            events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
-
-            //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-            events1.sort((e, e1) => {
-                var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
-                return org.valutazioneMedia < org1.valutazioneMedia;
-            });
-            console.log(events1.length);
-        } else {
-            console.log("No events found");
-        }
+        console.log("No events found");
     }
     return events1;
 };
 
-var queryWrapper = async (res, events, nomeAtt, categoria, durata, indirizzo, citta) => {
-    var events1 = await queryEvents(events, nomeAtt, categoria, durata, indirizzo, citta);
+var queryWrapper = async (res, events) => {
+    var events1 = await queryEvents(events);
 
-    if(events1 != 1 && events1 != null && events1 != undefined) {
+    if(events1 != null && events1 != undefined) {
         console.log("Events:", events1[0].luogoEv[0]);
     }
     
@@ -114,7 +101,7 @@ router.get("", async (req, res) => {
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)) && e.organizzatoreID !== utente.id));
 
-                queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
+                queryWrapper(res, events);
             })
             .catch(err => {
                 //Questo non è un token Google
@@ -125,11 +112,11 @@ router.get("", async (req, res) => {
                         events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID !== user));
                     }
 
-                    queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
+                    queryWrapper(res, events);
                 });
             });
     } else {
-        queryWrapper(res, events, nomeAtt, categoria, durata, indirizzo, citta, orgName);
+        queryWrapper(res, events);
     }
 });
 
