@@ -35,6 +35,7 @@ describe('GET /api/v2/EventiPubblici/:id', () => {
       await request(app).get('/api/v2/EventiPubblici/9876543').
       expect('Content-Type', /json/).
       expect(200, {
+        id: '9876543',
         nomeAtt: 'Evento',
         categoria: 'svago',
         durata: 2,

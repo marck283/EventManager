@@ -178,12 +178,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             }
             try {
                 if (eventP1 != null && eventP1 != undefined && eventP1.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length == 0) {
-                    res.status(403).json({ error: "evento non disponibile" }).send();
+                    res.status(403).json({ error: "Evento non disponibile" }).send();
                     return;
                 }
 
                 if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
-                    res.status(403).json({ error: "Non spazio nell'evento" }).send();
+                    res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                     return;
                 }
 
@@ -192,7 +192,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 }
 
                 if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
-                    res.status(403).json({ error: "Già iscritto" }).send();
+                    res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
                     return;
                 }
 
@@ -208,7 +208,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
                 toDataURL(stringdata, async function (err, qrcode) {
                     if (err) {
-                        throw Error("errore creazione biglietto");
+                        throw Error("Errore creazione biglietto");
                     }
 
                     bigl = new biglietti({
