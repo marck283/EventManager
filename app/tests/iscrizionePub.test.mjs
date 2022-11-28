@@ -53,7 +53,7 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
             data: '12-12-2023',
             ora: '06:37'
         })
-        .expect(403, {error: "Non spazio nell'evento"});
+        .expect(403, {error: "Limite massimo di partecipanti raggiunto per questo evento."});
         
     });
 });
