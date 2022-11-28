@@ -107,8 +107,8 @@ router.get("", async (req, res) => {
     if(nomeAtt != undefined && nomeAtt != null) {
         console.log("nomeAtt1:", nomeAtt);
     } else {
-        if(nomeOrg != undefined && nomeOrg != null) {
-            console.log("nomeOrg1:", nomeOrg);
+        if(orgName != undefined && orgName != null) {
+            console.log("nomeOrg1:", orgName);
         }
     }
 
