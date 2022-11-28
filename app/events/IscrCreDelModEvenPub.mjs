@@ -187,6 +187,10 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                     return;
                 }
 
+                if(utent == req.loggedUser.sub) {
+                    utent = (await Users.findOne({ email: { $eq: req.loggedUser.email }})).id;
+                }
+
                 if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
                     res.status(403).json({ error: "Già iscritto" }).send();
                     return;
