@@ -23,8 +23,9 @@ router.use(limiter);
 
 var filterCondition = (condition, arr, cb) => {
     if (condition) {
-        arr = arr.filter(cb);
+        return arr.filter(cb);
     }
+    return arr;
 };
 
 var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, orgName) => {
@@ -41,12 +42,12 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, o
         events1 = 1;
     } else {
         console.log("nomeAtt:", nomeAtt);
-        filterCondition(nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt.includes(nomeAtt));
-        filterCondition(categoria != undefined && categoria != "", events, e => e.categoria == categoria);
-        filterCondition(durata != undefined, events, e => e.durata == durata);
-        filterCondition(indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo).length > 0);
-        filterCondition(citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta).length > 0);
-        filterCondition(orgName != null && orgName != "", events, e => e.orgName == orgName);
+        events = filterCondition(nomeAtt != null && nomeAtt != undefined && nomeAtt != "", events, e => e.nomeAtt == nomeAtt);
+        //events = filterCondition(categoria != null && categoria != undefined && categoria != "", events, e => e.categoria == categoria);
+        //events = filterCondition(durata != null && durata != undefined, events, e => e.durata == durata);
+        //events = filterCondition(indirizzo != null && indirizzo != undefined && indirizzo != "", events, e => e.luogoEv.filter(l => l.indirizzo == indirizzo).length > 0);
+        //events = filterCondition(citta != null && citta != undefined && citta != "", events, e => e.luogoEv.filter(l => l.citta == citta).length > 0);
+        events = filterCondition(orgName != null && orgName != undefined && orgName != "", events, e => e.orgName == orgName);
 
         //Filter for events happening in the future
         var curr = new Date();
@@ -59,7 +60,7 @@ var queryEvents = async (events, nomeAtt, categoria, durata, indirizzo, citta, o
         });*/
         
 
-        if (events.length > 0) {
+        if (events != null && events.length > 0) {
             events1 = await map(events, "pub", await getOrgNames(events));
             console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
             events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
