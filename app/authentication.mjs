@@ -64,6 +64,7 @@ router.post('', (req, res) => {
 				let gJwt = req.body.googleJwt;
 				if (gJwt.credential != null && gJwt.credential != undefined) {
 					gJwt = gJwt.credential;
+					console.log("Google JWT: " + gJwt);
 				}
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
