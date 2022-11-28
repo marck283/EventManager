@@ -30,7 +30,7 @@ var filterCondition = (condition, arr, cb) => {
 
 var queryEvents = async events => {
     //Filter for events happening in the future
-    var events1 = [], curr = new Date();
+    var events1 = null, curr = new Date();
 
     //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
     /*events = events.filter(e => {
@@ -38,7 +38,6 @@ var queryEvents = async events => {
         console.log(e.luogoEv.length > 0);
         return e.luogoEv.length > 0;
     });*/
-    
 
     if (events != null && events.length > 0) {
         events1 = await map(events, "pub", await getOrgNames(events));
