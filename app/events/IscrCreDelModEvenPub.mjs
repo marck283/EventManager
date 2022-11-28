@@ -212,7 +212,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         throw Error("Errore creazione biglietto");
                     }
 
-                    bigl = new biglietti({
+                    var bigl = new biglietti({
                         eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
                         ora: req.body.ora
                     });
