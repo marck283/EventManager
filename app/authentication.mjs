@@ -116,7 +116,7 @@ router.post('', (req, res) => {
 						user = await Utente.findOne({ email: { $eq: payload.email } });
 						res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
 					})
-					.catch(async err => {
+					.catch(err => {
 						console.log(err);
 						res.status(401).json({
 							error: "Token non valido."
