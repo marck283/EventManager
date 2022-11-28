@@ -173,6 +173,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     v.check()
         .then(async matched => {
             if (!matched) {
+                console.log(v.errors);
                 res.status(400).json({ error: "Richiesta malformata" }).send();
                 return;
             }
