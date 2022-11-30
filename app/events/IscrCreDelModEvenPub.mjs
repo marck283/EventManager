@@ -414,7 +414,7 @@ router.post('', async (req, res) => {
                                             civNum: d[i].civNum,
                                             cap: d[i].cap,
                                             citta: d[i].citta,
-                                            privincia: map(d[i].provincia),
+                                            provincia: map(d[i].provincia),
                                             data: d[i].data,
                                             ora: d[i].ora,
                                             maxPers: d[i].maxPers,
