@@ -319,7 +319,7 @@ router.post('', async (req, res) => {
         }
 
         const v = new Validator({
-            data: req.body.data
+            data: req.body.luogoEv[i].data
         }, {
             'data': 'required|arrayUnique|minLength:1',
             'data.*': 'required|dateFormat:MM-DD-YYYY'
@@ -340,18 +340,18 @@ router.post('', async (req, res) => {
                 var options = {
                     durata: req.body.durata,
                     descrizione: req.body.descrizione,
-                    ora: req.body.ora,
-                    maxPers: req.body.maxPers,
+                    ora: req.body.luogoEv[i].ora,
+                    maxPers: req.body.luogoEv[i].maxPers,
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
-                    indirizzo: req.body.luogoEv.indirizzo,
-                    citta: req.body.luogoEv.citta,
+                    indirizzo: req.body.luogoEv[i].indirizzo,
+                    citta: req.body.luogoEv[i].citta,
                     picture: req.body.eventPic,
                     etaMin: req.body.etaMin,
                     etaMax: req.body.etaMax,
-                    civNum: req.body.luogoEv.civNum,
-                    cap: req.body.luogoEv.cap,
-                    provincia: req.body.luogoEv.provincia
+                    civNum: req.body.luogoEv[i].civNum,
+                    cap: req.body.luogoEv[i].cap,
+                    provincia: req.body.luogoEv[i].provincia
                 };
                 const v1 = new Validator(options, {
                     durata: 'required|integer|min:1',
