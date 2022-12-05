@@ -354,7 +354,8 @@ router.post('', async (req, res) => {
                     provincia: req.body.luogoEv[i].provincia
                 };
                 const v1 = new Validator(options, {
-                    durata: 'required|integer|min:1',
+                    'durata': 'required|array|minLength:3|maxLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
+                    'durata.*': 'required|string|minLength:1|maxLength:3',
                     descrizione: 'required|string|minLength:1|maxLength:140',
                     'ora': 'required|array|minLength:1',
                     'ora.*': 'required|string|minLength:5|maxLength:5',
@@ -425,7 +426,7 @@ router.post('', async (req, res) => {
 
                                     //Si crea un documento evento pubblico
                                     let eventP = new eventPublic({
-                                        durata: req.body.durata,
+                                        durata: req.body.durata.join(":"),
                                         categoria: req.body.categoria,
                                         nomeAtt: req.body.nomeAtt,
                                         luogoEv: obj,

@@ -6,7 +6,7 @@ export default model('EventoP', new Schema({
 	categoria: String,
 	nomeAtt: String,
 	descrizione: String,
-	durata: Number,
+	durata: String,
 	luogoEv: [{
 		indirizzo: String,
 		civNum: String,
