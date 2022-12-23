@@ -189,7 +189,7 @@ router.post("/facebookLogin", async (req, res) => {
 					res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
 					return;
 				}
-				console.log("googleJwt: " + req.body.googleJwt);
+				console.log("fbJwt: " + req.body.googleJwt);
 				await login(req.body.userId, req.body.googleJwt, res);
 			});
 	} catch (err) {
