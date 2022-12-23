@@ -179,7 +179,7 @@ router.post("/facebookLogin", async (req, res) => {
 			user_id: req.body.userId
 		}, {
 			csrfToken: 'required|string',
-			jwt: 'required|string|minLength:1',
+			jwt: 'required|base64',
 			user_id: 'required|string|minLength:1'
 		});
 		v.check()
@@ -189,7 +189,7 @@ router.post("/facebookLogin", async (req, res) => {
 					res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
 					return;
 				}
-				console.log("googleJwt: " + req.body.googleJwt);
+				console.log("fbJwt: " + req.body.googleJwt);
 				await login(req.body.userId, req.body.googleJwt, res);
 			});
 	} catch (err) {
