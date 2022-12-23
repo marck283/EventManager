@@ -179,7 +179,7 @@ router.post("/facebookLogin", async (req, res) => {
 			user_id: req.body.userId
 		}, {
 			csrfToken: 'required|string',
-			jwt: 'required|base64',
+			jwt: 'required|string|minLength:1',
 			user_id: 'required|string|minLength:1'
 		});
 		v.check()
