@@ -98,13 +98,18 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
             durata: 4,
             categoria: 'operazione',
             nomeAtt: 'Eventt',
-            luogoEv: {
+            luogoEv: [{
               indirizzo: 'via rossi',
-              citta: 'Trento'
-            },
+              civNum: '1',
+              cap: '38121',
+              citta: 'Trento',
+              provincia: 'TN',
+              data: d,
+              ora: h,
+              partecipantiID: ['1234', '2222'],
+              invitatiID: ['2323']
+            }],
             organizzatoreID: '1111',
-            partecipantiID: ['1234', '2222'],
-            invitatiID: ['2323']
           };
         }
         case "785478458": {
@@ -114,10 +119,17 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
             durata: 4,
             categoria: 'operazione',
             nomeAtt: 'Eventt',
-            luogoEv: {
+            luogoEv: [{
               indirizzo: 'via rossi',
-              citta: 'Trento'
-            },
+              civNum: '1',
+              cap: '38121',
+              citta: 'Trento',
+              provincia: 'TN',
+              data: d,
+              ora: h,
+              partecipantiID: ['1234', '2222'],
+              invitatiID: ['2323']
+            }],
             organizzatoreID: '412341234123',
             partecipantiID: ['1234', '1111'],
             invitatiID: ['2323']
@@ -164,60 +176,68 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     const result = await request(app).get('/api/v2/eventiCalendarioPersonale/05-11-2010').
       set('x-access-token', token)
       .expect('Content-Type', /json/);
-      expect(result.statusCode).toBe(200);
-      expect(result.body).toStrictEqual({
-        eventi: [{
-          id: "pub",
-          idevent: '9878456846784568',
-          self: '/api/v2/EventiPubblici/9878456846784568',
-          name: 'Evet',
-          category: 'svago',
-          luogoEv: [{
-            indirizzo: 'via rossi',
-            citta: 'Trento',
-            data: d,
-            ora: h,
-            maxPers: 2,
-            numPostiRimanenti: 0,
-            partecipantiID: ['2222', '1234']
-          }]
-        },
-        {
-          id: 'pub',
-          idevent: '987653',
-          self: '/api/v2/EventiPubblici/987653',
-          name: 'Event',
-          category: 'svago',
-          luogoEv: [{
-            indirizzo: 'via rossi',
-            citta: 'Trento',
-            data: d,
-            ora: h,
-            maxPers: 2,
-            numPostiRimanenti: 0,
-            partecipantiID: ['2222', '1234']
-          }]
-        },
-        {
-          id: 'priv',
-          idevent: '75975947',
-          self: '/api/v2/EventiPrivati/75975947',
-          name: 'Eventt',
-          category: 'operazione',
-          luogoEv: {
-            indirizzo: 'via rossi',
-            citta: 'Trento'
-          }
-        }], data: '2010-05-11T22:00:00.000Z'
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toStrictEqual({
+      eventi: [{
+        id: "pub",
+        idevent: '9878456846784568',
+        self: '/api/v2/EventiPubblici/9878456846784568',
+        name: 'Evet',
+        category: 'svago',
+        luogoEv: [{
+          indirizzo: 'via rossi',
+          citta: 'Trento',
+          data: d,
+          ora: h,
+          maxPers: 2,
+          numPostiRimanenti: 0,
+          partecipantiID: ['2222', '1234']
+        }]
+      },
+      {
+        id: 'pub',
+        idevent: '987653',
+        self: '/api/v2/EventiPubblici/987653',
+        name: 'Event',
+        category: 'svago',
+        luogoEv: [{
+          indirizzo: 'via rossi',
+          citta: 'Trento',
+          data: d,
+          ora: h,
+          maxPers: 2,
+          numPostiRimanenti: 0,
+          partecipantiID: ['2222', '1234']
+        }]
+      },
+      {
+        id: 'priv',
+        idevent: '75975947',
+        self: '/api/v2/EventiPrivati/75975947',
+        name: 'Eventt',
+        category: 'operazione',
+        luogoEv: [{
+          indirizzo: 'via rossi',
+          civNum: '1',
+          cap: '38121',
+          citta: 'Trento',
+          provincia: 'TN',
+          data: d,
+          ora: h,
+          partecipantiID: ['1234', '2222'],
+          invitatiID: ['2323'],
+          numPostiRimanenti: 0
+        }]
+      }], data: '2010-05-11T22:00:00.000Z'
     });
   });
 
-  it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {
+  /*it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di formato errato", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05112010').
       set('x-access-token', token).
       expect('Content-Type', /json/).
       expect(400, { error: "Data non valida" });
-  });
+  });*/
 
   it("GET /api/v2/eventiCalendarioPersonale/:data da autenticati, quindi con token valido, indicando una data di cui non esiste alcun evento pubblico o privato per la data passata a cui l'utente non si è iscritto o creato, oppure non esiste alcun evento personale creato dall'utente per quella data", async () => {
     await request(app).get('/api/v2/eventiCalendarioPersonale/05-13-2010').

@@ -10,11 +10,9 @@ import getOrgNames from './OrgNames.mjs';
 import returnUser from '../findUser.mjs';
 
 var filterArr = (e, str) => {
-    console.log(e);
+    console.log(typeof e.luogoEv);
     return e.luogoEv.filter(l => l.data == str.split("T")[0]).length > 0;
 };
-
-var filterArrPriv = (e, str) => new Date(e.dataOra).toISOString().split("T")[0] == str.split("T")[0];
 
 function isEmpty(o) {
     for(var i in o) {
@@ -29,8 +27,10 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     let pers = await eventPersonal.findById(e);
     let pub = await eventPublic.findById(e);
     let priv = await eventPrivate.findById(e);
+
+    console.log(pers, pub, priv);
     
-    if (pers != null && pers != undefined && !isEmpty(pers) && filterArrPriv(pers, str)) {
+    if (pers != null && pers != undefined && !isEmpty(pers) && filterArr(pers, str)) {
         eventsPers.push(pers);
     }
 
@@ -39,7 +39,7 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     }
 
     if (priv != null && priv != undefined && !isEmpty(priv)) {
-        if (filterArrPriv(priv, str)) {
+        if (filterArr(priv, str)) {
             eventsPriv.push(priv);
         }
     } else {
