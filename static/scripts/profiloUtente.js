@@ -21,10 +21,7 @@ fetch('../api/v2/Utenti/me', { method: 'GET', headers: { 'x-access-token': token
                         tel.textContent = "Non impostato.";
                     }
 
-                    let password = document.getElementById("password");
-                    password.textContent = resp.password;
-
-                    var img = new Image();
+                    var img = document.createElement("img");
                     img.src = resp.picture;
                     img.alt = "Immagine profilo utente";
                     img.style.borderRadius = "60mm";

@@ -8,10 +8,10 @@ import { toDataURL } from 'qrcode';
 import { Validator } from 'node-input-validator';
 import { test } from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
+import returnUser from '../findUser.mjs';
 
 router.patch('/:id', async (req, res) => {
-    //var utent = req.loggedUser.id || req.loggedUser.sub;
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = await returnUser(req);
     var id_evento = req.params.id;
 
     try {
@@ -22,7 +22,7 @@ router.patch('/:id', async (req, res) => {
             return;
         }
 
-        if (utent != evento.organizzatoreID) {
+        if (utent.id != evento.organizzatoreID) {
             res.status(403).json({ error: "Non sei autorizzato a modificare l'evento." });
             return;
         }
@@ -65,8 +65,7 @@ var spliceArr = (param1, param2) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPrivat.findById(req.params.idEvento);
-        var utente = req.loggedUser.id || req.loggedUser.sub;
-        var utenteObj = await Users.findById(utente);
+        var utenteObj = await returnUser(req);
         var iscr = await biglietti.findById(req.params.idIscr);
 
         if (evento == undefined) {
@@ -79,12 +78,12 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utente) {
+        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj.id) {
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
         }
 
-        spliceArr(evento.partecipantiID, utente)
+        spliceArr(evento.partecipantiID, utenteObj.id)
             .then(async () => {
                 await evento.save(); //Aggiornamento partecipantiID
                 return spliceArr(utenteObj.EventiIscrtto, req.params.idEvento)
@@ -150,10 +149,9 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
-    var id_evento = req.params.id;
-
     try {
+        var utent = await returnUser(req), utentId = utent._id;
+        var id_evento = req.params.id;
         let eventP = await eventPrivat.findById(id_evento);
 
         if (eventP == undefined) {
@@ -169,23 +167,23 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             d1.setDate(d1.getDate() + 1);
 
             if (d1 < date) {
-                res.status(403).json({ error: "evento non disponibile" }).send()
+                res.status(403).json({ error: "Evento non disponibile" }).send()
                 return;
             }
         }
 
-        if (!eventP.invitatiID.includes(utent)) {
-            res.status(403).json({ error: "Non sei invitato a questo evento" }).send();
+        if (!eventP.invitatiID.includes(utentId)) {
+            res.status(403).json({ error: "L'utente non è stato invitato a questo evento" }).send();
             return;
         }
 
-        if(eventP.partecipantiID.includes(utent)) {
+        if(eventP.partecipantiID.includes(utentId)) {
             res.status(403).json({ error: "Già iscritto" }).send();
             return;
         }
 
         let data = {
-            idUtente: utent,
+            idUtente: utentId,
             idEvento: id_evento
         };
 
@@ -196,22 +194,19 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
         toDataURL(stringdata, async function (err, qrcode) {
             if (err) {
-                throw Error("errore creazione biglietto")
+                throw Error("errore creazione biglietto");
             }
 
-            let bigl = new biglietti({ eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "priv" });
+            let bigl = new biglietti({ eventoid: id_evento, utenteid: utentId, qr: qrcode, tipoevento: "priv" });
             idBigl = bigl.id;
             await bigl.save();
         });
 
-        //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent);
+        eventP.partecipantiID.push(utentId);
+        utent.EventiIscrtto.push(id_evento);
 
-        eventP.partecipantiID.push(utent);
-        utente.EventiIscrtto.push(id_evento);
-
-        await eventP.save()
-        await utente.save()
+        await eventP.save();
+        await utent.save();
 
         res.location("/api/v2/EventiPrivati/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
     } catch (error) {
@@ -221,10 +216,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent);
+        let utente = returnUser(req);
         //Si crea un documento evento personale
         var options = {
             data: req.body.data,
@@ -288,11 +282,11 @@ router.post('', async (req, res) => {
                         indirizzo: req.body.luogoEv.indirizzo,
                         citta: req.body.luogoEv.citta
                     },
-                    organizzatoreID: utent,
+                    organizzatoreID: utente.id,
                     invitatiID: ListaInvitati,
                     partecipantiID: []
                 });
-                eventP.partecipantiID.push(utent);
+                eventP.partecipantiID.push(utente.id);
 
                 //Si salva il documento personale
                 eventP = await eventP.save();

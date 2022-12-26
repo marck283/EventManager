@@ -6,22 +6,22 @@ import eventPublic from './collezioni/eventPublic.mjs';
 import eventPrivat from './collezioni/eventPrivat.mjs';
 import Inviti from './collezioni/invit.mjs';
 import eventPersonal from './collezioni/eventPersonal.mjs';
+import returnUser from './findUser.mjs';
 
 router.get('/me', async (req, res) => {
-    var IDexample = req.loggedUser.id || req.loggedUser.sub;
-    let utente, obj;
+    var IDexample = req.loggedUser.id || req.loggedUser;
+    let utente = await returnUser(req), obj;
 
-    if (IDexample === req.loggedUser.sub) {
-        utente = await Utente.find({ email: { $eq: req.loggedUser.email } });
+    if (IDexample === req.loggedUser) {
+        utente = await Utente.findOne({ email: { $eq: IDexample.email } });
         obj = {
-            nome: utente[0].nome,
-            email: utente[0].email,
-            tel: utente[0].tel,
-            url: "/api/v2/Utenti/" + IDexample,
-            password: utente[0].password,
-            picture: utente[0].profilePic,
-            numEvOrg: utente[0].EventiCreati.length,
-            valutazioneMedia: utente[0].valutazioneMedia
+            nome: utente.nome,
+            email: utente.email,
+            tel: utente.tel,
+            url: "/api/v2/Utenti/" + utente.id,
+            picture: utente.profilePic,
+            numEvOrg: utente.EventiCreati.length,
+            valutazioneMedia: utente.valutazioneMedia
         };
     } else {
         utente = await Utente.findById(IDexample);
@@ -30,7 +30,6 @@ router.get('/me', async (req, res) => {
             email: utente.email,
             tel: utente.tel,
             url: "/api/v2/Utenti/" + IDexample,
-            password: utente.password,
             picture: utente.profilePic,
             numEvOrg: utente.EventiCreati.length,
             valutazioneMedia: utente.valutazioneMedia
@@ -49,7 +48,9 @@ router.get('/me', async (req, res) => {
 
 router.get('/me/Inviti', async (req, res) => {
     try {
-        var IDexample = req.loggedUser.id || req.loggedUser.sub, ListaInviti = await Inviti.find({ utenteid: IDexample });
+        var IDexample = returnUser(req);
+
+        var ListaInviti = await Inviti.find({ utenteid: IDexample });
 
         if (ListaInviti.length == 0) {
             res.status(404).json({ error: "Non ci sono inviti per questo utente" }).send();
@@ -57,7 +58,7 @@ router.get('/me/Inviti', async (req, res) => {
         }
 
         var ListInvit = [];
-        await Utente.findById(IDexample);
+        //await Utente.findById(IDexample);
         var accettato = false;
         for (var elem of ListaInviti) {
             accettato = false;
@@ -116,14 +117,14 @@ router.get('/me/Inviti', async (req, res) => {
 
 router.get('/me/Iscrizioni', async (req, res) => {
     try {
-        var IDexample = req.loggedUser.id || req.loggedUser.sub, ListaBiglietti = await Biglietto.find({ utenteid: IDexample });
+        var IDexample = await returnUser(req), ListaBiglietti = await Biglietto.find({ utenteid: IDexample.id });
+
         if (ListaBiglietti.length == 0) {
             res.status(404).json({ error: "Non ci sono biglietti per questo utente" }).send();
             return;
         }
 
         var ListBigl = [];
-        let utente = await Utente.findById(IDexample);
 
         for (var elem of ListaBiglietti) {
             if (elem.tipoevento == "pub") {
@@ -133,9 +134,9 @@ router.get('/me/Iscrizioni', async (req, res) => {
                     ListBigl.push({
                         eventoUrl: "/api/v2/EventiPubblici/" + evento._id,
                         eventoid: evento._id,
-                        utenteUrl: "/api/v2/Utenti/" + IDexample,
-                        utenteid: IDexample,
-                        nomeUtente: utente.nome,
+                        utenteUrl: "/api/v2/Utenti/" + IDexample.id,
+                        utenteid: IDexample.id,
+                        nomeUtente: IDexample.nome,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
                         tipoevento: elem.tipoevento,
@@ -153,9 +154,9 @@ router.get('/me/Iscrizioni', async (req, res) => {
                     ListBigl.push({
                         eventoUrl: "/api/v2/EventiPrivati/" + evento._id,
                         eventoid: evento._id,
-                        utenteUrl: "/api/v2/Utenti/" + IDexample,
-                        utenteid: IDexample,
-                        nomeUtente: utente.nome,
+                        utenteUrl: "/api/v2/Utenti/" + IDexample.id,
+                        utenteid: IDexample.id,
+                        nomeUtente: IDexample.nome,
                         nomeOrg: orga.nome,
                         nomeAtt: evento.nomeAtt,
                         tipoevento: elem.tipoevento,
@@ -193,8 +194,7 @@ router.delete("/deleteMe", async (req, res) => {
     try {
         var which;
         var user = req.loggedUser.id || req.loggedUser.sub;
-        (user == req.loggedUser.sub) ? await deleteGoogleUser(user, which) :
-            await deleteFacebookUser(user, which);
+        (user == req.loggedUser.sub) ? await deleteGoogleUser(user, which) : await deleteFacebookUser(user, which);
 
         if (user != null && user != undefined) {
             //Ora trovo tutti gli eventi organizzati, i biglietti e gli inviti posseduti da questo utente e li invalido.

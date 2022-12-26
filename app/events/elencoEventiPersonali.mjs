@@ -7,6 +7,7 @@ import map from './eventsMap.mjs';
 import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
+import returnUser from '../findUser.mjs';
 
 var filterArr = (e, str) => {
     console.log(e);
@@ -57,14 +58,7 @@ router.get("/:data", async (req, res) => {
     str.setDate(str.getDate() + 1);
     str = str.toISOString();
 
-    var eventsPers = [], eventsPub = [], eventsPriv = [];
-
-    var user = req.loggedUser.id || req.loggedUser.sub, user1;
-    if (user === req.loggedUser.sub) {
-        user1 = await User.findOne({ email: { $eq: req.loggedUser.email } });
-    } else {
-        user1 = await User.findById(user);
-    }
+    var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
     //Perché non vengono ritornati gli eventi?
     for (let e of user1.EventiIscrtto) {
@@ -133,8 +127,7 @@ router.get("", async (req, res) => {
     if (user === req.loggedUser.sub) {
         //Se l'utente è autenticato con Google, allora devo prima trovare il documento dell'utente nel database, per poi
         //ottenere l'id di MongoDB e utilizzarlo per cercare gli eventi pubblici a cui l'utente è iscritto.
-        user = await User.findOne({ email: { $eq: req.loggedUser.email } });
-        user = user.id;
+        user = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
 
     eventsPers = await eventPersonal.find({ organizzatoreID: { $eq: user } }); //Richiedi gli eventi personali.

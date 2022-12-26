@@ -34,11 +34,22 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
     });
     
     UsersSpy = jest.spyOn(Users, 'findById').mockImplementation(criterias => {
-      if (criterias == '1234') {
-        return { _id: '1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] }
-      }
-      if (criterias == '12365') {
-        return { _id: '12365', nome: 'Carlo', email: 'gg.et@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['987654'], EventiIscrtto: ['987654'] }
+      switch(criterias) {
+        case '123': {
+          return { _id: '123', nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [], EventiIscrtto: [] };
+        }
+        case '1237676': {
+          return { _id: '1237676', nome: 'Carlo', email: 'gg.tt@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [], EventiIscrtto: [] };
+        }
+        case '12365': {
+          return { _id: '12365', nome: 'Carlo', email: 'gg.et@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['987654'], EventiIscrtto: ['987654', '9876543'] };
+        }
+        case '1234': {
+          return { _id: '1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] };
+        }
+        case '12345': {
+          return { _id: '12345', nome: 'Carlo', email: 'gg.ea@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] };
+        }
       }
     });
     UsersFSpy = jest.spyOn(Users, 'find').mockImplementation(criterias => {
@@ -53,6 +64,9 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
       }
       if (criterias.email.$eq == 'gg.ee@gmail.com') {
         return [{ _id: '1234', nome: 'Carlo', email: 'gg.ee@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] }]
+      }
+      if(criterias.email.$eq == 'gg.ea@gmail.com') {
+        return [{ _id: '12345', nome: 'Carlo', email: 'gg.ea@gmail.com', tel: '34564567', password: '23456789765', EventiCreati: ['9876543'], EventiIscrtto: ['9876543'] }];
       }
       return [];
     });
@@ -86,7 +100,6 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente non ancora invitato o partecipante a quell'evento", async () => {
-    // create a valid token
     expect.assertions(2);
     const response = await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
       set('x-access-token', token).send({ email: 'gg.aa@gmail.com' });
@@ -104,7 +117,6 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
       set('x-access-token', token).expect('Content-Type', /json/).expect(400, { error: "Campo vuoto o indefinito" });
   });
-
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente non sia organizzatore dell'evento", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').

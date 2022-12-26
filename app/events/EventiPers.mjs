@@ -6,18 +6,19 @@ import { Validator } from 'node-input-validator';
 import { test } from '../hourRegexTest.mjs';
 
 router.patch('/:id', async (req, res) => {
-
-    //var utent = req.loggedUser.id || req.loggedUser.sub;
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
 
     try {
-
         let evento = await eventPersonal.findById(id_evento);
 
         if (evento == undefined) {
             res.status(404).json({ error: "Non esiste alcun evento personale con l'id specificato." });
             return;
+        }
+
+        if(utent == req.loggedUser) {
+            utent = (await Users.find({email: {$eq: utent.email}})).id;
         }
 
         if (utent != evento.organizzatoreID) {
@@ -72,10 +73,9 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    let utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = await Users.findById(utent);
+        let utente = await returnUser(req);
 
         //Prima validiamo i dati inseriti dall'utente
         const v = new Validator({
@@ -109,7 +109,18 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                let eventP = new eventPersonal({ data: ElencoDate, durata: req.body.durata, ora: req.body.ora, categoria: req.body.categoria, nomeAtt: req.body.nomeAtt, luogoEv: { indirizzo: req.body.luogoEv.indirizzo, citta: req.body.luogoEv.citta }, organizzatoreID: utent });
+                let eventP = new eventPersonal({
+                    data: ElencoDate,
+                    durata: req.body.durata,
+                    ora: req.body.ora,
+                    categoria: req.body.categoria,
+                    nomeAtt: req.body.nomeAtt,
+                    luogoEv: {
+                        indirizzo: req.body.luogoEv.indirizzo,
+                        citta: req.body.luogoEv.citta
+                    },
+                    organizzatoreID: utente.id
+                });
 
                 //Si salva il documento personale
                 eventP = await eventP.save();

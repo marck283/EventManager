@@ -4,6 +4,7 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 import { Validator } from 'node-input-validator';
 import Recensione from '../collezioni/recensioniPub.mjs';
 import User from '../collezioni/utenti.mjs';
+import returnUser from '../findUser.mjs';
 
 var meanEval = evArr => {
     var sum = 0;
@@ -29,8 +30,10 @@ router.post("/:id", async (req, res) => {
                     res.status(400).json({ error: "Richiesta malformata" }).send();
                     return;
                 }
+                var user = await returnUser(req);
+                var utenteId = user._id;
                 var recensione = new Recensione({
-                    idUtente: req.loggedUser.id || req.loggedUser.sub,
+                    idUtente: utenteId,
                     idEvento: id,
                     valutazione: req.body.evaluation,
                     descrizione: req.body.description
@@ -42,8 +45,7 @@ router.post("/:id", async (req, res) => {
                 await evento.save();
 
                 //Now find the user and update its evaluation.
-                var user = await User.findById(req.loggedUser.id || req.loggedUser.sub);
-                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: req.loggedUser.id || req.loggedUser.sub}});
+                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: utenteId}});
                 user.valutazioneMedia = meanEval(eventsPub);
                 await user.save();
 

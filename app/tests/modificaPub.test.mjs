@@ -2,6 +2,7 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import EventPublic from '../collezioni/eventPublic.mjs';
+import User from '../collezioni/utenti.mjs';
 import {jest} from '@jest/globals';
 
 describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
@@ -12,7 +13,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     beforeAll( () => {
         token = createToken("gg.ee@gmail.com", "2222", 3600);
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
-            if(criterias == '67890'){
+            if(criterias == '67890') {
                 return {
                     _id: '67890',
                     data: '12/12/2023',
@@ -30,18 +31,37 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
                 };
             }
         });
-        
+        userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
+            if(criterias == '1111') {
+                return {};
+            }
+            if(criterias == '2222') {
+                return {
+                    _id: '2222',
+                    nome: 'Mario',
+                    email: 'gg.ee@gmail.com',
+                    tel: '',
+                    password: '12345',
+                    EventiCreati: ['67890'],
+                    EventiIscrtto: [],
+                    save: function () {
+                        
+                    }
+                }
+            }
+        });
     });
     
     afterAll(() => {
         jest.restoreAllMocks();
         eventPublicSpy = null;
+        userSpy = null;
         token = null;
     });
     
     it('PATCH /api/v2/EventiPubblici/idEvento con utente non organizzatore dovrebbe restituire 403', async() => {
         
-        await request(app).patch('/api/v2/EventiPubblici/'+'67890').
+        await request(app).patch('/api/v2/EventiPubblici/67890').
         set('x-access-token', createToken("aa.bb@gmail.com", "1111", 3600))
         .expect('Content-Type', /json/).expect(403, {error: "Non sei autorizzato a modificare, terminare od annullare l'evento."});
         
@@ -49,11 +69,11 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     
     it('PATCH /api/v2/EventiPubblici/idEvento effettuata con successo dovrebbe restituire 200', async() => {
         
-        const response = await request(app).patch('/api/v2/EventiPubblici/'+'67890').
+        const response = await request(app).patch('/api/v2/EventiPubblici/67890').
         set('x-access-token', token).
         send({nomeAtt: "Test2", categoria: "svago", luogoEv: {indirizzo: "Via panini", citta: "Bologna"}, maxPers: 10});
         expect(response.statusCode).toBe(200);
-        expect(response.header.location).toBe('/api/v2/EventiPubblici/'+'67890');
+        expect(response.header.location).toBe('/api/v2/EventiPubblici/67890');
         
     });
 });

@@ -29,7 +29,6 @@ describe('GET /api/v2/Utenti/me', () => {
               email: 'gg.aa@gmail.com',
               tel: '3452345664567',
               url: '/api/v2/Utenti/2222',
-              password: '756756747',
               numEvOrg: 0});
   });
 

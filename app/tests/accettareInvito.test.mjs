@@ -49,6 +49,20 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
                     }
                 };
             }
+            if(criterias == '5555') {
+                return {
+                    _id: '5555',
+                    nome: 'Mario',
+                    email: 'gg.ee1@gmail.com',
+                    tel: '',
+                    password: '12345',
+                    EventiCreati: [],
+                    EventiIscrtto: [],
+                    save: function () {
+                        
+                    }
+                };
+            }
         });
         
     });
@@ -65,7 +79,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         
         await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni')
         .set('x-access-token', createToken("aa.bb@gmail.com", "5555", 3600))
-        .expect('Content-Type', /json/).expect(403, {error: "Non sei invitato a questo evento"});
+        .expect('Content-Type', /json/).expect(403, {error: "L'utente non è stato invitato a questo evento"});
         
     });
     
@@ -73,8 +87,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
         
         const response = await request(app).post('/api/v2/EventiPrivati/6543/Iscrizioni').set('x-access-token', token);
         expect(response.statusCode).toBe(201);
-        expect(response.header.location).toBe('/api/v2/EventiPrivati/6543/Iscrizioni/'+'');
+        expect(response.header.location).toBe('/api/v2/EventiPrivati/6543/Iscrizioni/');
         
     });
-    
 });

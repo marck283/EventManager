@@ -2,11 +2,13 @@ import request from 'supertest';
 import createToken from '../tokenCreation.mjs';
 import app from '../app.mjs';
 import EventPublic from '../collezioni/eventPublic.mjs';
+import User from '../collezioni/utenti.mjs';
 import {jest} from '@jest/globals';
 
 describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     
     let eventPublicSpy;
+    let UsersSpy;
     var token;
     
     beforeAll(() => {
@@ -30,11 +32,27 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
                 };
             }
         });
+        
+        UsersSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
+            if(criterias == '2222') {
+                return {
+                    nome: 'Giovanni',
+                    profilePic: '',
+                    email: 'gg.ee@gmail.com',
+                    tel: '',
+                    password: '',
+                    salt: '',
+                    EventiCreati: ['797569'],
+                    EventiIscrtto: ['9878456846784568', '987653', '75975947']
+                };
+            }
+        });
     });
     
     afterAll(() => {
         eventPublicSpy.mockRestore();
         eventPublicSpy = null;
+        UsersSpy = null;
         token = null;
     });
     

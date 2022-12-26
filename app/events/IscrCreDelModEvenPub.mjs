@@ -11,11 +11,12 @@ import Recensioni from '../collezioni/recensioniPub.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import map from './provinceID.mjs';
+import returnUser from '../findUser.mjs'
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
 router.delete('/:id/annullaEvento', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = (await returnUser(req)).id;
     var id_evento = req.params.id;
 
     try {
@@ -48,10 +49,10 @@ router.delete('/:id/annullaEvento', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
-    var id_evento = req.params.id;
-
     try {
+        var utent = (await returnUser(req))._id;
+        console.log(utent);
+        var id_evento = req.params.id;
         let evento = await eventPublic.findById(id_evento);
 
         if (evento == undefined) {
@@ -102,8 +103,14 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPublic.findById(req.params.idEvento);
-        var utente = req.loggedUser.id || req.loggedUser.sub;
-        var utenteObj = await Users.findById(utente);
+        var utente = req.loggedUser.id || req.loggedUser, utenteObj;
+
+        if (utente == req.loggedUser.id) {
+            utenteObj = await Users.findById(utente);
+        } else {
+            utenteObj = await Users.find({ email: { $eq: utente.email } });
+        }
+
         var iscr = await biglietti.findById(req.params.idIscr);
 
         if (evento == undefined) {
@@ -116,13 +123,13 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utente) {
+        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj.id) {
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
         }
 
         var array1 = evento.partecipantiID;
-        var index1 = array1.indexOf(utente);
+        var index1 = array1.indexOf(utenteObj.id);
         if (index1 > -1) {
             array1.splice(index1, 1);
         } else {
@@ -154,7 +161,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = (await returnUser(req)).id;
     var id_evento = req.params.id;
 
     var eventP1 = await eventPublic.findById(id_evento);
@@ -186,10 +193,6 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
                     res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                     return;
-                }
-
-                if(utent == req.loggedUser.sub) {
-                    utent = (await Users.findOne({ email: { $eq: req.loggedUser.email }})).id;
                 }
 
                 if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
@@ -240,64 +243,74 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
 router.post('/:id/Inviti', async (req, res) => {
     try {
-        var utent = req.loggedUser.id || req.loggedUser.sub;
+        var utent = (await returnUser(req))._id;
+        console.log(utent);
         var id_evento = req.params.id;
 
-        if (req.body.email == "" || req.body.email == undefined) {
-            res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
-            return;
-        }
+        const v = new Validator({
+            email: req.body.email
+        }, {
+            email: 'required|email'
+        });
+        v.check()
+            .then(async matched => {
+                if (!matched) {
+                    console.log(v.errors);
+                    res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
+                    return;
+                }
+                let eventP = await eventPublic.findById(id_evento);
+                if (eventP == undefined) {
+                    res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+                    return;
+                }
 
-        let eventP = await eventPublic.findById(id_evento);
-        if (eventP == undefined) {
-            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
-            return;
-        }
+                //controllo che le date non siano di una giornata precedente a quella odierna
+                if (eventP.data.filter(d => {
+                    var date = new Date(), d1 = new Date(d);
+                    let orario = eventP.ora.split(':');
 
-        //controllo che le date non siano di una giornata precedente a quella odierna
-        if (eventP.data.filter(d => {
-            var date = new Date(), d1 = new Date(d);
-            let orario = eventP.ora.split(':');
+                    d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
+                    d1.setDate(d1.getDate() + 1);
+                    return d1 < date;
+                }).length > 0) {
+                    res.status(403).json({ error: "evento non disponibile" }).send();
+                    return;
+                }
 
-            d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
-            d1.setDate(d1.getDate() + 1);
-            return d1 < date;
-        }).length > 0) {
-            res.status(403).json({ error: "evento non disponibile" }).send();
-            return;
-        }
+                if (eventP.organizzatoreID != utent) {
+                    res.status(403).json({ error: "L'utente non può invitare ad un evento che non è suo" }).send();
+                    return;
+                }
 
-        if (eventP.organizzatoreID != utent) {
-            res.status(403).json({ error: "L'utente non può invitare ad un evento che non è suo" }).send();
-            return;
-        }
+                var utenteorg = await Users.findById(utent);
+                console.log(utenteorg);
+                if (utenteorg.email == req.body.email) {
+                    res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
+                    return;
+                }
 
-        var utenteorg = await Users.findById(utent);
-        if (utenteorg.email == req.body.email) {
-            res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
-            return;
-        }
+                var utente = await Users.find({ email: { $eq: req.body.email } });
+                if (utente.length == 0) {
+                    res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
+                    return;
+                }
 
-        var utente = await Users.find({ email: { $eq: req.body.email } });
-        if (utente.length == 0) {
-            res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
-            return;
-        }
+                var ListaInviti = await Inviti.find({ utenteid: utente[0]._id });
+                if (ListaInviti.length > 0 && ListaInviti.filter(elem => elem.eventoid == id_evento).length > 0) {
+                    res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
+                    return;
+                }
 
-        var ListaInviti = await Inviti.find({ utenteid: utente[0]._id });
-        if (ListaInviti.length > 0 && ListaInviti.filter(elem => elem.eventoid == id_evento).length > 0) {
-            res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
-            return;
-        }
+                if (eventP.partecipantiID.includes(utente[0]._id)) {
+                    res.status(403).json({ error: "L'utente con quella email è già partecipante all'evento" }).send();
+                    return;
+                }
 
-        if (eventP.partecipantiID.includes(utente[0]._id)) {
-            res.status(403).json({ error: "L'utente con quella email è già partecipante all'evento" }).send();
-            return;
-        }
-
-        let invito = new Inviti({ utenteid: utente[0]._id, eventoid: id_evento, tipoevent: "pub" });
-        let invitii = await invito.save();
-        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
+                let invito = new Inviti({ utenteid: utente[0]._id, eventoid: id_evento, tipoevent: "pub" });
+                let invitii = await invito.save();
+                res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
@@ -306,17 +319,9 @@ router.post('/:id/Inviti', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
     try {
         //Si cerca l'utente organizzatore dell'evento
-        var utente;
-        if (utent === req.loggedUser.sub) {
-            //Se l'utente è un utente Google, allora cerco per email
-            utente = await Users.findOne({ email: { $eq: req.loggedUser.email } });
-        } else {
-            //Altrimenti cerco per id
-            utente = await Users.findById(utent);
-        }
+        var utente = await returnUser(req);
 
         const v = new Validator({
             data: req.body.luogoEv[i].data
