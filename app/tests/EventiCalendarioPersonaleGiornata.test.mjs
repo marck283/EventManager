@@ -10,9 +10,9 @@ import { jest } from '@jest/globals';
 describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
 
 
-  let eventsPubSpy;
-  let eventsPerSpy;
-  let eventsPrivSpy;
+  let eventsPubSpy, eventsPubSpyGen;
+  let eventsPerSpy, eventsPerSpyGen;
+  let eventsPrivSpy, eventsPrivSpyGen;
   let userSpy;
   var d, h;
 
@@ -133,6 +133,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
     userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
       if (criterias === '2222') {
         return {
+          _id: '2222',
           nome: 'Giovanni',
           profilePic: '',
           email: 'gg.ee@gmail.com',
@@ -150,8 +151,11 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
   afterAll(() => {
     jest.restoreAllMocks();
     eventsPubSpy = null;
+    eventsPubSpyGen = null;
     eventsPerSpy = null;
+    eventsPerSpyGen = null;
     eventsPrivSpy = null;
+    eventsPrivSpyGen = null;
     token = null;
     userSpy = null;
   });

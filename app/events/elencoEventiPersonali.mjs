@@ -60,6 +60,8 @@ router.get("/:data", async (req, res) => {
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
+    console.log(user1);
+
     //Perché non vengono ritornati gli eventi?
     for (let e of user1.EventiIscrtto) {
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
