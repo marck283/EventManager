@@ -38,6 +38,8 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
         eventsPub.push(pub);
     }
 
+    //Something is preventing this from working properly for the online testing on GitHub.
+    //Maybe it has to do something with the isEmpty() function?
     if (priv != null && priv != undefined && !isEmpty(priv)) {
         if (filterArr(priv, str)) {
             eventsPriv.push(priv);
