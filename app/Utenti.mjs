@@ -14,25 +14,33 @@ router.get('/me', async (req, res) => {
 
     if (IDexample === req.loggedUser) {
         utente = await Utente.findOne({ email: { $eq: IDexample.email } });
-        obj = {
-            nome: utente.nome,
-            email: utente.email,
-            tel: utente.tel,
-            url: "/api/v2/Utenti/" + utente.id,
-            picture: utente.profilePic,
-            numEvOrg: utente.EventiCreati.length,
-            valutazioneMedia: utente.valutazioneMedia
-        };
+        if (utente != undefined) {
+            obj = {
+                nome: utente.nome,
+                email: utente.email,
+                tel: utente.tel,
+                url: "/api/v2/Utenti/" + utente.id,
+                picture: utente.profilePic,
+                numEvOrg: utente.EventiCreati.length,
+                valutazioneMedia: utente.valutazioneMedia
+            };
+        } else {
+            res.status(404).json({ error: "Utente non trovato" });
+        }
     } else {
         utente = await Utente.findById(IDexample);
-        obj = {
-            nome: utente.nome,
-            email: utente.email,
-            tel: utente.tel,
-            url: "/api/v2/Utenti/" + IDexample,
-            picture: utente.profilePic,
-            numEvOrg: utente.EventiCreati.length,
-            valutazioneMedia: utente.valutazioneMedia
+        if (utente != undefined) {
+            obj = {
+                nome: utente.nome,
+                email: utente.email,
+                tel: utente.tel,
+                url: "/api/v2/Utenti/" + IDexample,
+                picture: utente.profilePic,
+                numEvOrg: utente.EventiCreati.length,
+                valutazioneMedia: utente.valutazioneMedia
+            }
+        } else {
+            req.status(404).json({ error: "Utente non trovato" });
         }
     }
 
@@ -199,7 +207,7 @@ router.delete("/deleteMe", async (req, res) => {
         if (user != null && user != undefined) {
             //Ora trovo tutti gli eventi organizzati, i biglietti e gli inviti posseduti da questo utente e li invalido.
             var listaEventi = await eventPublic.find({ organizzatoreID: user.id });
-            for(let e of listaEventi) {
+            for (let e of listaEventi) {
                 await Biglietto.deleteMany({ eventoid: e.id });
             }
             await eventPublic.deleteMany({ organizzatoreID: user.id });
@@ -208,21 +216,21 @@ router.delete("/deleteMe", async (req, res) => {
             await Inviti.deleteMany({ utenteid: user.id });
 
             var listaBiglietti = await Biglietto.find({ utenteid: user.id });
-            for(let b of listaBiglietti) {
+            for (let b of listaBiglietti) {
                 let evento = await eventPublic.findById(b.eventoid);
-                if(evento != undefined && evento != null) {
+                if (evento != undefined && evento != null) {
                     let luogo = evento.luogoEv.filter(l => l.giorno == b.giorno && l.ora == b.ora)[0];
                     let index = luogo.partecipantiID.indexOf(user.id);
-                    if(index > -1) {
+                    if (index > -1) {
                         luogo.partecipantiID.splice(index, 1);
                     }
                 }
-                
+
                 evento = await eventPrivat.findById(b.eventoid);
-                if(evento != undefined && evento != null) {
+                if (evento != undefined && evento != null) {
                     let luogo = evento.luogoEv.filter(l => l.giorno == b.giorno && l.ora == b.ora)[0];
                     let index = luogo.partecipantiID.indexOf(user.id);
-                    if(index > -1) {
+                    if (index > -1) {
                         luogo.partecipantiID.splice(index, 1);
                     }
                 }

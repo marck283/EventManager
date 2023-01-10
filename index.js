@@ -9,6 +9,7 @@ import('./app/app.mjs').then(a => {
     /**
      * Configure mongoose
      */
+    //mongoose.set('strictQuery', false);
     app.locals.db = mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
         .then(() => {
 
