@@ -62,9 +62,9 @@ router.get("/:data", async (req, res) => {
         eventsPers = await findEvents(eventPers, obj);
         eventsPriv = await findEvents(eventPriv, obj);
 
-        eventList = mapAndPush(eventList, [], "pub");
-        eventList = mapAndPush(eventsPers, eventList, "pers");
-        eventList = mapAndPush(eventsPriv, eventList, "priv");
+        eventList = await mapAndPush(eventList, [], "pub");
+        eventList = await mapAndPush(eventsPers, eventList, "pers");
+        eventList = await mapAndPush(eventsPriv, eventList, "priv");
 
         if(eventList != null && eventList != undefined && eventList.length > 0) {
             res.status(200).json({eventi: eventList}).send();
