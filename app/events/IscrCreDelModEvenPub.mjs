@@ -327,7 +327,7 @@ router.post('', async (req, res) => {
             const v = new Validator({
                 data: req.body.luogoEv[i].data
             }, {
-                data: 'required|dateFormat:MM-DD-YYYY'
+                data: 'required|string|dateFormat:MM-DD-YYYY'
             });
             v.check()
                 .then(matched => {
@@ -422,7 +422,7 @@ router.post('', async (req, res) => {
                                                 cap: d.cap,
                                                 citta: d.citta,
                                                 provincia: map(d.provincia),
-                                                data: d.data[j],
+                                                data: d.data,
                                                 ora: d.ora[j],
                                                 maxPers: d.maxPers,
                                                 partecipantiID: []

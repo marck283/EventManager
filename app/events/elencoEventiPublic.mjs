@@ -34,7 +34,11 @@ var queryEvents = async events => {
 
     //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
     events = events.filter(e => {
-        e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= curr);
+        e.luogoEv = e.luogoEv.filter(d => {
+            var d1 = new Date(d.data + "Z" + d.ora);
+            console.log(d.data, curr);
+            return d1 >= curr;
+        });
         console.log(e.luogoEv.length > 0);
         return e.luogoEv.length > 0;
     });
@@ -99,7 +103,7 @@ router.get("", async (req, res) => {
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID !== utente.id);
                 console.log(events.length);
-                
+
                 queryWrapper(res, events);
             })
             .catch(err => {
