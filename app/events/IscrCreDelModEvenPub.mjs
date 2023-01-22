@@ -323,58 +323,58 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         var utente = await returnUser(req);
 
-        const v = new Validator({
-            data: req.body.luogoEv[i].data
-        }, {
-            'data': 'required|arrayUnique|minLength:1',
-            'data.*': 'required|dateFormat:MM-DD-YYYY'
-        });
-        v.check()
-            .then(matched => {
-                if (!matched) {
-                    console.log(v.errors);
-                    res.status(400).json({ error: "Date ripetute o nessuna data inserita o formato data sbagliato." }).send();
-                    return;
-                }
+        for (let i = 0; i < req.body.luogoEv.length; i++) {
+            const v = new Validator({
+                data: req.body.luogoEv[i].data
+            }, {
+                data: 'required|dateFormat:MM-DD-YYYY'
+            });
+            v.check()
+                .then(matched => {
+                    if (!matched) {
+                        console.log(v.errors);
+                        res.status(400).json({ error: "Date ripetute o nessuna data inserita o formato data sbagliato." }).send();
+                        return;
+                    }
 
-                if (dateCheck(req.body.luogoEv).length == 0) {
-                    res.status(400).json({ error: "Data non valida." }).send();
-                    return;
-                }
+                    if (dateCheck(req.body.luogoEv).length == 0) {
+                        res.status(400).json({ error: "Data non valida." }).send();
+                        return;
+                    }
 
-                var options = {
-                    durata: req.body.durata,
-                    descrizione: req.body.descrizione,
-                    ora: req.body.luogoEv[i].ora,
-                    maxPers: req.body.luogoEv[i].maxPers,
-                    categoria: req.body.categoria,
-                    nomeAtt: req.body.nomeAtt,
-                    indirizzo: req.body.luogoEv[i].indirizzo,
-                    citta: req.body.luogoEv[i].citta,
-                    picture: req.body.eventPic,
-                    etaMin: req.body.etaMin,
-                    etaMax: req.body.etaMax,
-                    civNum: req.body.luogoEv[i].civNum,
-                    cap: req.body.luogoEv[i].cap,
-                    provincia: req.body.luogoEv[i].provincia
-                };
-                const v1 = new Validator(options, {
-                    'durata': 'required|array|minLength:3|maxLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
-                    'durata.*': 'required|string|minLength:1|maxLength:3',
-                    descrizione: 'required|string|minLength:1|maxLength:140',
-                    'ora': 'required|array|minLength:1',
-                    'ora.*': 'required|string|minLength:5|maxLength:5',
-                    maxPers: 'required|integer|min:2',
-                    categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
-                    nomeAtt: 'required|string|minLength:1',
-                    indirizzo: 'required|string|minLength:1',
-                    citta: 'required|string|minLength:1',
-                    picture: 'required|base64',
-                    etaMin: 'integer|min:0',
-                    etaMax: 'integer|gte:etaMin',
-                    civNum: 'required|string|minLength:1',
-                    cap: 'required|integer|min:1',
-                    provincia: 'required|string|in:Agrigento,Alessandria,Ancona,Aosta,Arezzo,Ascoli Piceno,Asti,\
+                    var options = {
+                        durata: req.body.durata,
+                        descrizione: req.body.descrizione,
+                        ora: req.body.luogoEv[i].ora,
+                        maxPers: req.body.luogoEv[i].maxPers,
+                        categoria: req.body.categoria,
+                        nomeAtt: req.body.nomeAtt,
+                        indirizzo: req.body.luogoEv[i].indirizzo,
+                        citta: req.body.luogoEv[i].citta,
+                        picture: req.body.eventPic,
+                        etaMin: req.body.etaMin,
+                        etaMax: req.body.etaMax,
+                        civNum: req.body.luogoEv[i].civNum,
+                        cap: req.body.luogoEv[i].cap,
+                        provincia: req.body.luogoEv[i].provincia
+                    };
+                    const v1 = new Validator(options, {
+                        'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
+                        'durata.*': 'required|string|minLength:1',
+                        descrizione: 'required|string|minLength:1|maxLength:140',
+                        'ora': 'required|array|minLength:1',
+                        'ora.*': 'required|string|minLength:5|maxLength:5',
+                        maxPers: 'required|integer|min:2',
+                        categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+                        nomeAtt: 'required|string|minLength:1',
+                        indirizzo: 'required|string|minLength:1',
+                        citta: 'required|string|minLength:1',
+                        picture: 'required|base64',
+                        etaMin: 'integer|min:0',
+                        etaMax: 'integer|gte:etaMin',
+                        civNum: 'required|string|minLength:1',
+                        cap: 'required|integer|min:1',
+                        provincia: 'required|string|in:Agrigento,Alessandria,Ancona,Aosta,Arezzo,Ascoli Piceno,Asti,\
                     Avellino,Bari,Barletta - Andria - Trani,Belluno,Benevento,Bergamo,Biella,Bologna,Bolzano,Bozen,Brescia,\
                     Brindisi,Cagliari,Caltanissetta,Campobasso,Caserta,Carbonia - Iglesias,Catania,Catanzaro,Chieti,Como,\
                     Cosenza,Cremona,Crotone,Cuneo,Enna,Fermo,Ferrara,Firenze,Foggia,Frosinone,Genova,Gorizia,Grosseto,Imperia,\
@@ -384,96 +384,99 @@ router.post('', async (req, res) => {
                     Potenza,Prato,Ragusa,Ravenna,Reggio Calabria,Reggio Emilia,Rieti,Rimini,Roma,Rovigo,Salerno,Sassari,Savona,\
                     Siena,Siracusa,Sondrio,Sud Sardegna,Taranto,Teramo,Terni,Torino,Trapani,Trento,Treviso,Trieste,Udine,\
                     Varese,Venezia,Verbano-Cusio-Ossola,Vercelli,Verona.Vibo Valentia,Vicenza,Viterbo'
-                });
-                v1.check()
-                    .then(async matched => {
-                        if (!matched) {
-                            console.log(v1.errors);
-                            res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
-                            return;
-                        }
-
-                        if (!test(req.body.luogoEv[i].ora)) {
-                            res.status(400).json({ error: "Formato ora non valido" }).send();
-                            return;
-                        }
-
-                        //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
-                        geoReq(req.body.luogoEv[i].indirizzo + ", " + req.body.luogoEv[i].civNum + ", " +
-                            req.body.luogoEv[i].cap + ", " + req.body.luogoEv[i].citta + ", " + req.body.luogoEv[i].provincia)
-                            .then(async r => {
-                                console.log(r.data.status);
-                                if (r.data.status == "OK") {
-                                    let etaMin = null, etaMax = null;
-                                    if (req.body.etaMin != undefined) {
-                                        etaMin = Number(req.body.etaMin);
-                                    }
-                                    if (req.body.etaMax != undefined) {
-                                        etaMax = Number(req.body.etaMax);
-                                    }
-
-                                    var i = 0;
-                                    let obj = [];
-                                    for (let d of req.body.luogoEv) {
-                                        obj.push({
-                                            indirizzo: d[i].indirizzo,
-                                            civNum: d[i].civNum,
-                                            cap: d[i].cap,
-                                            citta: d[i].citta,
-                                            provincia: map(d[i].provincia),
-                                            data: d[i].data,
-                                            ora: d[i].ora,
-                                            maxPers: d[i].maxPers,
-                                            partecipantiID: []
-                                        });
-                                        ++i;
-                                    }
-
-                                    //Si crea un documento evento pubblico
-                                    let eventP = new eventPublic({
-                                        durata: req.body.durata.join(":"),
-                                        categoria: req.body.categoria,
-                                        nomeAtt: req.body.nomeAtt,
-                                        luogoEv: obj,
-                                        organizzatoreID: utente.id,
-                                        eventPic: "data:image/png;base64," + req.body.eventPic,
-                                        etaMin: etaMin,
-                                        etaMax: etaMax,
-                                        terminato: false,
-                                        recensioni: [],
-                                        valMedia: 0.0,
-                                        orgName: utente.nome
-                                    });
-
-                                    //Si salva il documento pubblico
-                                    eventP = await eventP.save();
-
-                                    //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                                    utente.EventiCreati.push(eventP.id);
-                                    utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
-
-                                    //Si salva il modulo dell'utente
-                                    await utente.save();
-
-                                    console.log('Evento salvato con successo');
-
-                                    /**
-                                     * Si posiziona il link alla risorsa appena creata nell'header location della risposta
-                                     */
-                                    res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
-                                } else {
-                                    console.log("err: " + r.error_message);
-                                }
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                res.status(400).json({ error: "Indirizzo non valido." });
-                            });
                     });
-            })
-            .catch(err => {
-                console.log(err);
-            });
+                    v1.check()
+                        .then(async matched => {
+                            if (!matched || req.body.durata.length > 3) {
+                                console.log(v1.errors);
+                                console.log(req.body.durata);
+                                res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
+                                return;
+                            }
+
+                            if (!test(req.body.luogoEv[i].ora)) {
+                                res.status(400).json({ error: "Formato ora non valido" }).send();
+                                return;
+                            }
+
+                            //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
+                            geoReq(req.body.luogoEv[i].indirizzo + ", " + req.body.luogoEv[i].civNum + ", " +
+                                req.body.luogoEv[i].cap + ", " + req.body.luogoEv[i].citta + ", " + req.body.luogoEv[i].provincia)
+                                .then(async r => {
+                                    console.log(r.data.status);
+                                    if (r.data.status == "OK") {
+                                        let etaMin = null, etaMax = null;
+                                        if (req.body.etaMin != undefined) {
+                                            etaMin = Number(req.body.etaMin);
+                                        }
+                                        if (req.body.etaMax != undefined) {
+                                            etaMax = Number(req.body.etaMax);
+                                        }
+
+                                        var j = 0;
+                                        let obj = [];
+                                        for (let d of req.body.luogoEv) {
+                                            obj.push({
+                                                indirizzo: d.indirizzo,
+                                                civNum: d.civNum,
+                                                cap: d.cap,
+                                                citta: d.citta,
+                                                provincia: map(d.provincia),
+                                                data: d.data[j],
+                                                ora: d.ora[j],
+                                                maxPers: d.maxPers,
+                                                partecipantiID: []
+                                            });
+                                            ++j;
+                                        }
+
+                                        //Si crea un documento evento pubblico
+                                        let eventP = new eventPublic({
+                                            durata: req.body.durata.join(":"),
+                                            categoria: req.body.categoria,
+                                            nomeAtt: req.body.nomeAtt,
+                                            luogoEv: obj,
+                                            organizzatoreID: utente.id,
+                                            eventPic: "data:image/png;base64," + req.body.eventPic,
+                                            etaMin: etaMin,
+                                            etaMax: etaMax,
+                                            terminato: false,
+                                            recensioni: [],
+                                            valMedia: 0.0,
+                                            orgName: utente.nome
+                                        });
+
+                                        //Si salva il documento pubblico
+                                        eventP = await eventP.save();
+
+                                        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                                        utente.EventiCreati.push(eventP.id);
+                                        utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
+
+                                        //Si salva il modulo dell'utente
+                                        await utente.save();
+
+                                        console.log('Evento salvato con successo');
+
+                                        /**
+                                         * Si posiziona il link alla risorsa appena creata nell'header location della risposta
+                                         */
+                                        res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
+                                    } else {
+                                        console.log("err: " + r.error_message);
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(400).json({ error: "Indirizzo non valido." });
+                                });
+                        });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore del server" }).send();

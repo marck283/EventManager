@@ -72,9 +72,21 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                 etaMin = Number(getId("etaMin").value);
             }
             console.log(dateEv);
-            console.log(getId("civNum").value);
-            console.log(getId("cap").value);
-            console.log(getId("provincia").value);
+            let luogoEv = [];
+            for(var o of dateEv) {
+                luogoEv.push({
+                    indirizzo: getId("indirizzo").value,
+                    civNum: getId("civNum").value,
+                    citta: getId("Citta").value,
+                    cap: getId("cap").value,
+                    provincia: getId("provincia").value,
+                    data: o,
+                    ora: [getId("ora").value],
+                    maxPers: Number(getId("maxPers").value)
+                });
+            }
+
+            console.log([getId("durata").value, '0', '0'].length);
             fetch("/api/v2/EventiPubblici", {
                 method: 'POST',
                 headers: {
@@ -82,20 +94,11 @@ var requestPu = () => { //funzione che mi permette di fare i vari controlli dell
                     'x-access-token': token
                 },
                 body: JSON.stringify({
-                    data: dateEv,
-                    ora: [getId("ora").value],
                     descrizione: getId("descrizione").value,
-                    durata: Number(getId("durata").value),
-                    maxPers: Number(getId("maxPers").value),
+                    durata: [getId("durata").value, '0', '0'],
                     categoria: getId("categoria").value,
                     nomeAtt: getId("nomeAtt").value,
-                    luogoEv: {
-                        indirizzo: getId("indirizzo").value,
-                        civNum: getId("civNum").value,
-                        citta: getId("Citta").value,
-                        cap: getId("cap").value,
-                        provincia: getId("provincia").value
-                    },
+                    luogoEv: luogoEv,
                     eventPic: file.result.substring(formatSpecIndex),
                     etaMin: etaMin,
                     etaMax: etaMax
