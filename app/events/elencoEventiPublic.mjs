@@ -90,7 +90,6 @@ router.get("", async (req, res) => {
         }
     }
 
-    //Aggiungere controllo per token != null
     if (token != undefined && token != null && token != "") {
         //Test per token Google
         await verify.verify(token)
@@ -99,7 +98,8 @@ router.get("", async (req, res) => {
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
                 events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID !== utente.id);
-
+                console.log(events.length);
+                
                 queryWrapper(res, events);
             })
             .catch(err => {
