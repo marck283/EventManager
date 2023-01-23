@@ -4,11 +4,11 @@ const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import recensioni from '../collezioni/recensioniPub.mjs';
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         let eventoPubblico = await eventPublic.findById(req.params.id);
-        if(eventoPubblico == undefined) {
-            res.status(404).json({error: "Non esiste nessun evento con l'id selezionato"}).send();
+        if (eventoPubblico == undefined) {
+            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
         }
         let organizzatore = await Users.findById(eventoPubblico.organizzatoreID);
@@ -27,16 +27,31 @@ router.get('/:id', async(req, res) => {
             eventPic: eventoPubblico.eventPic,
             terminato: eventoPubblico.terminato,
         }).send();
-    } catch(error) {
+    } catch (error) {
         console.log(error);
-        res.status(500).json({error: "Errore nel Server"}).send();
+        res.status(500).json({ error: "Errore nel Server" }).send();
     }
 });
 
 router.get("/:id/recensioni", async (req, res) => {
-    var recensioniEvento = await recensioni.find({idEvento: {$eq: req.params.id}});
+    try {
+        var recensioniEvento = await recensioni.find({ idEvento: { $eq: req.params.id } });
+        var result = [];
 
-    res.status(200).json({recensioni: recensioniEvento});
+        for (let o of recensioniEvento) {
+            var user = await Users.findById(recensioniEvento.idUtente);
+            result.push({
+                name: user.nome,
+                picture: user.profilePic,
+                recensione: o
+            });
+        }
+
+        res.status(200).json({ recensioni: result });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Errore interno al server" });
+    }
     return;
 });
 

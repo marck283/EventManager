@@ -3,7 +3,6 @@ const router = Router();
 import eventPublic from '../collezioni/eventPublic.mjs';
 import { Validator } from 'node-input-validator';
 import Recensione from '../collezioni/recensioniPub.mjs';
-import User from '../collezioni/utenti.mjs';
 import returnUser from '../findUser.mjs';
 
 var meanEval = evArr => {
