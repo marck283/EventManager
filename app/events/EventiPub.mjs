@@ -34,7 +34,7 @@ router.get('/:id', async(req, res) => {
 });
 
 router.get("/:id/recensioni", async (req, res) => {
-    var recensioniEvento = await recensioni.find({eventoID: {$eq: req.params.id}});
+    var recensioniEvento = await recensioni.find({idEvento: {$eq: req.params.id}});
 
     res.status(200).json({recensioni: recensioniEvento});
     return;
