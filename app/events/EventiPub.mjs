@@ -2,6 +2,7 @@ import { Router } from 'express';
 import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
+import recensioni from '../collezioni/recensioniPub.mjs';
 
 router.get('/:id', async(req, res) => {
     try {
@@ -30,6 +31,13 @@ router.get('/:id', async(req, res) => {
         console.log(error);
         res.status(500).json({error: "Errore nel Server"}).send();
     }
+});
+
+router.get("/:id/recensioni", async (req, res) => {
+    var recensioniEvento = await recensioni.find({eventoID: {$eq: req.params.id}});
+
+    res.status(200).json({recensioni: recensioniEvento});
+    return;
 });
 
 export default router;
