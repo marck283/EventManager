@@ -40,13 +40,13 @@ router.get("/:id/recensioni", async (req, res) => {
 
         for (let o of recensioniEvento) {
             var user = await Users.findById(o.idUtente);
-            console.log(o.idUtente, user);
             result.push({
                 name: user.nome,
                 picture: user.profilePic,
                 recensione: o
             });
         }
+        console.log(result);
 
         res.status(200).json({ recensioni: result });
     } catch (err) {

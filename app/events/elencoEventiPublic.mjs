@@ -5,7 +5,6 @@ const router = Router();
 import map from './eventsMap.mjs';
 import pkg from 'jsonwebtoken';
 const tVerify = pkg.verify;
-import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import verify from '../googleTokenChecker.mjs';
 import getOrgNames from './OrgNames.mjs';
@@ -46,8 +45,7 @@ var queryEvents = async events => {
     if (events != null && events.length > 0) {
         events1 = await map(events, "pub", await getOrgNames(events));
         console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
-        events1.recensioni = events.recensioni; //Mostro le recensioni solo per quegli eventi a cui l'utente non è ancora iscritto
-
+        
         //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
         events1.sort((e, e1) => {
             var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
