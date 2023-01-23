@@ -39,8 +39,8 @@ router.get("/:id/recensioni", async (req, res) => {
         var result = [];
 
         for (let o of recensioniEvento) {
-            var user = await Users.findById(recensioniEvento.idUtente);
-            console.log(recensioniEvento.idUtente, user);
+            var user = await Users.findById(o.idUtente);
+            console.log(o.idUtente, user);
             result.push({
                 name: user.nome,
                 picture: user.profilePic,
