@@ -323,6 +323,7 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         var utente = await returnUser(req);
 
+        console.log(req.body.luogoEv);
         for (let i = 0; i < req.body.luogoEv.length; i++) {
             const v = new Validator({
                 data: req.body.luogoEv[i].data
