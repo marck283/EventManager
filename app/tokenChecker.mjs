@@ -6,6 +6,7 @@ const tokenChecker = async (req, res, next) => {
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
 	if (!token || token === "") {
+		console.log(token);
 		res.status(401).send({
 			success: false,
 			message: 'fallita autenticazione'
