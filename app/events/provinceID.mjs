@@ -110,7 +110,7 @@ var map = province => {
         case "Vibo Valentia": return "VV";
         case "Vicenza": return "VI";
         case "Viterbo": return "VT";
-        default: return "Nessuna provincia italiana nota con quel nome.";
+        default: return "";
     }
 }
 
