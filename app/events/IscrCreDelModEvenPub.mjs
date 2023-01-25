@@ -363,8 +363,7 @@ router.post('', async (req, res) => {
                         'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
                         'durata.*': 'required|string|minLength:1',
                         descrizione: 'required|string|minLength:1|maxLength:140',
-                        'ora': 'required|array|minLength:1',
-                        'ora.*': 'required|string|minLength:5|maxLength:5',
+                        'ora': 'required|string|minLength:5|maxLength:5',
                         maxPers: 'required|integer|min:2',
                         categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
                         nomeAtt: 'required|string|minLength:1',
@@ -409,7 +408,6 @@ router.post('', async (req, res) => {
                                             etaMax = Number(req.body.etaMax);
                                         }
 
-                                        var j = 0;
                                         let obj = [];
                                         for (let d of req.body.luogoEv) {
                                             obj.push({
@@ -419,11 +417,10 @@ router.post('', async (req, res) => {
                                                 citta: d.citta,
                                                 provincia: d.provincia,
                                                 data: d.data,
-                                                ora: d.ora[j],
+                                                ora: d.ora,
                                                 maxPers: d.maxPers,
                                                 partecipantiID: []
                                             });
-                                            ++j;
                                         }
 
                                         //Si crea un documento evento pubblico
