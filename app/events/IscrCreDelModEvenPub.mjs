@@ -352,7 +352,7 @@ router.post('', async (req, res) => {
                         nomeAtt: req.body.nomeAtt,
                         indirizzo: req.body.luogoEv[i].indirizzo,
                         citta: req.body.luogoEv[i].citta,
-                        picture: req.body.eventPic,
+                        eventPic: req.body.eventPic,
                         etaMin: req.body.etaMin,
                         etaMax: req.body.etaMax,
                         civNum: req.body.luogoEv[i].civNum,
@@ -369,7 +369,7 @@ router.post('', async (req, res) => {
                         nomeAtt: 'required|string|minLength:1',
                         indirizzo: 'required|string|minLength:1',
                         citta: 'required|string|minLength:1',
-                        picture: 'required|base64',
+                        eventPic: 'required|base64',
                         etaMin: 'integer|min:0',
                         etaMax: 'integer|gte:etaMin',
                         civNum: 'required|string|minLength:1',
@@ -385,7 +385,7 @@ router.post('', async (req, res) => {
                             if (!matched || req.body.durata.length > 3) {
                                 console.log(v1.errors);
                                 console.log(req.body.durata);
-                                console.log(req.body.categoria);
+                                console.log(req.body.eventPic);
                                 res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                                 return;
                             }
