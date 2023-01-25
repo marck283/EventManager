@@ -5,8 +5,8 @@ import verify from './googleTokenChecker.mjs';
 const tokenChecker = async (req, res, next) => {
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
+	console.log(token);
 	if (!token || token === "") {
-		console.log(token);
 		res.status(401).send({
 			success: false,
 			message: 'fallita autenticazione'
@@ -19,6 +19,7 @@ const tokenChecker = async (req, res, next) => {
 			next();
 		})
 		.catch(err => {
+			console.log(err);
 			_verify(token, process.env.SUPER_SECRET, async (err, decoded) => {
 				if (err) {
 					res.status(401).json({
