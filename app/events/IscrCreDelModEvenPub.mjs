@@ -361,7 +361,7 @@ router.post('', async (req, res) => {
                     };
                     const v1 = new Validator(options, {
                         'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
-                        'durata.*': 'required|string|minLength:1',
+                        'durata.*': 'required|numeric|minLength:1',
                         descrizione: 'required|string|minLength:1|maxLength:140',
                         'ora': 'required|string|minLength:5|maxLength:5',
                         maxPers: 'required|integer|min:2',
