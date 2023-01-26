@@ -11,7 +11,9 @@ import returnUser from '../findUser.mjs';
 
 var filterArr = (e, str) => {
     console.log(typeof e.luogoEv);
-    return e.luogoEv.filter(l => l.data == str.split("T")[0]).length > 0;
+    let str1 = str.split("T")[0].split("-");
+
+    return e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length > 0;
 };
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
