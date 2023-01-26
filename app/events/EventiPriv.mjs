@@ -272,6 +272,7 @@ router.post('', async (req, res) => {
                     v1.check()
                         .then(async matched => {
                             if (!matched) {
+                                console.log(v1.errors);
                                 res.status(400).json({ error: "Almeno un campo del luogo dell'evento non è valido." });
                                 error = true;
                                 return;
