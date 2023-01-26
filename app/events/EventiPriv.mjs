@@ -228,7 +228,8 @@ router.post('', async (req, res) => {
             luogoEv: req.body.luogoEv
         };
         const v = new Validator(options, {
-            durata: 'required|integer|min:1',
+            'durata': 'required|array|minLength:3',
+            'durata.*': 'required|numeric|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             'ElencoEmailInviti': 'arrayUnique|minLength:1',
@@ -273,7 +274,7 @@ router.post('', async (req, res) => {
                     res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
-                
+
                 for(let o of req.body.luogoEv) {
                     if (!test(o.ora)) {
                         res.status(400).json({ error: "Ora non valida." }).send();

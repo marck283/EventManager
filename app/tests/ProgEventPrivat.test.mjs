@@ -46,7 +46,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: 3,
+        durata: [1, 2, 3],
         categoria: "Altro",
         nomeAtt: "Evento",
         luogoEv: [{
@@ -73,7 +73,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
-        durata: 3,
+        durata: [1, 2, 3],
         categoria: "Viaggio",
         nomeAtt: "Evento",
         luogoEv: [{
@@ -133,7 +133,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: 3,
+        durata: [1, 2, 3],
         categoria: "Spettacolo",
         luogoEv: [{
           data: "11-11-2050",
@@ -159,7 +159,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
-        durata: 3,
+        durata: [1, 2, 3],
         categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: [{
@@ -186,7 +186,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: 3,
+        durata: [1, 2, 3],
         categoria: "Sport",
         nomeAtt: "Evento",
         luogoEv: [{
