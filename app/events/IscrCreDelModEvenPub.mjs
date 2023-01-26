@@ -443,14 +443,12 @@ router.post('', async (req, res) => {
                 /**
                  * Si posiziona il link alla risorsa appena creata nell'header location della risposta
                  */
-                res.location("/api/v2/EventiPubblici/" + eventP.id).status(201);
+                res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore del server" });
+        res.status(500).json({ error: "Errore del server" }).send();
     }
-
-    return;
 });
 
 export default router;
