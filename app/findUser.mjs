@@ -1,6 +1,6 @@
 import Utente from './collezioni/utenti.mjs';
 
-var returnUser = async (req) => {
+var returnUser = async req => {
     var IDexample = req.loggedUser.id || req.loggedUser, user;
 
     if(IDexample == req.loggedUser) {

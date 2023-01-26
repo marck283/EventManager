@@ -218,36 +218,69 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 router.post('', async (req, res) => {
     try {
         //Si cerca l'utente organizzatore dell'evento
-        let utente = returnUser(req);
+        let utente = await returnUser(req);
         //Si crea un documento evento personale
         var options = {
             durata: req.body.durata,
             categoria: req.body.categoria,
             nomeAtt: req.body.nomeAtt,
-            ElencoEmailInviti: req.body.ElencoEmailInviti
+            ElencoEmailInviti: req.body.ElencoEmailInviti,
+            luogoEv: req.body.luogoEv
         };
         const v = new Validator(options, {
             durata: 'required|integer|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             'ElencoEmailInviti': 'arrayUnique|minLength:1',
-            'ElencoEmailInviti.*': 'required|email|minLength:1|notIn:' + utente.email
+            'ElencoEmailInviti.*': 'required|email|minLength:1|notIn:' + utente.email,
+            luogoEv: 'required|array|minLength:1',
+            'luogoEv.*.data': 'required|string|dateFormat:MM-DD-YYYY',
+            'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
+            'luogoEv.*.indirizzo': 'required|string|minLength:1',
+            'luogoEv.*.civNum': 'required|string|minLength:1',
+            'luogoEv.*.cap': 'required|numeric|min:1',
+            'luogoEv.*.citta': 'required|string|minLength:1',
+            'luogoEv.*.provincia': 'required|string|in:AG,AL,AN,AO,AR,AP,AT,AV,BA,BT,BL,BN,BG,BI,BO,BZ,BS,\
+            BR,CA,CL,CB,CE,CI,CT,CZ,CH,CO,CS,CR,KR,CN,EN,FM,FE,FI,FG,FC,FR,GE,GO,GR,IM,\
+            IS,AQ,SP,LT,LE,LI,LO,LU,MC,MN,MS,MT,VS,ME,MI,MO,MB,NA,NO,NU,OG,OT,\
+            OR,PD,PA,PR,PV,PG,PU,PE,PC,PI,PT,PN,PZ,PO,RG,RA,RC,RE,RI,RN,RM,RO,SA,SS,SV,\
+            SI,SR,SO,SU,TA,TE,TR,TO,TP,TN,TV,TS,UD,VA,VE,VB,VC,VR,VV,VI,VT'
         });
         v.check()
             .then(async matched => {
                 if (!matched) {
+                    console.log(v.errors);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
 
-                if (!test(req.body.ora)) {
-                    res.status(400).json({ error: "Ora non valida." }).send();
-                    return;
+                //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
+                var ListaInvitati = [];
+                if (req.body.ElencoEmailInviti != null && req.body.ElencoEmailInviti != undefined && req.body.ElencoEmailInviti.length > 0) {
+                    for (var elem of req.body.ElencoEmailInviti) {
+                        let u = await Users.find({ email: { $eq: elem } });
+                        if (u.length > 0) {
+                            ListaInvitati.push(u.id);
+                        } else {
+                            res.status(404).json({ error: "email non trovata" }).send();
+                            return;
+                        }
+                    }
                 }
 
-                var over = false, error = false;
-                for (let o of req.body.luogoEv) {
-                    options = {
+                var luogoEv = [];
+                //Riscrivere questa parte...
+                if (!dateCheck(req.body.luogoEv)) {
+                    res.status(400).json({ error: "Data non valida." }).send();
+                    return;
+                }
+                for(let o of req.body.luogoEv) {
+                    if (!test(o.ora)) {
+                        res.status(400).json({ error: "Ora non valida." }).send();
+                        return;
+                    }
+
+                    luogoEv.push({
                         data: o.data,
                         ora: o.ora,
                         indirizzo: o.indirizzo,
@@ -255,103 +288,44 @@ router.post('', async (req, res) => {
                         cap: o.cap,
                         citta: o.citta,
                         provincia: o.provincia,
-                    };
-                    const v1 = new Validator(options, {
-                        data: 'required|string|dateFormat:MM-DD-YYYY',
-                        ora: 'required|string|minLength:5|maxLength:5',
-                        indirizzo: 'required|string|minLength:1',
-                        civNum: 'required|string|minLength:1',
-                        cap: 'required|integer|min:1',
-                        citta: 'required|string|minLength:1',
-                        provincia: 'required|string|in:AG,AL,AN,AO,AR,AP,AT,AV,BA,BT,BL,BN,BG,BI,BO,BZ,BS,\
-                    BR,CA,CL,CB,CE,CI,CT,CZ,CH,CO,CS,CR,KR,CN,EN,FM,FE,FI,FG,FC,FR,GE,GO,GR,IM,\
-                    IS,AQ,SP,LT,LE,LI,LO,LU,MC,MN,MS,MT,VS,ME,MI,MO,MB,NA,NO,NU,OG,OT,\
-                    OR,PD,PA,PR,PV,PG,PU,PE,PC,PI,PT,PN,PZ,PO,RG,RA,RC,RE,RI,RN,RM,RO,SA,SS,SV,\
-                    SI,SR,SO,SU,TA,TE,TR,TO,TP,TN,TV,TS,UD,VA,VE,VB,VC,VR,VV,VI,VT'
                     });
-                    v1.check()
-                        .then(async matched => {
-                            if (!matched) {
-                                console.log(v1.errors);
-                                res.status(400).json({ error: "Almeno un campo del luogo dell'evento non è valido." });
-                                error = true;
-                                return;
-                            }
-                        });
                 }
 
-                if (!error) {
-                    over = true;
+                let eventP = new eventPrivat({
+                    durata: req.body.durata,
+                    categoria: req.body.categoria,
+                    nomeAtt: req.body.nomeAtt,
+                    luogoEv: luogoEv,
+                    organizzatoreID: utente.id,
+                    invitatiID: ListaInvitati,
+                    partecipantiID: [utente.id]
+                });
+                //eventP.partecipantiID.push(utente.id);
 
-                    //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
-                    var ListaInvitati = [];
-                    if (req.body.ElencoEmailInviti != null && req.body.ElencoEmailInviti != undefined && req.body.ElencoEmailInviti.length > 0) {
-                        for (var elem of req.body.ElencoEmailInviti) {
-                            let u = await Users.find({ email: { $eq: elem } });
-                            if (u.length > 0) {
-                                ListaInvitati.push(u.id);
-                            } else {
-                                res.status(404).json({ error: "email non trovata" }).send();
-                                return;
-                            }
-                        }
-                    }
+                //Si salva il documento personale
+                eventP = await eventP.save();
 
-                    var luogoEv = [];
-                    for(let o of req.body.luogoEv) {
-                        //Riscrivere questa parte...
-                        if (!dateCheck(req.body.data, req.body.ora)) {
-                            res.status(400).json({ error: "Data non valida." }).send();
-                            return;
-                        }
+                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                utente.EventiCreati.push(eventP.id);
+                utente.EventiIscrtto.push(eventP.id);
+                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
 
-                        luogoEv.push({
-                            data: o.data,
-                            ora: o.ora,
-                            indirizzo: o.indirizzo,
-                            civNum: o.civNum,
-                            cap: o.cap,
-                            citta: o.citta,
-                            provincia: o.provincia,
-                        });
-                    }
+                //Si salva il modulo dell'utente
+                await utente.save();
 
-                    let eventP = new eventPrivat({
-                        durata: req.body.durata,
-                        categoria: req.body.categoria,
-                        nomeAtt: req.body.nomeAtt,
-                        luogoEv: luogoEv,
-                        organizzatoreID: utente.id,
-                        invitatiID: ListaInvitati,
-                        partecipantiID: []
-                    });
-                    eventP.partecipantiID.push(utente.id);
+                let eventId = eventP.id;
 
-                    //Si salva il documento personale
-                    eventP = await eventP.save();
+                //creare gli inviti a questi eventi 
+                ListaInvitati.forEach(async elem => {
+                    let invito = new invit({ utenteid: elem, eventoid: eventId, tipoevent: "priv" });
+                    await invito.save();
+                });
+                console.log('Evento salvato con successo');
 
-                    //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                    utente.EventiCreati.push(eventP.id);
-                    utente.EventiIscrtto.push(eventP.id);
-                    utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
-
-                    //Si salva il modulo dell'utente
-                    await utente.save();
-
-                    let eventId = eventP.id;
-
-                    //creare gli inviti a questi eventi 
-                    ListaInvitati.forEach(async elem => {
-                        let invito = new invit({ utenteid: elem, eventoid: eventId, tipoevent: "priv" });
-                        await invito.save();
-                    });
-                    console.log('Evento salvato con successo');
-
-                    /**
-                     * Si posiziona il link alla risorsa appena creata nel header location della risposata
-                     */
-                    res.status(201).location("/api/v2/EventiPrivati/" + eventId).send();
-                }
+                /**
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 */
+                res.status(201).location("/api/v2/EventiPrivati/" + eventId).send();
             });
     } catch (error) {
         console.log(error);
