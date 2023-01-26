@@ -86,14 +86,15 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
       if (criterias == "797569") {
         return {
           id: '797569',
-          dataOra: [new Date('2010-05-11T11:33:00.000Z')],
           durata: 4,
           categoria: 'svago',
           nomeAtt: 'Piscina',
-          luogoEv: {
+          luogoEv: [{
+            data: d,
+            ora: h,
             indirizzo: 'via rossi',
             citta: 'Trento'
-          },
+          }],
           organizzatoreID: '2222'
         };
       }
