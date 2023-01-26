@@ -358,6 +358,7 @@ router.post('', async (req, res) => {
             .then(async matched => {
                 if (!matched || req.body.durata.length > 3) {
                     //console.log(req.body.eventPic);
+                    console.log(v1.errors);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
