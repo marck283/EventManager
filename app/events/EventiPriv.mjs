@@ -269,11 +269,11 @@ router.post('', async (req, res) => {
                 }
 
                 var luogoEv = [];
-                //Riscrivere questa parte...
                 if (!dateCheck(req.body.luogoEv)) {
                     res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
+                
                 for(let o of req.body.luogoEv) {
                     if (!test(o.ora)) {
                         res.status(400).json({ error: "Ora non valida." }).send();
