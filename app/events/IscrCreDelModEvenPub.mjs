@@ -10,9 +10,7 @@ import { test } from '../hourRegexTest.mjs';
 import Recensioni from '../collezioni/recensioniPub.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
-import map from './provinceID.mjs';
-import returnUser from '../findUser.mjs'
-import isBase64 from 'is-base64';
+import returnUser from '../findUser.mjs';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -358,16 +356,21 @@ router.post('', async (req, res) => {
         });
         v1.check()
             .then(async matched => {
-                if (!matched || req.body.durata.length > 3 /*|| !isBase64(req.body.eventPic)*/) {
-                    /*console.log(v1.errors);
-                    console.log(req.body.durata);*/
+                if (!matched || req.body.durata.length > 3) {
                     console.log(req.body.eventPic);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
 
-                if (!test(req.body.luogoEv[i].ora)) {
-                    res.status(400).json({ error: "Formato ora non valido" }).send();
+                for(let o of req.body.luogoEv) {
+                    if (!test(o.ora)) {
+                        res.status(400).json({ error: "Formato ora non valido" }).send();
+                        return;
+                    }
+                }
+
+                if (dateCheck(req.body.luogoEv).length == 0) {
+                    res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
 
@@ -441,34 +444,6 @@ router.post('', async (req, res) => {
                         res.status(400).json({ error: "Indirizzo non valido." });
                     });
             });
-
-        for (let i = 0; i < req.body.luogoEv.length; i++) {
-            const v = new Validator({
-                data: req.body.luogoEv[i].data
-            }, {
-                'luogoEv.*.data': 'required|string|dateFormat:MM-DD-YYYY'
-            });
-            v.check()
-                .then(matched => {
-                    if (!matched) {
-                        console.log(v.errors);
-                        res.status(400).json({ error: "Date ripetute o nessuna data inserita o formato data sbagliato." }).send();
-                        return;
-                    }
-
-                    //Da riscrivere nel check sopra.
-                    if (dateCheck(req.body.luogoEv).length == 0) {
-                        res.status(400).json({ error: "Data non valida." }).send();
-                        return;
-                    }
-
-                    
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore del server" }).send();
