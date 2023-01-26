@@ -363,7 +363,7 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                for(let o of req.body.luogoEv) {
+                for (let o of req.body.luogoEv) {
                     if (!test(o.ora)) {
                         res.status(400).json({ error: "Formato ora non valido" }).send();
                         return;
@@ -375,80 +375,82 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
-                geoReq(req.body.luogoEv[i].indirizzo + ", " + req.body.luogoEv[i].civNum + ", " +
-                    req.body.luogoEv[i].cap + ", " + req.body.luogoEv[i].citta + ", " + req.body.luogoEv[i].provincia)
-                    .then(async r => {
+                let obj = [];
+                for (let o of req.body.luogoEv) {
+                    try {
+                        //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
+                        let r = await geoReq(o.indirizzo + ", " + o.civNum + ", " + o.cap + ", " + o.citta + ", " + o.provincia);
                         console.log(r.data.status);
-                        if (r.data.status == "OK") {
-                            let etaMin = null, etaMax = null;
-                            if (req.body.etaMin != undefined) {
-                                etaMin = Number(req.body.etaMin);
-                            }
-                            if (req.body.etaMax != undefined) {
-                                etaMax = Number(req.body.etaMax);
-                            }
-
-                            let obj = [];
-                            for (let d of req.body.luogoEv) {
-                                obj.push({
-                                    indirizzo: d.indirizzo,
-                                    civNum: d.civNum,
-                                    cap: d.cap,
-                                    citta: d.citta,
-                                    provincia: d.provincia,
-                                    data: d.data,
-                                    ora: d.ora,
-                                    maxPers: d.maxPers,
-                                    partecipantiID: []
-                                });
-                            }
-
-                            //Si crea un documento evento pubblico
-                            let eventP = new eventPublic({
-                                durata: req.body.durata.join(":"),
-                                categoria: req.body.categoria,
-                                nomeAtt: req.body.nomeAtt,
-                                luogoEv: obj,
-                                organizzatoreID: utente.id,
-                                eventPic: "data:image/png;base64," + req.body.eventPic,
-                                etaMin: etaMin,
-                                etaMax: etaMax,
-                                terminato: false,
-                                recensioni: [],
-                                valMedia: 0.0,
-                                orgName: utente.nome
-                            });
-
-                            //Si salva il documento pubblico
-                            eventP = await eventP.save();
-
-                            //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                            utente.EventiCreati.push(eventP.id);
-                            utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
-
-                            //Si salva il modulo dell'utente
-                            await utente.save();
-
-                            console.log('Evento salvato con successo');
-
-                            /**
-                             * Si posiziona il link alla risorsa appena creata nell'header location della risposta
-                             */
-                            res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
+                        if (!r.data.status == "OK") {
+                            console.log("err: " + r.data.error_message);
+                            throw new Error("Indirizzo non valido");
                         } else {
-                            console.log("err: " + r.error_message);
+                            obj.push({
+                                indirizzo: d.indirizzo,
+                                civNum: d.civNum,
+                                cap: d.cap,
+                                citta: d.citta,
+                                provincia: d.provincia,
+                                data: d.data,
+                                ora: d.ora,
+                                maxPers: d.maxPers,
+                                partecipantiID: []
+                            });
                         }
-                    })
-                    .catch(err => {
+                    } catch (err) {
                         console.log(err);
                         res.status(400).json({ error: "Indirizzo non valido." });
-                    });
+                        return;
+                    }
+                }
+
+                let etaMin = null, etaMax = null;
+                if (req.body.etaMin != undefined) {
+                    etaMin = Number(req.body.etaMin);
+                }
+                if (req.body.etaMax != undefined) {
+                    etaMax = Number(req.body.etaMax);
+                }
+
+                //Si crea un documento evento pubblico
+                let eventP = new eventPublic({
+                    durata: req.body.durata.join(":"),
+                    categoria: req.body.categoria,
+                    nomeAtt: req.body.nomeAtt,
+                    luogoEv: obj,
+                    organizzatoreID: utente.id,
+                    eventPic: "data:image/png;base64," + req.body.eventPic,
+                    etaMin: etaMin,
+                    etaMax: etaMax,
+                    terminato: false,
+                    recensioni: [],
+                    valMedia: 0.0,
+                    orgName: utente.nome
+                });
+
+                //Si salva il documento pubblico
+                eventP = await eventP.save();
+
+                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+                utente.EventiCreati.push(eventP.id);
+                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
+
+                //Si salva il modulo dell'utente
+                await utente.save();
+
+                console.log('Evento salvato con successo');
+
+                /**
+                 * Si posiziona il link alla risorsa appena creata nell'header location della risposta
+                 */
+                res.location("/api/v2/EventiPubblici/" + eventP.id).status(201);
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore del server" }).send();
+        res.status(500).json({ error: "Errore del server" });
     }
+
+    return;
 });
 
 export default router;
