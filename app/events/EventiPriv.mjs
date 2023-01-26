@@ -293,7 +293,7 @@ router.post('', async (req, res) => {
                 }
 
                 let eventP = new eventPrivat({
-                    durata: req.body.durata,
+                    durata: req.body.durata.join(":"),
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
@@ -301,7 +301,6 @@ router.post('', async (req, res) => {
                     invitatiID: ListaInvitati,
                     partecipantiID: [utente.id]
                 });
-                //eventP.partecipantiID.push(utente.id);
 
                 //Si salva il documento personale
                 eventP = await eventP.save();
