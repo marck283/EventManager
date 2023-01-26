@@ -386,14 +386,14 @@ router.post('', async (req, res) => {
                             throw new Error("Indirizzo non valido");
                         } else {
                             obj.push({
-                                indirizzo: d.indirizzo,
-                                civNum: d.civNum,
-                                cap: d.cap,
-                                citta: d.citta,
-                                provincia: d.provincia,
-                                data: d.data,
-                                ora: d.ora,
-                                maxPers: d.maxPers,
+                                indirizzo: o.indirizzo,
+                                civNum: o.civNum,
+                                cap: o.cap,
+                                citta: o.citta,
+                                provincia: o.provincia,
+                                data: o.data,
+                                ora: o.ora,
+                                maxPers: o.maxPers,
                                 partecipantiID: []
                             });
                         }
