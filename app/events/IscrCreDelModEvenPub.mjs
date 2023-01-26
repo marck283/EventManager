@@ -12,6 +12,7 @@ import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import map from './provinceID.mjs';
 import returnUser from '../findUser.mjs'
+import isBase64 from 'is-base64';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -382,7 +383,7 @@ router.post('', async (req, res) => {
                     });
                     v1.check()
                         .then(async matched => {
-                            if (!matched || req.body.durata.length > 3) {
+                            if (!matched || req.body.durata.length > 3 || !isBase64(req.body.picture)) {
                                 console.log(v1.errors);
                                 console.log(req.body.durata);
                                 //console.log(req.body.eventPic);
