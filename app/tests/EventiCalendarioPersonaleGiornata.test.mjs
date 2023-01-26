@@ -77,16 +77,27 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
           };
         }
         default: {
-          return {};
+          return undefined;
         }
       }
     });
 
     eventsPerSpy = jest.spyOn(eventPersonal, 'findById').mockImplementation(criterias => {
       if (criterias == "797569") {
-        return { id: '797569', dataOra: [new Date('2010-05-11T11:33:00.000Z')], durata: 4, categoria: 'svago', nomeAtt: 'Piscina', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '2222' };
+        return {
+          id: '797569',
+          dataOra: [new Date('2010-05-11T11:33:00.000Z')],
+          durata: 4,
+          categoria: 'svago',
+          nomeAtt: 'Piscina',
+          luogoEv: {
+            indirizzo: 'via rossi',
+            citta: 'Trento'
+          },
+          organizzatoreID: '2222'
+        };
       }
-      return {};
+      return undefined;
     });
 
     eventsPrivSpy = jest.spyOn(eventPrivate, 'findById').mockImplementation(criterias => {
@@ -94,7 +105,6 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
         case "75975947": {
           return {
             id: '75975947',
-            dataOra: [new Date('2010-05-11T11:33:00.000Z')],
             durata: 4,
             categoria: 'operazione',
             nomeAtt: 'Eventt',
@@ -137,7 +147,7 @@ describe('GET /api/v2/eventiCalendarioPersonale/:data', () => {
         }
 
         default: {
-          return {};
+          return undefined;
         }
       }
     });

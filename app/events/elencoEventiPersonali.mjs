@@ -14,15 +14,6 @@ var filterArr = (e, str) => {
     return e.luogoEv.filter(l => l.data == str.split("T")[0]).length > 0;
 };
 
-function isEmpty(o) {
-    for(var i in o) {
-        if(o.hasOwnProperty(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     let pers = await eventPersonal.findById(e);
     let pub = await eventPublic.findById(e);
@@ -30,17 +21,15 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
 
     console.log(pers, pub, priv);
     
-    if (pers != null && pers != undefined && !isEmpty(pers) && filterArr(pers, str)) {
+    if (pers != null && pers != undefined && filterArr(pers, str)) {
         eventsPers.push(pers);
     }
 
-    if (pub != null && pub != undefined && !isEmpty(pub) && filterArr(pub, str)) {
+    if (pub != null && pub != undefined && filterArr(pub, str)) {
         eventsPub.push(pub);
     }
 
-    //Something is preventing this from working properly for the online testing on GitHub.
-    //Maybe it has to do something with the isEmpty() function?
-    if (priv != null && priv != undefined && !isEmpty(priv)) {
+    if (priv != null && priv != undefined) {
         if (filterArr(priv, str)) {
             eventsPriv.push(priv);
         }
@@ -65,7 +54,12 @@ router.get("/:data", async (req, res) => {
     console.log(user1);
 
     //Perché non vengono ritornati gli eventi?
+    for (let e of user1.EventiCreati) {
+        console.log(e);
+        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
+    }
     for (let e of user1.EventiIscrtto) {
+        console.log(e);
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
     }
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
