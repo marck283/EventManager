@@ -20,8 +20,9 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var findEvents = async (arr, obj) => {
-    return await arr.find(obj);
+var findEvents = async (arr, obj, data) => {
+    let events = await arr.find(obj);
+    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
@@ -52,15 +53,15 @@ router.get("/:data", async (req, res) => {
         let obj;
 
         if(utent === req.loggedUser.id) {
-            obj = {organizzatoreID: {$eq: utent}, data: {$eq: data}};
+            obj = {organizzatoreID: {$eq: utent}};
         } else {
             utent = await User.findOne({email: {$eq: req.loggedUser.email}});
             console.log(utent);
-            obj = {organizzatoreID: {$eq: utent.id}, data: {$eq: data}};
+            obj = {organizzatoreID: {$eq: utent.id}};
         }
-        eventList = await findEvents(eventPublic, obj);
-        eventsPers = await findEvents(eventPers, obj);
-        eventsPriv = await findEvents(eventPriv, obj);
+        eventList = await findEvents(eventPublic, obj, data);
+        eventsPers = await findEvents(eventPers, obj, data);
+        eventsPriv = await findEvents(eventPriv, obj, data);
 
         eventList = await mapAndPush(eventList, [], "pub");
         eventList = await mapAndPush(eventsPers, eventList, "pers");

@@ -53,11 +53,7 @@ router.get("/:data", async (req, res) => {
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
-    console.log(user1);
-
-    for (let e of user1.EventiCreati) {
-        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
-    }
+    //console.log(user1);
     for (let e of user1.EventiIscrtto) {
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
     }
