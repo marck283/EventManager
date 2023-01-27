@@ -229,7 +229,9 @@ router.post('', async (req, res) => {
         };
         const v = new Validator(options, {
             'durata': 'required|array|minLength:3',
-            'durata.*': 'required|numeric|min:1',
+            'durata.0': 'required|numeric|min:0',
+            'durata.1': 'required|numeric|min:0',
+            'durata.2': 'required|numeric|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             'ElencoEmailInviti': 'arrayUnique|minLength:1',
