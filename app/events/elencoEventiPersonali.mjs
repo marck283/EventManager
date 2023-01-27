@@ -21,7 +21,7 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
     let pub = await eventPublic.findById(e);
     let priv = await eventPrivate.findById(e);
 
-    console.log(pers, pub, priv);
+    //console.log(pers, pub, priv);
     
     if (pers != null && pers != undefined && filterArr(pers, str)) {
         eventsPers.push(pers);
