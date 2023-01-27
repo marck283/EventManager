@@ -12,7 +12,7 @@ import returnUser from '../findUser.mjs';
 var filterArr = (e, str) => {
     console.log(typeof e.luogoEv);
     let str1 = str.split("T")[0].split("-");
-
+    console.log(e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length);
     return e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length > 0;
 };
 
@@ -55,13 +55,10 @@ router.get("/:data", async (req, res) => {
 
     console.log(user1);
 
-    //Perché non vengono ritornati gli eventi?
     for (let e of user1.EventiCreati) {
-        console.log(e);
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
     }
     for (let e of user1.EventiIscrtto) {
-        console.log(e);
         await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
     }
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
@@ -70,8 +67,12 @@ router.get("/:data", async (req, res) => {
         eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
-        eventsPub.forEach(e => eventsPers.push(e));
-        eventsPriv.forEach(e => eventsPers.push(e));
+        for(let e of eventsPub) {
+            eventsPers.push(e);
+        }
+        for(let e of eventsPriv) {
+            eventsPers.push(e);
+        }
         res.status(200).json({ eventi: eventsPers, data: str });
     } else {
         res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
