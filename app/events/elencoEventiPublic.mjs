@@ -50,7 +50,6 @@ var queryEvents = async events => {
         });
 
         events1 = await map(events1, "pub", await getOrgNames(events));
-        console.log(events1);
     } else {
         console.log("No events found");
     }
