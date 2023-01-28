@@ -30,6 +30,7 @@ router.get("/:id", async (req, res) => {
     var privEvent = await eventPriv.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
     var persEvent = await eventPers.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
 
+    //Qui c'è di sicuro un errore... provare a stampare il risultato di map...
     if(pubEvent != null && pubEvent != undefined) {
         res.status(200).json({event: map([pubEvent], "pub", getOrgNames([pubEvent]))}[0]);
     } else {
