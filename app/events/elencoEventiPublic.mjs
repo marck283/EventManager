@@ -47,11 +47,11 @@ var queryEvents = async events => {
         console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
         
         //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-        events1.sort((e, e1) => {
-            var org = User.findById(e.organizzatoreID), org1 = User.findById(e1.organizzatoreID);
+        events1 = await events1.sort(async (e, e1) => {
+            var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
             return org.valutazioneMedia < org1.valutazioneMedia;
         });
-        console.log(events1.length);
+        console.log(sortEvs.length);
     } else {
         console.log("No events found");
     }
