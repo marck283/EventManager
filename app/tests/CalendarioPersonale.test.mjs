@@ -80,6 +80,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
         self: "/api/v2/EventiPersonali/797569",
         name: "Piscina",
         category: "svago",
+        durata: 4,
         luogoEv: [{
           indirizzo: 'via rossi',
           citta: 'Trento',

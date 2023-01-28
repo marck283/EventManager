@@ -61,6 +61,7 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
       eventi: [{
           id: 'pub',
           idevent: '9876543',
+          durata: 2,
           luogoEv:[{
             citta: "Trento",
             data: "05-11-2010",
