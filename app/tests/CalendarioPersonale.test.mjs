@@ -85,8 +85,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
           indirizzo: 'via rossi',
           citta: 'Trento',
           data: '2010-05-11',
-          ora: '11:33',
-          numPostiRimanenti: 0
+          ora: '11:33'
         }]
       }]
     });

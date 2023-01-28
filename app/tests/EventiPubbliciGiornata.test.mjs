@@ -67,7 +67,6 @@ describe('GET /api/v2/eventiCalendarioPubblico/:data', () => {
             data: "05-11-2010",
             indirizzo: "via rossi",
             maxPers: 2,
-            numPostiRimanenti: 2,
             ora: "11:33",
             partecipantiID: []
           }],
