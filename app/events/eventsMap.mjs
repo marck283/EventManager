@@ -38,7 +38,8 @@ export default function map(events, eventType, orgNames = null) {
             category: event.categoria,
             eventPic: event.eventPic,
             orgName: orgNames[i],
-            luogoEv: luogoEv
+            luogoEv: luogoEv,
+            durata: event.durata
         };
         
         i += 1;
