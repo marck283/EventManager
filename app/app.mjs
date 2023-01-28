@@ -64,6 +64,7 @@ import evOrgList from './events/elencoEventiOrg.mjs';
 import recensioni from './events/recensioni.mjs';
 import accountIntegration from './accountIntegration.mjs';
 import infoEventoOrg from './events/infoEventoOrg.mjs';
+import qrCodeCheck from './events/checkQR.mjs';
 
 app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
 app.use('/api/v2/EventiPersonali', EventoPersonale);
@@ -74,6 +75,7 @@ app.use("/api/v2/EventOrgList", evOrgList);
 app.use("/api/v2/Recensioni", recensioni);
 app.use("/api/v2/AccountIntegration", accountIntegration);
 app.use("/api/v2/InfoEventoOrg", infoEventoOrg);
+app.use("/api/v2/QRCodeCheck", qrCodeCheck);
 
 /* Default 404 handler */
 app.use((req, res) => {

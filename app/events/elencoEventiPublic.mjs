@@ -20,13 +20,6 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var filterCondition = (condition, arr, cb) => {
-    if (condition) {
-        return arr.filter(cb);
-    }
-    return arr;
-};
-
 var queryEvents = async events => {
     //Filter for events happening in the future
     var events1 = null, curr = new Date();
@@ -45,7 +38,6 @@ var queryEvents = async events => {
         //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
         events1 = await events.sort(async (e, e1) => {
             var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
-            console.log(org, org1); //null null?
             return org.valutazioneMedia < org1.valutazioneMedia;
         });
 
