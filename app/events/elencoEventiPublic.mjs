@@ -51,7 +51,6 @@ var queryEvents = async events => {
             var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
             return org.valutazioneMedia < org1.valutazioneMedia;
         });
-        console.log(sortEvs.length);
     } else {
         console.log("No events found");
     }
