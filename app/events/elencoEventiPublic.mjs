@@ -38,18 +38,17 @@ var queryEvents = async events => {
             console.log(d.data, curr);
             return d1 >= curr;
         });
-        console.log(e.luogoEv.length > 0);
         return e.luogoEv.length > 0;
     });
 
     if (events != null && events.length > 0) {
         events1 = await map(events, "pub", await getOrgNames(events));
-        console.log("numPosti:", events1[0].luogoEv[0].numPostiRimanenti);
+        console.log(events1);
         
         //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
         events1 = await events1.sort(async (e, e1) => {
             var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
-            console.log(org, org1);
+            console.log(org, org1); //null null?
             return org.valutazioneMedia < org1.valutazioneMedia;
         });
     } else {
@@ -60,10 +59,6 @@ var queryEvents = async events => {
 
 var queryWrapper = async (res, events) => {
     var events1 = await queryEvents(events);
-
-    if(events1 != null && events1 != undefined) {
-        console.log("Events:", events1[0].luogoEv[0]);
-    }
     
     if (events1 != null) {
         if (events1 != 1) {
