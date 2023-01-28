@@ -31,13 +31,13 @@ router.get("/:id", async (req, res) => {
     var persEvent = await eventPers.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
 
     if(pubEvent != null && pubEvent != undefined) {
-        res.status(200).json({event: map(pubEvent, "pub", getOrgNames([pubEvent]))});
+        res.status(200).json({event: map([pubEvent], "pub", getOrgNames([pubEvent]))});
     } else {
         if(privEvent != null && privEvent != undefined) {
-            res.status(200).json({event: map(privEvent, "priv", getOrgNames([privEvent]))});
+            res.status(200).json({event: map([privEvent], "priv", getOrgNames([privEvent]))});
         } else {
             if(persEvent != null && persEvent != undefined) {
-                res.status(200).json({event: map(persEvent, "pers", getOrgNames([persEvent]))});
+                res.status(200).json({event: map([persEvent], "pers", getOrgNames([persEvent]))});
             } else {
                 res.status(404).json({error: "Evento non trovato."});
             }
