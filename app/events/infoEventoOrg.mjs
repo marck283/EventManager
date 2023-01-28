@@ -22,7 +22,7 @@ router.use(limiter);
 router.get("/:id", async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser.sub;
 
-    if(utent === req.loggedser.sub) {
+    if(utent === req.loggedUser.sub) {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
