@@ -46,7 +46,7 @@ router.get("/:id", async (req, res) => {
                 console.log("pers:", map([persEvent], "pers", orgName)[0]);
                 res.status(200).json({event: map([persEvent], "pers", orgName)}[0]).send();
             } else {
-                res.status(404).json({error: "Evento non trovato."});
+                res.status(404).json({error: "Evento non trovato."}).send();
             }
         }
     }
