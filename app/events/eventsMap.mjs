@@ -21,15 +21,6 @@ export default function map(events, eventType, orgNames = null) {
             }
         }
 
-        var luogoEv = event.luogoEv;
-        for (let i = 0; i < luogoEv.length; i++) {
-            if(eventType == "pub") {
-                luogoEv[i].numPostiRimanenti = luogoEv[i].maxPers - luogoEv[i].partecipantiID.length;
-            } else {
-                luogoEv[i].numPostiRimanenti = 0;
-            }
-        }
-
         let obj = {
             id: eventType,
             idevent: event.id,
@@ -38,7 +29,7 @@ export default function map(events, eventType, orgNames = null) {
             category: event.categoria,
             eventPic: event.eventPic,
             orgName: orgNames[i],
-            luogoEv: luogoEv,
+            luogoEv: event.luogoEv,
             durata: event.durata
         };
         
