@@ -38,6 +38,12 @@ router.delete('/:id/annullaEvento', async (req, res) => {
             await recensione.delete();
         });
 
+        //Modificare in modo da cancellare anche i biglietti...
+        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento },  utenteid: {$eq: utent}});
+        for(let b of biglietti1) {
+            await b.delete();
+        }
+
         await evento.delete();
         res.status(200).json({ message: "Evento annullato con successo." }).send();
     } catch (err) {
