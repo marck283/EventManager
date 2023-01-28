@@ -42,15 +42,15 @@ var queryEvents = async events => {
     });
 
     if (events != null && events.length > 0) {
-        events1 = await map(events, "pub", await getOrgNames(events));
-        console.log(events1);
-        
         //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-        events1 = await events1.sort(async (e, e1) => {
+        events1 = await events.sort(async (e, e1) => {
             var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
             console.log(org, org1); //null null?
             return org.valutazioneMedia < org1.valutazioneMedia;
         });
+
+        events1 = await map(events1, "pub", await getOrgNames(events));
+        console.log(events1);
     } else {
         console.log("No events found");
     }
