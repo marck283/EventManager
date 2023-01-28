@@ -63,6 +63,7 @@ import Utente from './Utenti.mjs';
 import evOrgList from './events/elencoEventiOrg.mjs';
 import recensioni from './events/recensioni.mjs';
 import accountIntegration from './accountIntegration.mjs';
+import infoEventoOrg from './events/infoEventoOrg.mjs';
 
 app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
 app.use('/api/v2/EventiPersonali', EventoPersonale);
@@ -72,6 +73,7 @@ app.use('/api/v2/Utenti', Utente);
 app.use("/api/v2/EventOrgList", evOrgList);
 app.use("/api/v2/Recensioni", recensioni);
 app.use("/api/v2/AccountIntegration", accountIntegration);
+app.use("/api/v2/InfoEventoOrg", infoEventoOrg);
 
 /* Default 404 handler */
 app.use((req, res) => {

@@ -52,11 +52,12 @@ router.get("/:data", async (req, res) => {
         var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
         let obj;
 
+        console.log("User1:", utent);
         if(utent === req.loggedUser.id) {
             obj = {organizzatoreID: {$eq: utent}};
         } else {
             utent = await User.findOne({email: {$eq: req.loggedUser.email}});
-            console.log(utent);
+            console.log("User:", utent);
             obj = {organizzatoreID: {$eq: utent.id}};
         }
         eventList = await findEvents(eventPublic, obj, data);
