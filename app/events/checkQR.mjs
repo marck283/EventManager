@@ -37,3 +37,5 @@ router.get("/:qrcode", async (req, res) => {
         return;
     })
 });
+
+export default router;

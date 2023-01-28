@@ -54,7 +54,7 @@ router.patch('/:id', async (req, res) => {
         var id_evento = req.params.id;
         let evento = await eventPublic.findById(id_evento);
 
-        if (evento == undefined) {
+        if (evento == null || evento == undefined) {
             res.status(404).json({ error: "Non esiste alcun evento pubblico con l'id specificato." });
             return;
         }
@@ -75,11 +75,14 @@ router.patch('/:id', async (req, res) => {
         if (req.body.citta != "" && req.body.citta != undefined) {
             evento.luogoEv.citta = req.body.citta;
         }
+        if(req.body.terminato != "" && req.body.terminato != undefined) {
+            evento.terminato = req.body.terminato;
+        }
 
         const v = new Validator({
             maxPers: req.body.maxPers
         }, {
-            maxPers: 'required|integer|min:2'
+            maxPers: 'integer|min:2'
         });
         v.check()
             .then(async matched => {
@@ -87,7 +90,9 @@ router.patch('/:id', async (req, res) => {
                     res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
                     return;
                 } else {
-                    evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+                    if(req.body.maxPers != "" && req.body.maxPers != undefined && Number(req.body.maxPers)) {
+                        evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
+                    }
                     await evento.save();
                     res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
                     console.log('Evento pubblico modificato con successo');
