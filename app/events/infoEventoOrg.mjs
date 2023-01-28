@@ -33,18 +33,18 @@ router.get("/:id", async (req, res) => {
     //Qui c'è di sicuro un errore... provare a stampare il risultato di map...
     if(pubEvent != null && pubEvent != undefined) {
         console.log("pub:", map([pubEvent], "pub", [pubEvent.orgName])[0]);
-        res.status(200).json({event: map([pubEvent], "pub", [pubEvent.orgName])}[0]);
+        res.status(200).json({event: map([pubEvent], "pub", [pubEvent.orgName])}[0]).send();
     } else {
         let orgName;
         if(privEvent != null && privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
             console.log("priv:", map([privEvent], "priv", orgName)[0]);
-            res.status(200).json({event: map([privEvent], "priv", orgName)}[0]);
+            res.status(200).json({event: map([privEvent], "priv", orgName)}[0]).send();
         } else {
             if(persEvent != null && persEvent != undefined) {
                 orgName = (await getOrgNames([persEvent]))[0];
-                console.log("pers:", map([persEvent], "priv", orgName)[0]);
-                res.status(200).json({event: map([persEvent], "pers", orgName)}[0]);
+                console.log("pers:", map([persEvent], "pers", orgName)[0]);
+                res.status(200).json({event: map([persEvent], "pers", orgName)}[0]).send();
             } else {
                 res.status(404).json({error: "Evento non trovato."});
             }
