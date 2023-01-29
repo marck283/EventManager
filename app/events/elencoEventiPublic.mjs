@@ -85,7 +85,7 @@ router.get("", async (req, res) => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
                 const utente = await User.findOne({ email: { $eq: user } });
-                events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID !== utente.id);
+                events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID != utente.id);
                 console.log(events.length);
 
                 queryWrapper(res, events);
@@ -96,7 +96,7 @@ router.get("", async (req, res) => {
                     console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                     if (!err) {
                         user = decoded.id;
-                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID !== user));
+                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID != user));
                     }
 
                     queryWrapper(res, events);
