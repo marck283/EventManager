@@ -48,9 +48,9 @@ router.get("/:data", async (req, res) => {
         res.status(400).json({ error: "Data non valida" });
         return;
     }
-    str.setDate(str.getDate() + 1);
+    str.setDate(str.getDate());
     str = str.toISOString();
-    
+
     console.log(str);
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
