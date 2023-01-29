@@ -106,7 +106,9 @@ router.post('', (req, res) => {
 									userId: payload.sub,
 									g_refresh_token: ""
 								},
-								facebookAccount: null
+								facebookAccount: {
+									userId: ""
+								}
 							});
 							await user.save();
 						} else {
