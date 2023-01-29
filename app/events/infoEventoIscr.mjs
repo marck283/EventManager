@@ -19,7 +19,7 @@ var limiter = RateLimit ({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var findEvents = async (id, utent) => {
+var findEvents = async id => {
     let eventoPub = await eventPublic.findById(id), eventoPriv = await eventPriv.findById(id);
     let eventoPers = await eventPers.findById(id);
 
@@ -42,7 +42,7 @@ router.get("/:id", async (req, res) => {
         user = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    let event = await findEvents(req.params.id, user);
+    let event = await findEvents(req.params.id);
     if(event != null && event != undefined) {
         res.status(200).json({event: event}).send();
     } else {
