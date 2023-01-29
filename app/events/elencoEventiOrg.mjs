@@ -63,7 +63,29 @@ router.get("/:data", async (req, res) => {
 });
 
 router.get("", async (req, res) => {
-    //Qualcosa
+    var utent = req.loggedUser.id || req.loggedUser.sub;
+
+    if (utent !== req.loggedUser.id) {
+        utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
+    }
+    obj = { organizzatoreID: { $eq: utent } };
+
+    let eventsPub = await eventPublic.find(obj), eventsPriv = await eventPriv.find(obj),
+        eventsPers = await eventPers.find(obj), events = [];
+
+    eventsPub = eventsPub.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
+    eventsPers = eventsPers.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
+    eventsPriv = eventsPriv.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
+    
+    eventsPub = await mapAndPush(eventsPub, [], "pub");
+    eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
+    events = await mapAndPush(eventsPriv, eventsPers, "priv");
+
+    if (events != null && events != undefined && events.length > 0) {
+        res.status(200).json({ eventi: events }).send();
+    } else {
+        res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
+    }
 });
 
 export default router;

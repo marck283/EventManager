@@ -17,11 +17,13 @@ router.use(json({ limit: "50mb" })); //Limiting the size of the request should a
 router.delete('/:id/annullaEvento', async (req, res) => {
     var utent = (await returnUser(req)).id;
     var id_evento = req.params.id;
+    console.log(id_evento);
 
     try {
         let evento = await eventPublic.findById(id_evento);
 
         if (evento == undefined) {
+            console.log("Non esiste alcun evento pubblico con l'id specificato.");
             res.status(404).json({ error: "Non esiste alcun evento pubblico con l'id specificato." });
             return;
         }
