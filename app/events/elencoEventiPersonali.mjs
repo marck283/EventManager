@@ -50,6 +50,8 @@ router.get("/:data", async (req, res) => {
     }
     str.setDate(str.getDate() + 1);
     str = str.toISOString();
+    
+    console.log(str);
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
