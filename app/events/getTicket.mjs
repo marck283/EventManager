@@ -34,6 +34,7 @@ router.get("/:id", async (req, res) => {
     v.check()
     .then(async matched => {
         if (!matched) {
+            console.log(v.errors);
             res.status(400).json({error: "Richiesta non valida."}).send();
             return;
         }
