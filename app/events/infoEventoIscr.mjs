@@ -66,7 +66,7 @@ router.get("/:id", async (req, res) => {
                     result[key] = event[key];
                 }
             }
-            res.status(200).json({event: result}).send();
+            res.status(200).json(result).send();
         } else {
             res.status(404).json({error: "Evento non trovato"}).send();
         }
