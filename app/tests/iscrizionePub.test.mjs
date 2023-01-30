@@ -60,7 +60,12 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     it('POST /api/v2/EventiPubblici/idEvento/Iscrizioni con id inesistente dovrebbe restituire 404', async () => {
         
         await request(app).post('/api/v2/EventiPubblici/12345/Iscrizioni').
-        set('x-access-token', token).expect('Content-Type', /json/).expect(404, {error: "Non esiste nessun evento con l'id selezionato"});
+        set('x-access-token', token)
+        .send({
+            data: '12-12-2023',
+            ora: '06:37'
+        })
+        .expect('Content-Type', /json/).expect(404, {error: "Non esiste nessun evento con l'id selezionato"});
         
     });
     

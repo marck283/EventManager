@@ -41,8 +41,8 @@ router.delete('/:id/annullaEvento', async (req, res) => {
         });
 
         //Modificare in modo da cancellare anche i biglietti...
-        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento },  utenteid: {$eq: utent}});
-        for(let b of biglietti1) {
+        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento }, utenteid: { $eq: utent } });
+        for (let b of biglietti1) {
             await b.delete();
         }
 
@@ -83,7 +83,7 @@ router.patch('/:id', async (req, res) => {
         if (req.body.citta != "" && req.body.citta != undefined) {
             evento.luogoEv.citta = req.body.citta;
         }
-        if(req.body.terminato != "" && req.body.terminato != undefined) {
+        if (req.body.terminato != "" && req.body.terminato != undefined) {
             evento.terminato = req.body.terminato;
         }
 
@@ -98,7 +98,7 @@ router.patch('/:id', async (req, res) => {
                     res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
                     return;
                 } else {
-                    if(req.body.maxPers != "" && req.body.maxPers != undefined && Number(req.body.maxPers)) {
+                    if (req.body.maxPers != "" && req.body.maxPers != undefined && Number(req.body.maxPers)) {
                         evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
                     }
                     await evento.save();
@@ -176,12 +176,6 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = (await returnUser(req)).id;
     var id_evento = req.params.id;
 
-    var eventP1 = await eventPublic.findById(id_evento);
-    if (eventP1 == undefined) {
-        res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
-        return;
-    }
-
     const v = new Validator({
         giorno: req.body.data,
         ora: req.body.ora
@@ -198,20 +192,30 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             }
             try {
                 let error = false;
-                for(let l of eventP1.luogoEv) {
+                console.log("OK");
+                //var eventP1 = await eventPublic.find({luogoEv: {$elemMatch: {data: req.body.data, ora: req.body.ora}}});
+                var eventP1 = await eventPublic.findById(id_evento);
+                console.log("OK");
+                if (eventP1 == undefined) {
+                    res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+                    return;
+                }
+                console.log("OK");
+                for (let l of eventP1.luogoEv) {
                     if (l.partecipantiID.length == l.maxPers) {
                         res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                         return;
                     }
-    
+
                     if (l.partecipantiID.includes(utent)) {
-                        if(error) {
+                        if (error) {
                             res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
                             return;
                         }
                         error = true;
                     }
                 }
+                console.log("OK");
 
                 let data = {
                     idUtente: utent,
@@ -236,6 +240,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                     idBigl = bigl._id;
                     return await bigl.save();
                 });
+                console.log("OK");
 
                 //Si cerca l'utente organizzatore dell'evento
                 let utente = await Users.findById(utent);
@@ -243,8 +248,10 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 eventP1.luogoEv[0].partecipantiID.push(utent);
                 utente.EventiIscrtto.push(id_evento);
 
+                console.log("OK");
                 await eventP1.save();
                 await utente.save();
+                console.log("OK");
 
                 res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
             } catch (error) {
@@ -252,6 +259,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 res.status(500).json({ error: "Errore nel server" }).send();
             }
         });
+        return;
 });
 
 router.post('/:id/Inviti', async (req, res) => {

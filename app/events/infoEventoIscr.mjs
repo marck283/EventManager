@@ -8,6 +8,7 @@ import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import { Validator } from 'node-input-validator';
+import biglietti from '../collezioni/biglietti.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -65,7 +66,10 @@ router.get("/:id", async (req, res) => {
                     result[key] = event[key];
                 }
             }
-            res.status(200).json(result).send();
+
+            let biglietto = await biglietti.findOne({idEvento: {$eq: req.params.id}, idUtente: {$eq: user}});
+
+            res.status(200).json({event: result, biglietto: biglietto.id}).send();
         } else {
             res.status(404).json({error: "Evento non trovato"}).send();
         }
