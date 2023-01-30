@@ -43,7 +43,7 @@ router.get("/:id", async (req, res) => {
             return;
         }
 
-        var biglietto = await biglietti.findOne({eventoid: {$eq: eventId}, utenteid: {$eq: req},
+        var biglietto = await biglietti.findOne({eventoid: {$eq: eventId}, utenteid: {$eq: user},
             giorno: {$eq: req.headers.giorno}, ora: {$eq: req.headers.ora}});
 
         if(biglietto != null && biglietto != undefined) {
