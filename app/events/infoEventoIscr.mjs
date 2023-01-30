@@ -48,8 +48,7 @@ router.get("/:id", async (req, res) => {
         data: req.headers.data,
         ora: req.headers.ora
     }, {
-        data: 'required|string|dateFormat:MM-DD-YYYY',
-        ora: 'required|string|minLength:5|maxLength:5'
+        data: 'required|string|dateFormat:MM-DD-YYYY'
     });
     v.check()
     .then(async matched => {
@@ -57,10 +56,7 @@ router.get("/:id", async (req, res) => {
             res.status(400).json({error: "Errore di validazione"}).send();
             return;
         }
-        if(!test(req.headers.ora)) {
-            res.status(400).json({error: "Ora non valida"}).send();
-            return;
-        }
+        
         let event = await findEvent(req.params.id);
         if(event != null && event != undefined) {
             let result = {};
