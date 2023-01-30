@@ -45,8 +45,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const v = new Validator({
-        data: req.headers.data,
-        ora: req.headers.ora
+        data: req.headers.data
     }, {
         data: 'required|string|dateFormat:MM-DD-YYYY'
     });
@@ -62,7 +61,7 @@ router.get("/:id", async (req, res) => {
             let result = {};
             for(let key in event) {
                 if(key === "luogoEv") {
-                    result[key] = event[key].luogoEv.filter(luogo => luogo.data === req.headers.data && luogo.ora === req.headers.ora);
+                    result[key] = event[key].luogoEv.filter(luogo => luogo.data === req.headers.data && luogo.partecipantiID.includes(user));
                 } else {
                     result[key] = event[key];
                 }
