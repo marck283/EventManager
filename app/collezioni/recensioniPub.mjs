@@ -6,5 +6,6 @@ export default model("Recensione", new Schema({
     idUtente: String,
     idEvento: String,
     valutazione: Number,
+    titolo: String,
     descrizione: String
 }));

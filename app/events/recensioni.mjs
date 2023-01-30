@@ -17,10 +17,12 @@ router.post("/:id", async (req, res) => {
         var id = req.params.id, evento = await eventPublic.findById(id);
 
         const v = new Validator({
+            titolo: req.body.title,
             valutazione: req.body.evaluation,
             motivazione: req.body.description
         }, {
-            valutazione: 'required|integer|min:1|max:10',
+            titolo: 'required|string|minLength:1',
+            valutazione: 'required|numeric|min:1|max:10',
             motivazione: 'required|string|minLength:1'
         });
         v.check()
@@ -34,6 +36,7 @@ router.post("/:id", async (req, res) => {
                 var recensione = new Recensione({
                     idUtente: utenteId,
                     idEvento: id,
+                    titolo: req.body.title,
                     valutazione: req.body.evaluation,
                     descrizione: req.body.description
                 });
