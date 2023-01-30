@@ -6,7 +6,7 @@ import biglietti from '../collezioni/biglietti.mjs';
 import Users from '../collezioni/utenti.mjs';
 import { toDataURL } from 'qrcode';
 import { Validator } from 'node-input-validator';
-import { test } from '../hourRegexTest.mjs';
+import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import returnUser from '../findUser.mjs';
 

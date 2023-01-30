@@ -3,7 +3,7 @@ import eventPersonal from '../collezioni/eventPersonal.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import { Validator } from 'node-input-validator';
-import { test } from '../hourRegexTest.mjs';
+import test from '../hourRegexTest.mjs';
 
 router.patch('/:id', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser;
