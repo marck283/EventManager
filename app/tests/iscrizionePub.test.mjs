@@ -14,7 +14,8 @@ describe('POST /api/v2/EventiPubblici/idEvento/Iscrizioni', () => {
     beforeAll(() => {
         token = createToken("gg.ee@gmail.com", "2222", 3600);
         eventPublicSpy = jest.spyOn(EventPublic, 'findById').mockImplementation(criterias => {
-            if(criterias == '67890') {
+            console.log(criterias == '67890');
+            if (criterias == '67890') {
                 return {
                     _id: '67890',
                     durata: 1,

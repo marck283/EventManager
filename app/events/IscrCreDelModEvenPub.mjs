@@ -120,7 +120,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         if (utente == req.loggedUser.id) {
             utenteObj = await Users.findById(utente);
         } else {
-            utenteObj = await Users.find({ email: { $eq: utente.email } });
+            utenteObj = (await Users.find({ email: { $eq: utente.email } })).id;
         }
 
         var iscr = await biglietti.findById(req.params.idIscr);
@@ -135,13 +135,13 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj.id) {
+        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
         }
 
         var array1 = evento.partecipantiID;
-        var index1 = array1.indexOf(utenteObj.id);
+        var index1 = array1.indexOf(utenteObj);
         if (index1 > -1) {
             array1.splice(index1, 1);
         } else {
@@ -197,19 +197,20 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 return;
             }
             try {
-                if (eventP1 != null && eventP1 != undefined && eventP1.luogoEv.filter(l => l.data == req.body.data && l.ora == req.body.ora).length == 0) {
-                    res.status(403).json({ error: "Evento non disponibile" }).send();
-                    return;
-                }
-
-                if (eventP1.luogoEv[0].partecipantiID.length == eventP1.luogoEv[0].maxPers) {
-                    res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
-                    return;
-                }
-
-                if (eventP1.luogoEv[0].partecipantiID.includes(utent)) {
-                    res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
-                    return;
+                let error = false;
+                for(let l of eventP1.luogoEv) {
+                    if (l.partecipantiID.length == l.maxPers) {
+                        res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
+                        return;
+                    }
+    
+                    if (l.partecipantiID.includes(utent)) {
+                        if(error) {
+                            res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
+                            return;
+                        }
+                        error = true;
+                    }
                 }
 
                 let data = {

@@ -8,7 +8,6 @@ import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import { Validator } from 'node-input-validator';
-import test from '../hourRegexTest.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
