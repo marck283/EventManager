@@ -56,9 +56,10 @@ router.post("/:id", async (req, res) => {
 
                 //Now find the user and update its evaluation.
                 var orgID = (await eventPublic.findById(id)).organizzatoreID;
+                var user1 = await User.findById(orgID);
                 var eventsPub = await eventPublic.find({ organizzatoreID: orgID });
-                user.valutazioneMedia = meanEval(eventsPub);
-                await user.save();
+                user1.valutazioneMedia = meanEval(eventsPub);
+                await user1.save();
 
                 res.status(201).json({ message: "Recensione salvata con successo" }).send();
             });
