@@ -70,9 +70,11 @@ router.get("", async (req, res) => {
     
     if(nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
         events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }});
+        nomeAtt = null;
     } else {
         if(orgName != undefined && orgName != null && orgName != "") {
             events = await eventPublic.find({ orgName: { $eq: orgName }});
+            orgName = null;
         } else {
             events = await eventPublic.find({});
         }
@@ -89,22 +91,23 @@ router.get("", async (req, res) => {
                     e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID != utente.id);
                 console.log(events.length);
 
-                queryWrapper(res, events);
+                await queryWrapper(res, events);
             })
             .catch(err => {
                 //Questo non è un token Google
-                tVerify(token, process.env.SUPER_SECRET, (err, decoded) => {
+                tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
                     console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                     if (!err) {
                         user = decoded.id;
                         events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID != user));
                     }
 
-                    queryWrapper(res, events);
+                    await queryWrapper(res, events);
                 });
             });
+            token = null;
     } else {
-        queryWrapper(res, events);
+        await queryWrapper(res, events);
     }
 });
 

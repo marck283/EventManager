@@ -13,7 +13,7 @@ var meanEval = (evArr, recLength) => {
     if(recLength.length > 0) {
         return sum/(recLength*1.0); //Floating-point division
     }
-    return 0;
+    return sum;
 }
 
 router.post("/:id", async (req, res) => {
