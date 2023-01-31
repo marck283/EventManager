@@ -55,7 +55,8 @@ router.post("/:id", async (req, res) => {
                 await evento.save();
 
                 //Now find the user and update its evaluation.
-                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: user.id}});
+                var orgID = (await eventPublic.findById(id)).organizzatoreID;
+                var eventsPub = await eventPublic.find({ organizzatoreID: orgID });
                 user.valutazioneMedia = meanEval(eventsPub);
                 await user.save();
 
