@@ -6,10 +6,10 @@ import Recensione from '../collezioni/recensioniPub.mjs';
 import returnUser from '../findUser.mjs';
 
 var meanEval = evArr => {
-    var sum = 0;
-    evArr.forEach(e => sum += e.valMedia);
+    var sum = 0.0;
+    evArr.forEach(e => sum += e.valMedia*1.0);
     
-    return sum/evArr.length;
+    return sum/(evArr.length*1.0); //Floating-point division
 }
 
 router.post("/:id", async (req, res) => {
