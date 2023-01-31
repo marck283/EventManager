@@ -4,6 +4,7 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 import { Validator } from 'node-input-validator';
 import Recensione from '../collezioni/recensioniPub.mjs';
 import returnUser from '../findUser.mjs';
+import User from '../collezioni/utenti.mjs';
 
 var meanEval = evArr => {
     var sum = 0.0;
@@ -38,7 +39,7 @@ router.post("/:id", async (req, res) => {
                 }
                 let evaluation = Number(req.body.evaluation);
                 var user = await returnUser(req);
-                var utenteId = user._id;
+                var utenteId = user.id;
                 console.log(utenteId);
                 var recensione = new Recensione({
                     idUtente: utenteId,
@@ -54,8 +55,7 @@ router.post("/:id", async (req, res) => {
                 await evento.save();
 
                 //Now find the user and update its evaluation.
-                var eventPub = await eventPublic.findById(user.id);
-                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: eventPub.organizzatoreID}});
+                var eventsPub = await eventPublic.find({organizzatoreID: {$eq: user.id}});
                 user.valutazioneMedia = meanEval(eventsPub);
                 await user.save();
 
