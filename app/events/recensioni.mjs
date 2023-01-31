@@ -63,7 +63,8 @@ router.post("/:id", async (req, res) => {
                 });
 
                 let recensioni = await Recensione.find({idUtente: user1.id});
-                if(recensioni != null && recensioni != undefined && recensioni.length > 0) {
+                console.log(recensioni == null || recensioni == undefined || recensioni.length == 0);
+                if(recensioni != null && recensioni != undefined) {
                     console.log("OK");
                     user1.valutazioneMedia = meanEval(eventsPub, recensioni.length);
                 } else {
