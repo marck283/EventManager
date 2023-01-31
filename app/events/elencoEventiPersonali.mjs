@@ -8,7 +8,6 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import returnUser from '../findUser.mjs';
-import biglietti from '../collezioni/biglietti.mjs';
 
 var filterArr = (e, str) => {
     console.log(typeof e.luogoEv);

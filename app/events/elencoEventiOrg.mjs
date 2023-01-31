@@ -22,13 +22,15 @@ router.use(limiter);
 
 var findEvents = async (arr, obj, data) => {
     let events = await arr.find(obj);
-    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
+    return events/*.filter(e => e.luogoEv.filter(l => data == l.data).length > 0)*/;
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
     if (arr != null && arr != undefined && arr.length > 0) {
         let events = map(arr, cat, await getOrgNames(arr));
-        events.forEach(e => genArr.push(e));
+        for(let e of events) {
+            genArr.push(e);
+        }
     }
 
     console.log(genArr);
@@ -45,7 +47,7 @@ router.get("/:data", async (req, res) => {
     if (utent !== req.loggedUser.id) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
-    obj = { organizzatoreID: { $eq: utent } };
+    obj = { organizzatoreID: { $eq: utent }, luogoEv: { $elemMatch: { data: { $eq: data } } } };
 
     eventList = await findEvents(eventPublic, obj, data);
     eventsPers = await findEvents(eventPers, obj, data);
@@ -56,7 +58,7 @@ router.get("/:data", async (req, res) => {
     eventList = await mapAndPush(eventsPriv, eventList, "priv");
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
-        res.status(200).json({ eventi: eventList }).send();
+        res.status(200).json({ eventi: eventList, data: data }).send();
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
