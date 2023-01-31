@@ -22,7 +22,7 @@ router.use(limiter);
 
 var findEvents = async (arr, obj, data) => {
     let events = await arr.find(obj);
-    return events/*.filter(e => e.luogoEv.filter(l => data == l.data).length > 0)*/;
+    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
