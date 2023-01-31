@@ -22,23 +22,24 @@ router.post("/:id", async (req, res) => {
             motivazione: req.body.description
         }, {
             titolo: 'required|string|minLength:1',
-            valutazione: 'required|numeric|min:1|max:10',
+            valutazione: 'required|string|min:1|max:10',
             motivazione: 'required|string|minLength:1'
         });
         v.check()
             .then(async matched => {
-                if (!matched) {
+                if (!matched || !Number(req.body.evaluation)) {
                     res.status(400).json({ error: "Richiesta malformata" }).send();
                     return;
                 }
-                console.log(req.body.evaluation);
+                console.log(Number(req.body.evaluation));
+                let evaluation = Number(req.body.evaluation);
                 var user = await returnUser(req);
                 var utenteId = user._id;
                 var recensione = new Recensione({
                     idUtente: utenteId,
                     idEvento: id,
                     titolo: req.body.title,
-                    valutazione: req.body.evaluation,
+                    valutazione: evaluation,
                     descrizione: req.body.description
                 });
                 var recensione1 = await recensione.save();
