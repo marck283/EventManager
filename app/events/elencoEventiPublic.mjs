@@ -11,7 +11,7 @@ import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
-    max: 100, //Limit each IP to 10 requests per minute
+    max: 50, //Limit each IP to a certain number of requests per minute
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });
@@ -42,6 +42,7 @@ var queryEvents = async events => {
         });
 
         events1 = await map(events1, "pub", await getOrgNames(events));
+        events = null;
     } else {
         console.log("No events found");
     }
@@ -57,9 +58,11 @@ var queryWrapper = async (res, events) => {
         } else {
             res.status(400).json({ error: "Richiesta malformata." });
         }
+        events1 = null;
     } else {
         res.status(404).json({ error: "Non sono presenti eventi organizzati." });
     }
+    return;
 }
 
 router.get("", async (req, res) => {
@@ -109,6 +112,9 @@ router.get("", async (req, res) => {
     } else {
         await queryWrapper(res, events);
     }
+    user = null;
+    events = null;
+    return;
 });
 
 var mapEvents = token => new Promise((resolve, reject) => {
