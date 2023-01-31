@@ -6,14 +6,12 @@ import Recensione from '../collezioni/recensioniPub.mjs';
 import returnUser from '../findUser.mjs';
 import User from '../collezioni/utenti.mjs';
 
-var meanEval = evArr => {
+var meanEval = (evArr, recLength) => {
     var sum = 0.0;
     evArr.forEach(e => sum += e.valMedia*1.0);
-
-    console.log(evArr.length);
     
     if(evArr.length > 0) {
-        return sum/(evArr.length*1.0); //Floating-point division
+        return sum/(recLength*1.0); //Floating-point division
     }
     return 0;
 }
@@ -60,10 +58,16 @@ router.post("/:id", async (req, res) => {
                 var user1 = await User.findById(orgID);
                 var eventsPub = await eventPublic.find({ organizzatoreID: orgID });
                 eventsPub = eventsPub.filter(async e => {
-                    let recensioni = await Recensione.find({eventoid: e.id});
+                    let recensioni = await Recensione.find({idEvento: e.id});
                     return recensioni != null && recensioni != undefined && recensioni.length > 0;
                 });
-                user1.valutazioneMedia = meanEval(eventsPub);
+
+                let recensioni = await Recensione.find({idUtente: user1.id});
+                if(recensioni != null && recensioni != undefined && recensioni.length > 0) {
+                    user1.valutazioneMedia = meanEval(eventsPub, recensioni.length);
+                } else {
+                    user1.valutazioneMedia = 0;
+                }
                 await user1.save();
 
                 res.status(201).json({ message: "Recensione salvata con successo" }).send();
