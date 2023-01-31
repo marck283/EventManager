@@ -48,7 +48,8 @@ router.get("/:qrcode", async (req, res) => {
         const qrcode = await toDataURL.toDataURL(req.params.qrcode), biglietto = await biglietti.findOne({qr: {$eq: qrcode},
             eventoid: {$eq: req.headers.eventoid}, utenteid: {$eq: user}, giorno: {$eq: req.headers.day},
             ora: {$eq: req.headers.hour}});
-
+        console.log(biglietto == null);
+        console.log(biglietto == undefined);
         if(biglietto != null && biglietto != undefined) {
             res.status(200).json({status: "OK"}).send();
         } else {
