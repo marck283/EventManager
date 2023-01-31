@@ -8,6 +8,8 @@ import returnUser from '../findUser.mjs';
 var meanEval = evArr => {
     var sum = 0.0;
     evArr.forEach(e => sum += e.valMedia*1.0);
+
+    console.log(sum/(evArr.length*1.0));
     
     return sum/(evArr.length*1.0); //Floating-point division
 }
@@ -46,7 +48,6 @@ router.post("/:id", async (req, res) => {
 
                 evento.recensioni.push(recensione1.id);
                 evento.valMedia = (evento.valMedia*(evento.recensioni.length - 1) + recensione1.valutazione)/evento.recensioni.length;
-                console.log(evento.valMedia);
                 await evento.save();
 
                 //Now find the user and update its evaluation.
