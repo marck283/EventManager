@@ -26,9 +26,9 @@ router.get("/:id", async (req, res) => {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    var pubEvent = await eventPublic.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
-    var privEvent = await eventPriv.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
-    var persEvent = await eventPers.findOne({id: {$eq: req.params.id}, organizzatoreID: {$eq: utent}});
+    var pubEvent = await eventPublic.findById(req.params.id);
+    var privEvent = await eventPriv.findById(req.params.id);
+    var persEvent = await eventPers.findById(req.params.id);
 
     //Qui c'è di sicuro un errore... provare a stampare il risultato di map...
     if(pubEvent != null && pubEvent != undefined) {
