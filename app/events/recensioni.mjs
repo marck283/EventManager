@@ -10,7 +10,7 @@ var meanEval = (evArr, recLength) => {
     var sum = 0.0;
     evArr.forEach(e => sum += e.valMedia*1.0);
     
-    if(evArr.length > 0) {
+    if(recLength.length > 0) {
         return sum/(recLength*1.0); //Floating-point division
     }
     return 0;
@@ -64,8 +64,10 @@ router.post("/:id", async (req, res) => {
 
                 let recensioni = await Recensione.find({idUtente: user1.id});
                 if(recensioni != null && recensioni != undefined && recensioni.length > 0) {
+                    console.log("OK");
                     user1.valutazioneMedia = meanEval(eventsPub, recensioni.length);
                 } else {
+                    console.log("NOK");
                     user1.valutazioneMedia = 0;
                 }
                 await user1.save();
