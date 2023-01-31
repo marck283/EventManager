@@ -46,6 +46,7 @@ router.post("/:id", async (req, res) => {
 
                 evento.recensioni.push(recensione1.id);
                 evento.valMedia = (evento.valMedia*(evento.recensioni.length - 1) + recensione1.valutazione)/evento.recensioni.length;
+                console.log(evento.valMedia);
                 await evento.save();
 
                 //Now find the user and update its evaluation.
