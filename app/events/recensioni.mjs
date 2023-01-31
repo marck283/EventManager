@@ -36,10 +36,10 @@ router.post("/:id", async (req, res) => {
                     res.status(400).json({ error: "Richiesta malformata" }).send();
                     return;
                 }
-                console.log(Number(req.body.evaluation));
                 let evaluation = Number(req.body.evaluation);
                 var user = await returnUser(req);
                 var utenteId = user._id;
+                console.log(utenteId);
                 var recensione = new Recensione({
                     idUtente: utenteId,
                     idEvento: id,
