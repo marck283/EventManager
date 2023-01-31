@@ -3,6 +3,7 @@ import RateLimit from 'express-rate-limit';
 const router = Router();
 import { Validator } from 'node-input-validator';
 import biglietti from '../collezioni/biglietti.mjs';
+import fromDataUrl from 'qrcode';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
@@ -19,7 +20,7 @@ router.get("/:qrcode", async (req, res) => {
     const v = new Validator({
         qr_code: req.params.qrcode
     }, {
-        qr_code: 'required|string'
+        qr_code: 'required|string|minLength:1'
     });
 
     v.check()
@@ -28,6 +29,7 @@ router.get("/:qrcode", async (req, res) => {
             res.status(400).json({error: "QR Code non valido. Riprova."}).send();
             return;
         }
+        console.log(req.params.qrcode);
         const biglietto = await biglietti.findOne({qr: {$eq: req.params.qrcode}});
         if(biglietto != null && biglietto != undefined) {
             res.status(200).json({status: "OK"}).send();
