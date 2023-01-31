@@ -5,6 +5,7 @@ import { Validator } from 'node-input-validator';
 import biglietti from '../collezioni/biglietti.mjs';
 import User from '../collezioni/utenti.mjs';
 import hourCheck from '../hourRegexTest.mjs';
+import toDataURL from 'qrcode';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
@@ -44,9 +45,10 @@ router.get("/:qrcode", async (req, res) => {
         }
         console.log(req.params.qrcode);
 
-        const biglietto = await biglietti.findOne({qr: {$eq: req.params.qrcode},
+        const qrcode = await toDataURL.toDataURL(req.params.qrcode), biglietto = await biglietti.findOne({qr: {$eq: qrcode},
             eventoid: {$eq: req.headers.eventoid}, utenteid: {$eq: user}, giorno: {$eq: req.headers.day},
             ora: {$eq: req.headers.hour}});
+
         if(biglietto != null && biglietto != undefined) {
             res.status(200).json({status: "OK"}).send();
         } else {
