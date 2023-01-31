@@ -11,7 +11,10 @@ var meanEval = evArr => {
 
     console.log(evArr.length);
     
-    return sum/(evArr.length*1.0); //Floating-point division
+    if(evArr.length > 0) {
+        return sum/(evArr.length*1.0); //Floating-point division
+    }
+    return 0;
 }
 
 router.post("/:id", async (req, res) => {
@@ -52,7 +55,7 @@ router.post("/:id", async (req, res) => {
 
                 //Now find the user and update its evaluation.
                 var eventsPub = await eventPublic.find({organizzatoreID: {$eq: utenteId}});
-                console.log(eventsPub == undefined || eventsPub == null);
+                console.log(eventsPub.length);
                 user.valutazioneMedia = meanEval(eventsPub);
                 await user.save();
 
