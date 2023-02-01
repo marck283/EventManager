@@ -20,8 +20,11 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var findEvents = async (arr, obj, data) => {
+var findEvents = async (arr, obj, data, gte = false) => {
     let events = await arr.find(obj);
+    if(gte) {
+        return events.filter(e => e.luogoEv.filter(l => new Date(l.data) >= data).length > 0);
+    }
     return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
 };
 
@@ -72,12 +75,11 @@ router.get("", async (req, res) => {
     }
     let obj = { organizzatoreID: { $eq: utent } };
 
-    let eventsPub = await eventPublic.find(obj), eventsPriv = await eventPriv.find(obj),
-        eventsPers = await eventPers.find(obj), events = [];
-
-    eventsPub = eventsPub.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
-    eventsPers = eventsPers.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
-    eventsPriv = eventsPriv.filter(e => e.luogoEv.filter(l => l.data >= new Date()).length > 0);
+    //Forse qui c'è un problema sulle date... non dovrebbero essere date in formato ISO?
+    let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
+        eventsPriv = await findEvents(eventPriv, obj, new Date().toISOString(), true),
+        eventsPers = await findEvents(eventPers, obj, new Date().toISOString(), true),
+        events = [];
     
     eventsPub = await mapAndPush(eventsPub, [], "pub");
     eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
