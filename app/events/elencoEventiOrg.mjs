@@ -70,7 +70,7 @@ router.get("", async (req, res) => {
     if (utent !== req.loggedUser.id) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
-    obj = { organizzatoreID: { $eq: utent } };
+    let obj = { organizzatoreID: { $eq: utent } };
 
     let eventsPub = await eventPublic.find(obj), eventsPriv = await eventPriv.find(obj),
         eventsPers = await eventPers.find(obj), events = [];
