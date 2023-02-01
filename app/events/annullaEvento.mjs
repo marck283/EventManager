@@ -4,6 +4,8 @@ const router = Router();
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPrivat from '../collezioni/eventPrivat.mjs';
 import User from '../collezioni/utenti.mjs';
+import biglietti from '../collezioni/biglietti.mjs';
+import recensioniPub from '../collezioni/recensioniPub.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
@@ -22,7 +24,7 @@ router.delete("/:id", async (req, res) => {
     const publicEv = await eventPublic.findById(eventId);
     const privEv = await eventPrivat.findById(eventId);
 
-    if((publicEv == null || publicEv == undefined) && (privEv == null || privEv == undefined)) {
+    if(publicEv == undefined && privEv == undefined) {
         res.status(404).json({error: "Evento non trovato."}).send();
         return;
     }
@@ -31,21 +33,35 @@ router.delete("/:id", async (req, res) => {
         userId = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    if(publicEv != null && publicEv != undefined) {
+    let user = await User.findById(userId);
+
+    if(publicEv != undefined) {
         if(userId != publicEv.organizzatoreID) {
             res.status(403).json({error: "Non sei autorizzato a cancellare questo evento."}).send();
             return;
         }
+        var index = user.EventiCreati.indexOf(publicEv.id);
+        if(index > -1) {
+            user.EventiCreati.splice(index, 1);
+        }
+        await biglietti.deleteMany({eventoid: {$eq: publicEv.id}});
+        await recensioniPub.deleteMany({idEvento: {$eq: publicEv.id}});
         await publicEv.delete();
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;
     }
 
-    if(privEv != null && privEv != undefined) {
+    if(privEv != undefined) {
         if(userId != privEv.organizzatoreID) {
             res.status(403).json({error: "Non sei autorizzato a cancellare questo evento."}).send();
             return;
         }
+        var index = user.EventiCreati.indexOf(privEv.id);
+        if(index > -1) {
+            user.EventiCreati.splice(index, 1);
+        }
+        await biglietti.deleteMany({eventoid: {$eq: privEv.id}});
+        await recensioniPub.deleteMany({idEvento: {$eq: privEv.id}});
         await privEv.delete();
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;

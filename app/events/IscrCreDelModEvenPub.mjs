@@ -120,7 +120,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         if (utente == req.loggedUser.id) {
             utenteObj = await Users.findById(utente);
         } else {
-            utenteObj = (await Users.find({ email: { $eq: utente.email } })).id;
+            utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
         }
 
         var iscr = await biglietti.findById(req.params.idIscr);
