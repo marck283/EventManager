@@ -361,7 +361,7 @@ router.post('', async (req, res) => {
             'durata.2': 'required|numeric|min:1',
             descrizione: 'required|string|minLength:1|maxLength:140',
             'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
-            'luogoEv.*.maxPers': 'required|integer|min:2',
+            'luogoEv.*.maxPers': 'required|integer|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1',
             luogoEv: 'required|array|minLength:1',
