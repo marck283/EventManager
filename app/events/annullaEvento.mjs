@@ -19,7 +19,7 @@ router.use(limiter);
 router.delete("/:id", async (req, res) => {
     var userId = req.loggedUser.id || req.loggedUser.sub, eventId = req.params.id;
 
-    console.log(eventId);
+    console.log("id:", eventId);
 
     const publicEv = await eventPublic.findById(eventId);
     const privEv = await eventPrivat.findById(eventId);
