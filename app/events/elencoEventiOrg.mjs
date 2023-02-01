@@ -88,6 +88,15 @@ router.get("", async (req, res) => {
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
+
+    events = null;
+    eventsPub = null;
+    eventsPers = null;
+    eventsPriv = null;
+    obj = null;
+    utent = null;
+
+    return;
 });
 
 export default router;
