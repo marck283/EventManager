@@ -19,6 +19,8 @@ router.use(limiter);
 router.delete("/:id", async (req, res) => {
     var userId = req.loggedUser.id || req.loggedUser.sub, eventId = req.params.id;
 
+    console.log(eventId);
+
     const publicEv = await eventPublic.findById(eventId);
     const privEv = await eventPrivat.findById(eventId);
 
@@ -32,12 +34,20 @@ router.delete("/:id", async (req, res) => {
     }
 
     if(publicEv != null && publicEv != undefined) {
+        if(userId != publicEv.organizzatoreID) {
+            res.status(403).json({error: "Non sei autorizzato a cancellare questo evento."}).send();
+            return;
+        }
         await publicEv.delete();
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;
     }
 
     if(privEv != null && privEv != undefined) {
+        if(userId != privEv.organizzatoreID) {
+            res.status(403).json({error: "Non sei autorizzato a cancellare questo evento."}).send();
+            return;
+        }
         await privEv.delete();
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;
