@@ -67,6 +67,7 @@ import infoEventoIscr from './events/infoEventoIscr.mjs';
 import infoEventoOrg from './events/infoEventoOrg.mjs';
 import qrCodeCheck from './events/checkQR.mjs';
 import getTicket from './events/getTicket.mjs';
+import annullaEvento from './events/annullaEvento.mjs';
 
 app.use('/api/v2/EventiPubblici', EventoPubIscrCreaDelMod);
 app.use('/api/v2/EventiPersonali', EventoPersonale);
@@ -80,6 +81,7 @@ app.use("/api/v2/InfoEventoOrg", infoEventoOrg);
 app.use("/api/v2/QRCodeCheck", qrCodeCheck);
 app.use("/api/v2/InfoEventoIscr", infoEventoIscr);
 app.use("/api/v2/ticket", getTicket);
+app.use("/api/v2/annullaEvento", annullaEvento);
 
 /* Default 404 handler */
 app.use((req, res) => {
