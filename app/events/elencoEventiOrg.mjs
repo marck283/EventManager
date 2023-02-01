@@ -1,6 +1,5 @@
 import { Router } from 'express';
 var router = Router();
-import { Validator } from 'node-input-validator';
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPers from '../collezioni/eventPersonal.mjs';
@@ -23,7 +22,10 @@ router.use(limiter);
 var findEvents = async (arr, obj, data, gte = false) => {
     let events = await arr.find(obj);
     if(gte) {
-        return events.filter(e => e.luogoEv.filter(l => new Date(l.data) >= data).length > 0);
+        return events.filter(e => {
+            console.log(e.id);
+            return e.luogoEv.filter(l => new Date(l.data) >= data).length > 0
+        });
     }
     return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
 };
@@ -74,6 +76,7 @@ router.get("", async (req, res) => {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
     let obj = { organizzatoreID: { $eq: utent } };
+    console.log("utent:", utent);
 
     //Forse qui c'è un problema sulle date... non dovrebbero essere date in formato ISO?
     let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
