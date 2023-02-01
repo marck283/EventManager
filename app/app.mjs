@@ -85,6 +85,7 @@ app.use("/api/v2/annullaEvento", annullaEvento);
 
 /* Default 404 handler */
 app.use((req, res) => {
+    console.log("NOT FOUND");
     res.status(404).json({ error: 'Non Trovato' }).send();
     return;
 });
