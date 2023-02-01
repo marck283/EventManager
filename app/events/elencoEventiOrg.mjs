@@ -24,7 +24,7 @@ var findEvents = async (arr, obj, data, gte = false) => {
     if(gte) {
         return events.filter(e => {
             console.log(e.id);
-            return e.luogoEv.filter(l => new Date(l.data) >= data).length > 0
+            return e.luogoEv.filter(l => new Date(l.data).toISOString() >= data).length > 0
         });
     }
     return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
@@ -46,13 +46,11 @@ var mapAndPush = async (arr, genArr, cat) => {
 router.get("/:data", async (req, res) => {
     var data = req.params.data;
     var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
-    let obj;
 
-    console.log("User1:", utent);
     if (utent !== req.loggedUser.id) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
-    obj = { organizzatoreID: { $eq: utent }, luogoEv: { $elemMatch: { data: { $eq: data } } } };
+    let obj = { organizzatoreID: { $eq: utent }, luogoEv: { $elemMatch: { data: { $eq: data } } } };
 
     eventList = await findEvents(eventPublic, obj, data);
     eventsPers = await findEvents(eventPers, obj, data);
