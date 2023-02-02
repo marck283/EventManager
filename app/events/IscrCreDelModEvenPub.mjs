@@ -348,6 +348,7 @@ router.post('', async (req, res) => {
         var options = {
             durata: req.body.durata,
             descrizione: req.body.descrizione,
+            eventPic: req.body.eventPic,
             luogoEv: req.body.luogoEv,
             categoria: req.body.categoria,
             nomeAtt: req.body.nomeAtt,
@@ -360,6 +361,7 @@ router.post('', async (req, res) => {
             'durata.1': 'required|numeric|min:0',
             'durata.2': 'required|numeric|min:1',
             descrizione: 'required|string|minLength:1|maxLength:140',
+            eventPic: 'required|string|minLength:1',
             'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
             'luogoEv.*.maxPers': 'required|integer|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
