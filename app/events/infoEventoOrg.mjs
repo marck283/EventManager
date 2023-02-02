@@ -32,21 +32,21 @@ router.get("/:id", async (req, res) => {
 
     //Qui c'è di sicuro un errore... provare a stampare il risultato di map...
     if(pubEvent != null && pubEvent != undefined) {
-        console.log("pub:", await map([pubEvent], "pub", [pubEvent.orgName])[0]);
-        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]}).send();
+        //console.log("pub:", await map([pubEvent], "pub", [pubEvent.orgName])[0]);
+        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
         if(privEvent != null && privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
-            console.log("priv:", await map([privEvent], "priv", orgName)[0]);
-            res.status(200).json({event: await map([privEvent], "priv", orgName)}[0]).send();
+            //console.log("priv:", await map([privEvent], "priv", orgName)[0]);
+            res.status(200).json({event: await map([privEvent], "priv", orgName)}[0]);
         } else {
             if(persEvent != null && persEvent != undefined) {
                 orgName = (await getOrgNames([persEvent]))[0];
-                console.log("pers:", await map([persEvent], "pers", orgName)[0]);
-                res.status(200).json({event: await map([persEvent], "pers", orgName)[0]}).send();
+                //console.log("pers:", await map([persEvent], "pers", orgName)[0]);
+                res.status(200).json({ event: await map([persEvent], "pers", orgName)[0] });
             } else {
-                res.status(404).json({error: "Evento non trovato."}).send();
+                res.status(404).json({error: "Evento non trovato."});
             }
         }
     }
