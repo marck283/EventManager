@@ -223,6 +223,7 @@ router.post('', async (req, res) => {
         var options = {
             durata: req.body.durata,
             categoria: req.body.categoria,
+            eventPic: req.body.eventPic,
             nomeAtt: req.body.nomeAtt,
             ElencoEmailInviti: req.body.ElencoEmailInviti,
             luogoEv: req.body.luogoEv
@@ -233,6 +234,7 @@ router.post('', async (req, res) => {
             'durata.1': 'required|numeric|min:0',
             'durata.2': 'required|numeric|min:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+            eventPic: 'required|string|minLength:1',
             nomeAtt: 'required|string|minLength:1',
             'ElencoEmailInviti': 'arrayUnique|minLength:1',
             'ElencoEmailInviti.*': 'required|email|minLength:1|notIn:' + utente.email,

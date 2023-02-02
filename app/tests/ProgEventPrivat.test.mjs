@@ -48,6 +48,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       set('x-access-token', token).send({
         durata: [1, 2, 3],
         categoria: "Altro",
+        eventPic: '1',
         nomeAtt: "Evento",
         luogoEv: [{
           data: "11-11-2050",
@@ -75,6 +76,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .set('x-access-token', token).send({
         durata: [1, 2, 3],
         categoria: "Viaggio",
+        eventPic: '1',
         nomeAtt: "Evento",
         luogoEv: [{
           data: "11-11-2050",
@@ -106,6 +108,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .send({
         durata: "tre",
         categoria: "Spettacolo",
+        eventPic: '1',
         nomeAtt: "Evento",
         luogoEv: [{
           data: "11-11-2050",
@@ -135,6 +138,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       set('x-access-token', token).send({
         durata: [1, 2, 3],
         categoria: "Spettacolo",
+        eventPic: '1',
         luogoEv: [{
           data: "11-11-2050",
           ora: "11:33",
@@ -161,6 +165,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .set('x-access-token', token).send({
         durata: [1, 2, 3],
         categoria: "Sport",
+        eventPic: '1',
         nomeAtt: "Evento",
         luogoEv: [{
           data: "11-11-2050",
@@ -188,6 +193,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       set('x-access-token', token).send({
         durata: [1, 2, 3],
         categoria: "Sport",
+        eventPic: '1',
         nomeAtt: "Evento",
         luogoEv: [{
           data: "11-11-2050",
