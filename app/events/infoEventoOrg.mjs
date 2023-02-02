@@ -39,7 +39,7 @@ router.get("/:id", async (req, res) => {
         if(privEvent != null && privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
             //console.log("priv:", await map([privEvent], "priv", orgName)[0]);
-            res.status(200).json({event: await map([privEvent], "priv", orgName)}[0]);
+            res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
             if(persEvent != null && persEvent != undefined) {
                 orgName = (await getOrgNames([persEvent]))[0];
