@@ -8,10 +8,10 @@ import User from '../collezioni/utenti.mjs';
 
 var meanEval = (evArr, recLength) => {
     var sum = 0.0;
-    evArr.forEach(e => sum += e.valMedia*1.0);
     
-    if(recLength.length > 0) {
-        return sum/(recLength*1.0); //Floating-point division
+    if(evArr.length > 0) {
+        evArr.forEach(e => sum += e.valMedia*1.0);
+        return sum/(evArr.length*1.0); //Floating-point division
     }
     return sum;
 }
@@ -59,12 +59,12 @@ router.post("/:id", async (req, res) => {
                 var eventsPub = await eventPublic.find({ organizzatoreID: orgID });
                 eventsPub = eventsPub.filter(async e => {
                     let recensioni = await Recensione.find({idEvento: e.id});
-                    return recensioni != null && recensioni != undefined && recensioni.length > 0;
+                    return recensioni != undefined && recensioni.length > 0;
                 });
 
                 let recensioni = await Recensione.find({idUtente: user1.id});
-                console.log(recensioni == null || recensioni == undefined || recensioni.length == 0);
-                if(recensioni != null && recensioni != undefined) {
+                console.log(recensioni == undefined || recensioni.length == 0);
+                if(recensioni != undefined) {
                     console.log("OK");
                     user1.valutazioneMedia = meanEval(eventsPub, recensioni.length);
                 } else {
