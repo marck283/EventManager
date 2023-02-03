@@ -359,7 +359,7 @@ router.post('', async (req, res) => {
             'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
             'durata.0': 'required|numeric|min:0',
             'durata.1': 'required|numeric|min:0',
-            'durata.2': 'required|numeric|min:1',
+            'durata.2': 'required|numeric|min:0',
             descrizione: 'required|string|minLength:1|maxLength:140',
             eventPic: 'required|string|minLength:1',
             'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
@@ -382,10 +382,16 @@ router.post('', async (req, res) => {
         });
         v1.check()
             .then(async matched => {
-                if (!matched || req.body.durata.length > 3) {
+                if (!matched || req.body.durata.length > 3 || (durata[0] == 0 && durata[1] == 0 && durata[2] == 0)) {
                     //console.log(req.body.eventPic);
                     console.log(v1.errors);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
+                    return;
+                }
+
+                let durata = req.body.durata;
+                if(durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
+                    res.status(400).json({error: "La durata non può essere nulla."}).send();
                     return;
                 }
 

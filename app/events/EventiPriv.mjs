@@ -232,7 +232,7 @@ router.post('', async (req, res) => {
             'durata': 'required|array|minLength:3',
             'durata.0': 'required|numeric|min:0',
             'durata.1': 'required|numeric|min:0',
-            'durata.2': 'required|numeric|min:1',
+            'durata.2': 'required|numeric|min:0',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             eventPic: 'required|string|minLength:1',
             nomeAtt: 'required|string|minLength:1',
@@ -256,6 +256,12 @@ router.post('', async (req, res) => {
                 if (!matched) {
                     console.log(v.errors);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
+                    return;
+                }
+
+                let durata = req.body.durata;
+                if(durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
+                    res.status(400).json({error: "La durata non può essere nulla."}).send();
                     return;
                 }
 
