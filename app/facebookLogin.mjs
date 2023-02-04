@@ -25,12 +25,8 @@ var login = async (fbUserId, fbJwt, res) => {
             .then(async json1 => {
                 var user1 = await Utente.findOne({ email: { $eq: json1.email } });
                 if (user1 != undefined && user1 != null) {
-                    if(user1.googleAccount != null && user1.googleAccount.userId != null &&
-                        user1.googleAccount.userId != undefined && typeof(user1.googleAccount.userId) == String &&
-                        user1.googleAccount.userId != "") {
-                        res.status(409).json({ error: "Utente già registrato." }).send();
-                        return;
-                    }
+                    user1.facebookAccount.userId = fbUserId;
+                    await user1.save();
                 } else {
                     var user = new Utente({
                         nome: json1.nome,

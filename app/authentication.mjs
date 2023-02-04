@@ -112,13 +112,8 @@ router.post('', (req, res) => {
 							});
 							await user.save();
 						} else {
-							if(user.facebookAccount != null && user.facebookAccount.userId != null && user.facebookAccount.userId != undefined) {
-								user.googleAccount.userId = payload.sub;
-								await user.save();
-							} else {
-								user.googleAccount.userId = payload.sub;
-								await user.save();
-							}
+							user.googleAccount.userId = payload.sub;
+							await user.save();
 						}
 						user = await Utente.findOne({ email: { $eq: payload.email } });
 						res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
