@@ -76,8 +76,8 @@ router.post('', (req, res) => {
 				await verify.verify(gJwt)
 					.then(async ticket => {
 						var payload = ticket.getPayload();
-						let user = await Utente.exists({ email: { $eq: payload.email } });
-						if (user == null) {
+						let user = await Utente.findOne({ email: { $eq: payload.email } });
+						if (user == undefined) {
 							//Create a new user
 							const service = google.people({
 								version: 'v1',
