@@ -9,6 +9,8 @@ var returnUser = async req => {
         user = await Utente.findById(IDexample);
     }
 
+    console.log(user);
+
     return user;
 };
 

@@ -41,7 +41,10 @@ var login = async (fbUserId, fbJwt, res) => {
                         profilePic: json1.picture.data.url,
                         numEvOrg: 0,
                         valutazioneMedia: 0.0,
-                        googleAccount: null,
+                        googleAccount: {
+                            userId: "",
+                            g_refresh_token: ""
+                        },
                         facebookAccount: {
                             userId: fbUserId
                         }
