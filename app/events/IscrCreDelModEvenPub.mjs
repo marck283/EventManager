@@ -136,7 +136,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         }
 
         if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
-            console.log("OK");
+            console.log(iscr.eventoid, req.params.idEvento, iscr.utenteid, utenteObj);
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
         }
@@ -217,6 +217,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         }
                         error = true;
                     }
+
+                    if(!error && l.data == req.body.data && l.ora == req.body.ora){
+                        l.partecipantiID.push(utent);
+                        await eventP1.save();
+                        break;
+                    }
                 }
                 console.log("OK");
 
@@ -247,12 +253,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
                 //Si cerca l'utente organizzatore dell'evento
                 let utente = await Users.findById(utent);
-
-                eventP1.luogoEv[0].partecipantiID.push(utent);
                 utente.EventiIscrtto.push(id_evento);
 
                 console.log("OK");
-                await eventP1.save();
                 await utente.save();
                 console.log("OK");
 
