@@ -157,6 +157,8 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
+        utenteObj = await Users.findById(utenteObj);
+        
         var array2 = utenteObj.EventiIscrtto;
         var index2 = array2.indexOf(req.params.idEvento);
         if (index2 > -1) {
