@@ -10,8 +10,8 @@ describe('GET /api/v2/Utenti/me', () => {
 
   beforeAll( () => {
     UtenteSpy = jest.spyOn(Utente, 'findById').mockImplementation(criterias => {
-      if(criterias == "2222"){
-        return {_id:'2222',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}  
+      if(criterias == "2222") {
+        return {id:'2222',nome: 'Carlo', email: 'gg.aa@gmail.com', tel: '3452345664567', password: '756756747', EventiCreati: [] , EventiIscrtto: []}  
       }
     });
   });
@@ -25,11 +25,15 @@ describe('GET /api/v2/Utenti/me', () => {
       await request(app).get('/api/v2/Utenti/me').
       set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
       expect('Content-Type', /json/).
-      expect(200, {nome: 'Carlo',
+      expect(200, {
+              id: '2222',
+              nome: 'Carlo',
               email: 'gg.aa@gmail.com',
               tel: '3452345664567',
               url: '/api/v2/Utenti/2222',
-              numEvOrg: 0});
+              numEvOrg: 0,
+              EventiCreati: [],
+              EventiIscritto: []});
   });
 
   it('GET /api/v2/Utenti/me da non autenticati, quindi con un token non valido', async () => {

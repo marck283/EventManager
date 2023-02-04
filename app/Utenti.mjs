@@ -14,34 +14,26 @@ router.get('/me', async (req, res) => {
 
     if (IDexample === req.loggedUser) {
         utente = await Utente.findOne({ email: { $eq: IDexample.email } });
-        if (utente != undefined) {
-            obj = {
-                nome: utente.nome,
-                email: utente.email,
-                tel: utente.tel,
-                url: "/api/v2/Utenti/" + utente.id,
-                picture: utente.profilePic,
-                numEvOrg: utente.EventiCreati.length,
-                valutazioneMedia: utente.valutazioneMedia
-            };
-        } else {
-            res.status(404).json({ error: "Utente non trovato" });
-        }
     } else {
         utente = await Utente.findById(IDexample);
-        if (utente != undefined) {
-            obj = {
-                nome: utente.nome,
-                email: utente.email,
-                tel: utente.tel,
-                url: "/api/v2/Utenti/" + IDexample,
-                picture: utente.profilePic,
-                numEvOrg: utente.EventiCreati.length,
-                valutazioneMedia: utente.valutazioneMedia
-            }
-        } else {
-            req.status(404).json({ error: "Utente non trovato" });
-        }
+        console.log(utente);
+    }
+
+    if (utente != undefined) {
+        obj = {
+            id: utente.id,
+            nome: utente.nome,
+            email: utente.email,
+            tel: utente.tel,
+            url: "/api/v2/Utenti/" + utente.id,
+            picture: utente.profilePic,
+            numEvOrg: utente.EventiCreati.length,
+            EventiCreati: utente.EventiCreati,
+            EventiIscritto: utente.EventiIscrtto,
+            valutazioneMedia: utente.valutazioneMedia
+        };
+    } else {
+        res.status(404).json({ error: "Utente non trovato" });
     }
 
     try {
