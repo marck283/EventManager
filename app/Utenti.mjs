@@ -12,8 +12,9 @@ router.get('/me', async (req, res) => {
     var IDexample = req.loggedUser.id || req.loggedUser;
     let utente = await returnUser(req), obj;
 
-    if (IDexample === req.loggedUser) {
+    if (IDexample == req.loggedUser) {
         utente = await Utente.findOne({ email: { $eq: IDexample.email } });
+        console.log(utente.id);
     } else {
         utente = await Utente.findById(IDexample);
         console.log(utente);
