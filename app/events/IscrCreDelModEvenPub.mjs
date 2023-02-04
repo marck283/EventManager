@@ -136,6 +136,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         }
 
         if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
+            console.log("OK");
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
         }
@@ -145,6 +146,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         if (index1 > -1) {
             array1.splice(index1, 1);
         } else {
+            console.log("OK1");
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
         }
@@ -156,6 +158,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         if (index2 > -1) {
             array2.splice(index2, 1);
         } else {
+            console.log("OK2");
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
         }
