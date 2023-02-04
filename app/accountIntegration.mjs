@@ -3,6 +3,7 @@ const router = Router();
 import User from './collezioni/utenti.mjs';
 import { Validator } from 'node-input-validator';
 import verify from './googleTokenChecker.mjs';
+import tokenCreation from './tokenCreation.mjs';
 
 router.patch("/", async (req, res) => {
     let userId = req.loggedUser.id || req.loggedUser.sub, user;
@@ -33,7 +34,9 @@ router.patch("/", async (req, res) => {
                 userId: req.body.fbId
             };
             await user.save();
-            res.status(200).json({ message: "Integrazione avvenuta con successo"}).send();
+
+
+            res.status(200).json({ message: "Integrazione avvenuta con successo", token: tokenCreation(user.email, user.id)}).send();
             return;
         });
     } else {
@@ -64,7 +67,7 @@ router.patch("/", async (req, res) => {
                     g_refresh_token: ""
                 };
                 await user.save();
-                res.status(200).json({ message: "Integrazione avvenuta con successo"}).send();
+                res.status(200).json({ message: "Integrazione avvenuta con successo", token: req.body.googleJwt}).send();
                 return;
             })
         });
