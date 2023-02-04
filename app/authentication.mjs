@@ -115,6 +115,9 @@ router.post('', (req, res) => {
 							if(user.facebookAccount != null && user.facebookAccount.userId != null && user.facebookAccount.userId != undefined) {
 								res.status(409).json({ error: "Un altro account è già registrato con questo indirizzo email."}).send();
 								return;
+							} else {
+								user.googleAccount.userId = payload.sub;
+								await user.save();
 							}
 						}
 						user = await Utente.findOne({ email: { $eq: payload.email } });
