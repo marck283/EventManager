@@ -140,7 +140,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
         }
 
         let found = false;
-        for(let l of evento.luogoEv) {
+        for (let l of evento.luogoEv) {
             var array1 = l.partecipantiID;
             var index1 = array1.indexOf(utenteObj);
             if (index1 > -1) {
@@ -151,30 +151,36 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             }
         }
 
-        if(!found) {
+        if (!found) {
             console.log("OK1");
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
         }
 
         utenteObj = await Users.findById(utenteObj);
-        
-        var array2 = utenteObj.EventiIscrtto;
-        var index2 = array2.indexOf(req.params.idEvento);
-        if (index2 > -1) {
-            array2.splice(index2, 1);
+
+        if (utenteObj != undefined) {
+            var array2 = utenteObj.EventiIscrtto;
+            var index2 = array2.indexOf(req.params.idEvento);
+            if (index2 > -1) {
+                array2.splice(index2, 1);
+            } else {
+                console.log("OK2");
+                res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+                return;
+            }
+            utenteObj.EventiIscrtto = array2;
+            await utenteObj.save(); //Aggiornamento EventiIscritto
+            await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+
+            console.log('Annullamento iscrizione effettuato con successo.');
+
+            res.status(204).send();
         } else {
-            console.log("OK2");
+            console.log("OK3");
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
         }
-        utenteObj.EventiIscrtto = array2;
-        await utenteObj.save(); //Aggiornamento EventiIscritto
-        await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
-
-        console.log('Annullamento iscrizione effettuato con successo.');
-
-        res.status(204).send();
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
@@ -224,7 +230,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         error = true;
                     }
 
-                    if(!error && l.data == req.body.data && l.ora == req.body.ora) {
+                    if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
                         await eventP1.save();
                         break;
@@ -271,7 +277,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 res.status(500).json({ error: "Errore nel server" }).send();
             }
         });
-        return;
+    return;
 });
 
 router.post('/:id/Inviti', async (req, res) => {
@@ -402,8 +408,8 @@ router.post('', async (req, res) => {
                 }
 
                 let durata = req.body.durata;
-                if(durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
-                    res.status(400).json({error: "La durata non può essere nulla."}).send();
+                if (durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
+                    res.status(400).json({ error: "La durata non può essere nulla." }).send();
                     return;
                 }
 
