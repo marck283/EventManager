@@ -115,11 +115,9 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         var evento = await eventPublic.findById(req.params.idEvento);
-        var utente = req.loggedUser.id || req.loggedUser, utenteObj;
+        var utente = req.loggedUser.id || req.loggedUser, utenteObj = req.loggedUser.id;
 
-        if (utente == req.loggedUser.id) {
-            utenteObj = await Users.findById(utente);
-        } else {
+        if (utente != req.loggedUser.id) {
             utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
         }
 
@@ -141,17 +139,23 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        var array1 = evento.partecipantiID;
-        var index1 = array1.indexOf(utenteObj);
-        if (index1 > -1) {
-            array1.splice(index1, 1);
-        } else {
+        let found = false;
+        for(let l of evento.luogoEv) {
+            var array1 = l.partecipantiID;
+            var index1 = array1.indexOf(utenteObj);
+            if (index1 > -1) {
+                array1.splice(index1, 1);
+                found = true;
+                evento.partecipantiID = array1;
+                await evento.save(); //Aggiornamento partecipantiID
+            }
+        }
+
+        if(!found) {
             console.log("OK1");
             res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
             return;
         }
-        evento.partecipantiID = array1;
-        await evento.save(); //Aggiornamento partecipantiID
 
         var array2 = utenteObj.EventiIscrtto;
         var index2 = array2.indexOf(req.params.idEvento);
@@ -218,7 +222,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         error = true;
                     }
 
-                    if(!error && l.data == req.body.data && l.ora == req.body.ora){
+                    if(!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
                         await eventP1.save();
                         break;
