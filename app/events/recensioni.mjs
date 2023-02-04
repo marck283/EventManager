@@ -10,7 +10,10 @@ var meanEval = (evArr, recLength) => {
     var sum = 0.0;
     
     if(evArr.length > 0) {
-        evArr.forEach(e => sum += e.valMedia*1.0);
+        for(let e of evArr) {
+            console.log(e.valMedia);
+            sum += e.valMedia*1.0;
+        }
         return sum/(evArr.length*1.0); //Floating-point division
     }
     return sum;
@@ -26,7 +29,7 @@ router.post("/:id", async (req, res) => {
             motivazione: req.body.description
         }, {
             titolo: 'required|string|minLength:1',
-            valutazione: 'required|string|min:1|max:10',
+            valutazione: 'required|numeric|min:1|max:10',
             motivazione: 'required|string|minLength:1'
         });
         v.check()
