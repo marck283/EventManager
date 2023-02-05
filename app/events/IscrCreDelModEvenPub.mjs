@@ -188,10 +188,10 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser;
+    var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
-    if(utent === req.loggedUser) {
+    if(utent == req.loggedUser.sub) {
         utent = await Users.findOne({ email: { $eq: utent.email } });
         console.log("utent:", utent);
         utent = utent.id;
@@ -270,6 +270,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 console.log("OK");
 
                 //Si cerca l'utente organizzatore dell'evento
+                let evento = await eventPublic.findById(id_evento);
+
+                console.log("equals:", evento.organizzatoreID == utent);
                 let utente = await Users.findById(utent);
                 utente.EventiIscrtto.push(id_evento);
 
