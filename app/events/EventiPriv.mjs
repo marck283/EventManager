@@ -307,6 +307,7 @@ router.post('', async (req, res) => {
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
+                    eventPic: req.body.eventPic,
                     organizzatoreID: utente.id,
                     invitatiID: ListaInvitati,
                     partecipantiID: [utente.id]
