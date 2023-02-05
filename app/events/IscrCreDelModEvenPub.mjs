@@ -15,7 +15,7 @@ import returnUser from '../findUser.mjs';
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
 router.delete('/:id/annullaEvento', async (req, res) => {
-    var utent = (await returnUser(req)).id;
+    var utent = await returnUser(req);
     var id_evento = req.params.id;
     console.log(id_evento);
 
@@ -28,7 +28,7 @@ router.delete('/:id/annullaEvento', async (req, res) => {
             return;
         }
 
-        if (utent != evento.organizzatoreID) {
+        if (utent.id != evento.organizzatoreID) {
             res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
             return;
         }
@@ -41,12 +41,22 @@ router.delete('/:id/annullaEvento', async (req, res) => {
         });
 
         //Modificare in modo da cancellare anche i biglietti...
-        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento }, utenteid: { $eq: utent } });
+        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento }, utenteid: { $eq: utent.id } });
         for (let b of biglietti1) {
             await b.delete();
         }
 
+        //Cancella l'evento dall'array degli eventi organizzati da parte dell'utente
+        let index = utent.EventiCreati.indexOf(id_evento);
+        if(index > -1) {
+            utent.EventiCreati.splice(index, 1);
+        } else {
+            res.status(404).json({ error: "L'evento non è presente tra quelli creati dall'utente." }).send();
+            return;
+        }
+        await utent.save();
         await evento.delete();
+        
         res.status(200).json({ message: "Evento annullato con successo." }).send();
     } catch (err) {
         console.log(err);
@@ -114,74 +124,85 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
-        var evento = await eventPublic.findById(req.params.idEvento);
-        var utente = req.loggedUser.id || req.loggedUser, utenteObj = req.loggedUser.id;
+        //Lega il processo alla data e all'ora comunicate
+        const v = new Validator({
+            data: req.headers.data,
+            ora: req.headers.ora
+        }, {
+            data: 'required|string|minLength:10|maxLength:10',
+            ora: 'required|string|minLength:5|maxLength:5'
+        });
 
-        if (utente != req.loggedUser.id) {
-            utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
-        }
+        v.check()
+            .then(async matched => {
+                if (!matched) {
+                    res.status(400).json({ error: "Richiesta malformata." }).send();
+                    return;
+                }
+                var evento = await eventPublic.findById(req.params.idEvento);
+                var utente = req.loggedUser.id || req.loggedUser, utenteObj = req.loggedUser.id;
 
-        var iscr = await biglietti.findById(req.params.idIscr);
+                if (utente != req.loggedUser.id) {
+                    utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
+                }
 
-        if (evento == undefined) {
-            res.status(404).json({ error: "Non corrisponde alcun evento pubblico all'ID specificato." });
-            return;
-        }
+                var iscr = await biglietti.findById(req.params.idIscr);
 
-        if (iscr == undefined) {
-            res.status(404).json({ error: "Non corrisponde alcuna iscrizione all'ID specificato." });
-            return;
-        }
+                if (evento == undefined) {
+                    res.status(404).json({ error: "Non corrisponde alcun evento pubblico all'ID specificato." });
+                    return;
+                }
 
-        /*if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
-            console.log("Plus:", iscr.eventoid, req.params.idEvento, iscr.utenteid, utenteObj);
-            res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
-            return;
-        }*/
+                if (iscr == undefined) {
+                    res.status(404).json({ error: "Non corrisponde alcuna iscrizione all'ID specificato." });
+                    return;
+                }
 
-        let found = false;
-        for (let l of evento.luogoEv) {
-            var array1 = l.partecipantiID;
-            var index1 = array1.indexOf(utenteObj);
-            if (index1 > -1) {
-                array1.splice(index1, 1);
-                found = true;
-                evento.partecipantiID = array1;
-                await evento.save(); //Aggiornamento partecipantiID
-                break;
-            }
-        }
+                let found = false;
+                for (let l of evento.luogoEv) {
+                    var array1 = l.partecipantiID;
+                    var index1 = array1.indexOf(utenteObj);
+                    if (index1 > -1 && l.data == req.headers.data && l.ora == req.headers.ora) {
+                        array1.splice(index1, 1);
+                        found = true;
+                        evento.partecipantiID = array1;
+                        await evento.save(); //Aggiornamento partecipantiID
+                        break;
+                    }
+                }
 
-        if (!found) {
-            console.log("OK1");
-            res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-            return;
-        }
+                if (!found) {
+                    console.log("OK1");
+                    res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+                    return;
+                }
 
-        utenteObj = await Users.findById(utenteObj);
+                utenteObj = await Users.findById(utenteObj);
 
-        if (utenteObj != undefined) {
-            var array2 = utenteObj.EventiIscrtto;
-            var index2 = array2.indexOf(req.params.idEvento);
-            if (index2 > -1) {
-                array2.splice(index2, 1);
-            } else {
-                console.log("OK2");
-                res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-                return;
-            }
-            utenteObj.EventiIscrtto = array2;
-            await utenteObj.save(); //Aggiornamento EventiIscritto
-            await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+                if (utenteObj != undefined) {
+                    var array2 = utenteObj.EventiIscrtto;
+                    var index2 = array2.indexOf(req.params.idEvento);
+                    if (index2 > -1) {
+                        array2.splice(index2, 1);
+                    } else {
+                        console.log("OK2");
+                        res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+                        return;
+                    }
+                    utenteObj.EventiIscrtto = array2;
+                    await utenteObj.save(); //Aggiornamento EventiIscritto
+                    await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
 
-            console.log('Annullamento iscrizione effettuato con successo.');
+                    console.log('Annullamento iscrizione effettuato con successo.');
 
-            res.status(204).send();
-        } else {
-            console.log("OK3");
-            res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-            return;
-        }
+                    res.status(204).send();
+                } else {
+                    console.log("OK3");
+                    res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+                    return;
+                }
+            })
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel Server" }).send();
