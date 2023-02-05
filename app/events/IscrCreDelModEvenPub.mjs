@@ -188,8 +188,12 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = (await returnUser(req)).id;
+    var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
+
+    if(utent === req.loggedUser) {
+        utent = (await Users.findOne({ email: { $eq: utent.email } })).id;
+    }
 
     const v = new Validator({
         giorno: req.body.data,
