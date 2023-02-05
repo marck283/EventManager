@@ -133,11 +133,11 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
             return;
         }
 
-        if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
+        /*if (iscr.eventoid != req.params.idEvento || iscr.utenteid != utenteObj) {
             console.log("Plus:", iscr.eventoid, req.params.idEvento, iscr.utenteid, utenteObj);
             res.status(403).json({ error: "L'iscrizione non corrisponde all'evento specificato." }).send();
             return;
-        }
+        }*/
 
         let found = false;
         for (let l of evento.luogoEv) {
