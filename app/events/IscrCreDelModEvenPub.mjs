@@ -192,7 +192,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var id_evento = req.params.id;
 
     if(utent === req.loggedUser) {
-        utent = (await Users.findOne({ email: { $eq: utent.email } })).id;
+        utent = await Users.findOne({ email: { $eq: utent.email } });
+        console.log("utent:", utent);
+        utent = utent.id;
     }
 
     const v = new Validator({
