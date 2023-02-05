@@ -18,7 +18,7 @@ var limiter = RateLimit({
 
 router.use(limiter);
 
-var result = (token, email, id, profilePic, error = false, message = "") => {
+var result = (token, email, name, id, profilePic, error = false, message = "") => {
 	if (error) {
 		return {
 			success: false,
@@ -30,6 +30,7 @@ var result = (token, email, id, profilePic, error = false, message = "") => {
 		message: "Autenticazione completata",
 		token: token,
 		email: email,
+		name: name,
 		profilePic: profilePic,
 		id: id,
 		self: "/api/v2/Utenti/" + id
@@ -116,7 +117,7 @@ router.post('', (req, res) => {
 							await user.save();
 						}
 						user = await Utente.findOne({ email: { $eq: payload.email } });
-						res.status(200).json(result(gJwt, payload.email, user.id, payload.picture)).send();
+						res.status(200).json(result(gJwt, payload.email, payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(err => {
 						console.log(err);
@@ -127,7 +128,7 @@ router.post('', (req, res) => {
 				return;
 			}
 
-			//No authentication with Google identity provider, so use email and password
+			/*//No authentication with Google identity provider, so use email and password
 			const v1 = new Validator({
 				email: req.body.email,
 				password: req.body.password
@@ -165,7 +166,7 @@ router.post('', (req, res) => {
 								}).send();
 							});
 					}
-				})
+				})*/
 		})
 		.catch(err => console.log(err));
 	return;

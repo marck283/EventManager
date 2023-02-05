@@ -1,7 +1,7 @@
 import Utente from './collezioni/utenti.mjs';
 import createToken from './tokenCreation.mjs';
 
-var result = (token, email, id, profilePic, error = false, message = "") => {
+var result = (token, email, name, id, profilePic, error = false, message = "") => {
 	if (error) {
 		return {
 			success: false,
@@ -13,6 +13,7 @@ var result = (token, email, id, profilePic, error = false, message = "") => {
 		message: "Autenticazione completata",
 		token: token,
 		email: email,
+        name: name,
 		profilePic: profilePic,
 		id: id,
 		self: "/api/v2/Utenti/" + id
@@ -48,7 +49,7 @@ var login = async (fbUserId, fbJwt, res) => {
                     await user.save();
                 }
                 user = await Utente.findOne({ email: { $eq: json1.email } });
-                res.status(200).json(result(createToken(json1.email, user.id, 3600), json1.email, user.id, json1.picture.data.url)).send();
+                res.status(200).json(result(createToken(json1.email, user.id, 3600), json1.email, json1.name, user.id, json1.picture.data.url)).send();
             }))
         .catch(err => {
             console.log(err);
