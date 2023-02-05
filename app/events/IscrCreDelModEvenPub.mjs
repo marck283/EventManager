@@ -148,6 +148,7 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
                 found = true;
                 evento.partecipantiID = array1;
                 await evento.save(); //Aggiornamento partecipantiID
+                break;
             }
         }
 
