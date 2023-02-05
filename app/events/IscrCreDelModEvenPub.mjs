@@ -7,14 +7,14 @@ import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
 import { Validator } from 'node-input-validator';
 import test from '../hourRegexTest.mjs';
-import Recensioni from '../collezioni/recensioniPub.mjs';
+//import Recensioni from '../collezioni/recensioniPub.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import returnUser from '../findUser.mjs';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
-router.delete('/:id/annullaEvento', async (req, res) => {
+/*router.delete('/:id/annullaEvento', async (req, res) => {
     var utent = await returnUser(req);
     var id_evento = req.params.id;
     console.log(id_evento);
@@ -56,14 +56,14 @@ router.delete('/:id/annullaEvento', async (req, res) => {
         }
         await utent.save();
         await evento.delete();
-        
+
         res.status(200).json({ message: "Evento annullato con successo." }).send();
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Errore del server." }).send();
     }
     return;
-});
+});*/
 
 router.patch('/:id', async (req, res) => {
     try {

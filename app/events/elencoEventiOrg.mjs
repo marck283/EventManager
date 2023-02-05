@@ -70,7 +70,7 @@ router.get("/:data", async (req, res) => {
 router.get("", async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser.sub;
 
-    if (utent !== req.loggedUser.id) {
+    if (utent == req.loggedUser.sub) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
     let obj = { organizzatoreID: { $eq: utent } };
@@ -86,7 +86,7 @@ router.get("", async (req, res) => {
     eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
     events = await mapAndPush(eventsPriv, eventsPers, "priv");
 
-    if (events != null && events != undefined && events.length > 0) {
+    if (events != undefined && events.length > 0) {
         res.status(200).json({ eventi: events }).send();
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();

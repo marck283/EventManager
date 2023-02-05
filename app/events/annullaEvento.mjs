@@ -44,6 +44,7 @@ router.delete("/:id", async (req, res) => {
         if(index > -1) {
             user.EventiCreati.splice(index, 1);
         }
+        await user.save();
         await biglietti.deleteMany({eventoid: {$eq: publicEv.id}});
         await recensioniPub.deleteMany({idEvento: {$eq: publicEv.id}});
         await publicEv.delete();
@@ -60,6 +61,7 @@ router.delete("/:id", async (req, res) => {
         if(index > -1) {
             user.EventiCreati.splice(index, 1);
         }
+        await user.save();
         await biglietti.deleteMany({eventoid: {$eq: privEv.id}});
         await recensioniPub.deleteMany({idEvento: {$eq: privEv.id}});
         await privEv.delete();
