@@ -191,7 +191,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser.sub;
     var id_evento = req.params.id;
 
-    if(utent == req.loggedUser.sub) {
+    if (utent == req.loggedUser.sub) {
         utent = await Users.findOne({ email: { $eq: utent.email } });
         console.log("utent:", utent);
         utent = utent.id;
@@ -239,48 +239,45 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                     if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
                         await eventP1.save();
+
+                        console.log("OK");
+
+                        let data = {
+                            idUtente: utent,
+                            idEvento: id_evento
+                        };
+
+                        let stringdata = JSON.stringify(data);
+
+                        //Print QR code to file using base64 encoding
+                        var idBigl = "";
+
+                        toDataURL(stringdata, async function (err, qrcode) {
+                            if (err) {
+                                throw Error("Errore creazione biglietto");
+                            }
+
+                            var bigl = new biglietti({
+                                eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
+                                ora: req.body.ora
+                            });
+
+                            idBigl = bigl._id;
+                            return await bigl.save();
+                        });
+                        console.log("OK");
+
+                        //Si cerca l'utente da iscrivere all'evento
+                        let utente = await Users.findById(utent);
+                        utente.EventiIscrtto.push(id_evento);
+                        await utente.save();
+                        console.log("OK");
+
+                        res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
+
                         break;
                     }
                 }
-                console.log("OK");
-
-                let data = {
-                    idUtente: utent,
-                    idEvento: id_evento
-                };
-
-                let stringdata = JSON.stringify(data);
-
-                //Print QR code to file using base64 encoding
-                var idBigl = "";
-
-                toDataURL(stringdata, async function (err, qrcode) {
-                    if (err) {
-                        throw Error("Errore creazione biglietto");
-                    }
-
-                    var bigl = new biglietti({
-                        eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
-                        ora: req.body.ora
-                    });
-
-                    idBigl = bigl._id;
-                    return await bigl.save();
-                });
-                console.log("OK");
-
-                //Si cerca l'utente organizzatore dell'evento
-                let evento = await eventPublic.findById(id_evento);
-
-                console.log("equals:", evento.organizzatoreID == utent);
-                let utente = await Users.findById(utent);
-                utente.EventiIscrtto.push(id_evento);
-
-                console.log("OK");
-                await utente.save();
-                console.log("OK");
-
-                res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
             } catch (error) {
                 console.log(error);
                 res.status(500).json({ error: "Errore nel server" }).send();
@@ -464,9 +461,9 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                let eventoPub = await eventPublic.find({nomeAtt: req.body.nomeAtt, eventPic: req.body.eventPic});
-                if(eventoPub.length > 0) {
-                    res.status(400).json({error: "Evento già esistente."});
+                let eventoPub = await eventPublic.find({ nomeAtt: req.body.nomeAtt, eventPic: req.body.eventPic });
+                if (eventoPub.length > 0) {
+                    res.status(400).json({ error: "Evento già esistente." });
                     return;
                 }
 
