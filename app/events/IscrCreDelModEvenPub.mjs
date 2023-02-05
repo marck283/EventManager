@@ -455,6 +455,12 @@ router.post('', async (req, res) => {
                     }
                 }
 
+                let eventoPub = await eventPublic.find({nomeAtt: req.body.nomeAtt, eventPic: req.body.eventPic});
+                if(eventoPub.length > 0) {
+                    res.status(400).json({error: "Evento già esistente."});
+                    return;
+                }
+
                 let etaMin = null, etaMax = null;
                 if (req.body.etaMin != undefined) {
                     etaMin = Number(req.body.etaMin);
