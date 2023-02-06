@@ -79,7 +79,7 @@ router.get("", async (req, res) => {
     console.log(utent == req.loggedUser);
 
     if (utent == req.loggedUser) {
-        console.log(await User.findOne({ email: { $eq: req.loggedUser.email } }));
+        console.log((await User.findOne({ email: { $eq: req.loggedUser.email } })).id);
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
 
