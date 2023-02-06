@@ -117,7 +117,7 @@ router.post('', (req, res) => {
 							await user.save();
 						}
 						user = await Utente.findOne({ email: { $eq: payload.email } });
-						res.status(200).json(result(createToken(payload.email, user.id, 3600), payload.email,
+						res.status(200).json(result(gJwt, payload.email,
 						payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(err => {
