@@ -89,7 +89,7 @@ router.get("", async (req, res) => {
 
             let obj = { organizzatoreID: { $eq: utent } };
             if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
-                obj.nome = {$eq: req.headers.name};
+                obj.nomeAtt = {$eq: req.headers.name};
             }
  
             let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
