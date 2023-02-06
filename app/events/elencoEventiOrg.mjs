@@ -88,7 +88,6 @@ router.get("", async (req, res) => {
             }
 
             let obj = { organizzatoreID: { $eq: utent } };
-            console.log("name:", req.headers.name);
             if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
                 obj.nomeAtt = {$eq: req.headers.name};
             }
