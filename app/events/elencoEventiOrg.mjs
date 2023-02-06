@@ -119,8 +119,8 @@ router.get("", async (req, res) => {
             eventsPriv = null;
             events = null;
             obj = null;
+            utent = null;
         });
-    utent = null;
 
     return;
 });
