@@ -74,11 +74,11 @@ router.get("/:data", async (req, res) => {
 });
 
 router.get("", async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = req.loggedUser.id || req.loggedUser;
 
-    console.log(utent == req.loggedUser.sub);
+    console.log(utent == req.loggedUser);
 
-    if (utent == req.loggedUser.sub) {
+    if (utent == req.loggedUser) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
 
