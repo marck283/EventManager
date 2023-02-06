@@ -210,11 +210,17 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
 });
 
 router.post('/:id/Iscrizioni', async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser.sub;
+    var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
 
-    if (utent == req.loggedUser.sub) {
+    console.log(utent);
+
+    if (utent == req.loggedUser) {
         utent = await Users.findOne({ email: { $eq: utent.email } });
+        if(utent == undefined) {
+            res.status(404).json({ error: "Non corrisponde alcun utente all'email specificata." }).send();
+            return;
+        }
         console.log("utent:", utent);
         utent = utent.id;
     }
