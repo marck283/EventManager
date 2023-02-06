@@ -106,12 +106,12 @@ router.get("", async (req, res) => {
             } else {
                 res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
             }
+            eventsPub = null;
             eventsPers = null;
             eventsPriv = null;
+            events = null;
+            obj = null;
         });
-    events = null;
-    eventsPub = null;
-    obj = null;
     utent = null;
 
     return;
