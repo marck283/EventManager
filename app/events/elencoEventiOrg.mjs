@@ -21,7 +21,7 @@ router.use(limiter);
 
 var findEvents = async (arr, obj, data, gte = false) => {
     let events = await arr.find(obj);
-    if(gte) {
+    if (gte) {
         return events.filter(e => {
             console.log(e.id);
             return e.luogoEv.filter(l => new Date(l.data).toISOString() >= data).length > 0
@@ -33,7 +33,7 @@ var findEvents = async (arr, obj, data, gte = false) => {
 var mapAndPush = async (arr, genArr, cat) => {
     if (arr != null && arr != undefined && arr.length > 0) {
         let events = map(arr, cat, await getOrgNames(arr));
-        for(let e of events) {
+        for (let e of events) {
             genArr.push(e);
         }
     }
@@ -73,29 +73,43 @@ router.get("", async (req, res) => {
     if (utent == req.loggedUser.sub) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
-    let obj = { organizzatoreID: { $eq: utent } };
-    console.log("utent:", utent);
 
-    //Forse qui c'è un problema sulle date... non dovrebbero essere date in formato ISO?
-    let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
-        eventsPriv = await findEvents(eventPriv, obj, new Date().toISOString(), true),
-        eventsPers = await findEvents(eventPers, obj, new Date().toISOString(), true),
-        events = [];
-    
-    eventsPub = await mapAndPush(eventsPub, [], "pub");
-    eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
-    events = await mapAndPush(eventsPriv, eventsPers, "priv");
+    const v = new Validator({
+        nome: req.headers.name
+    }, {
+        nome: 'string|minLength:1'
+    });
+    v.check()
+        .then(async matched => {
+            if (!matched) {
+                res.status(400).json({ error: "Richiesta malformata." }).send();
+                return;
+            }
 
-    if (events != undefined && events.length > 0) {
-        res.status(200).json({ eventi: events }).send();
-    } else {
-        res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
-    }
+            let obj = { organizzatoreID: { $eq: utent } };
+            if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
+                obj.nome = {$eq: req.headers.name};
+            }
+ 
+            let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
+                eventsPriv = await findEvents(eventPriv, obj, new Date().toISOString(), true),
+                eventsPers = await findEvents(eventPers, obj, new Date().toISOString(), true),
+                events = [];
 
+            eventsPub = await mapAndPush(eventsPub, [], "pub");
+            eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
+            events = await mapAndPush(eventsPriv, eventsPers, "priv");
+
+            if (events != undefined && events.length > 0) {
+                res.status(200).json({ eventi: events }).send();
+            } else {
+                res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
+            }
+            eventsPers = null;
+            eventsPriv = null;
+        });
     events = null;
     eventsPub = null;
-    eventsPers = null;
-    eventsPriv = null;
     obj = null;
     utent = null;
 
