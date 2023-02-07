@@ -26,7 +26,7 @@ var findEvent = async id => {
     let eventoPers = await eventPers.findById(id);
 
     if(eventoPub != null && eventoPub != undefined) {
-        return {event: await map([eventoPub], "pub", [eventoPub.orgName])[0]};
+        return {event: await map([eventoPub], "pub", [eventoPub.orgName])[0], terminato: eventoPub.terminato};
     }
     if(eventoPriv != null && eventoPriv != undefined) {
         return {event: await map([eventoPriv], "priv", await getOrgNames([eventoPriv])[0])[0]};
@@ -69,10 +69,8 @@ router.get("/:id", async (req, res) => {
 
             let biglietto = await biglietti.findOne({idEvento: {$eq: req.params.id}, idUtente: {$eq: user}});
 
-            console.log("terminato:", event);
-
             //Introdurre parametro terminated per verificare se l'evento è terminato...
-            res.status(200).json({event: result, biglietto: biglietto.id, terminato: event.terminato}).send();
+            res.status(200).json({event: result, biglietto: biglietto.id}).send();
         } else {
             res.status(404).json({error: "Evento non trovato"}).send();
         }
