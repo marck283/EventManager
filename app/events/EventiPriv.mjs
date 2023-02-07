@@ -310,7 +310,7 @@ router.post('', async (req, res) => {
                     eventPic: req.body.eventPic,
                     organizzatoreID: utente.id,
                     invitatiID: ListaInvitati,
-                    partecipantiID: [utente.id]
+                    partecipantiID: []
                 });
 
                 //Si salva il documento personale
