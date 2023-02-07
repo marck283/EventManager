@@ -6,6 +6,7 @@ export default model('EventoPr', new Schema({
 	durata: String,
 	categoria: String,
 	nomeAtt: String,
+	eventPic: String,
 	luogoEv: [{
 		indirizzo: String,
 		civNum: String,
