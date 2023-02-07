@@ -302,6 +302,8 @@ router.post('', async (req, res) => {
                     });
                 }
 
+                console.log(req.body.eventPic == undefined);
+
                 let eventP = new eventPrivat({
                     durata: req.body.durata.join(":"),
                     categoria: req.body.categoria,
