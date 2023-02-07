@@ -299,8 +299,7 @@ router.post('', async (req, res) => {
                         cap: o.cap,
                         citta: o.citta,
                         provincia: o.provincia,
-                        partecipantiID: [],
-                        invitatiID: []
+                        partecipantiID: []
                     });
                 }
 
