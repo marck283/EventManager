@@ -299,6 +299,8 @@ router.post('', async (req, res) => {
                         cap: o.cap,
                         citta: o.citta,
                         provincia: o.provincia,
+                        partecipantiID: [],
+                        invitatiID: []
                     });
                 }
 
@@ -308,9 +310,7 @@ router.post('', async (req, res) => {
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
                     eventPic: req.body.eventPic,
-                    organizzatoreID: utente.id,
-                    invitatiID: ListaInvitati,
-                    partecipantiID: []
+                    organizzatoreID: utente.id
                 });
 
                 //Si salva il documento personale
