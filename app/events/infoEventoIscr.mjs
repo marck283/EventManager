@@ -69,7 +69,7 @@ router.get("/:id", async (req, res) => {
 
             let biglietto = await biglietti.findOne({idEvento: {$eq: req.params.id}, idUtente: {$eq: user}});
 
-            console.log("terminato:", event.terminato);
+            console.log("terminato:", event);
 
             //Introdurre parametro terminated per verificare se l'evento è terminato...
             res.status(200).json({event: result, biglietto: biglietto.id, terminato: event.terminato}).send();
