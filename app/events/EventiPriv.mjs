@@ -302,8 +302,6 @@ router.post('', async (req, res) => {
                     });
                 }
 
-                console.log(req.body.eventPic == undefined);
-
                 let eventP = new eventPrivat({
                     durata: req.body.durata.join(":"),
                     categoria: req.body.categoria,
@@ -317,6 +315,8 @@ router.post('', async (req, res) => {
 
                 //Si salva il documento personale
                 eventP = await eventP.save();
+
+                console.log(eventP.eventPic == undefined);
 
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
                 utente.EventiCreati.push(eventP.id);
