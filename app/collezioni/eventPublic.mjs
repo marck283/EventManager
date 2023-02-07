@@ -22,7 +22,7 @@ export default model('EventoP', new Schema({
 	eventPic: String,
 	etaMin: Number,
 	etaMax: Number,
-	terminato: Boolean,
+	terminato: Boolean, //Legare questo parametro al luogo dell'evento per poi permettere la terminazione della singola istanza dell'evento
 	recensioni: [String], //Array di id delle recensioni
 	valMedia: Number,
 	orgName: String
