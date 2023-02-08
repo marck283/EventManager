@@ -8,8 +8,8 @@ router.use(json({ limit: "50mb" })); //Limiting the size of the request should a
 router.patch("/:id", async (req, res) => {
     try {
         const v = new Validator({
-            data: req.headers.data,
-            ora: req.headers.ora
+            data: req.body.data,
+            ora: req.body.ora
         }, {
             data: 'required|string|dateFormat:MM-DD-YYYY',
             ora: 'required|string|minLength:5|maxLength:5'
@@ -26,10 +26,8 @@ router.patch("/:id", async (req, res) => {
                 res.status(404).json({error: "Evento non trovato."}).send();
                 return;
             }
-            if(eventoPub != undefined) {
-                eventoPub.luogoEv.filter(e => e.data == req.headers.data && e.ora == req.headers.ora)[0].terminato = true;
-                await eventoPub.save();
-            }
+            eventoPub.luogoEv.filter(e => e.data == req.headers.data && e.ora == req.headers.ora)[0].terminato = true;
+            await eventoPub.save();
         });
         res.status(200).json({message: "Evento terminato con successo."}).send();
     } catch(err) {
