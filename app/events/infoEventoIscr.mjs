@@ -26,7 +26,7 @@ var findEvent = async id => {
     let eventoPers = await eventPers.findById(id);
 
     if(eventoPub != null && eventoPub != undefined) {
-        return {event: await map([eventoPub], "pub", [eventoPub.orgName])[0], terminato: eventoPub.terminato};
+        return {event: await map([eventoPub], "pub", [eventoPub.orgName])[0]};
     }
     if(eventoPriv != null && eventoPriv != undefined) {
         return {event: await map([eventoPriv], "priv", await getOrgNames([eventoPriv])[0])[0]};
