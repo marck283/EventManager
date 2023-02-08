@@ -7,63 +7,11 @@ import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
 import { Validator } from 'node-input-validator';
 import test from '../hourRegexTest.mjs';
-//import Recensioni from '../collezioni/recensioniPub.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import returnUser from '../findUser.mjs';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
-
-/*router.delete('/:id/annullaEvento', async (req, res) => {
-    var utent = await returnUser(req);
-    var id_evento = req.params.id;
-    console.log(id_evento);
-
-    try {
-        let evento = await eventPublic.findById(id_evento);
-
-        if (evento == undefined) {
-            console.log("Non esiste alcun evento pubblico con l'id specificato.");
-            res.status(404).json({ error: "Non esiste alcun evento pubblico con l'id specificato." });
-            return;
-        }
-
-        if (utent.id != evento.organizzatoreID) {
-            res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
-            return;
-        }
-
-        //Trova e cancella tutte le recensioni relative all'evento
-        var recensioni = evento.recensioni;
-        recensioni.forEach(async e => {
-            var recensione = await Recensioni.findById(e);
-            await recensione.delete();
-        });
-
-        //Modificare in modo da cancellare anche i biglietti...
-        const biglietti1 = await biglietti.find({ eventoID: { $eq: id_evento }, utenteid: { $eq: utent.id } });
-        for (let b of biglietti1) {
-            await b.delete();
-        }
-
-        //Cancella l'evento dall'array degli eventi organizzati da parte dell'utente
-        let index = utent.EventiCreati.indexOf(id_evento);
-        if(index > -1) {
-            utent.EventiCreati.splice(index, 1);
-        } else {
-            res.status(404).json({ error: "L'evento non è presente tra quelli creati dall'utente." }).send();
-            return;
-        }
-        await utent.save();
-        await evento.delete();
-
-        res.status(200).json({ message: "Evento annullato con successo." }).send();
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Errore del server." }).send();
-    }
-    return;
-});*/
 
 router.patch('/:id', async (req, res) => {
     try {
@@ -92,9 +40,6 @@ router.patch('/:id', async (req, res) => {
         }
         if (req.body.citta != "" && req.body.citta != undefined) {
             evento.luogoEv.citta = req.body.citta;
-        }
-        if (req.body.terminato != "" && req.body.terminato != undefined) {
-            evento.terminato = req.body.terminato;
         }
 
         const v = new Validator({
