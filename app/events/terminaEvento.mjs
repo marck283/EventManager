@@ -2,7 +2,7 @@ import { Router, json } from 'express';
 import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import { Validator } from 'node-input-validator';
-import ObjectId from 'mongoose';
+import mongoose from 'mongoose';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -22,7 +22,7 @@ router.patch("/:id", async (req, res) => {
                 return;
             }
     
-            /*let eventoPub = */await eventPublic.findOneAndUpdate({_id: {$eq: new ObjectId(req.params.id)},
+            /*let eventoPub = */await eventPublic.findOneAndUpdate({_id: {$eq: new mongoose.Types.ObjectId(req.params.id)},
                 "luogoEv.data": {$eq: req.body.data}, "luogoEv.ora": {$eq: req.body.ora}},
                 {$set: {"luogoEv.$.terminato": true}});
             /*if(eventoPub == undefined) {
