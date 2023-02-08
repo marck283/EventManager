@@ -27,6 +27,7 @@ router.patch("/:id", async (req, res) => {
                 return;
             }
             eventoPub.luogoEv.filter(e => e.data == req.headers.data && e.ora == req.headers.ora)[0].terminato = true;
+            console.log(eventoPub);
             await eventoPub.save();
         });
         res.status(200).json({message: "Evento terminato con successo."}).send();
