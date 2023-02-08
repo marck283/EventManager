@@ -15,7 +15,8 @@ export default model('EventoPr', new Schema({
 		provincia: String, //A two-letter string that uniquely identifies a province in Italy
 		data: String,
 		ora: String,
-		partecipantiID: [String]
+		partecipantiID: [String],
+		terminato: Boolean
 	}],
 	organizzatoreID: String
 }));

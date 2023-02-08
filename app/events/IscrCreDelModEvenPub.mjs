@@ -479,7 +479,8 @@ router.post('', async (req, res) => {
                                 data: o.data,
                                 ora: o.ora,
                                 maxPers: o.maxPers,
-                                partecipantiID: []
+                                partecipantiID: [],
+                                terminato: false
                             });
                         }
                     } catch (err) {
