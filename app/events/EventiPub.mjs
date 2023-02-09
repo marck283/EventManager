@@ -9,6 +9,8 @@ router.get('/:id', async (req, res) => {
     try {
         let eventoPubblico = await eventPublic.find({ _id: { $eq: new mongoose.Types.ObjectId(req.params.id) },
         "luogoEv.terminato": {$eq: false} });
+
+        console.log(eventoPubblico);
         if (eventoPubblico == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;

@@ -27,8 +27,7 @@ router.get("/:id", async (req, res) => {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)},
-    "luogoEv.terminato": {$eq: false}};
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)}};
     var pubEvent = await eventPublic.find(obj);
     var privEvent = await eventPriv.find(obj);
     //var persEvent = await eventPers.find(obj);
