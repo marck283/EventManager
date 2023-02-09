@@ -141,7 +141,7 @@ router.post('', (req, res) => {
 							console.log(token);
 
 							//Sistemare qui per ottenere l'utente
-							var user = await Utente.findById(token.sub);
+							var user = await Utente.findById(token.id);
 							res.status(200).json(result(gJwt, user.email,
 							user.nome, user.id, user.profilePic)).send();
 						} catch(err) {
