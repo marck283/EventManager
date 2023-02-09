@@ -33,15 +33,15 @@ router.get("/:id", async (req, res) => {
     var privEvent = await eventPriv.find(obj);
     //var persEvent = await eventPers.find(obj);
 
-    if(pubEvent != null && pubEvent != undefined && pubEvent.luogoEv.length > 0) {
+    if(pubEvent != undefined && pubEvent.luogoEv != undefined && pubEvent.luogoEv.length > 0) {
         res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
-        if(privEvent != null && privEvent != undefined && privEvent.luogoEv.length > 0) {
+        if(privEvent != undefined && privEvent.luogoEv.length > 0) {
             orgName = await getOrgNames([privEvent]);
             res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
-            /*if(persEvent != null && persEvent != undefined) {
+            /*if(persEvent != undefined) {
                 orgName = (await getOrgNames([persEvent]))[0];
                 res.status(200).json({ event: await map([persEvent], "pers", orgName)[0] });
             } else {*/
