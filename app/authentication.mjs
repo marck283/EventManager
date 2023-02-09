@@ -95,7 +95,7 @@ router.post('', (req, res) => {
 								tel = res.data.phoneNumbers[0].canonicalForm;
 							}
 
-							console.log(res.data.birthdays);
+							console.log("birthdays:", res.data.birthdays);
 							if(res.data.birthdays != undefined && res.data.birthdays.length > 0) {
 								birthday = res.data.birthdays[1].date.year + "-" + res.data.birthdays[1].date.month + "-" + res.data.birthdays[1].date.day;
 							}
