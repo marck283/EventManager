@@ -136,7 +136,7 @@ router.post('', (req, res) => {
 							error: "Token non valido."
 						}).send();*/
 
-						_verify.verify(gJwt, process.env.SUPER_SECRET, (err, decoded) => {
+						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
 							if (err) {
 								console.log(err);
 								res.status(401).json({
@@ -144,8 +144,10 @@ router.post('', (req, res) => {
 								}).send();
 							} else {
 								console.log(decoded);
-								res.status(200).json(result(gJwt, decoded.email,
-								decoded.nome, decoded.id, decoded.profilePic)).send();
+
+								var user = await Utente.findById(decoded.id);
+								res.status(200).json(result(gJwt, user.email,
+								user.nome, user.id, user.profilePic)).send();
 							}
 						})
 					});
