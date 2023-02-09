@@ -8,6 +8,7 @@ import verify from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
+import client from './googleTokenChecker.mjs';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -82,7 +83,7 @@ router.post('', (req, res) => {
 							//Create a new user
 							const service = google.people({
 								version: 'v1',
-								auth: process.env.PEOPLE_API_ID,
+								auth: client.client,
 								headers: {
 									"Referer": "https://eventmanagerzlf.herokuapp.com/"
 								}
