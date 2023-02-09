@@ -30,7 +30,7 @@ var findEvents = async (arr, obj, data, all = false) => {
         });
         return events;
     }
-    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
+    return events/*.filter(e => e.luogoEv.filter(l => data == l.data).length > 0)*/;
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
@@ -92,7 +92,7 @@ router.get("", async (req, res) => {
                 return;
             }
 
-            let obj = { organizzatoreID: { $eq: utent } };
+            let obj = { organizzatoreID: { $eq: utent }, "luogoEv.terminato": {$eq: false} };
             if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
                 obj.nomeAtt = {$eq: req.headers.name};
             }
