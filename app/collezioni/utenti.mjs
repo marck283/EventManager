@@ -19,8 +19,7 @@ var Users = new Schema({
     },
     facebookAccount: {
         userId: String
-    },
-    birthday: String
+    }
 });
 export default model('Utenti', Users);
 

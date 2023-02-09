@@ -95,18 +95,13 @@ router.post('', (req, res) => {
 							const authClient = client.getClient();
 							google.options({auth: authClient});*/
 							const res = await service.people.get({
-								resourceName: 'people/' + payload.sub,
-								personFields: "phoneNumbers,birthdays"
+								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers"
 							});
-							var tel = "", birthday = "";
+							var tel = "";
 							if (res.data.phoneNumbers != undefined) {
 								tel = res.data.phoneNumbers[0].canonicalForm;
 							}
-
-							console.log("birthdays:", res.data.birthdays);
-							if(res.data.birthdays != undefined && res.data.birthdays.length > 0) {
-								birthday = res.data.birthdays[1].date.year + "-" + res.data.birthdays[1].date.month + "-" + res.data.birthdays[1].date.day;
-							}
+							
 							user = new Utente({
 								nome: payload.given_name,
 								email: payload.email,
@@ -122,8 +117,7 @@ router.post('', (req, res) => {
 								},
 								facebookAccount: {
 									userId: ""
-								},
-								birthday: birthday
+								}
 							});
 							await user.save();
 						} else {
