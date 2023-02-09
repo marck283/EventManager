@@ -2,11 +2,12 @@ import { Router } from 'express';
 var router = Router();
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import eventPers from '../collezioni/eventPersonal.mjs';
+//import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
+import mongoose from 'mongoose';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -26,24 +27,26 @@ router.get("/:id", async (req, res) => {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    var pubEvent = await eventPublic.findById(req.params.id);
-    var privEvent = await eventPriv.findById(req.params.id);
-    var persEvent = await eventPers.findById(req.params.id);
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)},
+    "luogoEv.terminato": {$eq: false}};
+    var pubEvent = await eventPublic.find(obj);
+    var privEvent = await eventPriv.find(obj);
+    //var persEvent = await eventPers.find(obj);
 
     if(pubEvent != null && pubEvent != undefined) {
-        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0], terminato: pubEvent.terminato});
+        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
         if(privEvent != null && privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
             res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
-            if(persEvent != null && persEvent != undefined) {
+            /*if(persEvent != null && persEvent != undefined) {
                 orgName = (await getOrgNames([persEvent]))[0];
                 res.status(200).json({ event: await map([persEvent], "pers", orgName)[0] });
-            } else {
+            } else {*/
                 res.status(404).json({error: "Evento non trovato."});
-            }
+            //}
         }
     }
 
