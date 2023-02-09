@@ -9,6 +9,7 @@ import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
 import client from './googleTokenChecker.mjs';
+import { AuthClient } from 'google-auth-library';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -81,14 +82,20 @@ router.post('', (req, res) => {
 						let user = await Utente.findOne({ email: { $eq: payload.email } });
 						if (user == undefined) {
 							//Create a new user
-							const service = google.people({
+							/*const service = google.people({
 								version: 'v1',
 								auth: client.client,
 								headers: {
 									"Referer": "https://eventmanagerzlf.herokuapp.com/"
 								}
+							});*/
+							const people = google.people({version: "v1"});
+							const client = new google.auth.GoogleAuth({
+								scopes: ["https://www.googleapis.com/auth/user.birthday.read"]
 							});
-							const res = await service.people.get({
+							const authClient = client.getClient();
+							google.options({auth: authClient});
+							const res = await people.people.get({
 								resourceName: 'people/' + payload.sub,
 								personFields: "phoneNumbers,birthdays"
 							});
