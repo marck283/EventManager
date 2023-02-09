@@ -2,7 +2,8 @@
 import { OAuth2Client } from 'google-auth-library';
 
 var client = new OAuth2Client(process.env.GCLIENT_ID, process.env.GCLIENT_SECRET, process.env.GCLIENT_REDIRECT_URI);
-const scopes = ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"];
+const scopes = ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile",
+"https://www.googleapis.com/auth/user.birthday.read"];
 const url = client.generateAuthUrl({
 	access_type: 'offline',
 	scope: scopes
