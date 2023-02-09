@@ -130,26 +130,26 @@ router.post('', (req, res) => {
 						res.status(200).json(result(gJwt, payload.email,
 						payload.given_name, user.id, payload.picture)).send();
 					})
-					.catch(err => {
+					.catch(async err => {
 						console.log(err);
 						/*res.status(401).json({
 							error: "Token non valido."
 						}).send();*/
 
-						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
-							if (err) {
-								console.log(err);
-								res.status(401).json({
-									error: "Token non valido."
-								}).send();
-							} else {
-								console.log(decoded);
+						const token = _verify.verify(gJwt, process.env.SUPER_SECRET);
+						try {
+							console.log(token.sub);
 
-								var user = await Utente.findById(decoded.id);
-								res.status(200).json(result(gJwt, user.email,
-								user.nome, user.id, user.profilePic)).send();
-							}
-						})
+							//Sistemare qui per ottenere l'utente
+							var user = await Utente.findById(token.sub);
+							res.status(200).json(result(gJwt, user.email,
+							user.nome, user.id, user.profilePic)).send();
+						} catch(err) {
+							console.log(err);
+							res.status(401).json({
+								error: "Token non valido."
+							}).send();
+						}
 					});
 				return;
 			}
