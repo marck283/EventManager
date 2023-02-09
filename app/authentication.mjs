@@ -138,7 +138,7 @@ router.post('', (req, res) => {
 
 						const token = _verify.verify(gJwt, process.env.SUPER_SECRET);
 						try {
-							console.log(token.sub);
+							console.log(token);
 
 							//Sistemare qui per ottenere l'utente
 							var user = await Utente.findById(token.sub);
