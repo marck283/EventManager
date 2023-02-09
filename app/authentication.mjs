@@ -88,7 +88,8 @@ router.post('', (req, res) => {
 								}
 							});
 							const res = await service.people.get({
-								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers,birthdays"
+								resourceName: 'people/' + payload.sub,
+								personFields: "phoneNumbers,birthdays"
 							});
 							var tel = "", birthday = "";
 							if (res.data.phoneNumbers != undefined) {
