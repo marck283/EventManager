@@ -94,8 +94,10 @@ router.post('', (req, res) => {
 							if (res.data.phoneNumbers != undefined) {
 								tel = res.data.phoneNumbers[0].canonicalForm;
 							}
+
+							console.log(res.data.birthdays);
 							if(res.data.birthdays != undefined && res.data.birthdays.length > 0) {
-								birthday = res.data.birthdays[0].date.year + "-" + res.data.birthdays[0].date.month + "-" + res.data.birthdays[0].date.day;
+								birthday = res.data.birthdays[1].date.year + "-" + res.data.birthdays[1].date.month + "-" + res.data.birthdays[1].date.day;
 							}
 							user = new Utente({
 								nome: payload.given_name,
