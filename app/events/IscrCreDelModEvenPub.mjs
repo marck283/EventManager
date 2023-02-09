@@ -154,6 +154,13 @@ router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     }
 });
 
+function calculateAge(dob) { 
+    var diff_ms = Date.now() - dob.getTime();
+    var age_dt = new Date(diff_ms); 
+  
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+}
+
 router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
@@ -195,6 +202,15 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                     return;
                 }
                 console.log("OK");
+
+                let user = await Users.findById(utent);
+                let age = calculateAge(new Date(user.birthday));
+
+                if(age < eventP1.etaMin || age > eventP1.etaMax) {
+                    res.status(403).json({ error: "L'utente non risulta avere l'età richiesta per l'evento." }).send();
+                    return;
+                }
+
                 for (let l of eventP1.luogoEv) {
                     if (l.partecipantiID.length == l.maxPers) {
                         res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();

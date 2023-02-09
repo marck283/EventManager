@@ -88,11 +88,14 @@ router.post('', (req, res) => {
 								}
 							});
 							const res = await service.people.get({
-								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers"
+								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers,birthdays"
 							});
-							var tel = "";
+							var tel = "", birthday = "";
 							if (res.data.phoneNumbers != undefined) {
 								tel = res.data.phoneNumbers[0].canonicalForm;
+							}
+							if(res.data.birthdays != undefined && res.data.birthdays.length > 0) {
+								birthday = res.data.birthdays[0].date.year + "-" + res.data.birthdays[0].date.month + "-" + res.data.birthdays[0].date.day;
 							}
 							user = new Utente({
 								nome: payload.given_name,
@@ -109,7 +112,8 @@ router.post('', (req, res) => {
 								},
 								facebookAccount: {
 									userId: ""
-								}
+								},
+								birthday: birthday
 							});
 							await user.save();
 						} else {

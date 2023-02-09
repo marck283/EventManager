@@ -21,7 +21,7 @@ var result = (token, email, name, id, profilePic, error = false, message = "") =
 };
 
 var login = async (fbUserId, fbJwt, res) => {
-    await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
+    await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture,birthday&access_token=" + fbJwt)
         .then(resp => resp.json()
             .then(async json1 => {
                 var user1 = await Utente.findOne({ email: { $eq: json1.email } });
@@ -44,7 +44,8 @@ var login = async (fbUserId, fbJwt, res) => {
                         },
                         facebookAccount: {
                             userId: fbUserId
-                        }
+                        },
+                        birthday: json1.birthday
                     });
                     await user.save();
                 }
