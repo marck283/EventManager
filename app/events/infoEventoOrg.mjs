@@ -27,16 +27,19 @@ router.get("/:id", async (req, res) => {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)}};
+    /*var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)}};
     var pubEvent = await eventPublic.find(obj);
-    var privEvent = await eventPriv.find(obj);
+    var privEvent = await eventPriv.find(obj);*/
+
+    var pubEvent = await eventPublic.findById(req.params.id);
+    var privEvent = await eventPriv.findById(req.params.id);
     //var persEvent = await eventPers.find(obj);
 
-    if(pubEvent != undefined && pubEvent.luogoEv != undefined && pubEvent.luogoEv.length > 0) {
+    if(pubEvent != undefined/* && pubEvent.luogoEv != undefined && pubEvent.luogoEv.length > 0*/) {
         res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
-        if(privEvent != undefined && privEvent.luogoEv != undefined && privEvent.luogoEv.length > 0) {
+        if(privEvent != undefined/* && privEvent.luogoEv != undefined && privEvent.luogoEv.length > 0*/) {
             orgName = await getOrgNames([privEvent]);
             res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
