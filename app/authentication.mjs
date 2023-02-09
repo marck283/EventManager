@@ -10,6 +10,7 @@ import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
 import client from './googleTokenChecker.mjs';
 import { AuthClient } from 'google-auth-library';
+import _verify from 'jsonwebtoken';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -131,9 +132,22 @@ router.post('', (req, res) => {
 					})
 					.catch(err => {
 						console.log(err);
-						res.status(401).json({
+						/*res.status(401).json({
 							error: "Token non valido."
-						}).send();
+						}).send();*/
+
+						_verify.verify(gJwt, process.env.SUPER_SECRET, (err, decoded) => {
+							if (err) {
+								console.log(err);
+								res.status(401).json({
+									error: "Token non valido."
+								}).send();
+							} else {
+								console.log(decoded);
+								res.status(200).json(result(gJwt, decoded.email,
+								decoded.nome, decoded.id, decoded.profilePic)).send();
+							}
+						})
 					});
 				return;
 			}
