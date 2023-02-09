@@ -206,7 +206,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 let user = await Users.findById(utent);
                 let age = calculateAge(new Date(user.birthday));
 
-                if(age < eventP1.etaMin || age > eventP1.etaMax) {
+                if(eventP1.etaMin != undefined && eventP1.etaMax != undefined && (age < eventP1.etaMin || age > eventP1.etaMax)) {
                     res.status(403).json({ error: "L'utente non risulta avere l'età richiesta per l'evento." }).send();
                     return;
                 }
