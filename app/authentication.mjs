@@ -84,6 +84,7 @@ router.post('', (req, res) => {
 							//Create a new user
 							const service = google.people({
 								version: 'v1',
+								auth: process.env.PEOPLE_API_ID,
 								headers: {
 									"Referer": "https://eventmanagerzlf.herokuapp.com/"
 								}
@@ -101,7 +102,7 @@ router.post('', (req, res) => {
 							if (res.data.phoneNumbers != undefined) {
 								tel = res.data.phoneNumbers[0].canonicalForm;
 							}
-							
+
 							user = new Utente({
 								nome: payload.given_name,
 								email: payload.email,
