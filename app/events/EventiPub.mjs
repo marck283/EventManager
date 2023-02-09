@@ -3,12 +3,14 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import recensioni from '../collezioni/recensioniPub.mjs';
-import mongoose from 'mongoose';
+//import mongoose from 'mongoose';
 
 router.get('/:id', async (req, res) => {
     try {
-        let eventoPubblico = await eventPublic.find({ _id: { $eq: new mongoose.Types.ObjectId(req.params.id) },
-        "luogoEv.terminato": {$eq: false} });
+        /*let eventoPubblico = await eventPublic.find({ _id: { $eq: new mongoose.Types.ObjectId(req.params.id) },
+        "luogoEv.terminato": {$eq: false} });*/
+
+        let eventoPubblico = await eventPublic.findById(req.params.id);
 
         console.log(eventoPubblico);
         if (eventoPubblico == undefined) {
