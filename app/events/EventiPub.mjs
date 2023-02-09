@@ -3,10 +3,12 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import recensioni from '../collezioni/recensioniPub.mjs';
+import mongoose from 'mongoose';
 
 router.get('/:id', async (req, res) => {
     try {
-        let eventoPubblico = await eventPublic.findById(req.params.id);
+        let eventoPubblico = await eventPublic.find({ _id: { $eq: new mongoose.Types.ObjectId(req.params.id) },
+        "luogoEv.terminato": {$eq: false} });
         if (eventoPubblico == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
