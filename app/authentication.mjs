@@ -84,7 +84,6 @@ router.post('', (req, res) => {
 							//Create a new user
 							const service = google.people({
 								version: 'v1',
-								auth: client.client,
 								headers: {
 									"Referer": "https://eventmanagerzlf.herokuapp.com/"
 								}
