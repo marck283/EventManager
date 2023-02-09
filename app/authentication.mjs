@@ -10,7 +10,6 @@ import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
 import client from './googleTokenChecker.mjs';
 import { AuthClient } from 'google-auth-library';
-import key from '../people_credentials.json';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
