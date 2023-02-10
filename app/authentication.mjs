@@ -136,22 +136,20 @@ router.post('', (req, res) => {
 							error: "Token non valido."
 						}).send();*/
 
-						const token = _verify.verify(gJwt, process.env.SUPER_SECRET);
-						try {
-							console.log(token);
-
+						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
+							if(err) {
+								console.log(err);
+								res.status(401).json({
+									error: "Token non valido."
+								}).send();
+								return;
+							}
 							//Sistemare qui per ottenere l'utente
-							var user = await Utente.findById(token.id);
+							var user = await Utente.findById(decoded.id);
 							res.status(200).json(result(gJwt, user.email,
 							user.nome, user.id, user.profilePic)).send();
-						} catch(err) {
-							console.log(err);
-							res.status(401).json({
-								error: "Token non valido."
-							}).send();
-						} finally {
 							return;
-						}
+						});
 					});
 				return;
 			}
