@@ -46,7 +46,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso l'utente invita un utente con un'email associata a nessun utente nel sistema", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: [1, 2, 3],
+        descrizione: "p",
         categoria: "Altro",
         eventPic: '1',
         nomeAtt: "Evento",
@@ -74,7 +74,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso si indica un formato di data sbagliato", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
-        durata: [1, 2, 3],
+        descrizione: "p",
         categoria: "Viaggio",
         eventPic: '1',
         nomeAtt: "Evento",
@@ -101,42 +101,10 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
       .expect(400, { error: "Campo vuoto o indefinito o non del formato corretto." });
   });
 
-  it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo durata non è del formato corretto", async () => {
-    await request(app)
-      .post('/api/v2/EventiPrivati')
-      .set('x-access-token', token)
-      .send({
-        durata: "tre",
-        categoria: "Spettacolo",
-        eventPic: '1',
-        nomeAtt: "Evento",
-        luogoEv: [{
-          data: "11-11-2050",
-          ora: "11:33",
-          indirizzo: "via panini",
-          civNum: "12",
-          cap: 27036,
-          citta: "Bologna",
-          provincia: "BO"
-        }, {
-          data: "11-12-2050",
-          ora: "11:33",
-          indirizzo: "via panini",
-          civNum: "12",
-          cap: 27036,
-          citta: "Bologna",
-          provincia: "BO"
-        }],
-        ElencoEmailInviti: ['gg.tt@gmail.com']
-      })
-      .expect('Content-Type', /json/)
-      .expect(400, { error: "Campo vuoto o indefinito o non del formato corretto." });
-  });
-
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso il campo 'nome attività' non è specificato", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: [1, 2, 3],
+        descrizione: "p",
         categoria: "Spettacolo",
         eventPic: '1',
         luogoEv: [{
@@ -163,7 +131,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso in cui si ha email ripetute nell'elenco delle email degli utenti invitati", async () => {
     await request(app).post('/api/v2/EventiPrivati')
       .set('x-access-token', token).send({
-        durata: [1, 2, 3],
+        descrizione: "p",
         categoria: "Sport",
         eventPic: '1',
         nomeAtt: "Evento",
@@ -191,7 +159,7 @@ describe('POST /api/v2//api/v2/EventiPrivati', () => {
   it("POST /api/v2//api/v2/EventiPrivati da autenticati, quindi con token valido, nel caso di formato dell'ora passata non valido", async () => {
     await request(app).post('/api/v2/EventiPrivati').
       set('x-access-token', token).send({
-        durata: [1, 2, 3],
+        descrizione: "p",
         categoria: "Sport",
         eventPic: '1',
         nomeAtt: "Evento",

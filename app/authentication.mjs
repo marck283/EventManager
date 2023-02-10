@@ -149,6 +149,8 @@ router.post('', (req, res) => {
 							res.status(401).json({
 								error: "Token non valido."
 							}).send();
+						} finally {
+							return;
 						}
 					});
 				return;

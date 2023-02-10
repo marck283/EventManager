@@ -261,11 +261,11 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                let durata = req.body.durata;
+                /*let durata = req.body.durata;
                 if(durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
                     res.status(400).json({error: "La durata non può essere nulla."}).send();
                     return;
-                }
+                }*/
 
                 //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
                 var ListaInvitati = [];
