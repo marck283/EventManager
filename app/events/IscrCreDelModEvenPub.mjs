@@ -192,7 +192,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
                     "luogoEv.partecipantiID": {$ne: utent}, organizzatoreID: {$ne: utent}});
                 console.log("OK");
-                if (eventP1 == undefined || eventP1.length == 0 || eventP1.luogoEv == undefined || eventP1.luogoEv.length == 0) {
+                if (eventP1 == undefined || eventP1.length == 0 || eventP1.luogoEv == undefined) {
                     res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
                     return;
                 }
