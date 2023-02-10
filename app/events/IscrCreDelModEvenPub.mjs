@@ -10,6 +10,7 @@ import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import returnUser from '../findUser.mjs';
+import mongoose from 'mongoose';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -188,7 +189,8 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 let error = false;
                 console.log("OK");
                 //var eventP1 = await eventPublic.find({luogoEv: {$elemMatch: {data: req.body.data, ora: req.body.ora}}});
-                var eventP1 = await eventPublic.findById(id_evento);
+                var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
+                    "luogoEv.partecipantiID": {$ne: utent}});
                 console.log("OK");
                 if (eventP1 == undefined) {
                     res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
@@ -202,13 +204,13 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         return;
                     }
 
-                    if (l.partecipantiID.includes(utent)) {
+                    /*if (l.partecipantiID.includes(utent)) {
                         if (error) {
                             res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
                             return;
                         }
                         error = true;
-                    }
+                    }*/
 
                     if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
