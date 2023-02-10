@@ -221,7 +221,8 @@ router.post('', async (req, res) => {
         let utente = await returnUser(req);
         //Si crea un documento evento personale
         var options = {
-            durata: req.body.durata,
+            //durata: req.body.durata,
+            descrizione: req.body.descrizione,
             categoria: req.body.categoria,
             eventPic: req.body.eventPic,
             nomeAtt: req.body.nomeAtt,
@@ -229,10 +230,11 @@ router.post('', async (req, res) => {
             luogoEv: req.body.luogoEv
         };
         const v = new Validator(options, {
-            'durata': 'required|array|minLength:3',
+            /*'durata': 'required|array|minLength:3',
             'durata.0': 'required|numeric|min:0',
             'durata.1': 'required|numeric|min:0',
-            'durata.2': 'required|numeric|min:0',
+            'durata.2': 'required|numeric|min:0',*/
+            descrizione: 'required|string|minLength:1|maxLength:140',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             eventPic: 'required|string|minLength:1',
             nomeAtt: 'required|string|minLength:1',
@@ -305,7 +307,8 @@ router.post('', async (req, res) => {
                 }
 
                 let eventP = new eventPrivat({
-                    durata: req.body.durata.join(":"),
+                    //durata: req.body.durata.join(":"),
+                    descrizione: req.body.descrizione,
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
