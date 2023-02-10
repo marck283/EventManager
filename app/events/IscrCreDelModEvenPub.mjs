@@ -215,7 +215,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 
                     if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
-                        await eventP1.save();
+                        await eventP1[0].save();
 
                         console.log("OK");
 
