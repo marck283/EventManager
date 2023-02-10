@@ -69,6 +69,8 @@ router.get("", async (req, res) => {
     var token = req.header('x-access-token');
     var user = "";
 
+    console.log("Token:", token);
+
     var events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
     
     if(nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
