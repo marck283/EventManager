@@ -8,6 +8,7 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import returnUser from '../findUser.mjs';
+import mongoose from 'mongoose';
 
 var filterArr = (e, str) => {
     console.log(typeof e.luogoEv);
@@ -16,25 +17,26 @@ var filterArr = (e, str) => {
     return e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length > 0;
 };
 
-var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
-    let pers = await eventPersonal.findById(e);
-    let pub = await eventPublic.findById(e);
-    let priv = await eventPrivate.findById(e);
-
-    //console.log(pers, pub, priv);
+var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
+    var str1 = str.split("T")[0].split("-");
+    var obj = {_id: {$eq: mongoose.Types.ObjectId(e)},
+    "luogoEv.partecipantiID": {$eq: userId}, "luogoEv.data": {$eq: str1[1] + "-" + str1[2] + "-" + str1[0]}};
+    let pers = await eventPersonal.find(obj);
+    let pub = await eventPublic.find(obj);
+    let priv = await eventPrivate.find(obj);
     
-    if (pers != null && pers != undefined && filterArr(pers, str)) {
+    if (pers != undefined/* && filterArr(pers, str)*/) {
         eventsPers.push(pers);
     }
 
-    if (pub != null && pub != undefined && filterArr(pub, str)) {
+    if (pub != undefined/* && filterArr(pub, str)*/) {
         eventsPub.push(pub);
     }
 
-    if (priv != null && priv != undefined) {
-        if (filterArr(priv, str)) {
+    if (priv != undefined) {
+        //if (filterArr(priv, str)) {
             eventsPriv.push(priv);
-        }
+        //}
     } else {
         console.log("uh oh");
     }
@@ -57,7 +59,7 @@ router.get("/:data", async (req, res) => {
 
     //console.log(user1);
     for (let e of user1.EventiIscrtto) {
-        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
+        await findEvent(e, eventsPers, eventsPub, eventsPriv, str, user1.id);
     }
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
 
