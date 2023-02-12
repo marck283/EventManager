@@ -34,7 +34,7 @@ var findEvents = async (arr, obj, data, all = false) => {
 
 var mapAndPush = async (arr, genArr, cat) => {
     if (arr != null && arr != undefined && arr.length > 0) {
-        let events = map(arr, cat, await getOrgNames(arr));
+        let events = await map(arr, cat, await getOrgNames(arr));
         for (let e of events) {
             genArr.push(e);
         }
