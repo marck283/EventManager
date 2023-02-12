@@ -42,16 +42,14 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
 }
 
 router.get("/:data", async (req, res) => {
-    var str = new Date(req.params.data); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
 
     if (str == "Invalid Date") {
         res.status(400).json({ error: "Data non valida" });
         return;
     }
-    str.setDate(str.getDate());
-    str = str.toISOString();
 
-    console.log(str);
+    console.log("data:", str);
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
