@@ -11,7 +11,7 @@ import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
-    max: 50, //Limit each IP to a certain number of requests per minute
+    max: 10, //Limit each IP to a certain number of requests per minute
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });

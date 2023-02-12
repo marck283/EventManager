@@ -41,8 +41,6 @@ var mapAndPush = async (arr, genArr, cat) => {
         }
     }
 
-    console.log(genArr);
-
     return genArr;
 };
 

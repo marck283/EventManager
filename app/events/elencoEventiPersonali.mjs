@@ -23,12 +23,12 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
         eventsPers.push(pers[0]);
     }
 
-    console.log("pub:", pub == undefined || pub[0] == undefined);
+    console.log("pub:", pub == undefined, pub[0] == undefined);
     if (pub != undefined && pub[0] != undefined && filterArr(pub[0])) {
         eventsPub.push(pub[0]);
     }
 
-    console.log("priv:", priv == undefined || priv[0] == undefined);
+    console.log("priv:", priv == undefined, priv[0] == undefined);
     if (priv != undefined && priv[0] != undefined && filterArr(priv[0])) {
         eventsPriv.push(priv[0]);
     } else {
