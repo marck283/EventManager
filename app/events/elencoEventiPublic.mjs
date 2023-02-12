@@ -34,36 +34,21 @@ var queryEvents = async events => {
         return e.luogoEv.length > 0;
     });
 
-    if (events != null && events.length > 0) {
-        //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-        events1 = await events.sort(async (e, e1) => {
-            var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
-            return org.valutazioneMedia < org1.valutazioneMedia;
-        });
-
-        events1 = await map(events1, "pub", await getOrgNames(events));
-        events = null;
-    } else {
+    if (events == null || events.length == 0) {
         console.log("No events found");
+        return;
     }
+
+    //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
+    events1 = events.sort(async (e, e1) => {
+        var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
+        return org.valutazioneMedia < org1.valutazioneMedia;
+    });
+
+    events1 = await map(events1, "pub", await getOrgNames(events));
+    events = null;
     return events1;
 };
-
-var queryWrapper = async (res, events) => {
-    var events1 = await queryEvents(events);
-    
-    if (events1 != null) {
-        if (events1 != 1) {
-            res.status(200).json({ eventi: events1 });
-        } else {
-            res.status(400).json({ error: "Richiesta malformata." });
-        }
-        events1 = null;
-    } else {
-        res.status(404).json({ error: "Non sono presenti eventi organizzati." });
-    }
-    return;
-}
 
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
@@ -72,33 +57,55 @@ router.get("", async (req, res) => {
     console.log("Token:", token);
 
     var events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
-    
-    if(nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
-        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, "luogoEv.terminato": {$eq: false}});
+
+    if (nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
+        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, "luogoEv.terminato": { $eq: false } });
         nomeAtt = null;
     } else {
-        if(orgName != undefined && orgName != null && orgName != "") {
-            events = await eventPublic.find({ orgName: { $eq: orgName }, "luogoEv.terminato": {$eq: false}});
+        if (orgName != undefined && orgName != null && orgName != "") {
+            events = await eventPublic.find({ orgName: { $eq: orgName }, "luogoEv.terminato": { $eq: false } });
             orgName = null;
         } else {
-            events = await eventPublic.find({"luogoEv.terminato": {$eq: false}});
+            events = await eventPublic.find({ "luogoEv.terminato": { $eq: false } });
         }
     }
 
     if (token != undefined && token != null && token != "") {
-            tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
-                console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
-                if (!err) {
-                    user = decoded.id;
-                    events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&
+        tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
+            console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
+            if (!err) {
+                user = decoded.id;
+                events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&
                     e.organizzatoreID != user);
-                }
+            }
 
-                await queryWrapper(res, events);
-            });
-            token = null;
+            var events1 = await queryEvents(events);
+
+            if (events1 != null) {
+                if (events1 != 1) {
+                    res.status(200).json({ eventi: events1 });
+                } else {
+                    res.status(400).json({ error: "Richiesta malformata." });
+                }
+                events1 = null;
+            } else {
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+            }
+        });
+        token = null;
     } else {
-        await queryWrapper(res, events);
+        var events1 = await queryEvents(events);
+
+        if (events1 != null) {
+            if (events1 != 1) {
+                res.status(200).json({ eventi: events1 });
+            } else {
+                res.status(400).json({ error: "Richiesta malformata." });
+            }
+            events1 = null;
+        } else {
+            res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+        }
     }
     user = null;
     events = null;
