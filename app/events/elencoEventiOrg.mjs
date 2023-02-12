@@ -66,6 +66,7 @@ router.get("/:data", async (req, res) => {
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
+    return;
 });
 
 router.get("", async (req, res) => {
