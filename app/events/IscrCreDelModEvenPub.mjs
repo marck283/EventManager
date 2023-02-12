@@ -192,7 +192,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
                     "luogoEv.partecipantiID": {$ne: utent}});
                 console.log("OK");
-                console.log("length:", eventP1[0].luogoEv.length);
+                //console.log("length:", eventP1[0].luogoEv.length);
                 if (eventP1 == undefined || eventP1.length == 0 || eventP1[0].luogoEv == undefined) {
                     res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
                     return;
@@ -204,14 +204,6 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                         res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                         return;
                     }
-
-                    /*if (l.partecipantiID.includes(utent)) {
-                        if (error) {
-                            res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
-                            return;
-                        }
-                        error = true;
-                    }*/
 
                     if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
