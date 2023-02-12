@@ -30,7 +30,7 @@ var findEvents = async (arr, obj, data, all = false) => {
         });
         return events;
     }
-    return events/*.filter(e => e.luogoEv.filter(l => data == l.data).length > 0)*/;
+    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
@@ -48,10 +48,10 @@ router.get("/:data", async (req, res) => {
     var data = req.params.data;
     var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
 
-    if (utent !== req.loggedUser.id) {
+    /*if (utent !== req.loggedUser.id) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }
-    let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": {$eq: data}};
+    }*/
+    let obj = { organizzatoreID: { $eq: utent }};
 
     eventList = await findEvents(eventPublic, obj, data);
     eventsPers = await findEvents(eventPers, obj, data);
@@ -66,6 +66,11 @@ router.get("/:data", async (req, res) => {
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
+    eventList = null;
+    eventsPers = null;
+    eventsPriv = null;
+    obj = null;
+    utent = null;
     return;
 });
 
