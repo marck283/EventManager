@@ -6,7 +6,6 @@ import map from './eventsMap.mjs';
 import pkg from 'jsonwebtoken';
 const tVerify = pkg.verify;
 import User from '../collezioni/utenti.mjs';
-import verify from '../googleTokenChecker.mjs';
 import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit({
@@ -21,29 +20,19 @@ var limiter = RateLimit({
 router.use(limiter);
 
 var queryEvents = async events => {
-    //Filter for events happening in the future
-    var events1 = null, curr = new Date();
-
-    //Da reinserire quando sarà stata completata la funzionalità di creazione eventi nell'applicazione per Android
     events = events.filter(e => {
-        e.luogoEv = e.luogoEv.filter(d => {
-            var d1 = new Date(d.data + "Z" + d.ora);
-            console.log(d.data, curr);
-            return d1 >= curr;
-        });
+        e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= new Date());
         return e.luogoEv.length > 0;
     });
 
     if (events == null || events.length == 0) {
         console.log("No events found");
-        return;
+        return null;
     }
 
     //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
-    events1 = events.sort(async (e, e1) => {
-        var org = await User.findById(e.organizzatoreID), org1 = await User.findById(e1.organizzatoreID);
-        return org.valutazioneMedia < org1.valutazioneMedia;
-    });
+    var events1 = events.sort(async (e, e1) => (await User.findById(e.organizzatoreID)).valutazioneMedia
+    < (await User.findById(e1.organizzatoreID)).valutazioneMedia);
 
     events1 = await map(events1, "pub", await getOrgNames(events));
     events = null;
@@ -53,8 +42,6 @@ var queryEvents = async events => {
 router.get("", async (req, res) => {
     var token = req.header('x-access-token');
     var user = "";
-
-    console.log("Token:", token);
 
     var events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
 
@@ -81,6 +68,8 @@ router.get("", async (req, res) => {
 
             var events1 = await queryEvents(events);
 
+            events = null;
+
             if (events1 != null) {
                 if (events1 != 1) {
                     res.status(200).json({ eventi: events1 });
@@ -96,6 +85,8 @@ router.get("", async (req, res) => {
     } else {
         var events1 = await queryEvents(events);
 
+        events = null;
+
         if (events1 != null) {
             if (events1 != 1) {
                 res.status(200).json({ eventi: events1 });
@@ -108,66 +99,6 @@ router.get("", async (req, res) => {
         }
     }
     user = null;
-    events = null;
-    return;
-});
-
-var mapEvents = token => new Promise((resolve, reject) => {
-    try {
-        return resolve(tVerify(token, process.env.SUPER_SECRET));
-    } catch (err) {
-        return reject();
-    }
-});
-
-var setResponse = async (res, events, str) => {
-    if (events.length > 0) {
-        var orgNames = await getOrgNames(events);
-        var eventsAss = map(events, "pub", orgNames);
-        res.status(200).json({
-            eventi: eventsAss,
-            data: str
-        }).send();
-    } else {
-        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
-    }
-    return;
-}
-
-router.get("/:data", async (req, res) => {
-    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.    
-    var events = [], token = req.header("x-access-token");
-
-    events = await eventPublic.find({});
-    if (events.length == 0) {
-        res.status(404).json({ error: "Non esiste alcun evento legato alla risorsa richiesta." });
-        return;
-    }
-    events = events.filter(e => e.luogoEv.filter(l => {
-        var d = new Date(l.data);
-        return str == (d.getMonth() + 1).toString().padStart(2, '0') + "-" + d.getDate().toString().padStart(2, '0') + "-" + d.getFullYear();
-    }).length > 0);
-
-    if (token) {
-        await mapEvents(token)
-            .then(async decoded => {
-                events = events.filter(e => e.luogoEv.filter(l => l.partecipantiID.length == 0 || !l.partecipantiID.includes(decoded.id)).length > 0);
-                await setResponse(res, events, str);
-            })
-            .catch(async err => {
-                console.log(err);
-                //Token non valido; tentiamo con la verifica di Google
-                await verify.verify(token)
-                    .then(async ticket => {
-                        events = events.filter(async e => (!e.partecipantiID.includes(await User.find({
-                            email: { $eq: ticket.getPayload().email }
-                        }).id)));
-                        await setResponse(res, events, str);
-                    });
-            });
-    } else {
-        await setResponse(res, events, str);
-    }
     return;
 });
 

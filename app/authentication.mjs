@@ -1,15 +1,12 @@
 import { Router } from 'express';
 const router = Router();
 import Utente from './collezioni/utenti.mjs'; // get our mongoose model
-import { compare } from 'bcrypt';
 import RateLimit from 'express-rate-limit';
 import { Validator } from 'node-input-validator';
 import verify from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
-import client from './googleTokenChecker.mjs';
-import { AuthClient } from 'google-auth-library';
 import _verify from 'jsonwebtoken';
 
 var limiter = RateLimit({
