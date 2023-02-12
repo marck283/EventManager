@@ -17,7 +17,7 @@ var filterArr = (e, str) => {
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     var str1 = str./*split("T")[0].*/split("-");
     var obj = {_id: {$eq: mongoose.Types.ObjectId(e)},
-    'luogoEv.partecipantiID': [userId], "luogoEv.data": {$eq: str1[1] + "-" + str1[2] + "-" + str1[0]}};
+    'luogoEv.partecipantiID': [userId], "luogoEv.data": {$eq: str1[0] + "-" + str1[1] + "-" + str1[2]}};
     let pers = await eventPersonal.find(obj);
     let pub = await eventPublic.find(obj);
     let priv = await eventPrivate.find(obj);
