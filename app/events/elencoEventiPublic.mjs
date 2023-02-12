@@ -40,22 +40,23 @@ var queryEvents = async events => {
 };
 
 router.get("", async (req, res) => {
-    var token = req.header('x-access-token');
-    var user = "";
+    let token = req.header('x-access-token'), user = "";
 
-    var events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
+    let events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
 
     if (nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
-        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, "luogoEv.terminato": { $eq: false } });
+        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }});
         nomeAtt = null;
     } else {
         if (orgName != undefined && orgName != null && orgName != "") {
-            events = await eventPublic.find({ orgName: { $eq: orgName }, "luogoEv.terminato": { $eq: false } });
+            events = await eventPublic.find({ orgName: { $eq: orgName }});
             orgName = null;
         } else {
-            events = await eventPublic.find({ "luogoEv.terminato": { $eq: false } });
+            events = await eventPublic.find({});
         }
     }
+
+    events = events.filter(e => e.luogoEv.filter(l => !l.terminato).length > 0);
 
     if (token != undefined && token != null && token != "") {
         tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
@@ -66,36 +67,28 @@ router.get("", async (req, res) => {
                     e.organizzatoreID != user);
             }
 
-            var events1 = await queryEvents(events);
+            let events1 = await queryEvents(events);
 
             events = null;
 
             if (events1 != null) {
-                if (events1 != 1) {
-                    res.status(200).json({ eventi: events1 });
-                } else {
-                    res.status(400).json({ error: "Richiesta malformata." });
-                }
+                res.status(200).json({ eventi: events1 }).send();
                 events1 = null;
             } else {
-                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
             }
         });
         token = null;
     } else {
-        var events1 = await queryEvents(events);
+        let events1 = await queryEvents(events);
 
         events = null;
 
         if (events1 != null) {
-            if (events1 != 1) {
-                res.status(200).json({ eventi: events1 });
-            } else {
-                res.status(400).json({ error: "Richiesta malformata." });
-            }
+            res.status(200).json({ eventi: events1 }).send();
             events1 = null;
         } else {
-            res.status(404).json({ error: "Non sono presenti eventi organizzati." });
+            res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
         }
     }
     user = null;
