@@ -87,7 +87,7 @@ router.get("", async (req, res) => {
 
     if (token != undefined && token != null && token != "") {
         //Test per token Google
-        await verify.verify(token)
+        /*await verify.verify(token)
             .then(async ticket => {
                 //Questo è un token Google valido
                 user = ticket.getPayload().email;
@@ -109,6 +109,15 @@ router.get("", async (req, res) => {
 
                     await queryWrapper(res, events);
                 });
+            });*/
+            tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
+                console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
+                if (!err) {
+                    user = decoded.id;
+                    events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID != user));
+                }
+
+                await queryWrapper(res, events);
             });
             token = null;
     } else {
