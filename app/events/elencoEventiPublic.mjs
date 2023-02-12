@@ -86,37 +86,6 @@ router.get("", async (req, res) => {
     }
 
     if (token != undefined && token != null && token != "") {
-        //Test per token Google
-        /*await verify.verify(token)
-            .then(async ticket => {
-                //Questo è un token Google valido
-                user = ticket.getPayload().email;
-                const utente = await User.findOne({ email: { $eq: user } });
-
-                console.log("id utente:", utente.id);
-
-                events = events.filter(e =>
-                    e.luogoEv.filter(l => !l.partecipantiID.includes(utente.id)).length > 0 && e.organizzatoreID != utente.id);
-                console.log(events.length);
-
-                await queryWrapper(res, events);
-            })
-            .catch(err => {
-                //Questo non è un token Google
-                tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
-                    console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
-                    if (!err) {
-                        user = decoded.id;
-
-                        console.log("f id utente:", user);
-
-                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&
-                        e.organizzatoreID != user));
-                    }
-
-                    await queryWrapper(res, events);
-                });
-            });*/
             tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
                 console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                 if (!err) {

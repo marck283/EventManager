@@ -20,23 +20,21 @@ var filterArr = (e, str) => {
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     var str1 = str.split("T")[0].split("-");
     var obj = {_id: {$eq: mongoose.Types.ObjectId(e)},
-    "luogoEv.partecipantiID": {$eq: userId}, "luogoEv.data": {$eq: str1[1] + "-" + str1[2] + "-" + str1[0]}};
+    'luogoEv.partecipantiID': {$eq: userId}, "luogoEv.data": {$eq: str1[1] + "-" + str1[2] + "-" + str1[0]}};
     let pers = await eventPersonal.find(obj);
     let pub = await eventPublic.find(obj);
     let priv = await eventPrivate.find(obj);
     
-    if (pers != undefined && filterArr(pers, str)) {
-        eventsPers.push(pers);
+    if (pers != undefined && pers[0] != undefined && filterArr(pers[0], str)) {
+        eventsPers.push(pers[0]);
     }
 
-    if (pub != undefined && filterArr(pub, str)) {
-        eventsPub.push(pub);
+    if (pub != undefined && pub[0] != undefined && filterArr(pub[0], str)) {
+        eventsPub.push(pub[0]);
     }
 
-    if (priv != undefined) {
-        if (filterArr(priv, str)) {
-            eventsPriv.push(priv);
-        }
+    if (priv != undefined && priv[0] != undefined && filterArr(priv[0], str)) {
+        eventsPriv.push(priv[0]);
     } else {
         console.log("uh oh");
     }
