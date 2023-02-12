@@ -22,7 +22,6 @@ router.use(limiter);
 
 var findEvents = async (arr, obj, data, all = false) => {
     let events = await arr.find(obj);
-    console.log(obj);
     if (all) {
         events = events.filter(e => {
             console.log(e.id);
@@ -45,21 +44,21 @@ var mapAndPush = async (arr, genArr, cat) => {
 };
 
 router.get("/:data", async (req, res) => {
-    var data = req.params.data;
-    var utent = req.loggedUser.id /*|| req.loggedUser.sub*/, eventList, eventsPers, eventsPriv;
-
-    /*if (utent !== req.loggedUser.id) {
-        utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }*/
+    let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPers, eventsPriv;
     let obj = { organizzatoreID: { $eq: utent }};
 
     eventList = await findEvents(eventPublic, obj, data);
     eventsPers = await findEvents(eventPers, obj, data);
     eventsPriv = await findEvents(eventPriv, obj, data);
 
+    obj = null;
+    utent = null;
+
     eventList = await mapAndPush(eventList, [], "pub");
     eventList = await mapAndPush(eventsPers, eventList, "pers");
+    eventsPers = null;
     eventList = await mapAndPush(eventsPriv, eventList, "priv");
+    eventsPriv = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
         res.status(200).json({ eventi: eventList, data: data }).send();
@@ -68,22 +67,12 @@ router.get("/:data", async (req, res) => {
     }
     data = null;
     eventList = null;
-    eventsPers = null;
-    eventsPriv = null;
-    obj = null;
     utent = null;
     return;
 });
 
 router.get("", async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser;
-
-    console.log(utent == req.loggedUser);
-
-    /*if (utent == req.loggedUser) {
-        console.log((await User.findOne({ email: { $eq: req.loggedUser.email } })).id);
-        utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }*/
+    var utent = req.loggedUser.id;
 
     const v = new Validator({
         nome: req.headers.name
