@@ -46,7 +46,7 @@ var mapAndPush = async (arr, genArr, cat) => {
 
 router.get("/:data", async (req, res) => {
     var data = req.params.data;
-    var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
+    var utent = req.loggedUser.id /*|| req.loggedUser.sub*/, eventList, eventsPers, eventsPriv;
 
     /*if (utent !== req.loggedUser.id) {
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
@@ -66,6 +66,7 @@ router.get("/:data", async (req, res) => {
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
+    data = null;
     eventList = null;
     eventsPers = null;
     eventsPriv = null;
@@ -79,10 +80,10 @@ router.get("", async (req, res) => {
 
     console.log(utent == req.loggedUser);
 
-    if (utent == req.loggedUser) {
+    /*if (utent == req.loggedUser) {
         console.log((await User.findOne({ email: { $eq: req.loggedUser.email } })).id);
         utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }
+    }*/
 
     const v = new Validator({
         nome: req.headers.name

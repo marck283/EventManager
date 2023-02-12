@@ -1,6 +1,6 @@
 import pkg from 'jsonwebtoken';
 const { verify: _verify } = pkg;
-import verify from './googleTokenChecker.mjs';
+//import verify from './googleTokenChecker.mjs';
 
 const tokenChecker = async (req, res, next) => {
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -13,13 +13,13 @@ const tokenChecker = async (req, res, next) => {
 		});
 		return;
 	}
-	await verify.verify(token)
+	/*await verify.verify(token)
 		.then(ticket => {
 			req.loggedUser = ticket.getPayload();
 			next();
 		})
 		.catch(err => {
-			console.log(err);
+			console.log(err);*/
 			_verify(token, process.env.SUPER_SECRET, async (err, decoded) => {
 				if (err) {
 					res.status(401).json({
@@ -31,7 +31,7 @@ const tokenChecker = async (req, res, next) => {
 				req.loggedUser = decoded;
 				next();
 			});
-		});
+		//});
 };
 
 export default tokenChecker;
