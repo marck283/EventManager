@@ -59,6 +59,7 @@ router.get("", async (req, res) => {
     events = events.filter(e => e.luogoEv.filter(l => !l.terminato).length > 0);
 
     if (token != undefined && token != null && token != "") {
+        console.log("pubToken:", token);
         tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
             console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
             if (!err) {
