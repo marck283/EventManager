@@ -121,7 +121,8 @@ router.get("", async (req, res) => {
                 console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
                 if (!err) {
                     user = decoded.id;
-                    events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) && e.organizzatoreID != user));
+                    events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&
+                    e.organizzatoreID != user));
                 }
 
                 await queryWrapper(res, events);
