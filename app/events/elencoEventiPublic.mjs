@@ -110,7 +110,7 @@ router.get("", async (req, res) => {
 
                         console.log("f id utente:", user);
 
-                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)) &&
+                        events = events.filter(e => (e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&
                         e.organizzatoreID != user));
                     }
 
