@@ -11,10 +11,10 @@ import returnUser from '../findUser.mjs';
 import mongoose from 'mongoose';
 
 var filterArr = (e, str) => {
-    console.log(typeof e.luogoEv);
+    /*console.log(typeof e.luogoEv);
     let str1 = str.split("T")[0].split("-");
-    console.log(e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length);
-    return e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length > 0;
+    console.log(e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length);*/
+    return e.luogoEv != undefined && e.luogoEv/*.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0])*/.length > 0;
 };
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
@@ -25,18 +25,18 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     let pub = await eventPublic.find(obj);
     let priv = await eventPrivate.find(obj);
     
-    if (pers != undefined/* && filterArr(pers, str)*/) {
+    if (pers != undefined && filterArr(pers, str)) {
         eventsPers.push(pers);
     }
 
-    if (pub != undefined/* && filterArr(pub, str)*/) {
+    if (pub != undefined && filterArr(pub, str)) {
         eventsPub.push(pub);
     }
 
     if (priv != undefined) {
-        //if (filterArr(priv, str)) {
+        if (filterArr(priv, str)) {
             eventsPriv.push(priv);
-        //}
+        }
     } else {
         console.log("uh oh");
     }
