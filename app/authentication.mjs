@@ -124,16 +124,18 @@ router.post('', (req, res) => {
 							});
 							await user.save();
 						} else {
-							user.googleAccount.userId = payload.sub;
-							await user.save();
+							if(user.googleAccount == undefined || user.googleAccount == "") {
+								user.googleAccount.userId = payload.sub;
+								await user.save();
+							}
 						}
-						user = await Utente.findOne({ email: { $eq: payload.email } });
+						//user = await Utente.findOne({ email: { $eq: payload.email } });
 						res.status(200).json(result(createToken(payload.email, user.id, 3600),
 						payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(async err => {
 						console.log(err);
-						
+
 						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
 							if(err) {
 								console.log(err);
