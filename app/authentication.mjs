@@ -149,7 +149,7 @@ router.post('', (req, res) => {
 								return;
 							}
 							
-							console.log("authTokenF:", token);
+							console.log("authTokenF:", gJwt);
 
 							var user = await Utente.findById(decoded.id);
 							res.status(200).json(result(gJwt, user.email,
