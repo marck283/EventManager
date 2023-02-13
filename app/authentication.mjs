@@ -130,7 +130,11 @@ router.post('', (req, res) => {
 							}
 						}
 						//user = await Utente.findOne({ email: { $eq: payload.email } });
-						res.status(200).json(result(createToken(payload.email, user.id, 3600),
+						let token = createToken(payload.email, user.id, 3600);
+
+						console.log("authToken:", token);
+
+						res.status(200).json(result(token,
 						payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(async err => {
@@ -144,7 +148,9 @@ router.post('', (req, res) => {
 								}).send();
 								return;
 							}
-							//Sistemare qui per ottenere l'utente
+							
+							console.log("authTokenF:", token);
+
 							var user = await Utente.findById(decoded.id);
 							res.status(200).json(result(gJwt, user.email,
 							user.nome, user.id, user.profilePic)).send();
