@@ -133,10 +133,7 @@ router.post('', (req, res) => {
 					})
 					.catch(async err => {
 						console.log(err);
-						/*res.status(401).json({
-							error: "Token non valido."
-						}).send();*/
-
+						
 						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
 							if(err) {
 								console.log(err);
