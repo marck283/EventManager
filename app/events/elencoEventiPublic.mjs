@@ -45,13 +45,16 @@ router.get("", async (req, res) => {
 
     let events, nomeAtt = req.header("nomeAtt"), orgName = req.header("orgName");
 
+    console.log("nomeAtt:", nomeAtt);
+    console.log("orgName:", orgName);
+
     if (nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
         events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }});
-        nomeAtt = null;
+        //nomeAtt = null;
     } else {
         if (orgName != undefined && orgName != null && orgName != "") {
             events = await eventPublic.find({ orgName: { $eq: orgName }});
-            orgName = null;
+            //orgName = null;
         } else {
             events = await eventPublic.find({});
         }
