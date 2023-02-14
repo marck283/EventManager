@@ -32,7 +32,8 @@ var queryEvents = async events => {
 
     //Ordina gli eventi ottenuti per valutazione media decrescente dell'utente organizzatore
     var events1 = events.sort(async (e, e1) => (await User.findById(e.organizzatoreID)).valutazioneMedia
-    < (await User.findById(e1.organizzatoreID)).valutazioneMedia);
+    - (await User.findById(e1.organizzatoreID)).valutazioneMedia);
+    events1.reverse();
 
     events1 = await map(events1, "pub", await getOrgNames(events));
     events = null;
