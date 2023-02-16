@@ -25,7 +25,7 @@ var findEvents = async (arr, obj, data, all = false) => {
     if (all) {
         events = events.filter(e => {
             console.log(e.id);
-            return e.luogoEv.filter(l => new Date(l.data).toISOString() >= data).length > 0
+            return e.luogoEv.filter(l => !l.terminato).length > 0
         });
         return events;
     }
