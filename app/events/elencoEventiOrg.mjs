@@ -23,10 +23,10 @@ router.use(limiter);
 var findEvents = async (arr, obj, data, all = false) => {
     let events = await arr.find(obj);
     if (all) {
-        events = events.filter(e => {
+        /*events = events.filter(e => {
             console.log(e.id);
             return e.luogoEv.filter(l => !l.terminato).length > 0
-        });
+        });*/
         return events;
     }
     return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
