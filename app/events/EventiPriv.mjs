@@ -338,7 +338,7 @@ router.post('', async (req, res) => {
                 console.log('Evento salvato con successo');
 
                 /**
-                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposta
                  */
                 res.status(201).location("/api/v2/EventiPrivati/" + eventId).send();
             });
