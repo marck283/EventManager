@@ -49,18 +49,18 @@ router.get("", async (req, res) => {
     console.log("orgName:", orgName);
 
     if (nomeAtt != undefined && nomeAtt != null && nomeAtt != "") {
-        events = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }});
+        events = eventPublic.find({ nomeAtt: { $eq: nomeAtt }, "luogoEv.terminato": {$eq: false}});
         //nomeAtt = null;
     } else {
         if (orgName != undefined && orgName != null && orgName != "") {
-            events = await eventPublic.find({ orgName: { $eq: orgName }});
+            events = eventPublic.find({ orgName: { $eq: orgName }, "luogoEv.terminato": {$eq: false}});
             //orgName = null;
         } else {
-            events = await eventPublic.find({});
+            events = eventPublic.find({"luogoEv.terminato": {$eq: false}});
         }
     }
 
-    events = events.filter(e => e.luogoEv.filter(l => !l.terminato).length > 0);
+    events = (await events).filter(e => e.luogoEv/*.filter(l => !l.terminato)*/.length > 0);
 
     if (token != undefined && token != null && token != "") {
         console.log("pubToken:", token);

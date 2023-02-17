@@ -56,11 +56,11 @@ router.get("/:data", async (req, res) => {
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
 
     if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
+        //eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
 
-        let eventsPersVal = await eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
+        let eventsPersVal = /*await*/ eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
         for(let e of eventsPubVal) {
             eventsPersVal.push(e);
         }
