@@ -22,15 +22,12 @@ router.use(limiter);
 
 var findEvents = async (arr, obj, data, all = false) => {
     let events = await arr.find(obj);
-    if (all) {
-        events = events.filter(e => {
-            /*console.log(e.id);
-            return e.luogoEv.filter(l => !l.terminato).length > 0*/
-            return e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0;
-        });
+    /*if (all) {
+        events = events.filter(e => e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0);
         return events;
     }
-    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
+    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);*/
+    return events.filter(e => e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0);
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
@@ -46,19 +43,19 @@ var mapAndPush = async (arr, genArr, cat) => {
 
 router.get("/:data", async (req, res) => {
     let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPers, eventsPriv;
-    let obj = { organizzatoreID: { $eq: utent }};
+    let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": { $eq: data } };
 
-    eventList = await findEvents(eventPublic, obj, data);
-    eventsPers = await findEvents(eventPers, obj, data);
-    eventsPriv = await findEvents(eventPriv, obj, data);
+    eventList = findEvents(eventPublic, obj, data);
+    eventsPers = findEvents(eventPers, obj, data);
+    eventsPriv = findEvents(eventPriv, obj, data);
 
     obj = null;
     utent = null;
 
-    eventList = await mapAndPush(eventList, [], "pub");
-    eventList = await mapAndPush(eventsPers, eventList, "pers");
+    eventList = await mapAndPush(await eventList, [], "pub");
+    eventList = await mapAndPush(await eventsPers, eventList, "pers");
     eventsPers = null;
-    eventList = await mapAndPush(eventsPriv, eventList, "priv");
+    eventList = await mapAndPush(await eventsPriv, eventList, "priv");
     eventsPriv = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
