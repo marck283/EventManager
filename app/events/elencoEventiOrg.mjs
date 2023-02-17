@@ -2,10 +2,8 @@ import { Router } from 'express';
 var router = Router();
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
-import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import { Validator } from 'node-input-validator';
 
@@ -42,16 +40,13 @@ var mapAndPush = async (arr, genArr, cat) => {
 };
 
 router.get("/:data", async (req, res) => {
-    let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPers, eventsPriv;
+    let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPriv;
     let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": { $eq: data } };
 
     eventList = findEvents(eventPublic, obj);
-    //eventsPers = findEvents(eventPers, obj);
     eventsPriv = findEvents(eventPriv, obj);
 
     eventList = await mapAndPush(await eventList, [], "pub");
-    /*eventList = await mapAndPush(await eventsPers, eventList, "pers");
-    eventsPers = null;*/
     eventList = await mapAndPush(await eventsPriv, eventList, "priv");
     eventsPriv = null;
     obj = null;
@@ -90,12 +85,10 @@ router.get("", async (req, res) => {
  
             let eventsPub = findEvents(eventPublic, obj),
                 eventsPriv = findEvents(eventPriv, obj),
-                //eventsPers = findEvents(eventPers, obj),
                 events = [];
 
             eventsPub = await mapAndPush(await eventsPub, [], "pub");
-            //eventsPers = await mapAndPush(await eventsPers, eventsPub, "pers");
-            events = await mapAndPush(await eventsPriv, /*eventsPers*/eventsPub, "priv");
+            events = await mapAndPush(await eventsPriv, eventsPub, "priv");
 
             if (events != undefined && events.length > 0) {
                 res.status(200).json({ eventi: events }).send();
@@ -103,7 +96,6 @@ router.get("", async (req, res) => {
                 res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
             }
             eventsPub = null;
-            //eventsPers = null;
             eventsPriv = null;
             events = null;
             obj = null;

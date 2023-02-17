@@ -2,12 +2,10 @@ import { Router } from 'express';
 var router = Router();
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
-//import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
-import mongoose from 'mongoose';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
@@ -27,28 +25,18 @@ router.get("/:id", async (req, res) => {
         utent = (await User.findOne({email: {$eq: req.loggedUser.email}})).id;
     }
 
-    /*var obj = {_id: {$eq: new mongoose.Types.ObjectId(req.params.id)}};
-    var pubEvent = await eventPublic.find(obj);
-    var privEvent = await eventPriv.find(obj);*/
-
     var pubEvent = await eventPublic.findById(req.params.id);
     var privEvent = await eventPriv.findById(req.params.id);
-    //var persEvent = await eventPers.find(obj);
 
-    if(pubEvent != undefined/* && pubEvent.luogoEv != undefined && pubEvent.luogoEv.length > 0*/) {
+    if(pubEvent != undefined) {
         res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
-        if(privEvent != undefined/* && privEvent.luogoEv != undefined && privEvent.luogoEv.length > 0*/) {
+        if(privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
             res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
-            /*if(persEvent != undefined) {
-                orgName = (await getOrgNames([persEvent]))[0];
-                res.status(200).json({ event: await map([persEvent], "pers", orgName)[0] });
-            } else {*/
-                res.status(404).json({error: "Evento non trovato."});
-            //}
+            res.status(404).json({error: "Evento non trovato."});
         }
     }
 

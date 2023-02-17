@@ -3,13 +3,9 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import recensioni from '../collezioni/recensioniPub.mjs';
-//import mongoose from 'mongoose';
 
 router.get('/:id', async (req, res) => {
     try {
-        /*let eventoPubblico = await eventPublic.find({ _id: { $eq: new mongoose.Types.ObjectId(req.params.id) },
-        "luogoEv.terminato": {$eq: false} });*/
-
         let eventoPubblico = await eventPublic.findById(req.params.id);
 
         console.log(eventoPubblico);
@@ -30,8 +26,7 @@ router.get('/:id', async (req, res) => {
             durata: eventoPubblico.durata,
             luogoEv: eventoPubblico.luogoEv, //Non si potrebbe non restituire gli id dei partecipanti?
             organizzatore: organizzatore.nome,
-            eventPic: eventoPubblico.eventPic,
-            //terminato: eventoPubblico.terminato,
+            eventPic: eventoPubblico.eventPic
         }).send();
     } catch (error) {
         console.log(error);

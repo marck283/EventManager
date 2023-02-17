@@ -10,10 +10,7 @@ import getOrgNames from './OrgNames.mjs';
 import returnUser from '../findUser.mjs';
 import mongoose from 'mongoose';
 
-var filterArr = (e, userId) => {
-    //e.luogoEv = e.luogoEv.filter(l => l.partecipantiID.includes(userId));
-    return e.luogoEv != undefined && e.luogoEv.length > 0;
-};
+var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
@@ -22,15 +19,15 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     let priv = eventPrivate.find(obj);
     
     let persVal = await pers, pubVal = await pub, privVal = await priv;
-    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0], userId)) {
+    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0])) {
         eventsPers.push(persVal[0]);
     }
 
-    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0], userId)) {
+    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0])) {
         eventsPub.push(pubVal[0]);
     }
 
-    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0], userId)) {
+    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0])) {
         eventsPriv.push(privVal[0]);
     } else {
         console.log("uh oh");
@@ -56,11 +53,10 @@ router.get("/:data", async (req, res) => {
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
 
     if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        //eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
 
-        let eventsPersVal = /*await*/ eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
+        let eventsPersVal = eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
         for(let e of eventsPubVal) {
             eventsPersVal.push(e);
         }
