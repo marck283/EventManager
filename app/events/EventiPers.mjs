@@ -125,6 +125,8 @@ router.post('', async (req, res) => {
                 //Si salva il documento personale
                 eventP = await eventP.save();
 
+                utente.numEvOrg += 1;
+
                 //Si indica fra gli eventi creati dell'utente, l'evento appena creato
                 utente.EventiCreati.push(eventP.id);
 

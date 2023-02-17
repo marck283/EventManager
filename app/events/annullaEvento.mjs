@@ -44,10 +44,13 @@ router.delete("/:id", async (req, res) => {
         if(index > -1) {
             user.EventiCreati.splice(index, 1);
         }
-        await user.save();
         await biglietti.deleteMany({eventoid: {$eq: publicEv.id}});
         await recensioniPub.deleteMany({idEvento: {$eq: publicEv.id}});
         await publicEv.delete();
+
+        user.numEvOrg--;
+        await user.save();
+
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;
     }
@@ -61,10 +64,13 @@ router.delete("/:id", async (req, res) => {
         if(index > -1) {
             user.EventiCreati.splice(index, 1);
         }
-        await user.save();
         await biglietti.deleteMany({eventoid: {$eq: privEv.id}});
         await recensioniPub.deleteMany({idEvento: {$eq: privEv.id}});
         await privEv.delete();
+
+        user.numEvOrg--;
+        await user.save();
+
         res.status(200).json({message: "Evento eliminato con successo."}).send();
         return;
     }
