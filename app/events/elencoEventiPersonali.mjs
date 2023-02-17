@@ -17,20 +17,21 @@ var filterArr = (e, userId) => {
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
-    let pers = await eventPersonal.find(obj);
-    let pub = await eventPublic.find(obj);
-    let priv = await eventPrivate.find(obj);
+    let pers = eventPersonal.find(obj);
+    let pub = eventPublic.find(obj);
+    let priv = eventPrivate.find(obj);
     
-    if (pers != undefined && pers[0] != undefined && filterArr(pers[0], userId)) {
-        eventsPers.push(pers[0]);
+    let persVal = await pers, pubVal = await pub, privVal = await priv;
+    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0], userId)) {
+        eventsPers.push(persVal[0]);
     }
 
-    if (pub != undefined && pub[0] != undefined && filterArr(pub[0], userId)) {
-        eventsPub.push(pub[0]);
+    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0], userId)) {
+        eventsPub.push(pubVal[0]);
     }
 
-    if (priv != undefined && priv[0] != undefined && filterArr(priv[0], userId)) {
-        eventsPriv.push(priv[0]);
+    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0], userId)) {
+        eventsPriv.push(privVal[0]);
     } else {
         console.log("uh oh");
     }
@@ -58,13 +59,15 @@ router.get("/:data", async (req, res) => {
         eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
-        for(let e of eventsPub) {
-            eventsPers.push(e);
+
+        let eventsPersVal = await eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
+        for(let e of eventsPubVal) {
+            eventsPersVal.push(e);
         }
-        for(let e of eventsPriv) {
-            eventsPers.push(e);
+        for(let e of eventsPrivVal) {
+            eventsPersVal.push(e);
         }
-        res.status(200).json({ eventi: eventsPers, data: str });
+        res.status(200).json({ eventi: eventsPersVal, data: str });
     } else {
         res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
     }
