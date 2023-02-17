@@ -11,12 +11,12 @@ import returnUser from '../findUser.mjs';
 import mongoose from 'mongoose';
 
 var filterArr = (e, userId) => {
-    e.luogoEv = e.luogoEv.filter(l => l.partecipantiID.includes(userId));
+    //e.luogoEv = e.luogoEv.filter(l => l.partecipantiID.includes(userId));
     return e.luogoEv != undefined && e.luogoEv.length > 0;
 };
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
-    var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}};
+    var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
     let pers = await eventPersonal.find(obj);
     let pub = await eventPublic.find(obj);
     let priv = await eventPrivate.find(obj);

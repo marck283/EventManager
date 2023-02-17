@@ -20,7 +20,7 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var findEvents = async (arr, obj, data, all = false) => {
+var findEvents = async (arr, obj) => {
     let events = await arr.find(obj);
     /*if (all) {
         events = events.filter(e => e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0);
@@ -45,18 +45,17 @@ router.get("/:data", async (req, res) => {
     let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPers, eventsPriv;
     let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": { $eq: data } };
 
-    eventList = findEvents(eventPublic, obj, data);
-    eventsPers = findEvents(eventPers, obj, data);
-    eventsPriv = findEvents(eventPriv, obj, data);
-
-    obj = null;
-    utent = null;
+    eventList = findEvents(eventPublic, obj);
+    eventsPers = findEvents(eventPers, obj);
+    eventsPriv = findEvents(eventPriv, obj);
 
     eventList = await mapAndPush(await eventList, [], "pub");
     eventList = await mapAndPush(await eventsPers, eventList, "pers");
     eventsPers = null;
     eventList = await mapAndPush(await eventsPriv, eventList, "priv");
     eventsPriv = null;
+    obj = null;
+    utent = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
         res.status(200).json({ eventi: eventList, data: data }).send();
@@ -89,14 +88,14 @@ router.get("", async (req, res) => {
                 obj.nomeAtt = {$eq: req.headers.name};
             }
  
-            let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
-                eventsPriv = await findEvents(eventPriv, obj, new Date().toISOString(), true),
-                eventsPers = await findEvents(eventPers, obj, new Date().toISOString(), true),
+            let eventsPub = findEvents(eventPublic, obj),
+                eventsPriv = findEvents(eventPriv, obj),
+                eventsPers = findEvents(eventPers, obj),
                 events = [];
 
-            eventsPub = await mapAndPush(eventsPub, [], "pub");
-            eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
-            events = await mapAndPush(eventsPriv, eventsPers, "priv");
+            eventsPub = await mapAndPush(await eventsPub, [], "pub");
+            eventsPers = await mapAndPush(await eventsPers, eventsPub, "pers");
+            events = await mapAndPush(await eventsPriv, eventsPers, "priv");
 
             if (events != undefined && events.length > 0) {
                 res.status(200).json({ eventi: events }).send();
