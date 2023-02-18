@@ -130,7 +130,7 @@ router.post('', (req, res) => {
 							}
 						}
 						//user = await Utente.findOne({ email: { $eq: payload.email } });
-						let token = createToken(payload.email, user.id, 432000);
+						let token = createToken(payload.email, user.id, 284400);
 
 						console.log("authToken:", token);
 
