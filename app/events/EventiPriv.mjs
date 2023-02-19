@@ -313,7 +313,8 @@ router.post('', async (req, res) => {
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
                     eventPic: req.body.eventPic,
-                    organizzatoreID: utente.id
+                    organizzatoreID: utente.id,
+                    durata: '0:0:0'
                 });
 
                 //Si salva il documento personale

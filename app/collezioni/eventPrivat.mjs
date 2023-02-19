@@ -18,6 +18,7 @@ export default model('EventoPr', new Schema({
 		partecipantiID: [String],
 		terminato: Boolean
 	}],
+	durata: String,
 	organizzatoreID: String
 }));
 
