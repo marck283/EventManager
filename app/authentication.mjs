@@ -130,7 +130,7 @@ router.post('', (req, res) => {
 							}
 						}
 						//user = await Utente.findOne({ email: { $eq: payload.email } });
-						let token = createToken(payload.email, user.id, 284400);
+						let token = createToken(payload.email, user.id, 172800);
 
 						console.log("authToken:", token);
 
@@ -188,7 +188,7 @@ router.post('', (req, res) => {
 								if (!result1) {
 									res.status(403).json(result(undefined, undefined, undefined, true, "Autenticazione fallita. Password sbagliata.")).send();
 								} else {
-									res.status(200).json(result(createToken(user.email, user._id, 3600), user.email, user._id)).send();
+									res.status(200).json(result(createToken(user.email, user._id, 172800), user.email, user._id)).send();
 								}
 							})
 							.catch(err => {

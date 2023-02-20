@@ -50,7 +50,7 @@ var login = async (fbUserId, fbJwt, res) => {
                     await user.save();
                 }
                 user = await Utente.findOne({ email: { $eq: json1.email } });
-                res.status(200).json(result(createToken(json1.email, user.id, 284400), json1.email, json1.name, user.id, json1.picture.data.url)).send();
+                res.status(200).json(result(createToken(json1.email, user.id, 172800), json1.email, json1.name, user.id, json1.picture.data.url)).send();
             }))
         .catch(err => {
             console.log(err);
