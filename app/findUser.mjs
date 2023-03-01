@@ -1,13 +1,13 @@
 import Utente from './collezioni/utenti.mjs';
 
 var returnUser = async req => {
-    var IDexample = req.loggedUser.id || req.loggedUser, user;
+    var IDexample = req.loggedUser.id/* || req.loggedUser*/, user;
 
-    if(IDexample == req.loggedUser) {
+    /*if(IDexample == req.loggedUser) {
         user = await Utente.findOne({ email: { $eq: IDexample.email }});
-    } else {
+    } else {*/
         user = await Utente.findById(IDexample);
-    }
+    //}
 
     console.log(user);
 

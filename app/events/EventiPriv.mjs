@@ -221,7 +221,8 @@ router.post('', async (req, res) => {
         let utente = await returnUser(req);
         //Si crea un documento evento personale
         var options = {
-            durata: req.body.durata,
+            //durata: req.body.durata,
+            descrizione: req.body.descrizione,
             categoria: req.body.categoria,
             eventPic: req.body.eventPic,
             nomeAtt: req.body.nomeAtt,
@@ -229,10 +230,11 @@ router.post('', async (req, res) => {
             luogoEv: req.body.luogoEv
         };
         const v = new Validator(options, {
-            'durata': 'required|array|minLength:3',
+            /*'durata': 'required|array|minLength:3',
             'durata.0': 'required|numeric|min:0',
             'durata.1': 'required|numeric|min:0',
-            'durata.2': 'required|numeric|min:0',
+            'durata.2': 'required|numeric|min:0',*/
+            descrizione: 'required|string|minLength:1|maxLength:140',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             eventPic: 'required|string|minLength:1',
             nomeAtt: 'required|string|minLength:1',
@@ -259,11 +261,11 @@ router.post('', async (req, res) => {
                     return;
                 }
 
-                let durata = req.body.durata;
+                /*let durata = req.body.durata;
                 if(durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
                     res.status(400).json({error: "La durata non può essere nulla."}).send();
                     return;
-                }
+                }*/
 
                 //controllo se l'elenco dell'email contiene solo email di utenti nel sistema
                 var ListaInvitati = [];
@@ -305,12 +307,14 @@ router.post('', async (req, res) => {
                 }
 
                 let eventP = new eventPrivat({
-                    durata: req.body.durata.join(":"),
+                    //durata: req.body.durata.join(":"),
+                    descrizione: req.body.descrizione,
                     categoria: req.body.categoria,
                     nomeAtt: req.body.nomeAtt,
                     luogoEv: luogoEv,
                     eventPic: req.body.eventPic,
-                    organizzatoreID: utente.id
+                    organizzatoreID: utente.id,
+                    durata: '0:0:0'
                 });
 
                 //Si salva il documento personale
@@ -335,7 +339,7 @@ router.post('', async (req, res) => {
                 console.log('Evento salvato con successo');
 
                 /**
-                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
+                 * Si posiziona il link alla risorsa appena creata nel header location della risposta
                  */
                 res.status(201).location("/api/v2/EventiPrivati/" + eventId).send();
             });

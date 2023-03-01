@@ -2,10 +2,8 @@ import { Router } from 'express';
 var router = Router();
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
-import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import { Validator } from 'node-input-validator';
 
@@ -20,65 +18,53 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var findEvents = async (arr, obj, data, all = false) => {
+var findEvents = async (arr, obj) => {
     let events = await arr.find(obj);
-    console.log(obj);
-    if (all) {
-        events = events.filter(e => {
-            console.log(e.id);
-            return e.luogoEv.filter(l => new Date(l.data).toISOString() >= data).length > 0
-        });
+    /*if (all) {
+        events = events.filter(e => e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0);
         return events;
     }
-    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);
+    return events.filter(e => e.luogoEv.filter(l => data == l.data).length > 0);*/
+    return events.filter(e => e.luogoEv != null && e.luogoEv != undefined && e.luogoEv.length > 0);
 };
 
 var mapAndPush = async (arr, genArr, cat) => {
     if (arr != null && arr != undefined && arr.length > 0) {
-        let events = map(arr, cat, await getOrgNames(arr));
+        let events = await map(arr, cat, await getOrgNames(arr));
         for (let e of events) {
             genArr.push(e);
         }
     }
 
-    console.log(genArr);
-
     return genArr;
 };
 
 router.get("/:data", async (req, res) => {
-    var data = req.params.data;
-    var utent = req.loggedUser.id || req.loggedUser.sub, eventList, eventsPers, eventsPriv;
+    let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPriv;
+    let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": { $eq: data } };
 
-    if (utent !== req.loggedUser.id) {
-        utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }
-    let obj = { organizzatoreID: { $eq: utent }, luogoEv: { $elemMatch: { data: { $eq: data } } } };
+    eventList = findEvents(eventPublic, obj);
+    eventsPriv = findEvents(eventPriv, obj);
 
-    eventList = await findEvents(eventPublic, obj, data);
-    eventsPers = await findEvents(eventPers, obj, data);
-    eventsPriv = await findEvents(eventPriv, obj, data);
-
-    eventList = await mapAndPush(eventList, [], "pub");
-    eventList = await mapAndPush(eventsPers, eventList, "pers");
-    eventList = await mapAndPush(eventsPriv, eventList, "priv");
+    eventList = await mapAndPush(await eventList, [], "pub");
+    eventList = await mapAndPush(await eventsPriv, eventList, "priv");
+    eventsPriv = null;
+    obj = null;
+    utent = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
         res.status(200).json({ eventi: eventList, data: data }).send();
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
     }
+    data = null;
+    eventList = null;
+    utent = null;
+    return;
 });
 
 router.get("", async (req, res) => {
-    var utent = req.loggedUser.id || req.loggedUser;
-
-    console.log(utent == req.loggedUser);
-
-    if (utent == req.loggedUser) {
-        console.log((await User.findOne({ email: { $eq: req.loggedUser.email } })).id);
-        utent = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
-    }
+    var utent = req.loggedUser.id;
 
     const v = new Validator({
         nome: req.headers.name
@@ -92,19 +78,17 @@ router.get("", async (req, res) => {
                 return;
             }
 
-            let obj = { organizzatoreID: { $eq: utent } };
+            let obj = { organizzatoreID: { $eq: utent }, "luogoEv.terminato": {$eq: false} };
             if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
                 obj.nomeAtt = {$eq: req.headers.name};
             }
  
-            let eventsPub = await findEvents(eventPublic, obj, new Date().toISOString(), true),
-                eventsPriv = await findEvents(eventPriv, obj, new Date().toISOString(), true),
-                eventsPers = await findEvents(eventPers, obj, new Date().toISOString(), true),
+            let eventsPub = findEvents(eventPublic, obj),
+                eventsPriv = findEvents(eventPriv, obj),
                 events = [];
 
-            eventsPub = await mapAndPush(eventsPub, [], "pub");
-            eventsPers = await mapAndPush(eventsPers, eventsPub, "pers");
-            events = await mapAndPush(eventsPriv, eventsPers, "priv");
+            eventsPub = await mapAndPush(await eventsPub, [], "pub");
+            events = await mapAndPush(await eventsPriv, eventsPub, "priv");
 
             if (events != undefined && events.length > 0) {
                 res.status(200).json({ eventi: events }).send();
@@ -112,7 +96,6 @@ router.get("", async (req, res) => {
                 res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
             }
             eventsPub = null;
-            eventsPers = null;
             eventsPriv = null;
             events = null;
             obj = null;

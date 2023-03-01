@@ -1,13 +1,13 @@
 import { Router } from 'express';
 const router = Router();
 import Utente from './collezioni/utenti.mjs'; // get our mongoose model
-import { compare } from 'bcrypt';
 import RateLimit from 'express-rate-limit';
 import { Validator } from 'node-input-validator';
 import verify from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
+import _verify from 'jsonwebtoken';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute
@@ -87,13 +87,23 @@ router.post('', (req, res) => {
 									"Referer": "https://eventmanagerzlf.herokuapp.com/"
 								}
 							});
-							const res = await service.people.get({
-								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers"
+							/*const people = google.people({version: "v1"});
+							const client = new google.auth.GoogleAuth({
+								scopes: ["https://www.googleapis.com/auth/user.birthday.read"]
 							});
-							var tel = "";
+							const authClient = client.getClient();
+							google.options({auth: authClient});*/
+							const res = await service.people.get({
+								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers,birthdays",
+							});
+							var tel = "", birthday = "";
 							if (res.data.phoneNumbers != undefined) {
 								tel = res.data.phoneNumbers[0].canonicalForm;
 							}
+							if(res.data.birthdays != undefined) {
+								birthday = res.data.birthdays[1].date.year + "-" + res.data.birthdays[1].date.month + "-" + res.data.birthdays[1].date.day;
+							}
+
 							user = new Utente({
 								nome: payload.given_name,
 								email: payload.email,
@@ -109,22 +119,43 @@ router.post('', (req, res) => {
 								},
 								facebookAccount: {
 									userId: ""
-								}
+								},
+								birthday: birthday
 							});
 							await user.save();
 						} else {
-							user.googleAccount.userId = payload.sub;
-							await user.save();
+							if(user.googleAccount == undefined || user.googleAccount == "") {
+								user.googleAccount.userId = payload.sub;
+								await user.save();
+							}
 						}
-						user = await Utente.findOne({ email: { $eq: payload.email } });
-						res.status(200).json(result(gJwt, payload.email,
+						//user = await Utente.findOne({ email: { $eq: payload.email } });
+						let token = createToken(payload.email, user.id, 172800);
+
+						console.log("authToken:", token);
+
+						res.status(200).json(result(token,
 						payload.given_name, user.id, payload.picture)).send();
 					})
-					.catch(err => {
+					.catch(async err => {
 						console.log(err);
-						res.status(401).json({
-							error: "Token non valido."
-						}).send();
+
+						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
+							if(err) {
+								console.log(err);
+								res.status(401).json({
+									error: "Token non valido."
+								}).send();
+								return;
+							}
+							
+							console.log("authTokenF:", gJwt);
+
+							var user = await Utente.findById(decoded.id);
+							res.status(200).json(result(gJwt, user.email,
+							user.nome, user.id, user.profilePic)).send();
+							return;
+						});
 					});
 				return;
 			}
@@ -157,7 +188,7 @@ router.post('', (req, res) => {
 								if (!result1) {
 									res.status(403).json(result(undefined, undefined, undefined, true, "Autenticazione fallita. Password sbagliata.")).send();
 								} else {
-									res.status(200).json(result(createToken(user.email, user._id, 3600), user.email, user._id)).send();
+									res.status(200).json(result(createToken(user.email, user._id, 172800), user.email, user._id)).send();
 								}
 							})
 							.catch(err => {

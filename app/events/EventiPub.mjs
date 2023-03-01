@@ -7,6 +7,8 @@ import recensioni from '../collezioni/recensioniPub.mjs';
 router.get('/:id', async (req, res) => {
     try {
         let eventoPubblico = await eventPublic.findById(req.params.id);
+
+        console.log(eventoPubblico);
         if (eventoPubblico == undefined) {
             res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
             return;
@@ -24,8 +26,7 @@ router.get('/:id', async (req, res) => {
             durata: eventoPubblico.durata,
             luogoEv: eventoPubblico.luogoEv, //Non si potrebbe non restituire gli id dei partecipanti?
             organizzatore: organizzatore.nome,
-            eventPic: eventoPubblico.eventPic,
-            terminato: eventoPubblico.terminato,
+            eventPic: eventoPubblico.eventPic
         }).send();
     } catch (error) {
         console.log(error);

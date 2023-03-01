@@ -10,6 +10,7 @@ import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import returnUser from '../findUser.mjs';
+import mongoose from 'mongoose';
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
@@ -188,30 +189,25 @@ router.post('/:id/Iscrizioni', async (req, res) => {
                 let error = false;
                 console.log("OK");
                 //var eventP1 = await eventPublic.find({luogoEv: {$elemMatch: {data: req.body.data, ora: req.body.ora}}});
-                var eventP1 = await eventPublic.findById(id_evento);
+                var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
+                    "luogoEv.partecipantiID": {$ne: utent}, organizzatoreID: {$ne: utent}});
                 console.log("OK");
-                if (eventP1 == undefined) {
+                //console.log("length:", eventP1[0].luogoEv.length);
+                if (eventP1 == undefined || eventP1.length == 0 || eventP1[0].luogoEv == undefined) {
                     res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
                     return;
                 }
                 console.log("OK");
-                for (let l of eventP1.luogoEv) {
+                
+                for (let l of eventP1[0].luogoEv) {
                     if (l.partecipantiID.length == l.maxPers) {
                         res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                         return;
                     }
 
-                    if (l.partecipantiID.includes(utent)) {
-                        if (error) {
-                            res.status(403).json({ error: "L'utente è già iscritto a questo evento." }).send();
-                            return;
-                        }
-                        error = true;
-                    }
-
                     if (!error && l.data == req.body.data && l.ora == req.body.ora) {
                         l.partecipantiID.push(utent);
-                        await eventP1.save();
+                        await eventP1[0].save();
 
                         console.log("OK");
 

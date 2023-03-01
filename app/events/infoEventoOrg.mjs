@@ -2,7 +2,6 @@ import { Router } from 'express';
 var router = Router();
 import RateLimit from 'express-rate-limit';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
 import User from '../collezioni/utenti.mjs';
@@ -28,22 +27,16 @@ router.get("/:id", async (req, res) => {
 
     var pubEvent = await eventPublic.findById(req.params.id);
     var privEvent = await eventPriv.findById(req.params.id);
-    var persEvent = await eventPers.findById(req.params.id);
 
-    if(pubEvent != null && pubEvent != undefined) {
-        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0], terminato: pubEvent.terminato});
+    if(pubEvent != undefined) {
+        res.status(200).json({event: await map([pubEvent], "pub", [pubEvent.orgName])[0]});
     } else {
         let orgName;
-        if(privEvent != null && privEvent != undefined) {
+        if(privEvent != undefined) {
             orgName = await getOrgNames([privEvent]);
             res.status(200).json({event: await map([privEvent], "priv", orgName)[0]});
         } else {
-            if(persEvent != null && persEvent != undefined) {
-                orgName = (await getOrgNames([persEvent]))[0];
-                res.status(200).json({ event: await map([persEvent], "pers", orgName)[0] });
-            } else {
-                res.status(404).json({error: "Evento non trovato."});
-            }
+            res.status(404).json({error: "Evento non trovato."});
         }
     }
 

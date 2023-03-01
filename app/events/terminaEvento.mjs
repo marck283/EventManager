@@ -18,18 +18,19 @@ router.patch("/:id", async (req, res) => {
         v.check()
         .then(async matched => {
             if(!matched) {
-                res.status(400).json({error: "Richiesta malformata."}).send();
+                res.status(400).json({error: "Richiesta malformata."});
                 return;
             }
     
             await eventPublic.findOneAndUpdate({_id: {$eq: new mongoose.Types.ObjectId(req.params.id)},
                 "luogoEv.data": {$eq: req.body.data}, "luogoEv.ora": {$eq: req.body.ora}},
                 {$set: {"luogoEv.$.terminato": true}});
+            
+            res.status(200).json({message: "Evento terminato con successo."});
         });
-        res.status(200).json({message: "Evento terminato con successo."}).send();
     } catch(err) {
         console.log(err);
-        res.status(500).json({error: "Errore interno al server"}).send();
+        res.status(500).json({error: "Errore interno al server"});
     }
     return;
 });

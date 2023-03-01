@@ -3,7 +3,7 @@ var Schema = _Schema;
 
 // set up a mongoose model
 export default model('EventoPr', new Schema({
-	durata: String,
+	descrizione: String,
 	categoria: String,
 	nomeAtt: String,
 	eventPic: String,
@@ -18,6 +18,7 @@ export default model('EventoPr', new Schema({
 		partecipantiID: [String],
 		terminato: Boolean
 	}],
+	durata: String,
 	organizzatoreID: String
 }));
 

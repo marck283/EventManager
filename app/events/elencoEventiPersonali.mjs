@@ -8,33 +8,27 @@ import { Validator } from 'node-input-validator';
 import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 import returnUser from '../findUser.mjs';
+import mongoose from 'mongoose';
 
-var filterArr = (e, str) => {
-    console.log(typeof e.luogoEv);
-    let str1 = str.split("T")[0].split("-");
-    console.log(e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length);
-    return e.luogoEv.filter(l => l.data == str1[1] + "-" + str1[2] + "-" + str1[0]).length > 0;
-};
+var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
-var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
-    let pers = await eventPersonal.findById(e);
-    let pub = await eventPublic.findById(e);
-    let priv = await eventPrivate.findById(e);
-
-    //console.log(pers, pub, priv);
+var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
+    var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
+    let pers = eventPersonal.find(obj);
+    let pub = eventPublic.find(obj);
+    let priv = eventPrivate.find(obj);
     
-    if (pers != null && pers != undefined && filterArr(pers, str)) {
-        eventsPers.push(pers);
+    let persVal = await pers, pubVal = await pub, privVal = await priv;
+    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0])) {
+        eventsPers.push(persVal[0]);
     }
 
-    if (pub != null && pub != undefined && filterArr(pub, str)) {
-        eventsPub.push(pub);
+    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0])) {
+        eventsPub.push(pubVal[0]);
     }
 
-    if (priv != null && priv != undefined) {
-        if (filterArr(priv, str)) {
-            eventsPriv.push(priv);
-        }
+    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0])) {
+        eventsPriv.push(privVal[0]);
     } else {
         console.log("uh oh");
     }
@@ -42,36 +36,34 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str) => {
 }
 
 router.get("/:data", async (req, res) => {
-    var str = new Date(req.params.data); //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
 
     if (str == "Invalid Date") {
         res.status(400).json({ error: "Data non valida" });
         return;
     }
-    str.setDate(str.getDate());
-    str = str.toISOString();
 
-    console.log(str);
+    console.log("data:", str);
 
     var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
-    //console.log(user1);
     for (let e of user1.EventiIscrtto) {
-        await findEvent(e, eventsPers, eventsPub, eventsPriv, str);
+        await findEvent(e, eventsPers, eventsPub, eventsPriv, str, user1.id);
     }
     console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
 
     if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
-        eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
-        for(let e of eventsPub) {
-            eventsPers.push(e);
+
+        let eventsPersVal = eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
+        for(let e of eventsPubVal) {
+            eventsPersVal.push(e);
         }
-        for(let e of eventsPriv) {
-            eventsPers.push(e);
+        for(let e of eventsPrivVal) {
+            eventsPersVal.push(e);
         }
-        res.status(200).json({ eventi: eventsPers, data: str });
+        res.status(200).json({ eventi: eventsPersVal, data: str });
     } else {
         res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
     }
