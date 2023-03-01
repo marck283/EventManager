@@ -47,6 +47,14 @@
     "redis": "^4.5.1",
     "superagent": "^8.0.8"
   },
+  "overrides": {
+    "mongoose": {
+      "fast-xml-parser": "^4.1.2"
+    },
+    "superagent": {
+      "qs": "^6.10.3"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.4",
