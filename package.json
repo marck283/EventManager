@@ -45,7 +45,7 @@
     "path": "^0.12.7",
     "qrcode": "^1.5.1",
     "redis": "^4.5.1",
-    "superagent": "^8.0.4"
+    "superagent": "^8.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
