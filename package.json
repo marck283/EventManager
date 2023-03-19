@@ -42,7 +42,7 @@
     "json5": "^2.2.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.0",
-    "node": "^19.1.0",
+    "node": "^19.7.0",
     "node-input-validator": "^4.5.0",
     "path": "^0.12.7",
     "qrcode": "^1.5.1",
