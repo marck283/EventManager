@@ -41,7 +41,7 @@
     "jose": "^4.11.1",
     "json5": "^2.2.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0",
+    "mongoose": "^7.0.3",
     "node": "^19.1.0",
     "node-input-validator": "^4.5.0",
     "path": "^0.12.7",
