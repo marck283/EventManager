@@ -31,7 +31,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-rate-limit": "^6.6.0",
-    "firebase": "^9.17.2",
+    "firebase": "^9.19.1",
     "firebase-tools": "^11.25.0",
     "formidable": "^2.1.1",
     "google-auth-library": "^8.5.1",
