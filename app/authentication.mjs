@@ -134,7 +134,7 @@ router.post('', (req, res) => {
 
 						console.log("authToken:", token);
 
-						res.status(200).json(result(token,
+						res.status(200).json(result(token, payload.email,
 						payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(async err => {
