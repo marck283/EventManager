@@ -134,7 +134,7 @@ router.post('', (req, res) => {
 
 						console.log("authToken:", token);
 
-						res.status(200).json(result(token,
+						res.status(200).json(result(token, payload.email,
 						payload.given_name, user.id, payload.picture)).send();
 					})
 					.catch(async err => {
@@ -152,8 +152,7 @@ router.post('', (req, res) => {
 							console.log("authTokenF:", gJwt);
 
 							var user = await Utente.findById(decoded.id);
-							res.status(200).json(result(gJwt, user.email,
-							user.nome, user.id, user.profilePic)).send();
+							res.status(200).json(result(gJwt, user.email, user.nome, user.id, user.profilePic)).send();
 							return;
 						});
 					});
