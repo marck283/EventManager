@@ -211,7 +211,7 @@ router.post("/facebookLogin", async (req, res) => {
 			user_id: req.body.userId
 		}, {
 			csrfToken: 'required|string',
-			jwt: 'required|string|minLength:1',
+			jwt: 'required|string|minLength:1|alphaNumeric',
 			user_id: 'required|string|minLength:1'
 		});
 		v.check()

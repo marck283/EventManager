@@ -21,7 +21,9 @@ var result = (token, email, name, id, profilePic, error = false, message = "") =
 };
 
 var login = async (fbUserId, fbJwt, res) => {
-    await fetch("https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt)
+    var req = new Request();
+    req.url = "https://graph.facebook.com/v15.0/" + fbUserId + "?fields=email,name,picture&access_token=" + fbJwt;
+    await fetch(req)
         .then(resp => resp.json()
             .then(async json1 => {
                 console.log("nome:", json1.name);

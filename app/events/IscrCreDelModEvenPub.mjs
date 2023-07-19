@@ -5,7 +5,8 @@ import { toDataURL } from 'qrcode';
 import Inviti from '../collezioni/invit.mjs';
 import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
-import { Validator } from 'node-input-validator';
+//import { Validator } from 'node-input-validator';
+const validator = require('node-input-validator');
 import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
@@ -43,7 +44,7 @@ router.patch('/:id', async (req, res) => {
             evento.luogoEv.citta = req.body.citta;
         }
 
-        const v = new Validator({
+        const v = new validator.Validator({
             maxPers: req.body.maxPers
         }, {
             maxPers: 'integer|min:2'
@@ -71,7 +72,7 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         //Lega il processo alla data e all'ora comunicate
-        const v = new Validator({
+        const v = new validator.Validator({
             data: req.headers.data,
             ora: req.headers.ora
         }, {
@@ -171,7 +172,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         utent = utent.id;
     }
 
-    const v = new Validator({
+    const v = new validator.Validator({
         giorno: req.body.data,
         ora: req.body.ora
     }, {
@@ -261,7 +262,7 @@ router.post('/:id/Inviti', async (req, res) => {
         console.log(utent);
         var id_evento = req.params.id;
 
-        const v = new Validator({
+        const v = new validator.Validator({
             email: req.body.email
         }, {
             email: 'required|email'
@@ -348,22 +349,46 @@ router.post('', async (req, res) => {
             etaMin: req.body.etaMin,
             etaMax: req.body.etaMax
         };
-        const v1 = new Validator(options, {
-            'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
+        validator.extend('duration', ({ value }) => {
+            if(!Number(value.days)) {
+                throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
+            }
+            if(!Number(value.hours)) {
+                throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
+            }
+            if(!Number(value.minutes)) {
+                throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
+            }
+            if(Number(value.days) < 0) {
+                throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
+            }
+            if(Number(value.hours) < 0 || Number(value.hours) > 23) {
+                throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
+            }
+            if(Number(value.minutes) < 0 || Number(value.minutes) > 59) {
+                throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
+            }
+
+            return true;
+        })
+        const v1 = new validator.Validator(options, {
+            'durata': 'required|duration',
+            /*'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
             'durata.0': 'required|numeric|min:0',
-            'durata.1': 'required|numeric|min:0',
-            'durata.2': 'required|numeric|min:0',
+            'durata.1': 'required|numeric|between:0,23',
+            'durata.2': 'required|numeric|between:0,59',*/
             descrizione: 'required|string|minLength:1|maxLength:140',
-            eventPic: 'required|string|minLength:1',
-            'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
-            'luogoEv.*.maxPers': 'required|integer|min:1',
+            eventPic: 'required|string|minLength:1|alphaNumeric',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
-            nomeAtt: 'required|string|minLength:1',
-            luogoEv: 'required|array|minLength:1',
-            'luogoEv.*.indirizzo': 'required|string|minLength:1',
-            'luogoEv.*.citta': 'required|string|minLength:1',
+            nomeAtt: 'required|string|minLength:1|alphaNumeric',
             etaMin: 'integer|min:0',
             etaMax: 'integer|gte:etaMin',
+            luogoEv: 'required|array|minLength:1',
+            'luogoEv.*': 'all',
+            'luogoEv.*.indirizzo': 'required|string|minLength:1',
+            'luogoEv.*.citta': 'required|string|minLength:1',
+            'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
+            'luogoEv.*.maxPers': 'required|integer|min:1',
             'luogoEv.*.data': 'required|string|dateFormat:MM-DD-YYYY',
             'luogoEv.*.civNum': 'required|string|minLength:1',
             'luogoEv.*.cap': 'required|integer|min:1',
@@ -376,7 +401,6 @@ router.post('', async (req, res) => {
         v1.check()
             .then(async matched => {
                 if (!matched || req.body.durata.length > 3) {
-                    //console.log(req.body.eventPic);
                     console.log(v1.errors);
                     console.log(req.body.categoria);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
