@@ -5,8 +5,8 @@ import { toDataURL } from 'qrcode';
 import Inviti from '../collezioni/invit.mjs';
 import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
-//import { Validator } from 'node-input-validator';
-const validator = await import("node-input-validator");
+import { Validator, extend } from 'node-input-validator';
+//const validator = await import("node-input-validator");
 import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
@@ -44,7 +44,7 @@ router.patch('/:id', async (req, res) => {
             evento.luogoEv.citta = req.body.citta;
         }
 
-        const v = new validator.Validator({
+        const v = new Validator({
             maxPers: req.body.maxPers
         }, {
             maxPers: 'integer|min:2'
@@ -72,7 +72,7 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
     try {
         //Lega il processo alla data e all'ora comunicate
-        const v = new validator.Validator({
+        const v = new Validator({
             data: req.headers.data,
             ora: req.headers.ora
         }, {
@@ -172,7 +172,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
         utent = utent.id;
     }
 
-    const v = new validator.Validator({
+    const v = new Validator({
         giorno: req.body.data,
         ora: req.body.ora
     }, {
@@ -262,7 +262,7 @@ router.post('/:id/Inviti', async (req, res) => {
         console.log(utent);
         var id_evento = req.params.id;
 
-        const v = new validator.Validator({
+        const v = new Validator({
             email: req.body.email
         }, {
             email: 'required|email'
@@ -349,7 +349,7 @@ router.post('', async (req, res) => {
             etaMin: req.body.etaMin,
             etaMax: req.body.etaMax
         };
-        validator.extend('duration', ({ value }) => {
+        extend('duration', ({ value }) => {
             if(!Number(value.days)) {
                 throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
             }
@@ -371,7 +371,7 @@ router.post('', async (req, res) => {
 
             return true;
         })
-        const v1 = new validator.Validator(options, {
+        const v1 = new Validator(options, {
             'durata': 'required|duration',
             /*'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
             'durata.0': 'required|numeric|min:0',
