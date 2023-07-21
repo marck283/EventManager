@@ -6,7 +6,7 @@ import Inviti from '../collezioni/invit.mjs';
 import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
 //import { Validator } from 'node-input-validator';
-const validator = require('node-input-validator');
+const validator = await import("node-input-validator");
 import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
