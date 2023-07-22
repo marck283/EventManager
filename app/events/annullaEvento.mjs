@@ -66,7 +66,7 @@ router.delete("/:id", async (req, res) => {
         }
         await biglietti.deleteMany({eventoid: {$eq: privEv.id}});
         await recensioniPub.deleteMany({idEvento: {$eq: privEv.id}});
-        await privEv.delete();
+        await privEv.deleteOne();
 
         user.numEvOrg--;
         await user.save();
