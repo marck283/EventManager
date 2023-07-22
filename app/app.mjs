@@ -23,8 +23,9 @@ app.disable('x-powered-by'); //Disabling x-powered-by for security reasons
 app.enable('access-control-allow-origin'); //Enabling Access-Control-Allow-Origin for security reasons
 app.enable('origin');
 app.enable('vary');
-app.set('origin', 'https://eventmanagerzlf.herokuapp.com');
-app.set('access-control-allow-origin', 'https://eventmanagerzlf.herokuapp.com');
+app.set('trust proxy', 'loopback');
+app.set('origin', 'https://eventmanager-uo29.onrender.com');
+app.set('access-control-allow-origin', 'https://eventmanager-uo29.onrender.com');
 app.set('vary', 'origin'); 
 
 /**
