@@ -351,6 +351,7 @@ router.post('', async (req, res) => {
         };
         extend('duration', ({ value }) => {
             if(!Number(value.days)) {
+                console.log(value.days);
                 throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
             }
             if(!Number(value.hours)) {
