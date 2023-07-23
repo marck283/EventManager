@@ -362,13 +362,13 @@ router.post('', async (req, res) => {
             if(!Number(req.body.durata[2])) {
                 throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
             }
-            if(Number(value.days) < 0) {
+            if(Number(req.body.durata[0]) < 0) {
                 throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
             }
-            if(Number(value.hours) < 0 || Number(value.hours) > 23) {
+            if(Number(req.body.durata[1]) < 0 || Number(req.body.durata[1]) > 23) {
                 throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
             }
-            if(Number(value.minutes) < 0 || Number(value.minutes) > 59) {
+            if(Number(req.body.durata[2]) < 0 || Number(req.body.durata[2]) > 59) {
                 throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
             }
 
@@ -381,7 +381,7 @@ router.post('', async (req, res) => {
             'durata.1': 'required|numeric|between:0,23',
             'durata.2': 'required|numeric|between:0,59',*/
             descrizione: 'required|string|minLength:1|maxLength:140',
-            eventPic: 'required|string|minLength:1|alphaNumeric',
+            eventPic: 'required|string|minLength:1',
             categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
             nomeAtt: 'required|string|minLength:1|alphaNumeric',
             etaMin: 'integer|min:0',
