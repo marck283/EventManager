@@ -49,13 +49,6 @@ router.get("/:qrcode", async (req, res) => {
         const qrcode = await toDataURL.toDataURL(req.params.qrcode), biglietto = await biglietti.findOne({qr: {$eq: qrcode},
             eventoid: {$eq: req.headers.eventoid}, utenteid: {$eq: obj.idUtente},
             giorno: {$eq: req.headers.day}, ora: {$eq: req.headers.hour}});
-        console.log("qrcode:", qrcode);
-        console.log("eventoid:", req.headers.eventoid);
-        console.log("utenteid:", user);
-        console.log("giorno:", req.headers.day);
-        console.log("ora:", req.headers.hour);
-        console.log("null:", biglietto == null);
-        console.log("undefined:", biglietto == undefined);
         if(biglietto != null && biglietto != undefined) {
             res.status(200).json({status: "OK"}).send();
         } else {

@@ -384,7 +384,6 @@ router.post('', async (req, res) => {
             etaMin: 'integer|min:0',
             etaMax: 'integer|gte:etaMin',
             luogoEv: 'required|array|minLength:1',
-            'luogoEv.*': 'all',
             'luogoEv.*.indirizzo': 'required|string|minLength:1',
             'luogoEv.*.citta': 'required|string|minLength:1',
             'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
