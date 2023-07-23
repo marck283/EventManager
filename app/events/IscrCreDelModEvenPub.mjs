@@ -350,16 +350,16 @@ router.post('', async (req, res) => {
             etaMax: req.body.etaMax
         };
         extend('duration', ({ value }) => {
-            if(!Number(value.days)) {
+            if(!Number(req.body.durata[0])) {
                 console.log(value.days);
                 console.log(value.durata);
-                console.log(durata);
+                console.log(req.body.durata);
                 throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(value.hours)) {
+            if(!Number(req.body.durata[1])) {
                 throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(value.minutes)) {
+            if(!Number(req.body.durata[2])) {
                 throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
             }
             if(Number(value.days) < 0) {
