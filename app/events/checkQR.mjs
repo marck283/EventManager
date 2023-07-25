@@ -9,7 +9,7 @@ import toDataURL from 'qrcode';
 
 var limiter = RateLimit({
     windowMs: 1 * 60 * 1000, //1 minute
-    max: 100, //Limit each IP to 10 requests per minute
+    max: 100, //Limit each IP to 100 requests per minute
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });

@@ -9,6 +9,18 @@ import { Validator } from 'node-input-validator';
 import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import returnUser from '../findUser.mjs';
+import RateLimit from 'express-rate-limit';
+
+var limiter = RateLimit({
+    windowMs: 1 * 20 * 1000, //20 seconds
+    max: 1, //Limit each IP to a certain number of requests per 20 seconds
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+//Apply rate limiter to all requests
+//Avoids Denial of Service attacks by limiting the number of requests per IP
+router.use(limiter);
 
 router.patch('/:id', async (req, res) => {
     var utent = await returnUser(req);

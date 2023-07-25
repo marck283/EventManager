@@ -5,6 +5,18 @@ import { Validator } from 'node-input-validator';
 import Recensione from '../collezioni/recensioniPub.mjs';
 import returnUser from '../findUser.mjs';
 import User from '../collezioni/utenti.mjs';
+import RateLimit from 'express-rate-limit';
+
+var limiter = RateLimit({
+    windowMs: 1 * 10 * 1000, //10 seconds
+    max: 1, //Limit each IP to a certain number of requests every 10 seconds
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+//Apply rate limiter to all requests
+//Avoids Denial of Service attacks by limiting the number of requests per IP
+router.use(limiter);
 
 var meanEval = (evArr, recLength) => {
     var sum = 0.0;

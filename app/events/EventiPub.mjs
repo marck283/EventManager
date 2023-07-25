@@ -3,6 +3,18 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
 import recensioni from '../collezioni/recensioniPub.mjs';
+import RateLimit from 'express-rate-limit';
+
+var limiter = RateLimit({
+    windowMs: 1 * 20 * 1000, //20 seconds
+    max: 1, //Limit each IP to a certain number of requests per 20 seconds
+    message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
+    statusCode: 429
+});
+
+//Apply rate limiter to all requests
+//Avoids Denial of Service attacks by limiting the number of requests per IP
+router.use(limiter);
 
 router.get('/:id', async (req, res) => {
     try {

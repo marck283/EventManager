@@ -9,8 +9,8 @@ import User from '../collezioni/utenti.mjs';
 import getOrgNames from './OrgNames.mjs';
 
 var limiter = RateLimit({
-    windowMs: 1 * 60 * 1000, //1 minute
-    max: 10, //Limit each IP to a certain number of requests per minute
+    windowMs: 1 * 20 * 1000, //20 seconds
+    max: 1, //Limit each IP to a certain number of requests per 20 seconds
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });
