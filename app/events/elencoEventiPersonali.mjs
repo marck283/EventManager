@@ -13,7 +13,7 @@ import mongoose from 'mongoose';
 var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
-    var obj = {_id: {$eq: mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, $in: [userId, "$partecipantiID"]};
     let pers = eventPersonal.find(obj);
     let pub = eventPublic.find(obj);
     let priv = eventPrivate.find(obj);
