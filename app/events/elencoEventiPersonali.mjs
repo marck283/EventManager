@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import eventPersonal from '../collezioni/eventPersonal.mjs';
+import { eventPersonal, part } from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
 const router = Router();
 import map from './eventsMap.mjs';
@@ -13,8 +13,9 @@ import mongoose from 'mongoose';
 var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
-    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, userId: {$in: "$partecipantiID"}};
-    let pers = eventPersonal.find(obj);
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, "userId": {$in: [userId, "$partecipantiID"]}};
+    var org = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, organizzatoreID: {$eq: userId}};
+    let pers = eventPersonal.find(org);
     let pub = eventPublic.find(obj);
     let priv = eventPrivate.find(obj);
     
