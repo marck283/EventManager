@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import eventPublic from '../collezioni/eventPublic.mjs';
-import { eventPersonal, part } from '../collezioni/eventPersonal.mjs';
+import eventPersonal from '../collezioni/eventPersonal.mjs';
 import eventPrivate from '../collezioni/eventPrivat.mjs';
 const router = Router();
 import map from './eventsMap.mjs';
