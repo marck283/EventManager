@@ -84,7 +84,7 @@ router.post('', (req, res) => {
 								version: 'v1',
 								auth: process.env.PEOPLE_API_ID,
 								headers: {
-									"Referer": "https://eventmanagerzlf.herokuapp.com/"
+									"Referer": "https://eventmanager-uo29.onrender.com"
 								}
 							});
 							/*const people = google.people({version: "v1"});
