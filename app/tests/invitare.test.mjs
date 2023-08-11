@@ -109,33 +109,33 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email passata è di un'altro utente che è già stato invitato per quell'evento", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
-      set('x-access-token', token).send({ email: 'gg.tt@gmail.com' }).expect('Content-Type', 'application/json').expect(403, { error: "L'utente con quella email è già invitato a quell'evento" });
+      set('x-access-token', token).send({ email: 'gg.tt@gmail.com' }).expect('Content-Type', 'application/json; charset=utf-8').expect(403, { error: "L'utente con quella email è già invitato a quell'evento" });
   });
 
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email non è passata", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
-      set('x-access-token', token).expect('Content-Type', 'application/json').expect(400, { error: "Campo vuoto o indefinito" });
+      set('x-access-token', token).expect('Content-Type', 'application/json; charset=utf-8').expect(400, { error: "Campo vuoto o indefinito" });
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente non sia organizzatore dell'evento", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
-      set('x-access-token', token1).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', 'application/json').expect(403, { error: "L'utente non può invitare ad un evento che non è suo" });
+      set('x-access-token', token1).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', 'application/json; charset=utf-8').expect(403, { error: "L'utente non può invitare ad un evento che non è suo" });
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente associato all'email passata sia già partecipante all'evento", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id1 + '/Inviti').
-      set('x-access-token', token3).send({ email: 'gg.et@gmail.com' }).expect('Content-Type', 'application/json').expect(403, { error: "evento non disponibile" });
+      set('x-access-token', token3).send({ email: 'gg.et@gmail.com' }).expect('Content-Type', 'application/json; charset=utf-8').expect(403, { error: "evento non disponibile" });
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'evento non sia disponibile", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id1 + '/Inviti').
-      set('x-access-token', token2).send({ email: 'gg.aa@gmail.com' }).expect('Content-Type', 'application/json').expect(403, { error: "evento non disponibile" });
+      set('x-access-token', token2).send({ email: 'gg.aa@gmail.com' }).expect('Content-Type', 'application/json; charset=utf-8').expect(403, { error: "evento non disponibile" });
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente indica la sua stessa email per l'invito", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti')
-      .set('x-access-token', token).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', 'application/json')
+      .set('x-access-token', token).send({ email: 'gg.ee@gmail.com' }).expect('Content-Type', 'application/json; charset=utf-8')
       .expect(403, { error: "L'utente non può auto invitarsi" });
   });
 });

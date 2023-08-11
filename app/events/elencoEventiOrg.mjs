@@ -9,7 +9,7 @@ import { Validator } from 'node-input-validator';
 
 var limiter = RateLimit({
     windowMs: 1 * 20 * 1000, //20 seconds
-    max: 1, //Limit each IP to 1 request per 20 seconds
+    max: 10, //Limit each IP to 10 requests per 20 seconds
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });

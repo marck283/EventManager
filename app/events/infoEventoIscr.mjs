@@ -12,7 +12,7 @@ import biglietti from '../collezioni/biglietti.mjs';
 
 var limiter = RateLimit ({
     windowMs: 1*60*1000, //1 minute
-    max: 1, //Limit each IP to 1 request per minute
+    max: 10, //Limit each IP to 10 requests per minute
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });

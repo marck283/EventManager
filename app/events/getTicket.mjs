@@ -8,7 +8,7 @@ const router = Router();
 
 var limiter = RateLimit({
     windowMs: 1 * 10 * 1000, //10 seconds
-    max: 1, //Limit each IP to 1 request every 10 seconds
+    max: 10, //Limit each IP to 10 requests every 10 seconds
     message: async () => "Hai raggiunto il numero massimo di richieste al minuto.",
     statusCode: 429
 });
