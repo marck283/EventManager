@@ -1,7 +1,13 @@
 var getId = id => document.getElementById(id);
 
 var requestOrg = () => {
-    fetch("../api/v2/EventOrgList")
+    var token = localStorage.getItem("token");
+    fetch("../api/v2/EventOrgList", {
+        method: "GET",
+        headers: {
+            "x-access-token": token
+        }
+    })
     .then(resp => {
         switch(resp.status) {
             case 200: {
@@ -19,7 +25,6 @@ var requestOrg = () => {
 
 var request = (passato, idElem, listType, nomeAtt = "", categoria = "", durata = "", indirizzo = "", citta = "") => {
     var api = "", token = localStorage.getItem("token");
-    console.log(token);
     if(listType === "pers") {
         api = "/api/v2/eventiCalendarioPersonale/?passato=" + passato;
     } else {
