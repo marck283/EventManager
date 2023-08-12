@@ -21,10 +21,13 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     d = '2010-05-11';
     h = '11:33';
     eventsPubSpy = jest.spyOn(eventPublic, 'find').mockImplementation(criterias => {
-      return [
-        {id:'9876543', durata: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['1234']}], organizzatoreID: '1234', recensioni: [recensione]},
-        {id:'987653', durata: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['2222','1234']}], organizzatoreID: '123', recensioni: [recensione]}
-      ]
+      var res = [];
+      if(criterias.$or == [{"luogoEv.partecipantiID": {$in: ["2222"]}}, {"organizzatoreID": {$eq: "2222"}}]) {
+        res.push([
+          {id:'987653', durata: 2, categoria: 'svago', nomeAtt: 'Event', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: d, ora: h, maxPers: 2, partecipantiID: ['2222','1234']}], organizzatoreID: '123', recensioni: [recensione]}
+        ]);
+      }
+      return res;
     });
     eventsPerSpy = jest.spyOn(eventPersonal, 'find').mockImplementation(criterias => {
       if(criterias.organizzatoreID.$eq == '2222') {
@@ -36,10 +39,14 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
       }
     });
     eventsPrivSpy = jest.spyOn(eventPrivate, 'find').mockImplementation(criterias => {
-      return [
-        {id:'75975947', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']}], organizzatoreID: '1111'},
-        {id:'785478458', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}], organizzatoreID: '2222'}
-      ]
+      var res = [];
+      if(criterias.$or == [{"luogoEv.partecipantiID": {$in: ["2222"]}}, {"organizzatoreID": {$eq: "2222"}}]) {
+        res.push([
+          {id:'75975947', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['1111','1234','2222'], invitatiID: ['2323']}], organizzatoreID: '1111'},
+          {id:'785478458', durata: 4, categoria: 'operazione', nomeAtt: 'Eventt', luogoEv: [{indirizzo: 'via rossi', citta: 'Trento', data: '2010-05-11', ora: '11:33', partecipantiID: ['2222','1234','1111'], invitatiID: ['2323']}], organizzatoreID: '2222'}
+        ]);
+      }
+      return res;
     });
     userSpy = jest.spyOn(User, 'findById').mockImplementation(criterias => {
       if(criterias.id === '2222') {
@@ -68,9 +75,9 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
     h = null;
   });
 
-  it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati che l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
+  it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso ci siano eventi pubblici o privati a cui l'utente si è iscritto o creato, oppure ci siano eventi personali che l'utente ha creato ", async () => {
     // create a valid token
-    const response = await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
+    const response = await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "true"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2222", 3600)).
     expect('Content-Type', /json/);
     expect(response.statusCode).toBe(200);
@@ -92,7 +99,7 @@ describe('GET /api/v2/eventiCalendarioPersonale', () => {
   });
 
   it("GET /api/v2/eventiCalendarioPersonale da autenticati, quindi con token valido, nel caso non ci siano eventi pubblici o privati che l'utente si è iscritto o creato, e non ci siano eventi personali che l'utente ha creato ", async () => {
-    await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "False"}).
+    await request(app).get('/api/v2/eventiCalendarioPersonale').query({passato: "false"}).
     set('x-access-token', createToken("gg.ee@gmail.com", "2223", 3600)).
     expect('Content-Type', /json/).
     expect(404, {error:"Non esiste alcun evento programmato."});

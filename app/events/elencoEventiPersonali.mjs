@@ -22,8 +22,7 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var filterArr = (e/*, userID*/) => e.luogoEv != undefined && e.luogoEv.length > 0/* && e.partecipantiID.includes(userID)*/;
-//var filterArrPers = e => e.luogoEv != undefined && e.luogoEv.length > 0;
+var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, "luogoEv.partecipantiID": {$in: [userId]}};
@@ -33,15 +32,15 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
     let priv = eventPrivate.find(obj);
     
     let persVal = await pers, pubVal = await pub, privVal = await priv;
-    if (persVal != undefined && persVal[0] != undefined && filterArr/*Pers*/(persVal[0])) {
+    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0])) {
         eventsPers.push(persVal[0]);
     }
 
-    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0]/*, userId*/)) {
+    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0])) {
         eventsPub.push(pubVal[0]);
     }
 
-    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0]/*, userId*/)) {
+    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0])) {
         eventsPriv.push(privVal[0]);
     } else {
         console.log("uh oh");
@@ -84,22 +83,14 @@ router.get("/:data", async (req, res) => {
     return; //This, along with the elimination of the "send()" call, should avoid the "[ERR_HTTP_HEADERS_SENT]" errors.
 });
 
-var findPubEvents = async (user) => {
-    var eventsPub = await eventPublic.find({});
-
-    //Il motivo per cui qui non restituisce nulla nel caso in cui un utente sia autenticato con Google potrebbe essere che,
-    //all'iscrizione dell'utente all'evento, non utilizzo il campo "sub" ma l'id di MongoDB?
-    //In tal caso, il problema si potrebbe risolvere semplicemente usando il campo "sub" sia qui che per l'iscrizione all'evento...
-    eventsPub = eventsPub.filter(e => (e.luogoEv.filter(l => l.partecipantiID.includes(user)) || e.organizzatoreID == user));
-    return eventsPub;
-};
+var findEvents = async (eventType, user) => await eventType.find({$or: [{"luogoEv.partecipantiID": {$in: [user]}}, {"organizzatoreID": {$eq: user}}]});
 
 var filterEvents = (eventsArr, passato) => {
     var curr = new Date();
     if (passato) {
-        return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) < curr);
+        return eventsArr.filter(e => e.luogoEv.filter(l => new Date(l.data + "Z" + l.ora) < curr).length > 0);
     }
-    return eventsArr.filter(e => new Date(e.data + "Z" + e.ora) >= curr);
+    return eventsArr.filter(e => e.luogoEv.filter(l => new Date(l.data + "Z" + l.ora) >= curr).length > 0);
 };
 
 /**
@@ -135,18 +126,16 @@ router.get("", async (req, res) => {
         user = (await User.findOne({ email: { $eq: req.loggedUser.email } })).id;
     }
 
-    eventsPers = await eventPersonal.find({ organizzatoreID: { $eq: user } }); //Richiedi gli eventi personali.
-    eventsPub = await findPubEvents(user);
-
-    eventsPriv = await eventPrivate.find({$or: [{organizzatoreID: {$eq: user}}, {"luogoEv.partecipantiID": {$in: [user]}}]});
-    //eventsPriv = eventsPriv.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
+    eventsPers = await eventPersonal.find({ "organizzatoreID": { $eq: user } }); //Richiedi gli eventi personali.
+    eventsPub = await findEvents(eventPublic, user);
+    eventsPriv = await findEvents(eventPrivate, user);
 
     const v = new Validator({
         durata: durata,
         passato: req.query.passato
     }, {
         durata: 'integer|min:1',
-        passato: 'required|string|in:True,False'
+        passato: 'required|boolean|in:true,false'
     });
     v.check()
         .then(matched => {
@@ -175,20 +164,13 @@ router.get("", async (req, res) => {
             eventsPub = events[1];
             eventsPriv = events[2];
 
-            switch (req.query.passato) {
-                case "True": {
-                    //Filtro per date passate
-                    eventsPers = filterEvents(eventsPers, true);
-                    eventsPub = filterEvents(eventsPub, true);
-                    eventsPriv = filterEvents(eventsPriv, true);
-                    break;
-                }
-                case "False": {
-                    eventsPub = filterEvents(eventsPub, false);
-                    eventsPriv = filterEvents(eventsPriv, false);
-                    break;
-                }
+            var passato = req.query.passato;
+            if(passato == "false") {
+                passato == "";
             }
+            eventsPers = filterEvents(eventsPers, Boolean(passato));
+            eventsPub = filterEvents(eventsPub, Boolean(passato));
+            eventsPriv = filterEvents(eventsPriv, Boolean(passato));
 
             if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
                 eventsPers = map(eventsPers, "pers", getOrgNames(eventsPers));

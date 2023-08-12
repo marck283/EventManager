@@ -74,7 +74,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
 
     it("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore non numerico", () => {
         return request(app)
-        .get("/api/v2/eventiCalendarioPersonale?passato=False")
+        .get("/api/v2/eventiCalendarioPersonale?passato=false")
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .set('nomeAtt', 'Girare a vuoto')
@@ -88,7 +88,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
 
     it("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
         return request(app)
-        .get("/api/v2/eventiCalendarioPersonale?passato=False")
+        .get("/api/v2/eventiCalendarioPersonale?passato=false")
         .set('x-access-token', token)
         .set('Accept', 'application/json')
         .set('nomeAtt', 'Girare a vuoto')

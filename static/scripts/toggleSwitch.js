@@ -80,16 +80,16 @@ var showIfChecked = pageType => {
         getId("indirizzo").value = "";
         getId("citta").value = "";
 
-        request("False", "elencoEventi", pageType);
+        request("false", "elencoEventi", pageType);
 
         //Se la chiamata a questa funzione proviene dalla pagina dell'elenco personale di eventi, allora mostro lo storico degli eventi.
         if(pageType == "pers") {
-            request("True", "storicoEventi", pageType);
+            request("true", "storicoEventi", pageType);
             getId("storicoEventiContainer").style.display = "block";
             getId("storicoEventi").style.display = "block";
         }
     } else {
-        request("False", "eventLists", pageType);
+        request("false", "eventLists", pageType);
         getId("calendarWrapper").style.display = "none";
         getId("divCal").style.display = "none";
         getId("myPopup1").style.display = "none";
