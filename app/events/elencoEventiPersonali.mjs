@@ -22,25 +22,26 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
+var filterArr = (e, userID) => e.luogoEv != undefined && e.luogoEv.length > 0 && e.partecipantiID.includes(userID);
+var filterArrPers = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
-    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, "userId": {$in: [userId, "$luogoEv.partecipantiID"]}};
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}};
     var org = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, organizzatoreID: {$eq: userId}};
     let pers = eventPersonal.find(org);
     let pub = eventPublic.find(obj);
     let priv = eventPrivate.find(obj);
     
     let persVal = await pers, pubVal = await pub, privVal = await priv;
-    if (persVal != undefined && persVal[0] != undefined && filterArr(persVal[0])) {
+    if (persVal != undefined && persVal[0] != undefined && filterArrPers(persVal[0])) {
         eventsPers.push(persVal[0]);
     }
 
-    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0])) {
+    if (pubVal != undefined && pubVal[0] != undefined && filterArr(pubVal[0], userId)) {
         eventsPub.push(pubVal[0]);
     }
 
-    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0])) {
+    if (privVal != undefined && privVal[0] != undefined && filterArr(privVal[0], userId)) {
         eventsPriv.push(privVal[0]);
     } else {
         console.log("uh oh");
