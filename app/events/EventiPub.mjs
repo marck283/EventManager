@@ -39,10 +39,10 @@ router.get('/:id', async (req, res) => {
             luogoEv: eventoPubblico.luogoEv, //Non si potrebbe non restituire gli id dei partecipanti?
             organizzatore: organizzatore.nome,
             eventPic: eventoPubblico.eventPic
-        }).send();
+        });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore nel Server" }).send();
+        res.status(500).json({ error: "Errore nel Server" });
     }
 });
 
