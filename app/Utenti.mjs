@@ -49,9 +49,9 @@ router.get('/me', async (req, res) => {
 
 router.get('/me/Inviti', async (req, res) => {
     try {
-        var IDexample = returnUser(req);
+        var IDexample = await returnUser(req);
 
-        var ListaInviti = await Inviti.find({ utenteid: IDexample });
+        var ListaInviti = await Inviti.find({ utenteid: IDexample.id });
 
         if (ListaInviti.length == 0) {
             res.status(404).json({ error: "Non ci sono inviti per questo utente" }).send();
