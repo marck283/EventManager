@@ -25,7 +25,7 @@ router.use(limiter);
 var filterArr = e => e.luogoEv != undefined && e.luogoEv.length > 0;
 
 var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
-    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, "userId": {$in: [userId, "$partecipantiID"]}};
+    var obj = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, "userId": {$in: [userId, "$luogoEv.partecipantiID"]}};
     var org = {_id: {$eq: new mongoose.Types.ObjectId(e)}, "luogoEv.data": {$eq: str}, organizzatoreID: {$eq: userId}};
     let pers = eventPersonal.find(org);
     let pub = eventPublic.find(obj);
