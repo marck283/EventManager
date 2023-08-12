@@ -22,10 +22,12 @@ fetch('../api/v2/EventiPubblici/' + id)
                         let nomeAtt = document.getElementsByTagName("h1");
                         nomeAtt[0].textContent = resp.nomeAtt;
 
+                        var luogoEv = resp.luogoEv[0];
+
                         let data = document.getElementById("data");
-                        data.textContent = resp.data;
+                        data.textContent = luogoEv.data;
                         let ora = document.getElementById("ora");
-                        ora.textContent = resp.ora;
+                        ora.textContent = luogoEv.ora;
                         let durata = document.getElementById("durata");
                         durata.textContent = resp.durata;
 
@@ -33,20 +35,20 @@ fetch('../api/v2/EventiPubblici/' + id)
                         categoria.textContent = resp.categoria;
 
                         let indirizzo = document.getElementById("indirizzo");
-                        indirizzo.textContent = resp.luogoEv.indirizzo;
+                        indirizzo.textContent = luogoEv.indirizzo;
                         let citta = document.getElementById("citta");
-                        citta.textContent = resp.luogoEv.citta;
+                        citta.textContent = luogoEv.citta;
 
                         let organizzatore = document.getElementById("organizzatore");
                         organizzatore.textContent = resp.organizzatore;
 
                         let maxPers = document.getElementById("maxPers");
-                        maxPers.textContent = resp.maxPers;
+                        maxPers.textContent = luogoEv.maxPers;
                         let numPers = document.getElementById("numPers");
-                        numPers.textContent = resp.partecipanti.length;
+                        numPers.textContent = luogoEv.partecipantiID.length;
 
                         let partecipanti = document.getElementById("partecipanti");
-                        partecipanti.textContent = resp.partecipanti;
+                        partecipanti.textContent = luogoEv.partecipantiID;
 
                         let img = document.createElement("img");
                         img.src = resp.eventPic;
