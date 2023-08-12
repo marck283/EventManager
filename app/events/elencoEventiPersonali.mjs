@@ -137,7 +137,8 @@ router.get("", async (req, res) => {
 
     eventsPers = await eventPersonal.find({ organizzatoreID: { $eq: user } }); //Richiedi gli eventi personali.
     eventsPub = await findPubEvents(user);
-    eventsPriv = await eventPrivate.find({$or: [{organizzatoreID: {$eq: user}}, {$in: [user, '$partecipantiID']}]});
+
+    eventsPriv = await eventPrivate.find({$or: [{organizzatoreID: {$eq: user}}, {"luogoEv.partecipantiID": {$in: [user]}}]});
     //eventsPriv = eventsPriv.filter(e => (e.partecipantiID.includes(user) || e.organizzatoreID == user));
 
     const v = new Validator({
