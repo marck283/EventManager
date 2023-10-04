@@ -159,7 +159,7 @@ router.post('', (req, res) => {
 				return;
 			}
 
-			/*//No authentication with Google identity provider, so use email and password
+			//No authentication with Google identity provider, so use email and password
 			const v1 = new Validator({
 				email: req.body.email,
 				password: req.body.password
@@ -197,7 +197,7 @@ router.post('', (req, res) => {
 								}).send();
 							});
 					}
-				})*/
+				});
 		})
 		.catch(err => console.log(err));
 	return;
