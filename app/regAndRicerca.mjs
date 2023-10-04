@@ -50,12 +50,12 @@ router.get("", async (req, res) => {
                 };
             });
 
-            res.status(200).json({ utenti: utenti }).send();
+            res.status(200).json({ utenti: utenti });
             return;
         })
         .catch(error => {
             console.log(error);
-            res.status(500).json({error: "Errore interno al server."}).send();
+            res.status(500).json({error: "Errore interno al server."});
             return;
         })
 });
