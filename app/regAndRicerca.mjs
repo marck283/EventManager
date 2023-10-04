@@ -73,16 +73,20 @@ router.patch('', async (req, res) => {
             if (!matched) {
                 res.status(400).json({ error: "Campo vuoto o indefinito." }).send();
             } else {
-                var utente = await Utente.findOne({ email: { $eq: req.body.email } }).exec(); //Questa exec() è proprio necessaria?
+                var utente = await Utente.findOne({ email: { $eq: req.body.email } });
                 if (utente == undefined) {
                     res.status(404).json({ error: "Utente non trovato." }).send();
                     return;
                 }
-                _hash(req.body.psw, saltRounds, (err, hash) => {
-                    utente.password = hash;
+                _hash(req.body.psw, saltRounds, async (err, hash) => {
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        utente.password = hash;
+                        await utente.save();
+                        res.status(200).json({ message: "Password modificata con successo." }).send();
+                    }
                 });
-                await utente.save();
-                res.status(200).json({ message: "Password modificata con successo." }).send();
             }
         })
         .catch(error => {

@@ -4,6 +4,8 @@ import { Validator } from 'node-input-validator';
 import { Message, SMTPClient } from 'emailjs';
 import Utente from './collezioni/utenti.mjs';
 
+const saltRounds = 10;
+
 router.post('', async (req, res) => {
     //Implement mail sending
     const v = new Validator({
@@ -86,11 +88,16 @@ router.patch('', async (req, res) => {
             return;
         }
 
-        let password = req.body.psw;
-        user.password = password;
-        await user.save();
-        res.status(201).json({message: "Password successfully updated!"});
-        return;
+        _hash(req.body.psw, saltRounds, async (err, hash) => {
+            if(err) {
+                console.log(err);
+            } else {
+                user.password = hash;
+                await user.save();
+                res.status(201).json({message: "Password successfully updated!"});
+                return;
+            }
+        });
     })
     .catch(error => {
         console.log(error);
