@@ -98,6 +98,11 @@ router.patch('', async (req, res) => {
             return;
         }
     })
+    .catch(error => {
+        console.log(error);
+        res.status(500).json({error: "Internal server error."});
+        return;
+    })
 });
 
 export default router;
