@@ -8,6 +8,7 @@ import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
 import login from './facebookLogin.mjs';
 import _verify from 'jsonwebtoken';
+import { compare } from 'bcrypt';
 
 var limiter = RateLimit({
 	windowMs: 1 * 60 * 1000, //1 minute

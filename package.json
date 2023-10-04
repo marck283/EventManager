@@ -23,7 +23,7 @@
     "@google-cloud/local-auth": "^3.0.0",
     "@googlemaps/google-maps-services-js": "^3.3.37",
     "babel-jest": "^29.2.2",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "core-js": "^3.27.2",
     "cors": "^2.8.5",
