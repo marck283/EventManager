@@ -4,6 +4,7 @@ import { Validator } from 'node-input-validator';
 import { Message, SMTPClient } from 'emailjs';
 import Utente from './collezioni/utenti.mjs';
 
+console.log("ADMIN EMAIL: " + process.env.ADMIN_EMAIL);
 const client = new SMTPClient({
 	user: process.env.ADMIN_USER,
 	password: process.env.EMAIL_PASS,
@@ -33,7 +34,6 @@ router.post('', async (req, res) => {
         }
         let emailText = "Dear " + userTo + ",\nIn order to reset Your password, go to https://eventmanager-uo29.onrender.com/pswRecovery.html.\
         \nBest regards!\n\nThe EventManager development team";
-        console.log("ADMIN EMAIL: " + process.env.ADMIN_EMAIL);
         try {
             let msg = new Message({
                 text: emailText,
