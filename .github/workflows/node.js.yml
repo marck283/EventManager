@@ -21,6 +21,7 @@ jobs:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
       DB_URL: ${{ secrets.DB_URL }}
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
     strategy:
       matrix:
