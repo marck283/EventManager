@@ -3,6 +3,7 @@ const router = Router();
 import { Validator } from 'node-input-validator';
 import { Message, SMTPClient } from 'emailjs';
 import Utente from './collezioni/utenti.mjs';
+import { hash as _hash } from 'bcrypt';
 
 const saltRounds = 10;
 
