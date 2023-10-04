@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export default {
   collectCoverage: true,
   coverageDirectory: "coverage",

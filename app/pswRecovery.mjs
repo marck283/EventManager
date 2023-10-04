@@ -46,15 +46,20 @@ router.post('', async (req, res) => {
             .json({message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."})
             .send();
         } catch (err) {
-            res.status(500).json("Internal server error.").send();
+            res.status(500).json({error: "Internal server error."}).send();
             console.log(err);
+        } finally {
+            user = null;
+            msg = null;
+            emailText = null;
             return;
         }
     })
     .catch(error => {
-        res.status(500).json("Internal server error.").send();
+        if(!res.headersSent) {
+            res.status(500).json({error: "Internal server error."}).send();
+        }
         console.log(error);
-        return;
     })
 });
 
