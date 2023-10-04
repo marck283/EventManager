@@ -22,6 +22,7 @@ jobs:
       DB_URL: ${{ secrets.DB_URL }}
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
     strategy:
       matrix:
