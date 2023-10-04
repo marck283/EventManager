@@ -51,8 +51,13 @@ router.get("", async (req, res) => {
             });
 
             res.status(200).json({ utenti: utenti }).send();
+            return;
         })
-    return;
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({error: "Errore interno al server."}).send();
+            return;
+        })
 });
 
 router.patch('', async (req, res) => {

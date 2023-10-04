@@ -4,14 +4,14 @@ var clearAll = () => {
     document.getElementById('pswConfirm').value = "";
 }
 
-var fetchAndUpdate = newPsw => {
+var fetchAndUpdate = (userEmail, newPsw) => {
     fetch('../api/v2/Utenti', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            email: document.getElementById('email').value,
+            email: userEmail,
             psw: newPsw
         })
     })
@@ -49,7 +49,7 @@ var send = () => {
     .then(resp => {
         switch(resp.status) {
             case 200: {
-                fetchAndUpdate(newPsw);
+                fetchAndUpdate(email, newPsw);
                 break;
             }
             case 404: {
