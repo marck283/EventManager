@@ -65,4 +65,39 @@ router.post('', async (req, res) => {
         })
 });
 
+router.patch('', async (req, res) => {
+    const v = new Validator({
+        email: req.body.email,
+        newPsw: req.body.psw
+    }, {
+        email: 'required|email',
+        newPsw: 'required|string|minLength:8'
+    });
+    v.check().then(async matched => {
+        if(!matched) {
+            console.log(v.errors);
+            res.status(400).json({error: "One of the two required parameters (email and password) has not been given or contains an illegal value."});
+            return;
+        }
+        let email = req.body.email;
+        let user = await Utente.findOne({email: {$eq: email}});
+        if(!user) {
+            res.status(404).json({error: "User not found."});
+            return;
+        }
+
+        try {
+            let password = req.body.psw;
+            user.password = password;
+            await user.save();
+            res.status(201).json({message: "Pasword successfully updated!"});
+            return;
+        } catch(error) {
+            console.log(error);
+            res.status(500).json({error: "Internal server error."});
+            return;
+        }
+    })
+});
+
 export default router;

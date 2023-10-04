@@ -5,7 +5,7 @@ var clearAll = () => {
 }
 
 var fetchAndUpdate = (userEmail, newPsw) => {
-    fetch('../api/v2/Utenti', {
+    fetch('../api/v2/RecuperoPassword', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
