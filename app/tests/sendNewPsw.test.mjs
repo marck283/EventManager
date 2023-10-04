@@ -4,8 +4,11 @@ import {jest} from '@jest/globals';
 import Utente from '../collezioni/utenti.mjs';
 
 describe('POST /api/v2/RecuperoPassword', () => {
+
+    var userMock;
+
     beforeAll(() => {
-        const userMock = jest.spyOn(Utente, "findOne").mockImplementation(criterias => {
+        userMock = jest.spyOn(Utente, "findOne").mockImplementation(criterias => {
             if(criterias.email.$eq == "aabb12@gmail.com") {
                 return {
                     _id: 6542,
@@ -18,6 +21,7 @@ describe('POST /api/v2/RecuperoPassword', () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
+        userMock = null;
     });
 
     it("POST /api/v2/RecuperoPassword test reset password", async () => {
