@@ -17,7 +17,7 @@ var fetchAndUpdate = (userEmail, newPsw) => {
     })
     .then(resp => {
         switch(resp.status) {
-            case 200: {
+            case 201: {
                 resp.json().then(data => alert(data.message));
                 break;
             }
