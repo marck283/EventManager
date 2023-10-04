@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 import { Validator } from 'node-input-validator';
-import { SMTPClient } from 'emailjs';
+import { Message, SMTPClient } from 'emailjs';
 import Utente from './collezioni/utenti.mjs';
 
 const client = new SMTPClient({
@@ -34,12 +34,13 @@ router.post('', async (req, res) => {
         let emailText = "Dear " + userTo + ",\nIn order to reset Your password, go to https://eventmanager-uo29.onrender.com/pswRecovery.html.\
         \nBest regards!\n\nThe EventManager development team";
         try {
-            await client.sendAsync({
+            let msg = new Message({
                 text: emailText,
                 from: process.env.ADMIN_EMAIL,
                 to: userTo,
                 subject: 'Password reset',
             });
+            await client.sendAsync(msg);
             console.log("EMAIL SENT");
             res.status(201)
             .json({message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."})
