@@ -88,7 +88,7 @@ router.patch('', async (req, res) => {
             return;
         }
 
-        _hash(req.body.psw, saltRounds, async (err, hash) => {
+        _hash(req.body.psw, user.salt, async (err, hash) => {
             if(err) {
                 console.log(err);
             } else {
