@@ -80,9 +80,6 @@ var login = (gresponse = null) => {
                 resp.json().then(data => alert(data.message));
                 break;
             }
-            default: {
-                console.log("error");
-            }
         }
         return;
     }).catch( error => console.error(error) ); // If there is any error you will catch them here
