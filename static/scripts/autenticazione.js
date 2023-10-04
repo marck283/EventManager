@@ -52,7 +52,7 @@ var login = (gresponse = null) => {
         //tokenChecker module.
         localStorage.setItem('token', gresponse);
     }
-    fetch('../api/v2/authentications', {
+    fetch('/api/v2/authentications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
