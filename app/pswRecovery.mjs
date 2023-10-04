@@ -86,17 +86,11 @@ router.patch('', async (req, res) => {
             return;
         }
 
-        try {
-            let password = req.body.psw;
-            user.password = password;
-            await user.save();
-            res.status(201).json({message: "Pasword successfully updated!"});
-            return;
-        } catch(error) {
-            console.log(error);
-            res.status(500).json({error: "Internal server error."});
-            return;
-        }
+        let password = req.body.psw;
+        user.password = password;
+        await user.save();
+        res.status(201).json({message: "Password successfully updated!"});
+        return;
     })
     .catch(error => {
         console.log(error);
