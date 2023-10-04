@@ -171,14 +171,14 @@ router.post('', (req, res) => {
 			v1.check()
 				.then(async matched => {
 					if (!matched) {
-						res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
+						res.status(400).json(result(undefined, undefined, undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
 					} else {
 						// find the user
 						let user = await Utente.findOne({ email: { $eq: req.body.email } });
 
 						// user not found
 						if (!user) {
-							res.status(404).json(result(undefined, undefined, undefined, true, "Autenticazione fallita. Utente non trovato.")).send();
+							res.status(404).json(result(undefined, undefined, undefined, undefined, undefined, true, "Autenticazione fallita. Utente non trovato.")).send();
 							return;
 						}
 
@@ -186,22 +186,27 @@ router.post('', (req, res) => {
 						compare(req.body.password, user.password)
 							.then(result1 => {
 								if (!result1) {
-									res.status(403).json(result(undefined, undefined, undefined, true, "Autenticazione fallita. Password sbagliata.")).send();
+									res.status(403).json(result(undefined, undefined, undefined, undefined, undefined, true, "Autenticazione fallita. Password sbagliata.")).send();
 								} else {
-									res.status(200).json(result(createToken(user.email, user._id, 172800), user.email, user._id)).send();
+									res.status(200).json(result(createToken(user.email, user._id, 172800), user.email, user._id, user.profilePic, false, "Autenticazione completata.")).send();
 								}
+								return;
 							})
 							.catch(err => {
 								console.log(err);
 								res.status(500).json({
 									error: "Errore interno al server."
 								}).send();
+								return;
 							});
 					}
 				});
 		})
-		.catch(err => console.log(err));
-	return;
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({error: "Errore interno al server."}).send();
+			return;
+		});
 });
 
 router.post("/facebookLogin", async (req, res) => {
