@@ -33,6 +33,7 @@ router.post('', async (req, res) => {
         }
         let emailText = "Dear " + userTo + ",\nIn order to reset Your password, go to https://eventmanager-uo29.onrender.com/pswRecovery.html.\
         \nBest regards!\n\nThe EventManager development team";
+        console.log("ADMIN EMAIL: " + process.env.ADMIN_EMAIL);
         try {
             let msg = new Message({
                 text: emailText,
@@ -42,6 +43,7 @@ router.post('', async (req, res) => {
             });
             await client.sendAsync(msg);
             console.log("EMAIL SENT");
+            msg = null;
             res.status(201)
             .json({message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."})
             .send();
@@ -50,7 +52,6 @@ router.post('', async (req, res) => {
             console.log(err);
         } finally {
             user = null;
-            msg = null;
             emailText = null;
             return;
         }
