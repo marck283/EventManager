@@ -27,7 +27,7 @@ describe('POST /api/v2/RecuperoPassword', () => {
     it("POST /api/v2/RecuperoPassword test reset password", async () => {
         await request(app).post("/api/v2/RecuperoPassword")
         .set('Accept', 'application/json')
-        .send({email: "aabb12@gmail.com"})
+        .send({"email": "aabb12@gmail.com"})
         .expect('Content-Type', /json/)
         .expect(201, {message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."});
     });
