@@ -3,7 +3,7 @@ const router = Router();
 import { Validator } from 'node-input-validator';
 import { Message, SMTPClient } from 'emailjs';
 import Utente from './collezioni/utenti.mjs';
-import { hash as _hash } from 'bcrypt';
+import { hash as _hash, genSalt } from 'bcrypt';
 
 const saltRounds = 10;
 
@@ -77,34 +77,44 @@ router.patch('', async (req, res) => {
         newPsw: 'required|string|minLength:8'
     });
     v.check().then(async matched => {
-        if(!matched) {
+        if (!matched) {
             console.log(v.errors);
-            res.status(400).json({error: "One of the two required parameters (email and password) has not been given or contains an illegal value."});
+            res.status(400).json({ error: "One of the two required parameters (email and password) has not been given or contains an illegal value." });
             return;
         }
         let email = req.body.email;
-        let user = await Utente.findOne({email: {$eq: email}});
-        if(!user) {
-            res.status(404).json({error: "User not found."});
+        let user = await Utente.findOne({ email: { $eq: email } });
+        if (!user) {
+            res.status(404).json({ error: "User not found." });
             return;
         }
 
-        _hash(req.body.psw, user.salt, async (err, hash) => {
-            if(err) {
+        await genSalt(saltRounds)
+            .then(salt => {
+                _hash(req.body.psw, salt, async (err, hash) => {
+                    if (err) {
+                        console.log(err);
+                        throw err;
+                    } else {
+                        user.password = hash;
+                        user.salt = salt;
+                        await user.save();
+                        res.status(201).json({ message: "Password successfully updated!" });
+                        return;
+                    }
+                });
+            })
+            .catch(err => {
                 console.log(err);
-            } else {
-                user.password = hash;
-                await user.save();
-                res.status(201).json({message: "Password successfully updated!"});
+                res.status(500).json({ error: "Internal server error." });
                 return;
-            }
-        });
+            });
     })
-    .catch(error => {
-        console.log(error);
-        res.status(500).json({error: "Internal server error."});
-        return;
-    })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ error: "Internal server error." });
+            return;
+        })
 });
 
 export default router;
