@@ -40,7 +40,7 @@ var send = () => {
 
     //Fetch user, check password inequality and return true or false
     if(password !== pswC) {
-        console.log("Password non corrispondenti.");
+        alert("Password non corrispondenti.");
         return false;
     }
 
