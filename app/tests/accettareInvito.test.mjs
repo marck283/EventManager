@@ -18,7 +18,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
             if(criterias == '6543') {
                 return {
                     _id: '6543',
-                    data: ['12-12-2023'],
+                    data: [new Date().toISOString().split('T')[0].split('-').reverse().join('-')],
                     ora: '06:37',
                     durata: 1,
                     categoria: 'svago',
