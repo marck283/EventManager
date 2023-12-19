@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/marck283/EventManager#readme",
   "dependencies": {
+    "@emailjs/nodejs": "^2.2.0",
     "@google-cloud/local-auth": "^3.0.0",
     "@googlemaps/google-maps-services-js": "^3.3.37",
     "babel-jest": "^29.2.2",
@@ -31,7 +32,6 @@
     "csurf": "^1.11.0",
     "degenerator": "^5.0.0",
     "dotenv": "^16.0.1",
-    "emailjs": "^4.0.3",
     "express": "^4.18.1",
     "express-rate-limit": "^7.0.2",
     "firebase": "^10.1.0",
