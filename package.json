@@ -43,7 +43,7 @@
     "jose": "^5.1.1",
     "json5": "^2.2.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^8.0.0",
+    "mongoose": "^8.0.3",
     "node": "^21.1.0",
     "node-input-validator": "^4.5.1",
     "nopt": "^7.2.0",
@@ -55,9 +55,6 @@
     "superagent": "^8.0.8"
   },
   "overrides": {
-    "mongoose": {
-      "fast-xml-parser": "^4.1.2"
-    },
     "superagent": {
       "qs": "^6.10.3"
     }
