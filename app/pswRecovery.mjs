@@ -28,8 +28,6 @@ router.post('', async (req, res) => {
             res.status(404).json({ error: "Utente non trovato." }).send();
             return;
         }
-        let emailText = "Dear " + userTo + ",\nIn order to reset Your password, go to https://eventmanager-uo29.onrender.com/pswRecovery.html.\
-        \nBest regards!\n\nThe EventManager development team";
         try {
             await emailjs.send(process.env.EMAIL_SERVICE, process.env.EMAIL_TEMPLATE, {
                 to_email: userTo
@@ -45,7 +43,6 @@ router.post('', async (req, res) => {
             console.log(err);
         } finally {
             user = null;
-            emailText = null;
             return;
         }
     })
