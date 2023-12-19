@@ -22,7 +22,10 @@ jobs:
       DB_URL: ${{ secrets.DB_URL }}
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }}
+      EMAIL_TEMPLATE: ${{ secrets.EMAIL_TEMPLATE }}
+      PUB_EMAIL_KEY: ${{ secrets.PUB_EMAIL_KEY }}
+      PRIVATE_EMAIL_KEY: ${{ secrets.PRIVATE_EMAIL_KEY }}
       ADMIN_USER: ${{ secrets.ADMIN_USER }}
 
     strategy:
