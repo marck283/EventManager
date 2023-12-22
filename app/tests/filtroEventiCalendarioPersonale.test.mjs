@@ -5,9 +5,10 @@ import eventPers from '../collezioni/eventPersonal.mjs';
 import eventPub from '../collezioni/eventPublic.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import {jest} from '@jest/globals';
+import User from '../collezioni/utenti.mjs';
 
 describe("GET /api/v2/eventiCalendarioPersonale", () => {
-    let mockFindPers, mockFindPub, mockFindPriv;
+    let mockFindPers, mockFindPub, mockFindPriv, mockFindUser;
     beforeAll(() => {
         jest.useFakeTimers();
         mockFindPub = jest.spyOn(eventPub, "find").mockImplementation(criterias => {
@@ -59,6 +60,16 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
                 invitatiID: ["1234", "2134"]
             }];
         });
+        mockFindUser = jest.spyOn(User, "findById").mockImplementation(criterias => {
+            if(criterias == "62993bc81430d0dd9a208934") {
+                return {
+                    nome: "Giulio",
+                    EventiIscrtto: [],
+                    EventiCreati: ["12344", "12345", "12346"]
+                };
+            }
+            return {};
+        });
     });
 
     afterAll(async () => {
@@ -67,6 +78,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         mockFindPub = null;
         mockFindPers = null;
         mockFindPriv = null;
+        mockFindUser = null;
     });
 
     // create a valid token
@@ -98,5 +110,14 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('citta', 'Mortara')
         .send()
         .expect(400, {error: "Richiesta malformata."});
+    });
+
+    it("GET /api/v2/eventiCalendarioPersonale per cui nessun evento e' organizzato per la data richiesta", () => {
+        return request(app)
+        .get("/api/v2/eventiCalendarioPersonale/06-27-2023")
+        .set('x-access-token', token)
+        .set('Accept', 'application/json')
+        .send()
+        .expect(404, {error: "Non esiste alcun evento programmato per la giornata selezionata."});
     });
 });

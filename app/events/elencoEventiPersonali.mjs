@@ -49,23 +49,34 @@ var findEvent = async (e, eventsPers, eventsPub, eventsPriv, str, userId) => {
 }
 
 router.get("/:data", async (req, res) => {
-    var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
+    const v = new Validator({
+        data: req.params.data
+    }, {
+        data: 'required|dateFormat:MM-DD-YYYY'
+    });
+    v.check()
+    .then(async matched => {
+        if(!matched) {
+            console.log(v.errors);
+            res.status(400).json({error: "Data non valida"});
+            return;
+        }
 
-    if (str == "Invalid Date") {
-        res.status(400).json({ error: "Data non valida" });
-        return;
-    }
+        var str = req.params.data; //Il parametro "data" deve essere parte dell'URI sopra indicato se si vuole accedere a questa proprietà.
 
-    console.log("data:", str);
+        console.log("data:", str);
 
-    var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
+        var eventsPers = [], eventsPub = [], eventsPriv = [], user1 = await returnUser(req);
 
-    for (let e of user1.EventiIscrtto) {
-        await findEvent(e, eventsPers, eventsPub, eventsPriv, str, user1.id);
-    }
-    console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
+        for (let e of user1.EventiIscrtto) {
+            await findEvent(e, eventsPers, eventsPub, eventsPriv, str, user1.id);
+        }
+        console.log(eventsPers.length, eventsPub.length, eventsPriv.length);
 
-    if (eventsPers.length > 0 || eventsPub.length > 0 || eventsPriv.length > 0) {
+        if (eventsPers.length == 0 && eventsPub.length == 0 && eventsPriv.length == 0) {
+            res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
+            return;
+        }
         eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
         eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
 
@@ -77,10 +88,14 @@ router.get("/:data", async (req, res) => {
             eventsPersVal.push(e);
         }
         res.status(200).json({ eventi: eventsPersVal, data: str });
-    } else {
-        res.status(404).json({ error: "Non esiste alcun evento programmato per la giornata selezionata." });
-    }
-    return; //This, along with the elimination of the "send()" call, should avoid the "[ERR_HTTP_HEADERS_SENT]" errors.
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: "Errore interno al server."});
+    })
+    .finally(() => {
+        return; //This, along with the elimination of the "send()" call, should avoid the "[ERR_HTTP_HEADERS_SENT]" errors.
+    });
 });
 
 var findEvents = async (eventType, user) => await eventType.find({$or: [{"luogoEv.partecipantiID": {$in: [user]}}, {"organizzatoreID": {$eq: user}}]});
