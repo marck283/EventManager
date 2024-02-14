@@ -38,7 +38,7 @@
     "firebase-tools": "^13.0.2",
     "formidable": "^3.5.0",
     "google-auth-library": "^9.0.0",
-    "googleapis": "^132.0.0",
+    "googleapis": "^133.0.0",
     "is-base64": "^1.1.0",
     "jose": "^5.1.1",
     "json5": "^2.2.2",
