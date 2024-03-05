@@ -1,6 +1,7 @@
 var recensisci = () => {
     var url = window.location.href, eventId = url.split("=")[1];
-    var eval = document.getElementById("evaluation").value, description = document.getElementById("description").value;
+    var eval = document.getElementById("evaluation").value;
+    var description = document.getElementById("description").value;
     var token = localStorage.getItem("token");
 
     //Ora invio la recensione con l'id dell'evento e il token
