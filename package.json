@@ -32,7 +32,7 @@
     "csurf": "^1.11.0",
     "degenerator": "^5.0.0",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1",
+    "express": "^4.19.2",
     "express-rate-limit": "^7.0.2",
     "firebase": "^10.8.1",
     "firebase-tools": "^13.4.0",
