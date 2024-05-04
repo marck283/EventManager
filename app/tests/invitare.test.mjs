@@ -26,7 +26,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
     eventsPubSpy = jest.spyOn(eventPublic, 'findById').mockImplementation(criterias => {
       if (criterias == '9876543') {
         let d = new Date();
-        return { _id: '9876543', data: [d.toISOString().split('T')[0].split('-').reverse().join('-')], ora: d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'), durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }
+        return { _id: '9876543', data: [d.toISOString()], ora: d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'), durata: 2, maxPers: 2, categoria: 'svago', nomeAtt: 'Evento', luogoEv: { indirizzo: 'via rossi', citta: 'Trento' }, organizzatoreID: '1234', partecipantiID: ['1234', '12365'] }
       }
 
       if (criterias == '987654') {
