@@ -171,7 +171,7 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             return;
         }
 
-        for (var elem of eventP.data) {
+        for (let elem of eventP.data) {
             let date = new Date(), d1 = new Date(elem);
             let orario = eventP.ora.split(':');
 

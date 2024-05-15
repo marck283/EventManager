@@ -18,7 +18,7 @@ describe('POST /api/v2/EventiPrivati/idEvento/Iscrizioni', () => {
             if(criterias == '6543') {
                 return {
                     _id: '6543',
-                    data: [new Date().toISOString().split('T')[0].split('-').reverse().join('-')],
+                    data: [new Date().toISOString()],
                     ora: '06:37',
                     durata: 1,
                     categoria: 'svago',
