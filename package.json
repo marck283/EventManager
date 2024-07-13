@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/marck283/EventManager#readme",
   "dependencies": {
-    "@emailjs/nodejs": "^2.2.0",
+    "@emailjs/nodejs": "^4.0.4",
     "@google-cloud/local-auth": "^3.0.0",
     "@googlemaps/google-maps-services-js": "^3.3.37",
     "babel-jest": "^29.2.2",
