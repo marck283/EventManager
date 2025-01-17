@@ -37,7 +37,7 @@ router.post('', async (req, res) => {
             });
             console.log("EMAIL SENT");
             res.status(201)
-                .json({ message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino." });
+                .json({ message: "Un'email &egrave; stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino." });
         } catch (err) {
             res.status(500).json({ error: "Internal server error." }).send();
             console.log(err);

@@ -29,7 +29,7 @@ describe('POST /api/v2/RecuperoPassword', () => {
         .set('Accept', 'application/json')
         .send({"email": "aabb12@gmail.com"})
         .expect('Content-Type', /json/)
-        .expect(201, {message: "Un'email è stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."});
+        .expect(201, {message: "Un'email &egrave; stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino."});
     });
 
     it("POST /api/v2/RecuperoPassword test reset password con utente non trovato", async () => {
