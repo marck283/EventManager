@@ -6,13 +6,13 @@ import Inviti from '../collezioni/invit.mjs';
 import Users from '../collezioni/utenti.mjs';
 import biglietti from '../collezioni/biglietti.mjs';
 import { Validator, extend } from 'node-input-validator';
-//const validator = await import("node-input-validator");
 import test from '../hourRegexTest.mjs';
 import dateCheck from '../dateCheck.mjs';
 import geoReq from './geocodingRequest.mjs';
 import returnUser from '../findUser.mjs';
 import mongoose from 'mongoose';
 import RateLimit from 'express-rate-limit';
+import { validate_body, validate_hdrs } from '../validate.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 10 * 1000, //10 seconds
@@ -27,7 +27,13 @@ router.use(limiter);
 
 router.use(json({ limit: "50mb" })); //Limiting the size of the request should avoid "Payload too large" errors
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validate_body({
+    maxPers: 'integer|min:2',
+    nomeAtt: 'string|minLength:1',
+    categoria: 'string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+    indirizzo: 'string|minLength:1',
+    citta: 'string|minLength:1'
+}, "Dati dell'evento non validi."), async (req, res) => {
     try {
         var utent = (await returnUser(req))._id;
         var id_evento = req.params.id;
@@ -42,294 +48,251 @@ router.patch('/:id', async (req, res) => {
             res.status(403).json({ error: "Non sei autorizzato a modificare, terminare od annullare l'evento." });
             return;
         }
-        if (req.body.nomeAtt != "" && req.body.nomeAtt != undefined) {
-            evento.nomeAtt = req.body.nomeAtt;
-        }
-        if (req.body.categoria != "" && req.body.categoria != undefined) {
-            evento.categoria = req.body.categoria
-        }
-        if (req.body.indirizzo != "" && req.body.indirizzo != undefined) {
-            evento.luogoEv.indirizzo = req.body.indirizzo
-        }
-        if (req.body.citta != "" && req.body.citta != undefined) {
-            evento.luogoEv.citta = req.body.citta;
+
+        const maxPers = req.body?.maxPers;
+        const nomeAtt = req.body?.nomeAtt;
+        const categoria = req.body?.categoria;
+        const indirizzo = req.body?.indirizzo;
+        const citta = req.body?.citta;
+
+        if (maxPers != undefined && maxPers != "" && Number(maxPers)) {
+            evento.maxPers = Math.max(maxPers, evento.partecipantiID.length);
         }
 
-        const v = new Validator({
-            maxPers: req.body.maxPers
-        }, {
-            maxPers: 'integer|min:2'
-        });
-        v.check()
-            .then(async matched => {
-                if (!matched) {
-                    res.status(400).json({ error: "Numero massimo partecipanti non valido: formato non valido o valore inferiore a 2." });
-                    return;
-                } else {
-                    if (req.body.maxPers != "" && req.body.maxPers != undefined && Number(req.body.maxPers)) {
-                        evento.maxPers = Math.max(req.body.maxPers, evento.partecipantiID.length);
-                    }
-                    await evento.save();
-                    res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
-                    console.log('Evento pubblico modificato con successo');
-                }
-            });
+        if (nomeAtt != undefined) {
+            evento.nomeAtt = nomeAtt
+        }
+        if (categoria != undefined) {
+            evento.categoria = categoria
+        }
+        if (indirizzo != undefined) {
+            evento.luogoEv.indirizzo = indirizzo
+        }
+        if (citta != undefined) {
+            evento.luogoEv.citta = citta;
+        }
+
+        await evento.save();
+        res.location("/api/v2/EventiPubblici/" + id_evento).status(200).send();
+        console.log('Evento pubblico modificato con successo');
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore lato server." }).send();
     }
 });
 
-router.delete('/:idEvento/Iscrizioni/:idIscr', async (req, res) => {
-    try {
-        //Lega il processo alla data e all'ora comunicate
-        const v = new Validator({
-            data: req.headers.data,
-            ora: req.headers.ora
-        }, {
-            data: 'required|string|minLength:10|maxLength:10',
-            ora: 'required|string|minLength:5|maxLength:5'
-        });
+router.delete('/:idEvento/Iscrizioni/:idIscr', validate_hdrs({
+    data: 'required|string|minLength:10|maxLength:10',
+    ora: 'required|string|minLength:5|maxLength:5'
+}, "Dati dell'evento non validi."), async (req, res) => {
+    var evento = await eventPublic.findById(req.params.idEvento);
+    var utente = req.loggedUser.id || req.loggedUser, utenteObj = req.loggedUser.id;
 
-        v.check()
-            .then(async matched => {
-                if (!matched) {
-                    res.status(400).json({ error: "Richiesta malformata." }).send();
-                    return;
-                }
-                var evento = await eventPublic.findById(req.params.idEvento);
-                var utente = req.loggedUser.id || req.loggedUser, utenteObj = req.loggedUser.id;
-
-                if (utente != req.loggedUser.id) {
-                    utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
-                }
-
-                var iscr = await biglietti.findById(req.params.idIscr);
-
-                if (evento == undefined) {
-                    res.status(404).json({ error: "Non corrisponde alcun evento pubblico all'ID specificato." });
-                    return;
-                }
-
-                if (iscr == undefined) {
-                    res.status(404).json({ error: "Non corrisponde alcuna iscrizione all'ID specificato." });
-                    return;
-                }
-
-                let found = false;
-                for (let l of evento.luogoEv) {
-                    var array1 = l.partecipantiID;
-                    var index1 = array1.indexOf(utenteObj);
-                    if (index1 > -1 && l.data == req.headers.data && l.ora == req.headers.ora) {
-                        array1.splice(index1, 1);
-                        found = true;
-                        evento.partecipantiID = array1;
-                        await evento.save(); //Aggiornamento partecipantiID
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    console.log("OK1");
-                    res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-                    return;
-                }
-
-                utenteObj = await Users.findById(utenteObj);
-
-                if (utenteObj != undefined) {
-                    var array2 = utenteObj.EventiIscrtto;
-                    var index2 = array2.indexOf(req.params.idEvento);
-                    if (index2 > -1) {
-                        array2.splice(index2, 1);
-                    } else {
-                        console.log("OK2");
-                        res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-                        return;
-                    }
-                    utenteObj.EventiIscrtto = array2;
-                    await utenteObj.save(); //Aggiornamento EventiIscritto
-                    await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
-
-                    console.log('Annullamento iscrizione effettuato con successo.');
-
-                    res.status(204).send();
-                } else {
-                    console.log("OK3");
-                    res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
-                    return;
-                }
-            })
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Errore nel Server" }).send();
+    if (utente != req.loggedUser.id) {
+        utenteObj = (await Users.findOne({ email: { $eq: utente.email } })).id;
     }
+
+    var iscr = await biglietti.findById(req.params.idIscr);
+
+    if (evento == undefined) {
+        res.status(404).json({ error: "Non corrisponde alcun evento pubblico all'ID specificato." });
+        return;
+    }
+
+    if (iscr == undefined) {
+        res.status(404).json({ error: "Non corrisponde alcuna iscrizione all'ID specificato." });
+        return;
+    }
+
+    let found = false;
+    for (let l of evento.luogoEv) {
+        var array1 = l.partecipantiID;
+        var index1 = array1.indexOf(utenteObj);
+        if (index1 > -1 && l.data == req.headers.data && l.ora == req.headers.ora) {
+            array1.splice(index1, 1);
+            found = true;
+            evento.partecipantiID = array1;
+            await evento.save(); //Aggiornamento partecipantiID
+            break;
+        }
+    }
+
+    if (!found) {
+        console.log("OK1");
+        res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+        return;
+    }
+
+    utenteObj = await Users.findById(utenteObj);
+
+    if (utenteObj == undefined) {
+        console.log("OK3");
+        res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+        return;
+    }
+
+    var array2 = utenteObj.EventiIscrtto;
+    var index2 = array2.indexOf(req.params.idEvento);
+    if (index2 <= -1) {
+        console.log("OK2");
+        res.status(403).json({ error: "L'utente non risulta iscritto all'evento." }).send();
+        return;
+    }
+
+    array2.splice(index2, 1);
+    utenteObj.EventiIscrtto = array2;
+    await utenteObj.save(); //Aggiornamento EventiIscritto
+    await biglietti.deleteOne({ _id: req.params.idIscr }); //Aggiornamento Biglietto DB
+
+    console.log('Annullamento iscrizione effettuato con successo.');
+
+    res.status(204).send();
 });
 
-router.post('/:id/Iscrizioni', async (req, res) => {
+router.post('/:id/Iscrizioni', validate_body({
+    giorno: 'required|string|minLength:10|maxLength:10|dateFormat:MM-DD-YYYY',
+    ora: 'required|string|minLength:5|maxLength:5'
+}, "Dati dell'evento non validi."), async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
 
     if (utent == req.loggedUser) {
         utent = await Users.findOne({ email: { $eq: utent.email } });
-        if(utent == undefined) {
+        if (utent == undefined) {
             res.status(404).json({ error: "Non corrisponde alcun utente all'email specificata." }).send();
             return;
         }
         utent = utent.id;
     }
 
-    const v = new Validator({
-        giorno: req.body.data,
-        ora: req.body.ora
-    }, {
-        giorno: 'required|string|minLength:10|maxLength:10|dateFormat:MM-DD-YYYY',
-        ora: 'required|string|minLength:5|maxLength:5'
-    });
-    v.check()
-        .then(async matched => {
-            if (!matched) {
-                console.log(v.errors);
-                res.status(400).json({ error: "Richiesta malformata" }).send();
+    const data = req.body?.data;
+    const ora = req.body?.ora;
+
+    try {
+        let error = false;
+        var eventP1 = await eventPublic.find({
+            _id: { $eq: new mongoose.Types.ObjectId(id_evento) },
+            "luogoEv.partecipantiID": { $ne: utent }, organizzatoreID: { $ne: utent }
+        });
+
+        if (eventP1 == undefined || eventP1.length == 0 || eventP1[0].luogoEv == undefined) {
+            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+            return;
+        }
+
+        for (let l of eventP1[0].luogoEv) {
+            if (l.partecipantiID.length == l.maxPers) {
+                res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
                 return;
             }
-            try {
-                let error = false;
-                var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
-                    "luogoEv.partecipantiID": {$ne: utent}, organizzatoreID: {$ne: utent}});
-                
-                if (eventP1 == undefined || eventP1.length == 0 || eventP1[0].luogoEv == undefined) {
-                    res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
-                    return;
-                }
+
+            if (!error && l.data == data && l.ora == ora) {
+                l.partecipantiID.push(utent);
+                await eventP1[0].save();
+
                 console.log("OK");
-                
-                for (let l of eventP1[0].luogoEv) {
-                    if (l.partecipantiID.length == l.maxPers) {
-                        res.status(403).json({ error: "Limite massimo di partecipanti raggiunto per questo evento." }).send();
-                        return;
+
+                let data = {
+                    idUtente: utent,
+                    idEvento: id_evento
+                };
+
+                let stringdata = JSON.stringify(data);
+
+                //Print QR code to file using base64 encoding
+                var idBigl = "";
+
+                toDataURL(stringdata, async function (err, qrcode) {
+                    if (err) {
+                        throw Error("Errore creazione biglietto");
                     }
 
-                    if (!error && l.data == req.body.data && l.ora == req.body.ora) {
-                        l.partecipantiID.push(utent);
-                        await eventP1[0].save();
+                    var bigl = new biglietti({
+                        eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: data,
+                        ora: ora
+                    });
 
-                        console.log("OK");
+                    idBigl = bigl._id;
+                    return await bigl.save();
+                });
+                console.log("OK");
 
-                        let data = {
-                            idUtente: utent,
-                            idEvento: id_evento
-                        };
+                //Si cerca l'utente da iscrivere all'evento
+                let utente = await Users.findById(utent);
+                utente.EventiIscrtto.push(id_evento);
+                await utente.save();
+                console.log("OK");
 
-                        let stringdata = JSON.stringify(data);
+                res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
 
-                        //Print QR code to file using base64 encoding
-                        var idBigl = "";
-
-                        toDataURL(stringdata, async function (err, qrcode) {
-                            if (err) {
-                                throw Error("Errore creazione biglietto");
-                            }
-
-                            var bigl = new biglietti({
-                                eventoid: id_evento, utenteid: utent, qr: qrcode, tipoevento: "pub", giorno: req.body.data,
-                                ora: req.body.ora
-                            });
-
-                            idBigl = bigl._id;
-                            return await bigl.save();
-                        });
-                        console.log("OK");
-
-                        //Si cerca l'utente da iscrivere all'evento
-                        let utente = await Users.findById(utent);
-                        utente.EventiIscrtto.push(id_evento);
-                        await utente.save();
-                        console.log("OK");
-
-                        res.location("/api/v2/EventiPubblici/" + id_evento + "/Iscrizioni/" + idBigl).status(201).send();
-
-                        break;
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-                res.status(500).json({ error: "Errore nel server" }).send();
+                break;
             }
-        });
-    return;
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Errore nel server" }).send();
+    }
 });
 
-router.post('/:id/Inviti', async (req, res) => {
+router.post('/:id/Inviti', validate_body({
+    email: 'required|email'
+}, "Dati dell'utente non validi."), async (req, res) => {
     try {
         var utent = (await returnUser(req))._id;
         var id_evento = req.params.id;
 
         let email = req.body?.email;
-        const v = new Validator({
-            email: email
-        }, {
-            email: 'required|email'
-        });
-        v.check()
-            .then(async matched => {
-                if (!matched) {
-                    console.log(v.errors);
-                    res.status(400).json({ error: "Campo vuoto o indefinito" }).send();
-                    return;
-                }
-                let eventP = await eventPublic.findById(id_evento);
-                if (eventP == undefined) {
-                    res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
-                    return;
-                }
 
-                //controllo che le date non siano di una giornata precedente a quella odierna
-                if (eventP.data.filter(d => {
-                    var date = new Date(), d1 = new Date(d);
-                    let orario = eventP.ora.split(':');
+        let eventP = await eventPublic.findById(id_evento);
+        if (eventP == undefined) {
+            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+            return;
+        }
 
-                    d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
-                    d1.setDate(d1.getDate() + 1);
-                    return d1 < date;
-                }).length > 0) {
-                    res.status(403).json({ error: "evento non disponibile" }).send();
-                    return;
-                }
+        //controllo che le date non siano di una giornata precedente a quella odierna
+        if (eventP.data.filter(d => {
+            var date = new Date(), d1 = new Date(d);
+            let orario = eventP.ora.split(':');
 
-                if (eventP.organizzatoreID != utent) {
-                    res.status(403).json({ error: "L'utente non può invitare ad un evento che non è suo" }).send();
-                    return;
-                }
+            d1.setHours(orario[0].toString().padStart(2, '0'), orario[1].toString().padStart(2, '0'));
+            d1.setDate(d1.getDate() + 1);
+            return d1 < date;
+        }).length > 0) {
+            res.status(403).json({ error: "evento non disponibile" }).send();
+            return;
+        }
 
-                var utenteorg = await Users.findById(utent);
-                if (utenteorg.email == email) {
-                    res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
-                    return;
-                }
+        if (eventP.organizzatoreID != utent) {
+            res.status(403).json({ error: "L'utente non può invitare ad un evento che non è suo" }).send();
+            return;
+        }
 
-                var utente = await Users.find({ email: { $eq: email } });
-                if (utente.length == 0) {
-                    res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
-                    return;
-                }
+        var utenteorg = await Users.findById(utent);
+        if (utenteorg.email == email) {
+            res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
+            return;
+        }
 
-                var ListaInviti = await Inviti.find({ utenteid: utente[0]._id });
-                if (ListaInviti.length > 0 && ListaInviti.filter(elem => elem.eventoid == id_evento).length > 0) {
-                    res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
-                    return;
-                }
+        var utente = await Users.find({ email: { $eq: email } });
+        if (utente.length == 0) {
+            res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
+            return;
+        }
 
-                if (eventP.partecipantiID.includes(utente[0]._id)) {
-                    res.status(403).json({ error: "L'utente con quella email è già partecipante all'evento" }).send();
-                    return;
-                }
+        var ListaInviti = await Inviti.find({ utenteid: utente[0]._id });
+        if (ListaInviti.length > 0 && ListaInviti.filter(elem => elem.eventoid == id_evento).length > 0) {
+            res.status(403).json({ error: "L'utente con quella email è già invitato a quell'evento" }).send();
+            return;
+        }
 
-                let invito = new Inviti({ utenteid: utente[0]._id, eventoid: id_evento, tipoevent: "pub" });
-                let invitii = await invito.save();
-                res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
-            });
+        if (eventP.partecipantiID.includes(utente[0]._id)) {
+            res.status(403).json({ error: "L'utente con quella email è già partecipante all'evento" }).send();
+            return;
+        }
+
+        let invito = new Inviti({ utenteid: utente[0]._id, eventoid: id_evento, tipoevent: "pub" });
+        let invitii = await invito.save();
+        res.location("/api/v2/EventiPubblici/" + id_evento + "/Inviti/" + invitii.id).status(201).send();
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore nel server" }).send();
@@ -361,25 +324,25 @@ router.post('', async (req, res) => {
             etaMax: etaMax
         };
         extend('duration', ({ value }) => {
-            if(!Number(durata[0])) {
+            if (!Number(durata[0])) {
                 console.log(value.days);
                 console.log(value.durata);
                 console.log(durata);
                 throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(durata[1])) {
+            if (!Number(durata[1])) {
                 throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(durata[2])) {
+            if (!Number(durata[2])) {
                 throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
             }
-            if(Number(durata[0]) < 0) {
+            if (Number(durata[0]) < 0) {
                 throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
             }
-            if(Number(durata[1]) < 0 || Number(durata[1]) > 23) {
+            if (Number(durata[1]) < 0 || Number(durata[1]) > 23) {
                 throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
             }
-            if(Number(durata[2]) < 0 || Number(durata[2]) > 59) {
+            if (Number(durata[2]) < 0 || Number(durata[2]) > 59) {
                 throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
             }
 
@@ -467,7 +430,7 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                let eventoPub = await eventPublic.find({ nomeAtt: {$eq: nomeAtt}, eventPic: { $eq: eventPic }});
+                let eventoPub = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, eventPic: { $eq: eventPic } });
                 if (eventoPub.length > 0) {
                     res.status(400).json({ error: "Evento già esistente." });
                     return;

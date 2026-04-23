@@ -72,7 +72,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
         
         const response = await request(app).patch('/api/v2/EventiPubblici/67890').
         set('x-access-token', token).
-        send({nomeAtt: "Test2", categoria: "svago", luogoEv: {indirizzo: "Via panini", citta: "Bologna"}, maxPers: 10});
+        send({nomeAtt: "Test2", categoria: "Altro", luogoEv: {indirizzo: "Via panini", citta: "Bologna"}, maxPers: 10});
         expect(response.statusCode).toBe(200);
         expect(response.header.location).toBe('/api/v2/EventiPubblici/67890');
         

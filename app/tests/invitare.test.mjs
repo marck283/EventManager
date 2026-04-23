@@ -116,7 +116,7 @@ describe('POST /api/v2//api/v2/EventiPubblici/:id/Inviti', () => {
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente abbia organizzato l'evento e l'email non è passata", async () => {
     await request(app).post('/api/v2/EventiPubblici/' + id + '/Inviti').
-      set('x-access-token', token).expect('Content-Type', 'application/json; charset=utf-8').expect(400, { error: "Campo vuoto o indefinito" });
+      set('x-access-token', token).expect('Content-Type', 'application/json; charset=utf-8').expect(400, { errors: "Dati dell'utente non validi." });
   });
 
   it("POST /api/v2//api/v2/EventiPubblici/:id/Inviti da autenticati, quindi con token valido, nel caso l'utente non sia organizzatore dell'evento", async () => {
