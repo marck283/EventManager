@@ -9,6 +9,7 @@ describe('PATCH /api/v2/EventiPubblici/idEvento', () => {
     
     let eventPublicSpy;
     var token;
+    let userSpy;
     
     beforeAll( () => {
         token = createToken("gg.ee@gmail.com", "2222", 3600);

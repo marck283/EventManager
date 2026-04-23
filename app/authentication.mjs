@@ -6,7 +6,6 @@ import { Validator } from 'node-input-validator';
 import verify from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
-import login from './facebookLogin.mjs';
 import _verify from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 
@@ -207,35 +206,6 @@ router.post('', (req, res) => {
 			res.status(500).json({error: "Errore interno al server."}).send();
 			return;
 		});
-});
-
-router.post("/facebookLogin", async (req, res) => {
-	try {
-		const v = new Validator({
-			csrfToken: req.body.csrfToken,
-			jwt: req.body.googleJwt,
-			user_id: req.body.userId
-		}, {
-			csrfToken: 'required|string',
-			jwt: 'required|string|minLength:1|alphaNumeric',
-			user_id: 'required|string|minLength:1'
-		});
-		v.check()
-			.then(async matched => {
-				if (!matched) {
-					console.log(v.errors);
-					res.status(400).json(result(undefined, undefined, undefined, true, "Errore di autenticazione.")).send();
-					return;
-				}
-				console.log("fbJwt: " + req.body.googleJwt);
-				await login(req.body.userId, req.body.googleJwt, res);
-			});
-	} catch (err) {
-		console.log(err);
-		res.status(500).json({
-			error: "Errore interno al server"
-		}).send();
-	}
 });
 
 export default router;
