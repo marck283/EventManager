@@ -9,8 +9,9 @@ const saltRounds = 10;
 
 router.post('', async (req, res) => {
     //Implement mail sending
+    const email = req.body?.email;
     const v = new Validator({
-        user: req.body.email
+        user: email
     }, {
         user: 'required|email'
     });
@@ -18,14 +19,14 @@ router.post('', async (req, res) => {
         if (!matched) {
             //Send error message
             console.log(v.errors);
-            res.status(400).json({ error: "Indirizzo email non fornito o non valido." }).send();
+            res.status(400).json({ error: "Indirizzo email non fornito o non valido." });
             return;
         }
 
-        let userTo = req.body.email;
+        let userTo = email;
         let user = await Utente.findOne({ email: { $eq: userTo } });
         if (!user) {
-            res.status(404).json({ error: "Utente non trovato." }).send();
+            res.status(404).json({ error: "Utente non trovato." });
             return;
         }
         try {
@@ -39,7 +40,7 @@ router.post('', async (req, res) => {
             res.status(201)
                 .json({ message: "Un'email &egrave; stata appena inviata alla tua casella di posta elettronica. Se non la trovi, prova a cercare nelle cartelle Spam e Cestino." });
         } catch (err) {
-            res.status(500).json({ error: "Internal server error." }).send();
+            res.status(500).json({ error: "Internal server error." });
             console.log(err);
         } finally {
             user = null;
@@ -47,9 +48,7 @@ router.post('', async (req, res) => {
         }
     })
         .catch(error => {
-            if (!res.headersSent) {
-                res.status(500).json({ error: "Internal server error." }).send();
-            }
+            res.status(500).json({ error: "Internal server error." });
             console.log(error);
         })
 });

@@ -30,7 +30,6 @@ router.use(json({ limit: "50mb" })); //Limiting the size of the request should a
 router.patch('/:id', async (req, res) => {
     try {
         var utent = (await returnUser(req))._id;
-        console.log(utent);
         var id_evento = req.params.id;
         let evento = await eventPublic.findById(id_evento);
 
@@ -172,15 +171,12 @@ router.post('/:id/Iscrizioni', async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
 
-    console.log(utent);
-
     if (utent == req.loggedUser) {
         utent = await Users.findOne({ email: { $eq: utent.email } });
         if(utent == undefined) {
             res.status(404).json({ error: "Non corrisponde alcun utente all'email specificata." }).send();
             return;
         }
-        console.log("utent:", utent);
         utent = utent.id;
     }
 
@@ -200,12 +196,9 @@ router.post('/:id/Iscrizioni', async (req, res) => {
             }
             try {
                 let error = false;
-                console.log("OK");
-                //var eventP1 = await eventPublic.find({luogoEv: {$elemMatch: {data: req.body.data, ora: req.body.ora}}});
                 var eventP1 = await eventPublic.find({_id: {$eq: new mongoose.Types.ObjectId(id_evento)},
                     "luogoEv.partecipantiID": {$ne: utent}, organizzatoreID: {$ne: utent}});
-                console.log("OK");
-                //console.log("length:", eventP1[0].luogoEv.length);
+                
                 if (eventP1 == undefined || eventP1.length == 0 || eventP1[0].luogoEv == undefined) {
                     res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
                     return;
@@ -271,11 +264,11 @@ router.post('/:id/Iscrizioni', async (req, res) => {
 router.post('/:id/Inviti', async (req, res) => {
     try {
         var utent = (await returnUser(req))._id;
-        console.log(utent);
         var id_evento = req.params.id;
 
+        let email = req.body?.email;
         const v = new Validator({
-            email: req.body.email
+            email: email
         }, {
             email: 'required|email'
         });
@@ -311,13 +304,12 @@ router.post('/:id/Inviti', async (req, res) => {
                 }
 
                 var utenteorg = await Users.findById(utent);
-                console.log(utenteorg);
-                if (utenteorg.email == req.body.email) {
+                if (utenteorg.email == email) {
                     res.status(403).json({ error: "L'utente non può auto invitarsi" }).send();
                     return;
                 }
 
-                var utente = await Users.find({ email: { $eq: req.body.email } });
+                var utente = await Users.find({ email: { $eq: email } });
                 if (utente.length == 0) {
                     res.status(404).json({ error: "Non esiste un utente con quella email" }).send();
                     return;
@@ -350,37 +342,44 @@ router.post('', async (req, res) => {
         //Si cerca l'utente organizzatore dell'evento
         var utente = await returnUser(req);
 
-        console.log(req.body.luogoEv);
+        const durata = req.body?.durata;
+        const descrizione = req.body?.descrizione;
+        const eventPic = req.body?.eventPic;
+        const luogoEv = req.body?.luogoEv;
+        const categoria = req.body?.categoria;
+        const nomeAtt = req.body?.nomeAtt;
+        const etaMin = req.body?.etaMin;
+        const etaMax = req.body?.etaMax;
         var options = {
-            durata: req.body.durata,
-            descrizione: req.body.descrizione,
-            eventPic: req.body.eventPic,
-            luogoEv: req.body.luogoEv,
-            categoria: req.body.categoria,
-            nomeAtt: req.body.nomeAtt,
-            etaMin: req.body.etaMin,
-            etaMax: req.body.etaMax
+            durata: durata,
+            descrizione: descrizione,
+            eventPic: eventPic,
+            luogoEv: luogoEv,
+            categoria: categoria,
+            nomeAtt: nomeAtt,
+            etaMin: etaMin,
+            etaMax: etaMax
         };
         extend('duration', ({ value }) => {
-            if(!Number(req.body.durata[0])) {
+            if(!Number(durata[0])) {
                 console.log(value.days);
                 console.log(value.durata);
-                console.log(req.body.durata);
+                console.log(durata);
                 throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(req.body.durata[1])) {
+            if(!Number(durata[1])) {
                 throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
             }
-            if(!Number(req.body.durata[2])) {
+            if(!Number(durata[2])) {
                 throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
             }
-            if(Number(req.body.durata[0]) < 0) {
+            if(Number(durata[0]) < 0) {
                 throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
             }
-            if(Number(req.body.durata[1]) < 0 || Number(req.body.durata[1]) > 23) {
+            if(Number(durata[1]) < 0 || Number(durata[1]) > 23) {
                 throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
             }
-            if(Number(req.body.durata[2]) < 0 || Number(req.body.durata[2]) > 59) {
+            if(Number(durata[2]) < 0 || Number(durata[2]) > 59) {
                 throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
             }
 
@@ -414,33 +413,32 @@ router.post('', async (req, res) => {
         });
         v1.check()
             .then(async matched => {
-                if (!matched || req.body.durata.length > 3) {
+                if (!matched || durata.length > 3) {
                     console.log(v1.errors);
-                    console.log(req.body.categoria);
+                    console.log(categoria);
                     res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
                     return;
                 }
 
-                let durata = req.body.durata;
                 if (durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
                     res.status(400).json({ error: "La durata non può essere nulla." }).send();
                     return;
                 }
 
-                for (let o of req.body.luogoEv) {
+                for (let o of luogoEv) {
                     if (!test(o.ora)) {
                         res.status(400).json({ error: "Formato ora non valido" }).send();
                         return;
                     }
                 }
 
-                if (dateCheck(req.body.luogoEv).length == 0) {
+                if (dateCheck(luogoEv).length == 0) {
                     res.status(400).json({ error: "Data non valida." }).send();
                     return;
                 }
 
                 let obj = [];
-                for (let o of req.body.luogoEv) {
+                for (let o of luogoEv) {
                     try {
                         //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
                         let r = await geoReq(o.indirizzo + ", " + o.civNum + ", " + o.cap + ", " + o.citta + ", " + o.provincia);
@@ -469,25 +467,25 @@ router.post('', async (req, res) => {
                     }
                 }
 
-                let eventoPub = await eventPublic.find({ nomeAtt: {$eq: req.body.nomeAtt}, eventPic: { $eq: req.body.eventPic }});
+                let eventoPub = await eventPublic.find({ nomeAtt: {$eq: nomeAtt}, eventPic: { $eq: eventPic }});
                 if (eventoPub.length > 0) {
                     res.status(400).json({ error: "Evento già esistente." });
                     return;
                 }
 
                 let etaMin = null, etaMax = null;
-                if (req.body.etaMin != undefined) {
-                    etaMin = Number(req.body.etaMin);
+                if (etaMin != undefined) {
+                    etaMin = Number(etaMin);
                 }
-                if (req.body.etaMax != undefined) {
-                    etaMax = Number(req.body.etaMax);
+                if (etaMax != undefined) {
+                    etaMax = Number(etaMax);
                 }
 
                 //Si crea un documento evento pubblico
                 let eventP = new eventPublic({
-                    durata: req.body.durata.join(":"),
-                    categoria: req.body.categoria,
-                    nomeAtt: req.body.nomeAtt,
+                    durata: durata.join(":"),
+                    categoria: categoria,
+                    nomeAtt: nomeAtt,
                     luogoEv: obj,
                     organizzatoreID: utente.id,
                     eventPic: "data:image/png;base64," + req.body.eventPic,
