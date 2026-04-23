@@ -2,7 +2,7 @@ import { Router } from 'express';
 import eventPersonal from '../collezioni/eventPersonal.mjs';
 const router = Router();
 import Users from '../collezioni/utenti.mjs';
-import { Validator } from 'node-input-validator';
+import { validate_body } from '../validate.mjs';
 import test from '../hourRegexTest.mjs';
 import RateLimit from 'express-rate-limit';
 
@@ -17,7 +17,12 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validate_body({
+    nomeAtt: 'string|minLength:1',
+    categoria: 'string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+    indirizzo: 'string|minLength:1',
+    citta: 'string|minLength:1'
+}, "Dati dell'evento non validi"), async (req, res) => {
     var utent = req.loggedUser.id || req.loggedUser;
     var id_evento = req.params.id;
 
@@ -29,8 +34,8 @@ router.patch('/:id', async (req, res) => {
             return;
         }
 
-        if(utent == req.loggedUser) {
-            utent = (await Users.find({email: {$eq: utent.email}})).id;
+        if (utent == req.loggedUser) {
+            utent = (await Users.find({ email: { $eq: utent.email } })).id;
         }
 
         if (utent != evento.organizzatoreID) {
@@ -38,17 +43,21 @@ router.patch('/:id', async (req, res) => {
             return;
         }
 
-        if (req.body.nomeAtt != "" && req.body.nomeAtt != undefined) {
-            evento.nomeAtt = req.body.nomeAtt;
+        const nomeAtt = req.body?.nomeAtt;
+        const categoria = req.body?.categoria;
+        const indirizzo = req.body?.luogoEv?.indirizzo;
+        const citta = req.body?.luogoEv?.citta;
+        if (nomeAtt != undefined) {
+            evento.nomeAtt = nomeAtt;
         }
-        if (req.body.categoria != "" && req.body.categoria != undefined) {
-            evento.categoria = req.body.categoria
+        if (categoria != undefined) {
+            evento.categoria = categoria
         }
-        if (req.body.indirizzo != "" && req.body.indirizzo != undefined) {
-            evento.luogoEv.indirizzo = req.body.indirizzo
+        if (indirizzo != undefined) {
+            evento.luogoEv.indirizzo = indirizzo
         }
-        if (req.body.citta != "" && req.body.citta != undefined) {
-            evento.luogoEv.citta = req.body.citta;
+        if (citta != undefined) {
+            evento.luogoEv.citta = citta;
         }
 
         await evento.save();
@@ -84,79 +93,62 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('', async (req, res) => {
+router.post('', validate_body({
+    'data': 'required|arrayUnique',
+    'data.*': 'required|dateFormat:MM-DD-YYYY',
+    durata: 'required|integer|min:1',
+    ora: 'required|string|minLength:1',
+    categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+    nomeAtt: 'required|string|minLength:1',
+    indirizzo: 'required|string|minLength:1',
+    citta: 'required|string|minLength:1'
+}, "Dati dell'evento non validi"), async (req, res) => {
     try {
         //Si cerca l'utente organizzatore dell'evento
         let utente = await returnUser(req);
 
-        //Prima validiamo i dati inseriti dall'utente
-        const v = new Validator({
-            data: req.body.data,
+        var ElencoDate = req.body.data;
+
+        if (!test(req.body.ora)) {
+            res.status(400).json({ error: "Formato ora non valido" });
+            return;
+        }
+
+        let eventP = new eventPersonal({
+            data: ElencoDate,
             durata: req.body.durata,
             ora: req.body.ora,
             categoria: req.body.categoria,
             nomeAtt: req.body.nomeAtt,
-            indirizzo: req.body.luogoEv.indirizzo,
-            citta: req.body.luogoEv.citta
-        }, {
-            'data': 'required|arrayUnique',
-            'data.*': 'required|dateFormat:MM-DD-YYYY',
-            durata: 'required|integer|min:1',
-            ora: 'required|string|minLength:1',
-            categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
-            nomeAtt: 'required|string|minLength:1',
-            indirizzo: 'required|string|minLength:1',
-            citta: 'required|string|minLength:1'
+            luogoEv: {
+                indirizzo: req.body.luogoEv.indirizzo,
+                citta: req.body.luogoEv.citta
+            },
+            organizzatoreID: utente.id
         });
-        v.check()
-            .then(async matched => {
-                if (!matched) {
-                    res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
-                    return;
-                }
-                var ElencoDate = req.body.data;
 
-                if (!test(req.body.ora)) {
-                    res.status(400).json({ error: "Formato ora non valido" }).send();
-                    return;
-                }
+        //Si salva il documento personale
+        eventP = await eventP.save();
 
-                let eventP = new eventPersonal({
-                    data: ElencoDate,
-                    durata: req.body.durata,
-                    ora: req.body.ora,
-                    categoria: req.body.categoria,
-                    nomeAtt: req.body.nomeAtt,
-                    luogoEv: {
-                        indirizzo: req.body.luogoEv.indirizzo,
-                        citta: req.body.luogoEv.citta
-                    },
-                    organizzatoreID: utente.id
-                });
+        utente.numEvOrg += 1;
 
-                //Si salva il documento personale
-                eventP = await eventP.save();
+        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+        utente.EventiCreati.push(eventP.id);
 
-                utente.numEvOrg += 1;
+        //Si salva il modulo dell'utente
+        await utente.save();
 
-                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                utente.EventiCreati.push(eventP.id);
+        let eventId = eventP.id;
 
-                //Si salva il modulo dell'utente
-                await utente.save();
+        console.log('Evento salvato con successo');
 
-                let eventId = eventP.id;
-
-                console.log('Evento salvato con successo');
-
-                /**
-                 * Si posiziona il link alla risorsa appena creata nel header location della risposata
-                 */
-                res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
-            });
+        /**
+         * Si posiziona il link alla risorsa appena creata nel header location della risposata
+         */
+        res.location("/api/v2/EventiPersonali/" + eventId).status(201).send();
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore nel server" }).send();
+        res.status(500).json({ error: "Errore nel server" });
     }
     return;
 });

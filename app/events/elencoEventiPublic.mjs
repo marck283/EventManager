@@ -55,7 +55,7 @@ router.get("", async (req, res) => {
         }
     }
 
-    events = (await events).filter(e => e.luogoEv/*.filter(l => !l.terminato)*/.length > 0);
+    events = (await events).filter(e => e.luogoEv.length > 0);
 
     if (token != undefined && token != null && token != "") {
         console.log("pubToken:", token);
