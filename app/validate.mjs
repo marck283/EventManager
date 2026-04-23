@@ -16,8 +16,15 @@ var _validate = async function (fields, rules, res, msg, next) {
     }
 };
 
-var validate_body = function (rules, msg) {
+var validate_body = function (rules, msg, extended, extensionRule, rule) {
     return async function (req, res, next) {
+        if (extended) {
+            if (extensionRule == undefined || rule == undefined) {
+                return res.status(500).json({ error: "Internal server error." });
+            }
+
+            extend(extensionRule, rule);
+        }
         _validate(req.body, rules, res, msg, next);
     };
 };

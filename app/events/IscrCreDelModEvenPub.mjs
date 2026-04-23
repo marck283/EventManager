@@ -300,7 +300,60 @@ router.post('/:id/Inviti', validate_body({
     }
 });
 
-router.post('', async (req, res) => {
+let durationRule = ({ value }) => {
+    if (!Number(durata[0])) {
+        console.log(value.days);
+        console.log(value.durata);
+        console.log(durata);
+        throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
+    }
+    if (!Number(durata[1])) {
+        throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
+    }
+    if (!Number(durata[2])) {
+        throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
+    }
+    if (Number(durata[0]) < 0) {
+        throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
+    }
+    if (Number(durata[1]) < 0 || Number(durata[1]) > 23) {
+        throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
+    }
+    if (Number(durata[2]) < 0 || Number(durata[2]) > 59) {
+        throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
+    }
+
+    return true;
+};
+
+const eventData = {
+    'durata': 'required|duration',
+    /*'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
+    'durata.0': 'required|numeric|min:0',
+    'durata.1': 'required|numeric|between:0,23',
+    'durata.2': 'required|numeric|between:0,59',*/
+    descrizione: 'required|string|minLength:1|maxLength:140',
+    eventPic: 'required|string|minLength:1',
+    categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
+    nomeAtt: 'required|string|minLength:1|alphaNumeric',
+    etaMin: 'integer|min:0',
+    etaMax: 'integer|gte:etaMin',
+    luogoEv: 'required|array|minLength:1',
+    'luogoEv.*.indirizzo': 'required|string|minLength:1',
+    'luogoEv.*.citta': 'required|string|minLength:1',
+    'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
+    'luogoEv.*.maxPers': 'required|integer|min:1',
+    'luogoEv.*.data': 'required|string|dateFormat:MM-DD-YYYY',
+    'luogoEv.*.civNum': 'required|string|minLength:1',
+    'luogoEv.*.cap': 'required|integer|min:1',
+    'luogoEv.*.provincia': 'required|string|in:AG,AL,AN,AO,AR,AP,AT,AV,BA,BT,BL,BN,BG,BI,BO,BZ,BS,\
+        BR,CA,CL,CB,CE,CI,CT,CZ,CH,CO,CS,CR,KR,CN,EN,FM,FE,FI,FG,FC,FR,GE,GO,GR,IM,\
+        IS,AQ,SP,LT,LE,LI,LO,LU,MC,MN,MS,MT,VS,ME,MI,MO,MB,NA,NO,NU,OG,OT,\
+        OR,PD,PA,PR,PV,PG,PU,PE,PC,PI,PT,PN,PZ,PO,RG,RA,RC,RE,RI,RN,RM,RO,SA,SS,SV,\
+        SI,SR,SO,SU,TA,TE,TR,TO,TP,TN,TV,TS,UD,VA,VE,VB,VC,VR,VV,VI,VT'
+};
+
+router.post('', validate_body(eventData, "Invalid event data", true, "duration", durationRule), async (req, res) => {
     try {
         //Si cerca l'utente organizzatore dell'evento
         var utente = await returnUser(req);
@@ -311,172 +364,100 @@ router.post('', async (req, res) => {
         const luogoEv = req.body?.luogoEv;
         const categoria = req.body?.categoria;
         const nomeAtt = req.body?.nomeAtt;
-        const etaMin = req.body?.etaMin;
-        const etaMax = req.body?.etaMax;
-        var options = {
-            durata: durata,
-            descrizione: descrizione,
-            eventPic: eventPic,
-            luogoEv: luogoEv,
+        let etaMin = req.body?.etaMin;
+        let etaMax = req.body?.etaMax;
+        if (durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
+            res.status(400).json({ error: "La durata non può essere nulla." }).send();
+            return;
+        }
+
+        for (let o of luogoEv) {
+            if (!test(o.ora)) {
+                res.status(400).json({ error: "Formato ora non valido" }).send();
+                return;
+            }
+        }
+
+        if (dateCheck(luogoEv).length == 0) {
+            res.status(400).json({ error: "Data non valida." }).send();
+            return;
+        }
+
+        let obj = [];
+        for (let o of luogoEv) {
+            try {
+                //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
+                let r = await geoReq(o.indirizzo + ", " + o.civNum + ", " + o.cap + ", " + o.citta + ", " + o.provincia);
+                console.log(r.data.status);
+                if (!r.data.status == "OK") {
+                    console.log("err: " + r.data.error_message);
+                    throw new Error("Indirizzo non valido");
+                } else {
+                    obj.push({
+                        indirizzo: o.indirizzo,
+                        civNum: o.civNum,
+                        cap: o.cap,
+                        citta: o.citta,
+                        provincia: o.provincia,
+                        data: o.data,
+                        ora: o.ora,
+                        maxPers: o.maxPers,
+                        partecipantiID: [],
+                        terminato: false
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+                res.status(400).json({ error: "Indirizzo non valido." });
+                return;
+            }
+        }
+
+        let eventoPub = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, eventPic: { $eq: eventPic } });
+        if (eventoPub.length > 0) {
+            res.status(400).json({ error: "Evento già esistente." });
+            return;
+        }
+
+        if (etaMin != undefined) {
+            etaMin = Number(etaMin);
+        }
+        if (etaMax != undefined) {
+            etaMax = Number(etaMax);
+        }
+
+        //Si crea un documento evento pubblico
+        let eventP = new eventPublic({
+            durata: durata.join(":"),
             categoria: categoria,
             nomeAtt: nomeAtt,
+            luogoEv: obj,
+            organizzatoreID: utente.id,
+            eventPic: "data:image/png;base64," + req.body.eventPic,
             etaMin: etaMin,
-            etaMax: etaMax
-        };
-        extend('duration', ({ value }) => {
-            if (!Number(durata[0])) {
-                console.log(value.days);
-                console.log(value.durata);
-                console.log(durata);
-                throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
-            }
-            if (!Number(durata[1])) {
-                throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
-            }
-            if (!Number(durata[2])) {
-                throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
-            }
-            if (Number(durata[0]) < 0) {
-                throw new Error("Il numero di giorni non puo' essere inferiore a zero.");
-            }
-            if (Number(durata[1]) < 0 || Number(durata[1]) > 23) {
-                throw new Error("Il numero di ore giornaliere non puo' essere inferiore a zero o superiore a 23.");
-            }
-            if (Number(durata[2]) < 0 || Number(durata[2]) > 59) {
-                throw new Error("Il numero di minuti non puo' essere inferiore a zero o superiore a 59.");
-            }
-
-            return true;
-        })
-        const v1 = new Validator(options, {
-            'durata': 'required|duration',
-            /*'durata': 'required|array|minLength:3', //Later formatted as durata[0]:durata[1]:durata[2]; field 1 represents days, field 2 represents hours and field 3 represents minutes.
-            'durata.0': 'required|numeric|min:0',
-            'durata.1': 'required|numeric|between:0,23',
-            'durata.2': 'required|numeric|between:0,59',*/
-            descrizione: 'required|string|minLength:1|maxLength:140',
-            eventPic: 'required|string|minLength:1',
-            categoria: 'required|string|in:Sport,Spettacolo,Manifestazione,Viaggio,Altro',
-            nomeAtt: 'required|string|minLength:1|alphaNumeric',
-            etaMin: 'integer|min:0',
-            etaMax: 'integer|gte:etaMin',
-            luogoEv: 'required|array|minLength:1',
-            'luogoEv.*.indirizzo': 'required|string|minLength:1',
-            'luogoEv.*.citta': 'required|string|minLength:1',
-            'luogoEv.*.ora': 'required|string|minLength:5|maxLength:5',
-            'luogoEv.*.maxPers': 'required|integer|min:1',
-            'luogoEv.*.data': 'required|string|dateFormat:MM-DD-YYYY',
-            'luogoEv.*.civNum': 'required|string|minLength:1',
-            'luogoEv.*.cap': 'required|integer|min:1',
-            'luogoEv.*.provincia': 'required|string|in:AG,AL,AN,AO,AR,AP,AT,AV,BA,BT,BL,BN,BG,BI,BO,BZ,BS,\
-        BR,CA,CL,CB,CE,CI,CT,CZ,CH,CO,CS,CR,KR,CN,EN,FM,FE,FI,FG,FC,FR,GE,GO,GR,IM,\
-        IS,AQ,SP,LT,LE,LI,LO,LU,MC,MN,MS,MT,VS,ME,MI,MO,MB,NA,NO,NU,OG,OT,\
-        OR,PD,PA,PR,PV,PG,PU,PE,PC,PI,PT,PN,PZ,PO,RG,RA,RC,RE,RI,RN,RM,RO,SA,SS,SV,\
-        SI,SR,SO,SU,TA,TE,TR,TO,TP,TN,TV,TS,UD,VA,VE,VB,VC,VR,VV,VI,VT'
+            etaMax: etaMax,
+            terminato: false,
+            recensioni: [],
+            valMedia: 0.0,
+            orgName: utente.nome
         });
-        v1.check()
-            .then(async matched => {
-                if (!matched || durata.length > 3) {
-                    console.log(v1.errors);
-                    console.log(categoria);
-                    res.status(400).json({ error: "Campo vuoto o indefinito o non del formato corretto." }).send();
-                    return;
-                }
 
-                if (durata[0] == 0 && durata[1] == 0 && durata[2] == 0) {
-                    res.status(400).json({ error: "La durata non può essere nulla." }).send();
-                    return;
-                }
+        //Si salva il documento pubblico
+        eventP = await eventP.save();
 
-                for (let o of luogoEv) {
-                    if (!test(o.ora)) {
-                        res.status(400).json({ error: "Formato ora non valido" }).send();
-                        return;
-                    }
-                }
+        //Si indica fra gli eventi creati dell'utente, l'evento appena creato
+        utente.EventiCreati.push(eventP.id);
+        utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
 
-                if (dateCheck(luogoEv).length == 0) {
-                    res.status(400).json({ error: "Data non valida." }).send();
-                    return;
-                }
+        //Si salva il modulo dell'utente
+        await utente.save();
 
-                let obj = [];
-                for (let o of luogoEv) {
-                    try {
-                        //Esempio di indirizzo da utilizzare: Vicolo Giorgio Tebaldeo, 3, 27036, Mortara, PV
-                        let r = await geoReq(o.indirizzo + ", " + o.civNum + ", " + o.cap + ", " + o.citta + ", " + o.provincia);
-                        console.log(r.data.status);
-                        if (!r.data.status == "OK") {
-                            console.log("err: " + r.data.error_message);
-                            throw new Error("Indirizzo non valido");
-                        } else {
-                            obj.push({
-                                indirizzo: o.indirizzo,
-                                civNum: o.civNum,
-                                cap: o.cap,
-                                citta: o.citta,
-                                provincia: o.provincia,
-                                data: o.data,
-                                ora: o.ora,
-                                maxPers: o.maxPers,
-                                partecipantiID: [],
-                                terminato: false
-                            });
-                        }
-                    } catch (err) {
-                        console.log(err);
-                        res.status(400).json({ error: "Indirizzo non valido." });
-                        return;
-                    }
-                }
+        console.log('Evento salvato con successo');
 
-                let eventoPub = await eventPublic.find({ nomeAtt: { $eq: nomeAtt }, eventPic: { $eq: eventPic } });
-                if (eventoPub.length > 0) {
-                    res.status(400).json({ error: "Evento già esistente." });
-                    return;
-                }
-
-                let etaMin = null, etaMax = null;
-                if (etaMin != undefined) {
-                    etaMin = Number(etaMin);
-                }
-                if (etaMax != undefined) {
-                    etaMax = Number(etaMax);
-                }
-
-                //Si crea un documento evento pubblico
-                let eventP = new eventPublic({
-                    durata: durata.join(":"),
-                    categoria: categoria,
-                    nomeAtt: nomeAtt,
-                    luogoEv: obj,
-                    organizzatoreID: utente.id,
-                    eventPic: "data:image/png;base64," + req.body.eventPic,
-                    etaMin: etaMin,
-                    etaMax: etaMax,
-                    terminato: false,
-                    recensioni: [],
-                    valMedia: 0.0,
-                    orgName: utente.nome
-                });
-
-                //Si salva il documento pubblico
-                eventP = await eventP.save();
-
-                //Si indica fra gli eventi creati dell'utente, l'evento appena creato
-                utente.EventiCreati.push(eventP.id);
-                utente.numEvOrg += 1; //Incremento il numero di eventi organizzati dall'utente
-
-                //Si salva il modulo dell'utente
-                await utente.save();
-
-                console.log('Evento salvato con successo');
-
-                /**
-                 * Si posiziona il link alla risorsa appena creata nell'header location della risposta
-                 */
-                res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
-            });
+        /**
+         * Si posiziona il link alla risorsa appena creata nell'header location della risposta
+         */
+        res.location("/api/v2/EventiPubblici/" + eventP.id).status(201).send();
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Errore del server" }).send();
