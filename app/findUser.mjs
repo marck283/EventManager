@@ -1,17 +1,5 @@
 import Utente from './collezioni/utenti.mjs';
 
-var returnUser = async req => {
-    var IDexample = req.loggedUser.id/* || req.loggedUser*/, user;
-
-    /*if(IDexample == req.loggedUser) {
-        user = await Utente.findOne({ email: { $eq: IDexample.email }});
-    } else {*/
-        user = await Utente.findById(IDexample);
-    //}
-
-    console.log(user);
-
-    return user;
-};
+var returnUser = async req => await Utente.findById(req.loggedUser.id);
 
 export default returnUser;

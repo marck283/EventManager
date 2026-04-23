@@ -52,11 +52,11 @@ router.patch('/:id', async (req, res) => {
         }
 
         await evento.save();
-        res.location("/api/v2/EventiPersonali/" + id_evento).status(200).send();
+        res.location("/api/v2/EventiPersonali/" + id_evento).status(200);
         console.log('Evento personale modificato con successo');
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore lato server." }).send();
+        res.status(500).json({ error: "Errore lato server." });
     }
 });
 
@@ -64,7 +64,7 @@ router.get('/:id', async (req, res) => {
     try {
         let eventoPersonale = await eventPersonal.findById(req.params.id);
         if (eventoPersonale == undefined) {
-            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" }).send();
+            res.status(404).json({ error: "Non esiste nessun evento con l'id selezionato" });
             return;
         }
         let organizzatore = await Users.findById(eventoPersonale.organizzatoreID);
@@ -80,7 +80,7 @@ router.get('/:id', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Errore nel Server" }).send();
+        res.status(500).json({ error: "Errore nel Server" });
     }
 });
 
