@@ -95,7 +95,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."});
+        .expect(400, {errors: "Durata non valida"});
     });
 
     it("GET /api/v2/eventiCalendarioPersonale con campo 'durata' compilato con un valore minore o uguale a zero", () => {
@@ -109,7 +109,7 @@ describe("GET /api/v2/eventiCalendarioPersonale", () => {
         .set('indirizzo', 'Via del campo')
         .set('citta', 'Mortara')
         .send()
-        .expect(400, {error: "Richiesta malformata."});
+        .expect(400, {errors: "Durata non valida"});
     });
 
     it("GET /api/v2/eventiCalendarioPersonale per cui nessun evento e' organizzato per la data richiesta", () => {

@@ -34,4 +34,10 @@ var validate_params = function (rules, msg) {
     };
 };
 
-export { validate_body, validate_hdrs, validate_params };
+var validate_query = function (rules, msg) {
+    return async function (req, res, next) {
+        _validate(req.query, rules, res, msg, next);
+    };
+};
+
+export { validate_body, validate_hdrs, validate_params, validate_query };

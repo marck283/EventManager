@@ -5,7 +5,7 @@ import eventPublic from '../collezioni/eventPublic.mjs';
 import eventPriv from '../collezioni/eventPrivat.mjs';
 import map from './eventsMap.mjs';
 import getOrgNames from './OrgNames.mjs';
-import { Validator } from 'node-input-validator';
+import { validate_hdrs } from '../validate.mjs';
 
 var limiter = RateLimit({
     windowMs: 1 * 20 * 1000, //20 seconds
@@ -35,11 +35,11 @@ var mapAndPush = async (arr, genArr, cat) => {
 };
 
 router.get("/:data", async (req, res) => {
-    let data = req.params.data, utent = req.loggedUser.id, eventList, eventsPriv;
+    let data = req.params.data, utent = req.loggedUser.id;
     let obj = { organizzatoreID: { $eq: utent }, "luogoEv.data": { $eq: data } };
 
-    eventList = findEvents(eventPublic, obj);
-    eventsPriv = findEvents(eventPriv, obj);
+    let eventList = findEvents(eventPublic, obj);
+    let eventsPriv = findEvents(eventPriv, obj);
 
     eventList = await mapAndPush(await eventList, [], "pub");
     eventList = await mapAndPush(await eventsPriv, eventList, "priv");
@@ -48,9 +48,9 @@ router.get("/:data", async (req, res) => {
     utent = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
-        res.status(200).json({ eventi: eventList, data: data }).send();
+        res.status(200).json({ eventi: eventList, data: data });
     } else {
-        res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
+        res.status(404).json({ error: "Nessun evento organizzato da questo utente." });
     }
     data = null;
     eventList = null;
@@ -58,44 +58,34 @@ router.get("/:data", async (req, res) => {
     return;
 });
 
-router.get("", async (req, res) => {
+router.get("", validate_hdrs({
+    nome: 'string|minLength:1'
+}, "Dati dell'evento non validi."), async (req, res) => {
     var utent = req.loggedUser.id;
 
-    const v = new Validator({
-        nome: req.headers.name
-    }, {
-        nome: 'string|minLength:1'
-    });
-    v.check()
-        .then(async matched => {
-            if (!matched) {
-                res.status(400).json({ error: "Richiesta malformata." }).send();
-                return;
-            }
+    let obj = { organizzatoreID: { $eq: utent }, "luogoEv.terminato": { $eq: false } };
+    const name = req.headers.nome;
+    if (name != undefined && name != null && name != "") {
+        obj.nomeAtt = { $eq: name };
+    }
 
-            let obj = { organizzatoreID: { $eq: utent }, "luogoEv.terminato": {$eq: false} };
-            if(req.headers.name != undefined && req.headers.name != null && req.headers.name != "") {
-                obj.nomeAtt = {$eq: req.headers.name};
-            }
- 
-            let eventsPub = findEvents(eventPublic, obj),
-                eventsPriv = findEvents(eventPriv, obj),
-                events = [];
+    let eventsPub = findEvents(eventPublic, obj),
+        eventsPriv = findEvents(eventPriv, obj),
+        events = [];
 
-            eventsPub = await mapAndPush(await eventsPub, [], "pub");
-            events = await mapAndPush(await eventsPriv, eventsPub, "priv");
+    eventsPub = await mapAndPush(await eventsPub, [], "pub");
+    events = await mapAndPush(await eventsPriv, eventsPub, "priv");
 
-            if (events != undefined && events.length > 0) {
-                res.status(200).json({ eventi: events }).send();
-            } else {
-                res.status(404).json({ error: "Nessun evento organizzato da questo utente." }).send();
-            }
-            eventsPub = null;
-            eventsPriv = null;
-            events = null;
-            obj = null;
-            utent = null;
-        });
+    if (events != undefined && events.length > 0) {
+        res.status(200).json({ eventi: events });
+    } else {
+        res.status(404).json({ error: "Nessun evento organizzato da questo utente." });
+    }
+    eventsPub = null;
+    eventsPriv = null;
+    events = null;
+    obj = null;
+    utent = null;
 
     return;
 });
