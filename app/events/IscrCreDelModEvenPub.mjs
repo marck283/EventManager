@@ -301,16 +301,18 @@ router.post('/:id/Inviti', validate_body({
 });
 
 let durationRule = ({ value }) => {
-    if (!Number(durata[0])) {
-        console.log(value.days);
-        console.log(value.durata);
-        console.log(durata);
+    if (!Array.isArray(value) || value.length < 3) {
+        throw new Error("La durata deve contenere giorni, ore e minuti.");
+    }
+
+    const durata = value;
+    if (!Number.isInteger(Number(durata[0]))) {
         throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
     }
-    if (!Number(durata[1])) {
+    if (!Number.isInteger(Number(durata[1]))) {
         throw new Error("Il numero di ore giornaliere fornito non e' rappresentabile come un numero intero.");
     }
-    if (!Number(durata[2])) {
+    if (!Number.isInteger(Number(durata[2]))) {
         throw new Error("Il numero di minuti fornito non e' rappresentabile come un numero intero.");
     }
     if (Number(durata[0]) < 0) {
