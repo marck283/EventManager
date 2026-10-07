@@ -1,12 +1,11 @@
 //Check for the correctness of the client-id
 import { OAuth2Client } from 'google-auth-library';
 
-const googleWebClientId = "22819640695-fvmfk1ccmkfid2c164k0k7tf7gogv9e5.apps.googleusercontent.com";
 const oauthCodeExchangeConfigured = Boolean(
 	process.env.GCLIENT_SECRET && process.env.GCLIENT_REDIRECT_URI
 );
 var client = new OAuth2Client(
-	process.env.GCLIENT_ID || googleWebClientId,
+	process.env.GCLIENT_ID,
 	process.env.GCLIENT_SECRET,
 	process.env.GCLIENT_REDIRECT_URI
 );
@@ -18,11 +17,6 @@ const url = client.generateAuthUrl({
 		"https://www.googleapis.com/auth/user.birthday.read"
 	]
 });
-
-const googleClientIds = [
-	process.env.GCLIENT_ID,
-	googleWebClientId
-].filter(Boolean);
 
 //Problema: invalid_grant? Prova a vedere qui per una possibile soluzione (prima della sezione OAuth):
 //https://github.com/googleapis/google-auth-library-nodejs
@@ -36,7 +30,7 @@ const googleClientIds = [
 	//await client.request({url});
 	return client.verifyIdToken({
 		idToken: token,
-		audience: googleClientIds
+		audience: process.env.GCLIENT_ID
 	});
 };
 
