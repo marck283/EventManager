@@ -14,6 +14,6 @@ var limiter = RateLimit({
 //Avoids Denial of Service attacks by limiting the number of requests per IP
 router.use(limiter);
 
-router.get("", listPublicEvents);
+router.get(["", "/:data"], listPublicEvents);
 
 export default router;

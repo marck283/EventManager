@@ -45,7 +45,6 @@ var listPublicEvents = async (req, res) => {
 
     if (token != undefined && token != null && token != "") {
         tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
-            console.log(err); //Tutto ok se il token è null, undefined o una stringa vuota, passiamo oltre.
             if (!err) {
                 user = decoded.id;
                 events = events.filter(e => e.luogoEv.filter(l => !l.partecipantiID.includes(user)).length > 0 &&

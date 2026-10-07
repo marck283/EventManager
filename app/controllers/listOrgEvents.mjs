@@ -28,18 +28,12 @@ var listEventsByData = async (req, res) => {
 
     eventList = await mapAndPush(await eventList, [], "pub");
     eventList = await mapAndPush(await eventsPriv, eventList, "priv");
-    eventsPriv = null;
-    obj = null;
-    utent = null;
 
     if (eventList != null && eventList != undefined && eventList.length > 0) {
         res.status(200).json({ eventi: eventList, data: data });
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." });
     }
-    data = null;
-    eventList = null;
-    utent = null;
     return;
 };
 
