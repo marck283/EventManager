@@ -9,6 +9,7 @@ var client = new OAuth2Client(
 	process.env.GCLIENT_SECRET,
 	process.env.GCLIENT_REDIRECT_URI
 );
+var googleClientIds = [process.env.GCLIENT_ID, process.env.GCLIENT_ANDROID_ID];
 const url = client.generateAuthUrl({
 	access_type: 'offline',
 	scope: [
@@ -30,7 +31,7 @@ const url = client.generateAuthUrl({
 	//await client.request({url});
 	return client.verifyIdToken({
 		idToken: token,
-		audience: process.env.GCLIENT_ID
+		audience: googleClientIds
 	});
 };
 

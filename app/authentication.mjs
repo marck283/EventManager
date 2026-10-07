@@ -62,7 +62,6 @@ router.post('', (req, res) => {
 			//E QUELLI PER ANDROID HANNO DUE CONTENUTI DIVERSI?
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				let gJwt = req.body.googleJwt;
-				console.log(gJwt);
 				if (typeof gJwt === "object" && gJwt.credential != null && gJwt.credential != undefined) {
 					gJwt = gJwt.credential;
 				} else if (typeof gJwt !== "string" || gJwt.length === 0) {
