@@ -1,5 +1,4 @@
-import { _ } from 'core-js';
-import { Validator } from 'node-input-validator';
+import { Validator, extend } from 'node-input-validator';
 
 var _validate = async function (fields, rules, res, msg, next) {
     const v = new Validator(fields, rules);

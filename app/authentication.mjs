@@ -6,7 +6,6 @@ import { Validator } from 'node-input-validator';
 import verify from './googleTokenChecker.mjs';
 import createToken from './tokenCreation.mjs';
 import { google } from 'googleapis';
-import _verify from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 
 var limiter = RateLimit({
@@ -65,9 +64,8 @@ router.post('', (req, res) => {
 				let gJwt = req.body.googleJwt;
 				if (gJwt.credential != null && gJwt.credential != undefined) {
 					gJwt = gJwt.credential;
-					console.log("Google JWT: " + gJwt);
 				} else {
-					console.log("Not a Google JWT", gJwt);
+					console.log("Google authentication token is not in the expected format");
 				}
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
@@ -84,17 +82,13 @@ router.post('', (req, res) => {
 								version: 'v1',
 								auth: process.env.PEOPLE_API_ID,
 								headers: {
-									"Referer": "https://eventmanager-uo29.onrender.com"
+									"Referer": process.env.GOOGLE_AUTH_REFERRER
 								}
 							});
-							/*const people = google.people({version: "v1"});
-							const client = new google.auth.GoogleAuth({
-								scopes: ["https://www.googleapis.com/auth/user.birthday.read"]
-							});
-							const authClient = client.getClient();
-							google.options({auth: authClient});*/
+							
 							const res = await service.people.get({
-								resourceName: 'people/' + payload.sub + "?personFields=phoneNumbers,birthdays",
+								resourceName: 'people/' + payload.sub,
+								personFields: "phoneNumbers,birthdays"
 							});
 							var tel = "", birthday = "";
 							if (res.data.phoneNumbers != undefined) {
@@ -139,22 +133,9 @@ router.post('', (req, res) => {
 					})
 					.catch(async err => {
 						console.log(err);
-
-						_verify.verify(gJwt, process.env.SUPER_SECRET, async (err, decoded) => {
-							if(err) {
-								console.log(err);
-								res.status(401).json({
-									error: "Token non valido."
-								}).send();
-								return;
-							}
-							
-							console.log("authTokenF:", gJwt);
-
-							var user = await Utente.findById(decoded.id);
-							res.status(200).json(result(gJwt, user.email, user.nome, user.id, user.profilePic)).send();
-							return;
-						});
+						res.status(401).json({
+							error: "Token non valido."
+						}).send();
 					});
 				return;
 			}
