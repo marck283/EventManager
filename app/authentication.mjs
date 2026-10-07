@@ -62,10 +62,11 @@ router.post('', (req, res) => {
 			//E QUELLI PER ANDROID HANNO DUE CONTENUTI DIVERSI?
 			if (req.body.googleJwt != null && req.body.googleJwt != undefined) {
 				let gJwt = req.body.googleJwt;
-				if (gJwt.credential != null && gJwt.credential != undefined) {
+				if (typeof gJwt === "object" && gJwt.credential != null && gJwt.credential != undefined) {
 					gJwt = gJwt.credential;
-				} else {
-					console.log("Google authentication token is not in the expected format");
+				} else if (typeof gJwt !== "string" || gJwt.length === 0) {
+					res.status(400).json(result(undefined, undefined, undefined, undefined, undefined, true, "Formato del token Google non valido.")).send();
+					return;
 				}
 
 				//Check if the token is valid by first importing the public key used by Google (see here:
@@ -125,8 +126,6 @@ router.post('', (req, res) => {
 						}
 						//user = await Utente.findOne({ email: { $eq: payload.email } });
 						let token = createToken(payload.email, user.id, 172800);
-
-						console.log("authToken:", token);
 
 						res.status(200).json(result(token, payload.email,
 						payload.given_name, user.id, payload.picture)).send();
