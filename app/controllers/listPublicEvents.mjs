@@ -59,7 +59,9 @@ var listPublicEvents = async (req, res) => {
         }
     }
 
-    events = (await events).filter(e => e.luogoEv.length > 0);
+    events = await events;
+    console.log("Events before filtering: ", events);
+    events = events.filter(e => e.luogoEv.length > 0);
 
     if (token != undefined && token != null && token != "") {
         tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
