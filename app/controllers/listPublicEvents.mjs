@@ -13,6 +13,15 @@ var _queryEvents = async events => {
                 `${year}-${month}-${day}T${d.ora}:00`
             );
 
+            console.log({
+                data: d.data,
+                ora: d.ora,
+                eventDate,
+                valid: !Number.isNaN(eventDate.getTime()),
+                future: eventDate >= new Date(),
+                terminato: d.terminato
+            });
+
             return !Number.isNaN(eventDate.getTime()) &&
                 eventDate >= new Date();
         });
