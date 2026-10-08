@@ -25,7 +25,6 @@ var validate_body = function (rules, msg, extended, extensionRule, rule) {
 
             extend(extensionRule, rule);
         }
-        console.log(req.body);
         _validate(req.body, rules, res, msg, next);
     };
 };

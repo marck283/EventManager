@@ -7,7 +7,16 @@ import getOrgNames from '../events/OrgNames.mjs';
 
 var _queryEvents = async events => {
     events = events.filter(e => {
-        e.luogoEv = e.luogoEv.filter(d => new Date(d.data + "Z" + d.ora) >= new Date());
+        e.luogoEv = e.luogoEv.filter(d => {
+            const [month, day, year] = d.data.split("-");
+            const eventDate = new Date(
+                `${year}-${month}-${day}T${d.ora}:00`
+            );
+
+            return !Number.isNaN(eventDate.getTime()) &&
+                eventDate >= new Date();
+        });
+
         return e.luogoEv.length > 0;
     });
 
