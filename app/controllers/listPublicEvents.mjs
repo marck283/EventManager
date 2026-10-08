@@ -13,17 +13,18 @@ var _queryEvents = async events => {
                 `${year}-${month}-${day}T${d.ora}:00`
             );
 
+            const valid = !Number.isNaN(eventDate.getTime());
+            const future = eventDate >= new Date();
             console.log({
                 data: d.data,
                 ora: d.ora,
                 eventDate,
-                valid: !Number.isNaN(eventDate.getTime()),
-                future: eventDate >= new Date(),
+                valid,
+                future,
                 terminato: d.terminato
             });
 
-            return !Number.isNaN(eventDate.getTime()) &&
-                eventDate >= new Date();
+            return valid && future;
         });
 
         return e.luogoEv.length > 0;
@@ -60,7 +61,7 @@ var listPublicEvents = async (req, res) => {
     }
 
     events = await events;
-    console.log("Events before filtering: ", events);
+    console.log("Events before filtering: ", events.length);
     events = events.filter(e => e.luogoEv.length > 0);
 
     if (token != undefined && token != null && token != "") {
