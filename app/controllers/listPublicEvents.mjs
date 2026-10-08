@@ -67,8 +67,22 @@ var listPublicEvents = async (req, res) => {
     }
 
     events = await events;
-    console.log("Events before filtering: ", events.length);
-    events = events.filter(e => e.luogoEv.length > 0);
+    console.log("Mongo result count:", events.length);
+    console.log(
+        "Mongo result luogoEv:",
+        events.map(e => ({
+            id: e._id,
+            isArray: Array.isArray(e.luogoEv),
+            length: e.luogoEv?.length,
+            luogoEv: e.luogoEv
+        }))
+    );
+
+    events = events.filter(e =>
+        Array.isArray(e.luogoEv) && e.luogoEv.length > 0
+    );
+
+    console.log("After luogoEv filter:", events.length);
 
     if (token != undefined && token != null && token != "") {
         tVerify(token, process.env.SUPER_SECRET, async (err, decoded) => {
