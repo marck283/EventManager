@@ -6,6 +6,7 @@ var _validate = async function (fields, rules, res, msg, next) {
         const matched = await v.check();
 
         if (!matched) {
+            console.log(v.errors);
             return res.status(400).json({ errors: msg || v.errors });
         }
         next();
