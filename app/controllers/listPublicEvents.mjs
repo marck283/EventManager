@@ -6,6 +6,12 @@ import User from '../collezioni/utenti.mjs';
 import getOrgNames from '../events/OrgNames.mjs';
 
 var _queryEvents = async events => {
+    console.log(
+        events.map(e => ({
+            id: e._id,
+            luogoEv: e.luogoEv
+        })
+    ));
     events = events.filter(e => {
         e.luogoEv = e.luogoEv.filter(d => {
             const [month, day, year] = d.data.split("-");
