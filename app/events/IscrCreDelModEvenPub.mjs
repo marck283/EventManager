@@ -305,6 +305,8 @@ let durationRule = ({ value }) => {
         throw new Error("La durata deve contenere giorni, ore e minuti.");
     }
 
+    console.log(value);
+
     const durata = value;
     if (!Number.isInteger(Number(durata[0]))) {
         throw new Error("Il numero di giorni fornito non e' rappresentabile come un numero intero.");
