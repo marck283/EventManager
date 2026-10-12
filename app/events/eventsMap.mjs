@@ -32,6 +32,8 @@ export default function map(events, eventType, orgNames = null) {
             luogoEv: event.luogoEv,
             durata: event.durata
         };
+
+        console.log(obj);
         
         i += 1;
 
