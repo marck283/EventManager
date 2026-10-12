@@ -1,4 +1,4 @@
-import map from '../events//eventsMap.mjs';
+import map from '../events/eventsMap.mjs';
 import pkg from 'jsonwebtoken';
 const tVerify = pkg.verify;
 import eventPublic from '../collezioni/eventPublic.mjs';
@@ -65,27 +65,21 @@ var listPublicEvents = async (req, res) => {
 
             let events1 = await _queryEvents(events);
 
-            events = null;
-
             if (events1 != null) {
-                res.status(200).json({ eventi: events1 }).send();
-                events1 = null;
+                res.status(200).json({ eventi: events1 });
             } else {
-                res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
+                res.status(404).json({ error: "Non sono presenti eventi organizzati." });
             }
         });
-        token = null;
     } else {
         let events1 = await _queryEvents(events);
 
         if (events1 != null) {
-            res.status(200).json({ eventi: events1 }).send();
-            events1 = null;
+            res.status(200).json({ eventi: events1 });
         } else {
-            res.status(404).json({ error: "Non sono presenti eventi organizzati." }).send();
+            res.status(404).json({ error: "Non sono presenti eventi organizzati." });
         }
     }
-    user = null;
     return;
 };
 

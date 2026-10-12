@@ -58,11 +58,6 @@ var listEventsByName = async (req, res) => {
     } else {
         res.status(404).json({ error: "Nessun evento organizzato da questo utente." });
     }
-    eventsPub = null;
-    eventsPriv = null;
-    events = null;
-    obj = null;
-    utent = null;
 
     return;
 };

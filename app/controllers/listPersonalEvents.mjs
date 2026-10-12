@@ -138,6 +138,7 @@ var listPersonalEventsByData = async (req, res) => {
     }
     eventsPub = map(eventsPub, "pub", await getOrgNames(eventsPub));
     eventsPriv = map(eventsPriv, "priv", await getOrgNames(eventsPriv));
+    eventsPers = map(eventsPers, "pers", await getOrgNames(eventsPers));
 
     let eventsPersVal = eventsPers, eventsPubVal = await eventsPub, eventsPrivVal = await eventsPriv;
     for (let e of eventsPubVal) {
